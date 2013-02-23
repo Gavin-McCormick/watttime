@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
@@ -7,7 +7,6 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', 'windfriendly.views.home', name='home'),
     url(r'^status[/]?$', 'windfriendly.views.status', name='status'),
     url(r'^$', 'windfriendly.views.status', name='status'),
     # Uncomment the next line to enable the admin:
