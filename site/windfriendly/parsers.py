@@ -1,6 +1,5 @@
 # BPA parser
 import requests
-import cronjobs
 from datetime import datetime
 from windfriendly.models import BPA
 
@@ -109,7 +108,6 @@ def updateBPA (latest_date=None):
     for row in update:
         writeBPA(row)
 
-@cronjobs.register
 def periodicUpdateBPA():
     raw = BPA.objects.latest('date')
     updateBPA(raw)
