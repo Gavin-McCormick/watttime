@@ -55,6 +55,24 @@ def status(request):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
+@json_response
+def forecast(request):
+  lat = request.GET.get('lat', '')
+  lng = request.GET.get('lng', '')
 
-def details(request):
-  return
+  rows = BPA.objects.all().order_by('-id')[:289]
+  hourly_avg = 0
+  forecast = []
+  for i, r in enumerate(rows):
+    hourly_avg += r.wind * 1.0 / (r.wind + r.hydro + r.thermal) * 100.0
+    if i and not i % 12: # 5 minute intervals
+      data = {
+        'hour': i / 12,
+        'percent_green': round(hourly_avg / 12,3)
+      }
+      forecast.append(data)
+      hourly_avg = 0
+  return {
+    'forecast' : forecast,
+    'balancing_authority': 'BPA'
+  }

@@ -8,7 +8,7 @@ from django.conf import settings
 urlpatterns = patterns('',
     # Examples:
     url(r'^status[/]?$', 'windfriendly.views.status', name='status'),
-    url(r'^$', 'windfriendly.views.status', name='status'),
+    url(r'^forecast[/]?$', 'windfriendly.views.forecast', name='forecast'),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 )
