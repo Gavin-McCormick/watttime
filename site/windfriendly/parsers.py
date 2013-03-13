@@ -1,10 +1,9 @@
 # BPA parser
-import requests
-from datetime import datetime
+import urllib2
+import dateutil.parser as dp
 from windfriendly.models import BPA
 
 # SETTINGS
-BPA_TIME_FORMAT = '%m/%d/%Y %H:%M'
 
 BPA_LOAD_URL = 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
 BPA_LOAD_NCOLS = 5
@@ -19,18 +18,25 @@ BPA_OVERSUPPLY_SKIP_LINES = 11
 def getData (url):
     # Make request for data
     try:
-        data = requests.get(url).text
-    except requests.exceptions.RequestException, e:
-        raise Exception('unable to get BPA data')
+        data = urllib2.urlopen(url).read()
+    except urllib2.HTTPError, e:
+        raise Exception('unable to get BPA data' + str(e))
     return data
 
 def parseIntoRows(data):
     return data.split('\r\n')
 
+def parseDate(datestring):
+    tzd = {
+        'PST': -28800,
+        'PDT': -25200,
+    }
+    return dp.parse(datestring, tzinfos=tzd)
+
+
 def parseLoadRow(row):
     fields = row.split('\t')
-    date = datetime.strptime(fields[0], BPA_TIME_FORMAT)
-    res = {'date': date}
+    res = {'date': parseDate(fields[0])}
     if len(fields) == 5:
         [total, wind, hydro, thermal]  = [int(x) for x in fields[1:]]
         res.update({'wind': wind, 'hydro': hydro, 'thermal': thermal,
@@ -41,8 +47,7 @@ def parseLoadRow(row):
 
 def parseOversupplyRow(row):
     fields = row.split('\t')
-    date = datetime.strptime(fields[0], BPA_TIME_FORMAT)
-    res = {'date': date}
+    res = {'date': parseDate(fields[0])}
     if len(fields) == 4:
         [basepoint, wind, oversupply] = [int(x) for x in fields[1:]]
         res.update({'basepoint': basepoint, 'wind': wind,
