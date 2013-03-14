@@ -12,7 +12,7 @@ function makeParams(paramsObj) {
 
 $(document).ready(function() {
     // Get current mix info.
-		var url = 'http://watttime.beardedmaps.com/';
+		var url = 'http://108.59.82.94/api/';
 		var mixParams = {
 			'callback': '?',
 			'ba': 'BPA'
