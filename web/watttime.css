@@ -38,6 +38,14 @@ button:active {
   box-shadow: 0px 1px 10px 1px #888;
 }
 
+#location a {
+  color: #ddd;
+}
+
+#location a.current {
+  font-weight: 700;
+}
+
 #mix {
   position: relative;
   margin: 40px 10%;
