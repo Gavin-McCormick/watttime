@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^status[/]?$', 'windfriendly.views.status', name='status'),
     url(r'^forecast[/]?$', 'windfriendly.views.forecast', name='forecast'),
+    url(r'^update/(?P<utility>[a-zA-Z0-9_-]+)[/]?$', 'windfriendly.views.update', name='update'),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 )
