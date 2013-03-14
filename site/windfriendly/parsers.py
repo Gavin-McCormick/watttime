@@ -1,10 +1,124 @@
-import urllib2
+import requests
 import dateutil.parser as dp
 from windfriendly.models import BPA
-
+import zipfile
+import StringIO
 
 class UtilityParser():
     pass
+
+class CAISOParser(UtilityParser):
+    def __init__(self):
+        self.CAISO_BASE_URL = 'http://oasis.caiso.com/mrtu-oasis/SingleZip'
+        self.BASE_PAYLOAD = {'resultformat': '6'}
+        self.TOTAL_CODE = 'SLD_FCST'
+        self.CLEAN_CODE = 'SLD_REN_FCST'
+        self.ACTUAL_CODE = 'ACTUAL'
+        self.FRCST_CODE = 'DAM'
+        self.DATE_FRMT = '%Y%m%d'
+
+    def CSVtoRows(s):
+        # poor string->list of lists. should use real CSV parsing
+        # library. import csv was giving me problems...
+        # file ends on \n, so skipping last (empty) row
+        return [y.split(',') for y in x.split('\n')][:-1]
+
+    def RowstoDicts(rows):
+        header = rows[0]
+        return [dict(zip(header, row)) for row in rows[1:]]            
+        
+    def getData(self, energy_type, forecast_type, start_date, end_date):
+        # returns list of dicts
+        payload_update = {'queryname': energy_type,
+                          'market_run_id': forecast_type,
+                          'startdate': start_date, 'enddate': end_date}
+        payload = dict(self.BASE_PAYLOAD.items() + payload_update)
+        try: 
+            r = requests.get(self.CAISO_BASE_URL, payload) # have request
+        except requests.exceptions.RequestException, e:
+            raise Exception('unable to get CAISO data' + str(e))
+        z = zipfile.ZipFile(StringIO.StringIO(r.content)) # have zipfile
+        f = z.read(z.namelist()[0]) # have csv
+        return self.RowstoDicts(self.CSVtoRows(f))
+
+    def getEnergySubsetAndCast(self, data):
+        energy_keys = filter(lambda x: x[:2] == 'HE', data.keys())
+        subset = dict((k, float(data[k])) for k in energy_keys)
+        return subset
+
+    def aggData(self, data):
+        # take in output of getData, return dict of agged
+        energy_subsets = map(self.getEnergySubsetAndCast, data)
+        agged = {k: reduce(lambda x, y: x.get(k, 0) + y.get(k, 0), energy_subsets)
+                 for k in energy_subsets}
+        return agged
+
+    def getRatio(self, clean_energy, total_energy):
+        # clean, total energy params are dicts
+        ratio = {k: clean_energy[k] / total_energy[k]
+                 for k in clean_energy.keys()}
+        return ratio
+
+    def getDataAndAgg(self, energy_type, forecast_type, start_date, end_date):
+        data = self.getData(energy_type, forecast_type, start_date, end_date)
+        agged = self.aggData(data)
+        return agged
+
+    def getForecastTypeRatio(self, forecast_type, start_date, end_date):
+        total_agged = getDataAndAgg(self.TOTAL_CODE, forecast_type, start_date,
+                                    end_date)
+        clean_agged = getDataAndAgg(self.CLEAN_CODE, forecast_type, start_date,
+                                    end_date)
+        agged_dict = self.getRatio(clean_agged, total_agged)
+        agged_arr = [agged_dict[k] for k in sorted(agged_dict.keys())][:-1]
+        # weird HE25 col has no data... so dropping last entry
+        return agged_arr
+
+    def getLatestExistingDate(self):
+        latest = CAISO.objects.all().order_by('-date')
+        if latest:
+            return latest.date
+    
+    def getToday(self):
+        return datetime.date.today()
+
+    def getTomorrow(self):
+        return self.getToday() + datetime.timedelta(1)
+
+    def getCurrentHour(self):
+        return datetime.datetime.now().hour
+    
+    def getCAISOForecast(self):
+        # returns in-order array of forecast ratios
+        today = self.getToday().strftime(self.DATE_FRMT)
+        tomorrow = self.getTomorrow().strftime(self.DATE_FRMT)
+        forecast_today = self.getForecastTypeRatio(self.FRCST_CODE, today,
+                                                   today)
+        forecast_tomorrow = self.getForecastTypeRatio(self.FRCST_CODE, tomorrow,
+                                                 tomorrow)
+        forecast_total = forecast_today + forecast_tomorrow
+        current_hour = self.getCurrentHour()
+        # return all future predictions -- if it's 12:30 am, return
+        # predictions for 1 am and onward
+        return forecast_total[current_hour + 1:]
+
+    def dateGen(self, start_date, end_date):
+        while start_date < end_date:
+            yield start_date
+            start_date = start_date + datetime.timedelta(1)
+    
+    def getCAISOHistory(self, latest=None):
+        # returns history as in-order array of ratios, starting with
+        # 'latest' date.
+        # at march 13, 2013, historical data goes back to january
+        # 2009, so if latest date not specified, grab previous 4 years
+        if not latest:
+            latest = getToday() - datetime.timedelta(365 * 4)
+        forecast_total = []
+        for d in dateGen():
+            forecast = self.getForecastTypeRatio(self.FRCST_CODE, d, d)
+            forecast_total.append(forecast)
+        return forecast
 
 class BPAParser(UtilityParser):
     def __init__(self):
@@ -19,8 +133,8 @@ class BPAParser(UtilityParser):
     def getData(self, url):
         # Make request for data
         try:
-            data = urllib2.urlopen(url).read()
-        except urllib2.HTTPError, e:
+            data = requests.get(url).text
+        except requests.exceptions.RequestException, e:
             raise Exception('unable to get BPA data' + str(e))
         return data
 
