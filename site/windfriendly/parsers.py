@@ -33,6 +33,10 @@ class BPAParser(UtilityParser):
         try:return dp.parse(datestring, tzinfos=tzd)
         except: raise Exception(datestring)
 
+    def getLatestExistingDate(self):
+        latest = BPA.objects.all().order_by('-date')
+        if latest:
+          return latest.date
 
     def parseLoadRow(self, row):
         fields = row.split('\t')
