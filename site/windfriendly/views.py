@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 
 from windfriendly.models import BPA, Normalized
+from windfriendly.parsers import BPAParser
 
 def json_response(func):
   """
@@ -76,3 +77,9 @@ def forecast(request):
     'forecast' : forecast,
     'balancing_authority': 'BPA'
   }
+
+@json_response
+def update(request, utility):
+  if utility == 'bpa':
+    parser = BPAParser()
+  return parser.update()

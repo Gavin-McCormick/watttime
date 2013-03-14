@@ -30,13 +30,12 @@ class BPAParser(UtilityParser):
             'PST': -28800,
             'PDT': -25200,
         }
-        try:return dp.parse(datestring, tzinfos=tzd)
-        except: raise Exception(datestring)
+        return dp.parse(datestring, tzinfos=tzd)
 
     def getLatestExistingDate(self):
         latest = BPA.objects.all().order_by('-date')
         if latest:
-          return latest.date
+          return latest[0].date
 
     def parseLoadRow(self, row):
         fields = row.split('\t')
@@ -112,11 +111,13 @@ class BPAParser(UtilityParser):
         b.thermal = row['thermal']
         b.save()
 
-    def update(self, latest_date=None):
+    def update(self):
+        latest_date = self.getLatestExistingDate()
         update = self.getBPA (latest_date)
         for row in update:
             self.writeBPA(row)
-
-    def periodicUpdateBPA(self):
-        raw = BPA.objects.latest('date')
-        self.update(raw)
+        return {
+          'prior_latest_date' : str(latest_date),
+          'update_rows' : len(update),
+          'latest_date' : self.getLatestExistingDate()
+        }
