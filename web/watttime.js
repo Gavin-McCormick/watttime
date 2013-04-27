@@ -29,7 +29,7 @@ function makeParams(paramsObj) {
 
 $(document).ready(function() {
     // Get current mix info.
-		var url = 'http://108.59.82.94/api/';
+		var url = 'localhost:8080';
 		var mixParams = {
 			'callback': '?',
 			'ba': 'BPA'

@@ -20,8 +20,24 @@ import requests
 import StringIO
 import urllib2
 import zipfile
+import itertools
+import datetime
 
-from windfriendly.models import BPA
+from dateutil.relativedelta import relativedelta
+
+from windfriendly.models import BPA, MeterReading, User
+
+import xml.etree.ElementTree as ET
+
+from django.core.exceptions import ObjectDoesNotExist
+
+def parseDate(datestring):
+    tzd = {
+        'PST': -28800,
+        'PDT': -25200,
+    }
+    return dp.parse(datestring, tzinfos=tzd)
+
 
 class UtilityParser():
     pass
@@ -158,13 +174,6 @@ class BPAParser(UtilityParser):
         return data
 
 
-    def parseDate(self, datestring):
-        tzd = {
-            'PST': -28800,
-            'PDT': -25200,
-        }
-        return dp.parse(datestring, tzinfos=tzd)
-
     def getLatestExistingDate(self):
         latest = BPA.objects.all().order_by('-date')
         if latest:
@@ -255,6 +264,46 @@ class BPAParser(UtilityParser):
           'latest_date' : self.getLatestExistingDate()
         }
 
-class UserParser(UtilityParser):
-    def update(self, userid):
-        pass
+class UserDataParser:
+    pass
+
+class GreenButtonParser(UserDataParser):
+    def __init__(self, xml_file, uid):
+        self.uid = uid
+        self.tree = ET.parse(urllib2.urlopen(xml_file))
+        #self.ns = '{http://www.w3.org/2005/Atom}'
+        self.ns ='{http://naesb.org/espi}'
+
+    def parse(self):
+        root = self.tree.getroot()
+        for reading in root.iter(self.ns+'IntervalReading'):
+            cost = reading.find(self.ns+'cost').text
+            value = reading.find(self.ns+'value').text
+            start = float(reading.find(self.ns+'timePeriod').find(self.ns+'start').text)
+            start = datetime.datetime.utcfromtimestamp(start)
+            duration = reading.find(self.ns+'timePeriod').find(self.ns+'duration').text
+
+            yield {'cost':cost, 'value':value, 'start':start, 'duration':duration}
+        
+
+    def update(self):
+        try:
+            user = User.objects.get(pk = self.uid)
+        except ObjectDoesNotExist: 
+            print 'creating user'
+            user = User.objects.create(name='New User')
+
+
+        counter = 0
+        for row in self.parse():
+            r = MeterReading()
+            r.userid = user
+            r.cost = row['cost']
+            r.energy = row['value']
+            r.start = row['start']
+            #get this in sync with the bpa data we have
+            r.start = r.start + relativedelta(years=1, months=1, days=20)
+            r.duration = row['duration']
+            r.save()
+            counter += 1
+        return  {'added_count': counter, 'uid':self.uid}
