@@ -68,14 +68,14 @@ class CAISOParser(UtilityParser):
     def aggData(self, data):
         # take in output of getData, return dict of agged
         energy_subsets = map(self.getEnergySubsetAndCast, data)
-        agged = {k: reduce(lambda x, y: x.get(k, 0) + y.get(k, 0), energy_subsets)
-                 for k in energy_subsets}
+        agged = dict([(k, reduce(lambda x, y: x.get(k, 0) + y.get(k, 0), energy_subsets))
+                      for k in energy_subsets])
         return agged
 
     def getRatio(self, clean_energy, total_energy):
         # clean, total energy params are dicts
-        ratio = {k: clean_energy[k] / total_energy[k]
-                 for k in clean_energy.keys()}
+        ratio = dict([(k, clean_energy[k] / total_energy[k])
+                 for k in clean_energy.keys()])
         return ratio
 
     def getDataAndAgg(self, energy_type, forecast_type, start_date, end_date):
@@ -254,3 +254,7 @@ class BPAParser(UtilityParser):
           'update_rows' : len(update),
           'latest_date' : self.getLatestExistingDate()
         }
+
+class UserParser(UtilityParser):
+    def update(self, userid):
+        pass
