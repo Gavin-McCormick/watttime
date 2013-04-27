@@ -22,6 +22,10 @@ class Normalized(models.Model):
   curtailed = models.BooleanField(default=False)
   date = models.DateTimeField()
 
+class User(models.Model):
+  # name
+  name = models.CharField(max_length=100)
+
 class MeterReading(models.Model):
   # user id
   userid = models.ForeignKey(User)
@@ -37,10 +41,3 @@ class MeterReading(models.Model):
 
   # cost in dollars
   cost = models.FloatField()
-
-class User(models.Model):
-  # customer id
-  userid = models.IntegerField()
-
-  # name
-  name = models.CharField(max_length=100)

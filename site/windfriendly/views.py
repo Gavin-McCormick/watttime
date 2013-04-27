@@ -23,8 +23,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 
-from windfriendly.models import BPA, Normalized
+from windfriendly.models import BPA, Normalized, User
 from windfriendly.parsers import BPAParser
+from windfriendly.parsers import GreenButtonParser
 
 def json_response(func):
   """
@@ -99,4 +100,12 @@ def forecast(request):
 def update(request, utility):
   if utility == 'bpa':
     parser = BPAParser()
+  if utility == 'gb':
+    xml_file = request.GET.get('file', '')
+    uid = request.GET.get('uid', None)
+    if uid is None:
+        name = request.GET.get('name', 'New User')
+        uid = User.objects.create(name=name).pk
+
+    parser = GreenButtonParser(xml_file, uid)
   return parser.update()
