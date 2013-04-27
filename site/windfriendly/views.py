@@ -15,7 +15,7 @@
 # Author: Josh Livni (jlivni@google.com)
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 from django.conf import settings
@@ -23,8 +23,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 
-from windfriendly.models import BPA, Normalized
-from windfriendly.parsers import BPAParser
+from windfriendly.models import BPA, Normalized, User, MeterReading
+from windfriendly.parsers import BPAParser, UserParser
 
 def json_response(func):
   """
@@ -51,16 +51,32 @@ def json_response(func):
 def getBalancingAuthority(lat, lng):
   return 'BPA'
 
+def fraction_wind(row):
+  """ Returns the fraction of the total load from wind """
+  return (row.wind) / float(row.wind + row.hydro + row.thermal)
+
+def fraction_hydro(row):
+  """ Returns the fraction of the total load from hydro """
+  return (row.hydro) / float(row.wind + row.hydro + row.thermal)
+
+def fraction_fossil(row):
+  """ Returns the fraction of the total load from fossil fuels (ie thermal) """
+  return (row.thermal) / float(row.wind + row.hydro + row.thermal)
+
+def fraction_nonfossil(row):
+  """ Returns the fraction of the total load from anything besides fossil fuels (ie wind+hydro) """
+  return (row.wind + row.hydro) / float(row.wind + row.hydro + row.thermal)
+
 @json_response
 def status(request):
   lat = request.GET.get('lat', '')
   lng = request.GET.get('lng', '')
 
   ba = getBalancingAuthority(lat, lng)
-  raw = BPA.objects.latest('date')
+  row = BPA.objects.latest('date')
 
-  percent_green = raw.wind * 1.0 / (raw.wind + raw.hydro + raw.thermal) * 100.0
-  time = raw.date.strftime('%Y-%m-%d %H:%M')
+  percent_green = fraction_wind(row) * 100.0
+  time = row.date.strftime('%Y-%m-%d %H:%M')
 
   data = {
     'lat': lat,
@@ -82,7 +98,7 @@ def forecast(request):
   hourly_avg = 0
   forecast = []
   for i, r in enumerate(rows):
-    hourly_avg += r.wind * 1.0 / (r.wind + r.hydro + r.thermal) * 100.0
+    hourly_avg += fraction_wind(r) * 100.0
     if i and not i % 12: # 5 minute intervals
       data = {
         'hour': i / 12,
@@ -100,3 +116,73 @@ def update(request, utility):
   if utility == 'bpa':
     parser = BPAParser()
   return parser.update()
+
+@json_response
+def update_user(request, userid):
+  parser = UserParser()
+  return parser.update(userid)
+
+@json_response
+def history(request, userid):
+  # get balancing authority
+  lat = request.GET.get('lat', '')
+  lng = request.GET.get('lng', '')
+  ba = getBalancingAuthority(lat, lng)
+
+  # get date range
+  start = request.GET.get('start', '')
+  end = request.GET.get('end', '')
+  min =  min_date(userid)
+  max = max_date(userid)
+  if not start or start < min:
+    start = min
+  if not end or start < max:
+    end = max
+    
+  # get user data in range
+  user_rows = MeterReading.objects.filter(date__gte=start, date__lt=end, userid__exact=userid)
+
+  # collect sums
+  total_green_kwh = reduce(sum, map(used_kwh, user_rows, 'green'))
+  total_kwh = reduce(sum, map(used_kwh, user_rows, 'all'))
+
+  data = {
+    'lat': lat,
+    'lng': lng,
+    'balancing_authority': ba,
+    'time': time,
+    'percent_green': round(percent_green,3)
+  }
+  return data
+  template = 'templates/default.json'
+  return render_to_response(template, RequestContext(request,{'json':data}))
+
+def min_date(userid):
+  """ Returns the earliest date with both BPA and user data """
+  min_for_user = MeterReading.objects.earliest('start')
+  min_for_ba = BPA.objects.earliest('date')
+  return max(min_for_user, min_for_ba)
+
+def max_date(userid):
+  """ Returns the latest date with both BPA and user data """
+  max_for_user = MeterReading.objects.latest('start')
+  max_for_ba = BPA.objects.latest('date')
+  return min(max_for_user, max_for_ba)
+
+def utility_rows_for_user_row(user_row):
+  # get utility rows for user row
+  start = user_row.start
+  end = user_row.start + timedelta(0,user_row.duration)
+  rows = BPA.objects.filter(date__gte=start, date__lte=end)
+
+  # get nearby values if none in range
+  if rows.count() == 0:
+    rows = BPA.objects.filter(date__lt=start).latest()
+    if rows.count() == 0:
+      rows = BPA.objects.filter(date__gt=end).earliest()
+
+  # return
+  return rows
+  
+def used_kwh(user_row, flag='all'):
+  pass
