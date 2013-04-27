@@ -9,7 +9,7 @@ class BPA(models.Model):
   wind = models.IntegerField()
   thermal = models.IntegerField()
   hydro = models.IntegerField()
-  thermal = models.IntegerField()
+ # thermal = models.IntegerField()
   date = models.DateTimeField()
 
   def get_title(self):
@@ -22,3 +22,25 @@ class Normalized(models.Model):
   curtailed = models.BooleanField(default=False)
   date = models.DateTimeField()
 
+class MeterReading(models.Model):
+  # user id
+  userid = models.ForeignKey(User)
+
+  # energy in kwh
+  energy = models.FloatField()
+  
+  # duration in seconds
+  duration = models.IntegerField()
+  
+  # start time in date-time
+  start = models.DateTimeField()
+
+  # cost in dollars
+  cost = models.FloatField()
+
+class User(models.Model):
+  # customer id
+  userid = models.IntegerField()
+
+  # name
+  name = models.CharField(max_length=100)
