@@ -150,9 +150,14 @@ class CAISOParser(UtilityParser):
         return forecast
 
 class BPAParser(UtilityParser):
-    def __init__(self, url):
+    def __init__(self, url = None):
 
-        self.BPA_LOAD_URL = url
+        self.BPA_LOAD_URL = url or 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
+        #If we're pulling historical data, ignore latest
+        if url is None:
+            self.update_latest = True
+        else:
+            self.update_latest = False
         self.BPA_LOAD_NCOLS = 5
         self.BPA_LOAD_SKIP_LINES = 7
 
@@ -264,8 +269,8 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.getLatestExistingDate()
-        update = self.getBPA ()
+        latest_date = self.getLatestExistingDate() if self.update_latest else None
+        update = self.getBPA (latest_date)
         for row in update:
             self.writeBPA(row)
         return {
