@@ -263,7 +263,7 @@ def average_usage_for_hours(request, userid):
   # collect averages
   t0 = time.clock()
   for row in user_rows:
-    total_green_kwhs = used_kwh(row, 'green')
+    total_green_kwhs = used_green_kwh(row)
     total_kwhs = total_kwh(row)
     sum_percent_green[row.start.hour] += total_green_kwhs / total_kwhs * 100.0
     sum_kw[row.start.hour] += total_kwhs * row.duration / 1000.0
@@ -331,15 +331,9 @@ def used_green_kwh(user_row):
   except ZeroDivisionError:
     return 0.0
 
-<<<<<<< HEAD
   return total_kwh(user_row) * fraction_load
 
 def total_kwh(user_row):
   kwh = user_row.energy/3600.0 * user_row.duration
-=======
-  kwh = total_kwh(user_row) * fraction_load
->>>>>>> c7d00afc4c209366b7c38c25b79578f0b3a13e4a
   return kwh
 
-def total_kwh(user_row):
-  return user_row.energy/3600.0 * user_row.duration
