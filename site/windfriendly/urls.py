@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^history/(?P<userid>[a-zA-Z0-9_-]+)[/]?$',
         'windfriendly.views.history', name='history'),
     url(r'^average/(?P<userid>[a-zA-Z0-9_-]+)[/]?$',
-        'windfriendly.views.average_usage_for_period', name='average'),
+        'windfriendly.views.average_usage_for_hours', name='average'),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 )
