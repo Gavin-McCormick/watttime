@@ -22,6 +22,7 @@ import urllib2
 import zipfile
 import itertools
 import datetime
+import pytz
 
 from dateutil.relativedelta import relativedelta
 
@@ -30,13 +31,6 @@ from windfriendly.models import BPA, MeterReading, User
 import xml.etree.ElementTree as ET
 
 from django.core.exceptions import ObjectDoesNotExist
-
-def parseDate(datestring):
-    tzd = {
-        'PST': -28800,
-        'PDT': -25200,
-    }
-    return dp.parse(datestring, tzinfos=tzd)
 
 
 class UtilityParser():
@@ -156,8 +150,9 @@ class CAISOParser(UtilityParser):
         return forecast
 
 class BPAParser(UtilityParser):
-    def __init__(self):
-        self.BPA_LOAD_URL = 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
+    def __init__(self, url):
+
+        self.BPA_LOAD_URL = url
         self.BPA_LOAD_NCOLS = 5
         self.BPA_LOAD_SKIP_LINES = 7
 
@@ -170,9 +165,21 @@ class BPAParser(UtilityParser):
         try:
             data = requests.get(url).text
         except requests.exceptions.RequestException, e:
-            raise Exception('unable to get BPA data' + str(e))
+            data = urllib2.urlopen(url).read()
+            #raise Exception('unable to get BPA data' + str(e))
         return data
 
+    def parseDate(self, datestring):
+        tzd = {
+            'PST': -28800,
+            'PDT': -25200,
+        }
+        tz = pytz.timezone('US/Pacific')
+        dt = dp.parse(datestring, tzinfos=tzd)
+        if dt.tzinfo == None:
+            dt = dt.replace(tzinfo = tz)
+        dt = dt.astimezone(pytz.UTC)
+        return dt
 
     def getLatestExistingDate(self):
         latest = BPA.objects.all().order_by('-date')
@@ -183,7 +190,10 @@ class BPAParser(UtilityParser):
         fields = row.split('\t')
         res = {'date': self.parseDate(fields[0])}
         if len(fields) == 5:
-            [total, wind, hydro, thermal]  = [int(x) for x in fields[1:]]
+            try:
+                [total, wind, hydro, thermal]  = [int(x) for x in fields[1:]]
+            except:
+                return res
             res.update({'wind': wind, 'hydro': hydro, 'thermal': thermal,
                         'total': total})
             return res
@@ -255,7 +265,7 @@ class BPAParser(UtilityParser):
 
     def update(self):
         latest_date = self.getLatestExistingDate()
-        update = self.getBPA (latest_date)
+        update = self.getBPA ()
         for row in update:
             self.writeBPA(row)
         return {
