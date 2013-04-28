@@ -30,16 +30,27 @@ function makeParams(paramsObj) {
 $(document).ready(function() {
     // Get current mix info.
 		var url = 'localhost:8080';
+
 		var mixParams = {
 			'callback': '?',
 			'ba': 'BPA'
     };
 		$.getJSON(url + 'status?' + makeParams(mixParams), drawMix);
+
 		var forecastParams = {
 			'callback': '?',
 			'ba': 'BPA'
     };
 		$.getJSON(url + 'forecast?' + makeParams(forecastParams), drawNextbest);
+
+		var historyParams = {
+			'callback': '?',
+			'ba': 'BPA',
+			
+    };
+		$.getJSON(url + 'history?' + makeParams(mixParams), drawMix);
+
+
 		init();
 });
 

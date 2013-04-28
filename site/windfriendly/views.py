@@ -16,6 +16,7 @@
 
 
 from datetime import datetime, timedelta
+from dateutil import tz
 import pytz
 import json
 import time
@@ -121,7 +122,7 @@ def forecast(request):
 @json_response
 def update(request, utility):
   if utility == 'bpa':
-    parser = BPAParser(request.GET.get('file', 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'))
+    parser = BPAParser(request.GET.get('file', None))
   if utility == 'gb':
     xml_file = request.GET.get('file', '')
     uid = request.GET.get('uid', None)
@@ -191,11 +192,11 @@ def history(request, userid):
 
     # collect sums
     total_green_kwh = reduce(lambda x, y: x+y,
-                             [used_kwh(row, 'green') for row in user_rows])
-    total_kwh = reduce(lambda x, y: x+y,
-                       map(used_kwh, user_rows))
-    print total_green_kwh, total_kwh
-    percent_green = total_green_kwh / total_kwh * 100.0
+                             [used_green_kwh(row) for row in user_rows])
+    total_kwhs = reduce(lambda x, y: x+y,
+                       map(total_kwh, user_rows))
+    print total_green_kwh, total_kwhs
+    percent_green = total_green_kwh / total_kwhs * 100.0
 
   # collect data
   data = {
@@ -225,6 +226,17 @@ def average_usage_for_hours(request, userid):
   month = request.GET.get('month', None)
   days = request.GET.get('days', 'all').strip()
   print days, month
+
+  start = request.GET.get('start', '')
+  if start:
+    starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=tz.tzlocal())
+  else:
+    starttime = datetime.min.replace(tzinfo=tz.tzlocal())
+  end = request.GET.get('end', '')
+  if end:
+    endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=tz.tzlocal())
+  else:
+    endtime = datetime.utcnow().replace(tzinfo=tz.tzlocal())
 
   # get user data
   user_rows = MeterReading.objects.filter(userid__exact=int(userid))
@@ -275,7 +287,6 @@ def average_usage_for_hours(request, userid):
     'av_kw': [av_kw[i%24] for i in range(utchack, 24+utchack)],
     'av_cost': [av_cost[i%24] for i in range(utchack, 24+utchack)]
   }
-  print data
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
   
@@ -308,23 +319,27 @@ def utility_rows_for_user_row(user_row):
   # return
   return rows
   
-def used_kwh(user_row, flag=None):
+def used_green_kwh(user_row):
   utility_rows = utility_rows_for_user_row(user_row)
   try:
     n_rows = float(len(utility_rows))
   except:
     return 0.0
 
-  if flag=='green':
-    try:
-      fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
-    except ZeroDivisionError:
-      return 0.0
-  else:
-    fraction_load = 1.0
+  try:
+    fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
+  except ZeroDivisionError:
+    return 0.0
 
+<<<<<<< HEAD
   return total_kwh(user_row) * fraction_load
 
 def total_kwh(user_row):
   kwh = user_row.energy/3600.0 * user_row.duration
+=======
+  kwh = total_kwh(user_row) * fraction_load
+>>>>>>> c7d00afc4c209366b7c38c25b79578f0b3a13e4a
   return kwh
+
+def total_kwh(user_row):
+  return user_row.energy/3600.0 * user_row.duration

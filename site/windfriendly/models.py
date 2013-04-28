@@ -10,7 +10,7 @@ class BPA(models.Model):
   thermal = models.IntegerField()
   hydro = models.IntegerField()
  # thermal = models.IntegerField()
-  date = models.DateTimeField()
+  date = models.DateTimeField(db_index=True)
 
   def get_title(self):
     return unidecode(self.wind)
@@ -37,7 +37,7 @@ class MeterReading(models.Model):
   duration = models.IntegerField()
   
   # start time in date-time
-  start = models.DateTimeField()
+  start = models.DateTimeField(db_index=True)
 
   # cost in dollars
   cost = models.FloatField()

@@ -74,13 +74,13 @@ var json_data = {
 // get data to plot from json
 var data = [];
 for (var i=0; i < json_data.av_percent_greens.length; i++) {
-green_point = {'hour': i,
+green_point = {'time': new Date(2000, 1, 1, i, 0, 0),
 'kw': json_data.av_percent_greens[i]/100.0 *
 json_data.av_kw[i],
 'cost': json_data.av_percent_greens[i]/100.0 *
 json_data.av_cost[i]};
 data.push(green_point);
-fossil_point = {'hour': i,
+fossil_point = {'time': new Date(2000, 1, 1, i, 0, 0),
 'kw': -(1.0-json_data.av_percent_greens[i]/100.0) *
 json_data.av_kw[i],
 'cost': -(1.0-json_data.av_percent_greens[i]/100.0) *
@@ -93,10 +93,10 @@ var margin = {top: 10, right: 10, bottom: 10, left: 40},
     width = 300 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
-var x = d3.scale.ordinal()
-.domain(data.map(function(d) {return d.hour; }))
-.rangeRoundBands([0, width], 0.2);
-
+var x = d3.time.scale()
+.domain([new Date(data[0].time), d3.time.hour.offset(new Date(data[data.length - 1].time))])
+.rangeRound([0, width]);
+//.rangeRoundBands([0, width], 0.2);
 
 var y_kw = d3.scale.linear()
 .domain(d3.extent(data, function(d) {return d.kw ;})).nice()
@@ -117,10 +117,10 @@ kw_chart.selectAll("rect").
   enter().
   append("svg:rect").
 attr("class", function(d) { return d.kw < 0 ? "bar fossil" : "bar green"; }).
-  attr("x", function(d, i) { return x(d.hour); }).
+  attr("x", function(d, i) { return x(new Date(d.time)); }).
   attr("y", function(d) { return y_kw(Math.max(0,d.kw)); }).
   attr("height", function(d) { return Math.abs(y_kw(d.kw)-y_kw(0)); }).
-  attr("width", x.rangeBand()).
+  attr("width", width/25.0).
   attr("fill", d3.rgb("rgb(7,153,72)"));
 
   kw_chart.append("g")
@@ -132,44 +132,19 @@ attr("class", function(d) { return d.kw < 0 ? "bar fossil" : "bar green"; }).
 
 var yAxis_kw = d3.svg.axis()
     .scale(y_kw)
+.tickFormat(d3.format(".2f"))
     .orient("left");
 kw_chart.append("g")
 .attr("class", "y axis")
 .call(yAxis_kw);
 
-
-//////////////
-// add the canvas to the DOM
-var cost_chart = d3.select("#cost-chart").append("svg:svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height/2.0 + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-cost_chart.selectAll("rect").
-  data(data).
-  enter().
-  append("svg:rect").
-attr("class", function(d) { return d.cost < 0 ? "bar fossil" : "bar green"; }).
-  attr("x", function(d, i) { return x(d.hour); }).
-  attr("y", function(d) { return y_cost(Math.max(0,d.cost)); }).
-  attr("height", function(d) { return Math.abs(y_cost(d.cost)-y_cost(0)); }).
-  attr("width", x.rangeBand()).
-  attr("fill", d3.rgb("rgb(7,153,72)"));
-
-  cost_chart.append("g")
-      .attr("class", "x axis")
-    .append("line")
-      .attr("y1", y_cost(0))
-      .attr("y2", y_cost(0))
-      .attr("x1", width);
-
-var yAxis_cost = d3.svg.axis()
-    .scale(y_cost)
-    .orient("left");
-cost_chart.append("g")
-.attr("class", "y axis")
-.call(yAxis_cost);
+var xAxis = d3.svg.axis()
+    .scale(x)
+.tickFormat(d3.time.format("%H"))
+    .orient("bottom");
+kw_chart.append("g")
+.attr("class", "x axis")
+.call(xAxis);
 
 
 
