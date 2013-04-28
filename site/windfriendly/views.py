@@ -226,10 +226,8 @@ def average_usage_for_period(request, userid):
   # get user data
   user_rows = MeterReading.objects.filter(userid__exact=int(userid))
   if hour is not None:
-    print hour
     user_rows = user_rows.filter(start__hour=int(hour))
   if month is not None:
-    print month
     user_rows = user_rows.filter(start__month=int(month))
   if doweekday is not None:
       user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
@@ -237,6 +235,7 @@ def average_usage_for_period(request, userid):
   if doweekend is not None:
       user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7))
       
+  print user_rows.count()
   if user_rows.count() == 0:
     raise ValueError('no data for hour %s, month %s, weekdays=%s, weekends=%s' % (hour, month, doweekday, doweekend))
   
@@ -292,10 +291,8 @@ def utility_rows_for_user_row(user_row):
 def used_kwh(user_row, flag=None):
   utility_rows = utility_rows_for_user_row(user_row)
   n_rows = float(utility_rows.count())
-  print flag
 
   if flag=='green':
-    print [fraction_nonfossil(row) for row in utility_rows]
     fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
   else:
     fraction_load = 1.0
