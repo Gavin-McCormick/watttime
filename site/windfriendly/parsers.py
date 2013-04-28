@@ -34,7 +34,12 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class UtilityParser():
-    pass
+    def parseDate(self, datestring):
+        tzd = {
+            'PST': -28800,
+            'PDT': -25200,
+            }
+        return dp.parse(datestring, tzinfos=tzd)
 
 class CAISOParser(UtilityParser):
     def __init__(self):
