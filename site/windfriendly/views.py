@@ -16,6 +16,7 @@
 
 
 from datetime import datetime, timedelta
+from dateutil import tz
 import pytz
 import json
 
@@ -219,15 +220,28 @@ def average_usage_for_period(request, userid):
   # get time info
   grouping = request.GET.get('grouping')
 
+  start = request.GET.get('start', '')
+  if start:
+    starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=tz.tzlocal())
+  else:
+    starttime = datetime.min.replace(tzinfo=tz.tzlocal())
+  end = request.GET.get('end', '')
+  if end:
+    endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=tz.tzlocal())
+  else:
+    endtime = datetime.utcnow().replace(tzinfo=tz.tzlocal())
+
   # get user datamonth
-  user_rows = MeterReading.objects.filter(userid__exact=int(userid))
+  user_rows = MeterReading.objects.filter(start__gte=starttime,
+                                          start__lt=endtime,
+                                          userid__exact=userid)
   if user_rows.count() == 0:
     raise ValueError('no data')
 
   if not grouping:
     bucket = lambda row : 'All'
   elif grouping == 'hour':
-    bucket = lambda row : row.start.hour
+    bucket = lambda row : row.start.astimezone(tz.tzlocal()).hour
   elif grouping == 'month':
     bucket = lambda row : row.start.strftime('%B')
   elif grouping == 'day':
