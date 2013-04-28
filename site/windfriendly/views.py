@@ -51,6 +51,10 @@ def json_response(func):
 def getBalancingAuthority(lat, lng):
   return 'BPA'
 
+def total_load(row):
+  """ Returns the total load """
+  return float(row.wind + row.hydro + row.thermal)
+
 def fraction_wind(row):
   """ Returns the fraction of the total load from wind """
   return (row.wind) / float(row.wind + row.hydro + row.thermal)
@@ -134,42 +138,87 @@ def history(request, userid):
 
   # get date range
   start = request.GET.get('start', '')
+  if start:
+    starttime = datetime.strptime(start, '%Y%m%d%H%M')
+  else:
+    starttime = datetime.min
   end = request.GET.get('end', '')
-  min =  min_date(userid)
-  max = max_date(userid)
-  if not start or start < min:
-    start = min
-  if not end or start < max:
-    end = max
+  if end:
+    endtime = datetime.strptime(end, '%Y%m%d%H%M')
+  else:
+    endtime = datetime.utcnow()
+
+  # get numbers for BPA
+  if userid == 'bpa':
+    # get dates
+    if starttime < BPA.objects.order_by('date')[0].date:
+      starttime = BPA.objects.order_by('date')[0].date
+    if endtime > BPA.objects.latest('date').date:
+      endtime = BPA.objects.latest('date').date
     
-  # get user data in range
-  user_rows = MeterReading.objects.filter(date__gte=start, date__lt=end, userid__exact=userid)
+    # get rows
+    utility_rows = BPA.objects.filter(date__gte=starttime, date__lt=endtime)
 
-  # collect sums
-  total_green_kwh = reduce(sum, map(used_kwh, user_rows, 'green'))
-  total_kwh = reduce(sum, map(used_kwh, user_rows, 'all'))
+    # collect sums
+    total_green_kw = reduce(sum, map(fraction_nonfossil, utility_rows))
+    total_kw = reduce(sum, map(total_load, utility_rows))
+    percent_green = total_green_kw / total_kw * 100.0
 
+  # get numbers for user
+  else:
+    # get dates
+    min = min_date(userid)
+    max = max_date(userid)
+    if starttime < min:
+      starttime = min
+    if endtime > max:
+      endtime = max
+    
+    # get user data in range
+    user_rows = MeterReading.objects.filter(start__gte=starttime,
+                                            start__lt=endtime,
+                                            userid__exact=userid)
+
+    # collect sums
+    total_green_kwh = reduce(sum, map(used_kwh, user_rows, 'green'))
+    total_kwh = reduce(sum, map(used_kwh, user_rows))
+    percent_green = total_green_kwh / total_kwh * 100.0
+
+  # collect data
   data = {
     'lat': lat,
     'lng': lng,
     'balancing_authority': ba,
-    'time': time,
+    'userid': userid,
+    'start': starttime.isoformat(),
+    'end': endtime.isoformat(),
     'percent_green': round(percent_green,3)
   }
   return data
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
+def average(request):
+  # get balancing authority
+  lat = request.GET.get('lat', '')
+  lng = request.GET.get('lng', '')
+  ba = getBalancingAuthority(lat, lng)
+
+  # get time info
+  hour = request.GET.get('hour', '')
+  doweekday = request.GET.get('doweekday', 0)
+  
+
 def min_date(userid):
   """ Returns the earliest date with both BPA and user data """
-  min_for_user = MeterReading.objects.earliest('start')
-  min_for_ba = BPA.objects.earliest('date')
+  min_for_user = MeterReading.objects.order_by('start')[0].start
+  min_for_ba = BPA.objects.order_by('date')[0].date
   return max(min_for_user, min_for_ba)
 
 def max_date(userid):
   """ Returns the latest date with both BPA and user data """
-  max_for_user = MeterReading.objects.latest('start')
-  max_for_ba = BPA.objects.latest('date')
+  max_for_user = MeterReading.objects.latest('start').start
+  max_for_ba = BPA.objects.latest('date').date
   return min(max_for_user, max_for_ba)
 
 def utility_rows_for_user_row(user_row):
@@ -187,5 +236,14 @@ def utility_rows_for_user_row(user_row):
   # return
   return rows
   
-def used_kwh(user_row, flag='all'):
-  pass
+def used_kwh(user_row, flag=None):
+  utility_rows = utility_rows_for_user_row(user_row)
+  n_rows = float(utility_rows.count())
+
+  if flag=='green':
+    fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
+  else:
+    fraction_load = sum([total_load(row) for row in utility_rows]) / n_rows
+
+  kwh = user_row.energy * user_row.duration * fraction_load
+  return kwh
