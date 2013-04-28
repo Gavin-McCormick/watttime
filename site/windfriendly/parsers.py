@@ -23,6 +23,9 @@ import zipfile
 import itertools
 import datetime
 import pytz
+import os
+
+from twilio.rest import TwilioRestClient
 
 from dateutil.relativedelta import relativedelta
 
@@ -33,13 +36,14 @@ import xml.etree.ElementTree as ET
 from django.core.exceptions import ObjectDoesNotExist
 
 
+def send_text(msg):
+    account = os.environ.get('TWILIO_ACCOUNT_SID', '')
+    token = os.environ.get('TWILIO_AUTH_TOKEN', '')
+    client = TwilioRestClient(account = account, token = token)
+    client.sms.messages.create(to='+18575403535', from_='+14153668567', body=msg)
+
 class UtilityParser():
-    def parseDate(self, datestring):
-        tzd = {
-            'PST': -28800,
-            'PDT': -25200,
-            }
-        return dp.parse(datestring, tzinfos=tzd)
+    pass
 
 class CAISOParser(UtilityParser):
     def __init__(self):
@@ -158,6 +162,7 @@ class BPAParser(UtilityParser):
     def __init__(self, url = None):
 
         self.BPA_LOAD_URL = url or 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
+        print url
         #If we're pulling historical data, ignore latest
         if url is None:
             self.update_latest = True
@@ -277,6 +282,16 @@ class BPAParser(UtilityParser):
         update = self.getBPA (latest_date)
         for row in update:
             self.writeBPA(row)
+        if self.update_latest:
+            if len(update) > 0:
+                row = update[len(update)-1]
+                pct_green = (row['wind'] + row['hydro']) / float(row['wind'] + row['hydro'] + row['thermal'])
+            else:
+                pct_green = .9
+            if pct_green > .9:
+                send_text('Hey! Energy is super clean right now.  Perfect time to do the laundry or something.')
+            else:
+                send_text('Hey! Dirty energy alert.  Think twice before using unnecessary energy for the next 30 min.')
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),

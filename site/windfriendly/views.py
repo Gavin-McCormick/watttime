@@ -120,7 +120,7 @@ def forecast(request):
 @json_response
 def update(request, utility):
   if utility == 'bpa':
-    parser = BPAParser(request.GET.get('file', 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'))
+    parser = BPAParser(request.GET.get('file', None))
   if utility == 'gb':
     xml_file = request.GET.get('file', '')
     uid = request.GET.get('uid', None)
