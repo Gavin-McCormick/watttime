@@ -218,26 +218,28 @@ def average_usage_for_period(request, userid):
 
   # get time info
   hour = request.GET.get('hour', None)
-  doweekday = request.GET.get('doweekday', None)
-  doweekend = request.GET.get('doweekend', None)
+  days = request.GET.get('days', 'all').strip()
   month = request.GET.get('month', None)
-  print hour, month, doweekday, doweekend
+  day = request.GET.get('day', None)
+  print hour, month, day, days
 
-  # get user data
+  # get user datamonth
   user_rows = MeterReading.objects.filter(userid__exact=int(userid))
   if hour is not None:
     user_rows = user_rows.filter(start__hour=int(hour))
   if month is not None:
     user_rows = user_rows.filter(start__month=int(month))
-  if doweekday is not None:
-      user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
-                                   Q(start__day=4) | Q(start__day=5) | Q(start__day=6))
-  if doweekend is not None:
-      user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7))
+  if day is not None:
+    user_rows = user_rows.filter(start__day=int(day))
+  if days == 'weekdays':
+    user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
+                                 Q(start__day=4) | Q(start__day=5) | Q(start__day=6))
+  elif days == 'weekends':
+    user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7))
       
   print user_rows.count()
   if user_rows.count() == 0:
-    raise ValueError('no data for hour %s, month %s, weekdays=%s, weekends=%s' % (hour, month, doweekday, doweekend))
+    raise ValueError('no data for hour %s, day %s, month %s, days=%s' % (hour, month, day, days))
   
   # collect sums
   total_green_kwh = reduce(lambda x, y: x+y,
@@ -252,11 +254,13 @@ def average_usage_for_period(request, userid):
     'lng': lng,
     'balancing_authority': ba,
     'userid': userid,
-    'start': starttime.isoformat(),
-    'end': endtime.isoformat(),
-    'percent_green': round(percent_green,3)
+    'hour': hour,
+    'month': month,
+    'days': days,
+    'percent_green': round(percent_green,3),
+    'total_kwh': total_kwh
   }
-  return data
+  print data
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
   
@@ -280,20 +284,27 @@ def utility_rows_for_user_row(user_row):
   rows = BPA.objects.filter(date__gte=start, date__lte=end)
 
   # get nearby values if none in range
-  if rows.count() == 0:
-    rows = BPA.objects.filter(date__lt=start).latest()
-    if rows.count() == 0:
-      rows = BPA.objects.filter(date__gt=end).earliest()
+#  if rows.count() == 0:
+#    print start, end
+#    rows = BPA.objects.filter(date__lt=start).latest('date')
+#    if len(rows) == 0:
+#      rows = [BPA.objects.filter(date__gt=end).order_by('date')[0]]
 
   # return
   return rows
   
 def used_kwh(user_row, flag=None):
   utility_rows = utility_rows_for_user_row(user_row)
-  n_rows = float(utility_rows.count())
+  try:
+    n_rows = float(utility_rows.count())
+  except:
+    return 0.0
 
   if flag=='green':
-    fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
+    try:
+      fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
+    except ZeroDivisionError:
+      return 0.0
   else:
     fraction_load = 1.0
 
