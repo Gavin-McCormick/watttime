@@ -120,7 +120,7 @@ def forecast(request):
 @json_response
 def update(request, utility):
   if utility == 'bpa':
-    parser = BPAParser(request.GET.get('file', None))
+    parser = BPAParser(request.GET.get('file', 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'))
   if utility == 'gb':
     xml_file = request.GET.get('file', '')
     uid = request.GET.get('uid', None)
@@ -143,7 +143,7 @@ def history(request, userid):
   if start:
     starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
   else:
-    starttime = datetime.min
+    starttime = datetime.min.replace(tzinfo=pytz.utc)
   end = request.GET.get('end', '')
   if end:
     endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
@@ -161,7 +161,7 @@ def history(request, userid):
     print starttime, endtime
 
     # get rows
-    utility_rows = BPA.objects.filter(date__gte=starttime, date__lt=endtime)
+    utility_rows = BPA.objects.filter(date__range=(starttime, endtime))
     if utility_rows.count() == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
 
@@ -281,7 +281,7 @@ def utility_rows_for_user_row(user_row):
   # get utility rows for user row
   start = user_row.start
   end = user_row.start + timedelta(0,user_row.duration)
-  rows = BPA.objects.filter(date__gte=start, date__lte=end)
+  rows = BPA.objects.filter(date__range=(start, end))
 
   # get nearby values if none in range
 #  if rows.count() == 0:
