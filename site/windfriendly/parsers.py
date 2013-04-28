@@ -315,7 +315,7 @@ class GreenButtonParser(UserDataParser):
 
         counter = 0
         for row in self.parse():
-            existing = MeterReading.objects.filter(start = row['start'])
+            existing = MeterReading.objects.filter(start = row['start'], userid=user)
             if existing.count() > 0:
                 r = existing[0]
                 print r.energy, '->', row['value']
