@@ -211,13 +211,6 @@ def history(request, userid):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
-def test_q(request, userid):
-  # get user data
-  user_rows = MeterReading.objects.filter(userid__exact=int(userid))
-  print len(user_rows.filter(Q(start__day=2)))
-  print len(user_rows.filter(Q(start__day=3)))
-  print len(user_rows.filter(Q(start__day=2) | Q(start__day=3)))
- 
 
 def average_usage_for_hours(request, userid):
   # hack!!
@@ -240,10 +233,10 @@ def average_usage_for_hours(request, userid):
   else:
     month = 'all'
   if days == 'weekdays':
-    user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
-                                 Q(start__day=4) | Q(start__day=5) | Q(start__day=6))
+    user_rows = user_rows.filter(Q(start__week_day=2) | Q(start__week_day=3) |
+                                 Q(start__week_day=4) | Q(start__week_day=5) | Q(start__week_day=6))
   elif days == 'weekends':
-    user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7))
+    user_rows = user_rows.filter(Q(start__week_day=1) | Q(start__week_day=7))
       
   print len(user_rows)
   if len(user_rows) == 0:
