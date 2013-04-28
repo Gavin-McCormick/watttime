@@ -290,7 +290,7 @@ class GreenButtonParser(UserDataParser):
             cost = reading.find(self.ns+'cost').text
             value = reading.find(self.ns+'value').text
             start = float(reading.find(self.ns+'timePeriod').find(self.ns+'start').text)
-            start = datetime.datetime.utcfromtimestamp(start)
+            start = datetime.datetime.fromtimestamp(start, pytz.UTC)
             duration = reading.find(self.ns+'timePeriod').find(self.ns+'duration').text
 
             yield {'cost':cost, 'value':value, 'start':start, 'duration':duration}
