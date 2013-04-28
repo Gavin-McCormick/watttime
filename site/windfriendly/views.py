@@ -73,7 +73,7 @@ def fraction_fossil(row):
 
 def fraction_nonfossil(row):
   """ Returns the fraction of the total load from anything besides fossil fuels (ie wind+hydro) """
-  return (row.wind + row.hydro) / float(row.wind + row.hydro + row.thermal)
+  return (row.wind) / float(row.wind + row.hydro + row.thermal)
 
 @json_response
 def status(request):
@@ -212,20 +212,10 @@ def history(request, userid):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
-
-def average_usage_for_hours(request, userid):
-  # hack!!
-  utchack = 7
-
-  # get balancing authority
-  lat = request.GET.get('lat', '')
-  lng = request.GET.get('lng', '')
-  ba = getBalancingAuthority(lat, lng)
-
+def average_usage_for_period(request, userid):
   # get time info
-  month = request.GET.get('month', None)
-  days = request.GET.get('days', 'all').strip()
-  print days, month
+  grouping = request.GET.get('grouping')
+  groupings = grouping.split(',')
 
   start = request.GET.get('start', '')
   if start:
@@ -238,55 +228,62 @@ def average_usage_for_hours(request, userid):
   else:
     endtime = datetime.utcnow().replace(tzinfo=tz.tzlocal())
 
-  # get user data
-  user_rows = MeterReading.objects.filter(userid__exact=int(userid))
-  if month is not None:
-    user_rows = user_rows.filter(start__month=int(month))
-  else:
-    month = 'all'
-  if days == 'weekdays':
-    user_rows = user_rows.filter(Q(start__week_day=2) | Q(start__week_day=3) |
-                                 Q(start__week_day=4) | Q(start__week_day=5) | Q(start__week_day=6))
-  elif days == 'weekends':
-    user_rows = user_rows.filter(Q(start__week_day=1) | Q(start__week_day=7))
-      
-  print len(user_rows)
-  if len(user_rows) == 0:
-    raise ValueError('no data for days=%s, month=%s' % (days, month))
-  
-  # set up storage for sums and counts
-  sum_percent_green = [0 for i in range(24)]
-  sum_kw = [0 for i in range(24)]
-  sum_cost_per_hour = [0 for i in range(24)]
-  counts = [0 for i in range(24)]
+  # get user datamonth
+  user_rows = MeterReading.objects.filter(start__gte=starttime,
+                                          start__lt=endtime,
+                                          userid__exact=userid)
+  if user_rows.count() == 0:
+    raise ValueError('no data')
 
-  # collect averages
-  t0 = time.clock()
+  hour_bucket = lambda row : row.start.astimezone(tz.tzlocal()).hour
+  if not grouping:
+    bucket = lambda row : 'All'
+  elif grouping == 'hour':
+    bucket = hour_bucket
+  elif grouping == 'month':
+    bucket = lambda row : row.start.strftime('%B')
+  elif grouping == 'day':
+    bucket = lambda row : row.start.strftime('%A')
+  elif grouping == 'weekdays':
+    bucket = lambda row : 'weekends' if row.start.weekday() in [0,6] else 'weekdays'
+
+  buckets = {}
   for row in user_rows:
-    total_green_kwhs = used_kwh(row, 'green')
-    total_kwhs = total_kwh(row)
-    sum_percent_green[row.start.hour] += total_green_kwhs / total_kwhs * 100.0
-    sum_kw[row.start.hour] += total_kwhs * row.duration / 1000.0
-    sum_cost_per_hour[row.start.hour] += row.cost * row.duration / 3600.0 / 10000.0
-    counts[row.start.hour] += 1
-  t1 = time.clock()
-  print t1-t0
-  percent_greens = [float(sum_percent_green[i])/max(1.0, counts[i]) for i in range(24)]
-  av_kw = [float(sum_kw[i])/max(1.0, counts[i]) for i in range(24)]
-  av_cost = [float(sum_cost_per_hour[i])/max(1.0, counts[i]) for i in range(24)]
+    if bucket(row) in buckets:
+      if hour_bucket(row) in buckets[bucket(row)]:
+        buckets[bucket(row)][hour_bucket(row)].append(row)
+      else:
+        buckets[bucket(row)][hour_bucket(row)] = [row]
+    else:
+      buckets[bucket(row)] = {}
+      buckets[bucket(row)][hour_bucket(row)] = [row]
+
+  results = {}
+  for key,group in buckets.iteritems():
+    results[key] = {}
+    for subkey, subgroup in group.iteritems():
+      results[key][subkey] = {}
+      results[key][subkey]['total_green_kwh'] = reduce(lambda x, y: x+y,
+                           [used_green_kwh(row) for row in subgroup])
+      results[key][subkey]['total_kwhs'] = reduce(lambda x, y: x+y,
+                     map(total_kwh, subgroup))
+      results[key][subkey]['precent_green'] = results[key][subkey]['total_green_kwh'] / results[key][subkey]['total_kwhs'] * 100.0
+      results[key][subkey]['total_cost'] = row.cost * row.duration / 3600.0 / 10000.0
+
+  total_green_kwh = reduce(lambda x, y: x+y,
+                           [used_green_kwh(row) for row in user_rows])
+  total_kwhs = reduce(lambda x, y: x+y,
+                     map(total_kwh, user_rows))
+  percent_green = total_green_kwh / total_kwhs * 100.0
 
   # collect data
   data = {
-    'lat': lat,
-    'lng': lng,
-    'balancing_authority': ba,
     'userid': userid,
-    'av_percent_greens': [percent_greens[i%24] for i in range(utchack, 24+utchack)],
-    'month': month,
-    'days': days,
-    'av_kw': [av_kw[i%24] for i in range(utchack, 24+utchack)],
-    'av_cost': [av_cost[i%24] for i in range(utchack, 24+utchack)]
+    'percent_green': round(percent_green,3),
+    'total_kwh': total_kwhs,
+    'buckets': json.dumps(results)
   }
+  
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
   
@@ -331,15 +328,7 @@ def used_green_kwh(user_row):
   except ZeroDivisionError:
     return 0.0
 
-<<<<<<< HEAD
   return total_kwh(user_row) * fraction_load
-
-def total_kwh(user_row):
-  kwh = user_row.energy/3600.0 * user_row.duration
-=======
-  kwh = total_kwh(user_row) * fraction_load
->>>>>>> c7d00afc4c209366b7c38c25b79578f0b3a13e4a
-  return kwh
 
 def total_kwh(user_row):
   return user_row.energy/3600.0 * user_row.duration
