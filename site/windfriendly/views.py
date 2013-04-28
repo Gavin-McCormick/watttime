@@ -120,9 +120,7 @@ def forecast(request):
 @json_response
 def update(request, utility):
   if utility == 'bpa':
-    parser = BPAParser(request.GET.get('file', None))
-    if 'file' in request.GET:
-      get_latest = True
+    parser = BPAParser(request.GET.get('file', 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'))
   if utility == 'gb':
     xml_file = request.GET.get('file', '')
     uid = request.GET.get('uid', None)
@@ -168,11 +166,9 @@ def history(request, userid):
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
 
     # collect sums
-    total_green_kw = reduce(lambda x, y: x+y,
-                            map(fraction_nonfossil, utility_rows))
-    total_kw = reduce(lambda x, y: x+y,
-                      map(total_load, utility_rows))
-    percent_green = total_green_kw / total_kw * 100.0
+    fraction_green_kw = reduce(lambda x, y: x+y,
+                            map(fraction_nonfossil, utility_rows)) / utility_rows.count()
+    percent_green = fraction_green_kw * 100.0
 
   # get numbers for user
   else:
@@ -194,9 +190,10 @@ def history(request, userid):
 
     # collect sums
     total_green_kwh = reduce(lambda x, y: x+y,
-                             map(used_kwh, user_rows, 'green'))
+                             [used_kwh(row, 'green') for row in user_rows])
     total_kwh = reduce(lambda x, y: x+y,
                        map(used_kwh, user_rows))
+    print total_green_kwh, total_kwh
     percent_green = total_green_kwh / total_kwh * 100.0
 
   # collect data
@@ -245,7 +242,7 @@ def average_usage_for_period(request, userid):
   
   # collect sums
   total_green_kwh = reduce(lambda x, y: x+y,
-                           map(used_kwh, user_rows, 'green'))
+                           [used_kwh(row, 'green') for row in user_rows])
   total_kwh = reduce(lambda x, y: x+y,
                      map(used_kwh, user_rows))
   percent_green = total_green_kwh / total_kwh * 100.0
@@ -264,7 +261,6 @@ def average_usage_for_period(request, userid):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
   
-
 
 def min_date(userid):
   """ Returns the earliest date with both BPA and user data """
@@ -296,11 +292,13 @@ def utility_rows_for_user_row(user_row):
 def used_kwh(user_row, flag=None):
   utility_rows = utility_rows_for_user_row(user_row)
   n_rows = float(utility_rows.count())
+  print flag
 
   if flag=='green':
+    print [fraction_nonfossil(row) for row in utility_rows]
     fraction_load = sum([fraction_nonfossil(row) for row in utility_rows]) / n_rows
   else:
-    fraction_load = sum([total_load(row) for row in utility_rows]) / n_rows
+    fraction_load = 1.0
 
-  kwh = user_row.energy * user_row.duration * fraction_load
+  kwh = user_row.energy/3600.0 * user_row.duration * fraction_load
   return kwh
