@@ -211,7 +211,7 @@ def history(request, userid):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
-def average_usage_for_period(request):
+def average_usage_for_period(request, userid):
   # get balancing authority
   lat = request.GET.get('lat', '')
   lng = request.GET.get('lng', '')
@@ -219,23 +219,49 @@ def average_usage_for_period(request):
 
   # get time info
   hour = request.GET.get('hour', None)
-  doweekday = request.GET.get('doweekday', 0)
-  doweekend = request.GET.get('doweekend', 1)
+  doweekday = request.GET.get('doweekday', None)
+  doweekend = request.GET.get('doweekend', None)
   month = request.GET.get('month', None)
-  
+  print hour, month, doweekday, doweekend
+
   # get user data
-  user_rows = MeterReading.objects.filter(userid__exact=userid)
+  user_rows = MeterReading.objects.filter(userid__exact=int(userid))
   if hour is not None:
+    print hour
     user_rows = user_rows.filter(start__hour=int(hour))
   if month is not None:
+    print month
     user_rows = user_rows.filter(start__month=int(month))
   if doweekday is not None:
-    if doweekday:
       user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
-                                   Q(start__day=4) | Q(start__day=5) | Q(start__day=6) )
+                                   Q(start__day=4) | Q(start__day=5) | Q(start__day=6))
   if doweekend is not None:
-    if doweekend:
-      user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7) )
+      user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7))
+      
+  if user_rows.count() == 0:
+    raise ValueError('no data for hour %s, month %s, weekdays=%s, weekends=%s' % (hour, month, doweekday, doweekend))
+  
+  # collect sums
+  total_green_kwh = reduce(lambda x, y: x+y,
+                           map(used_kwh, user_rows, 'green'))
+  total_kwh = reduce(lambda x, y: x+y,
+                     map(used_kwh, user_rows))
+  percent_green = total_green_kwh / total_kwh * 100.0
+
+  # collect data
+  data = {
+    'lat': lat,
+    'lng': lng,
+    'balancing_authority': ba,
+    'userid': userid,
+    'start': starttime.isoformat(),
+    'end': endtime.isoformat(),
+    'percent_green': round(percent_green,3)
+  }
+  return data
+  template = 'templates/default.json'
+  return render_to_response(template, RequestContext(request,{'json':data}))
+  
 
 
 def min_date(userid):
