@@ -261,8 +261,7 @@ class BPAParser(UtilityParser):
 
     def getBPA(self, latest_date=None):
         parsed_load = self.parseBPALoad(latest_date)
-        parsed_oversupply = self.parseBPAOversupply(latest_date)
-        return self.zipTables (parsed_load, parsed_oversupply)
+        return parsed_load
 
     def writeBPA(self, row):
         b = BPA()
