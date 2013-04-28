@@ -297,7 +297,7 @@ class GreenButtonParser(UserDataParser):
         root = self.tree.getroot()
         for reading in root.iter(self.ns+'IntervalReading'):
             cost = reading.find(self.ns+'cost').text
-            value = reading.find(self.ns+'value').text
+            value = float(reading.find(self.ns+'value').text)/1000
             start = float(reading.find(self.ns+'timePeriod').find(self.ns+'start').text)
             start = datetime.datetime.fromtimestamp(start, pytz.UTC)
             duration = reading.find(self.ns+'timePeriod').find(self.ns+'duration').text
@@ -315,12 +315,18 @@ class GreenButtonParser(UserDataParser):
 
         counter = 0
         for row in self.parse():
-            r = MeterReading()
-            r.userid = user
-            r.cost = row['cost']
-            r.energy = row['value']
-            r.start = row['start']
-            r.duration = row['duration']
+            existing = MeterReading.objects.filter(start = row['start'], userid=user)
+            if existing.count() > 0:
+                r = existing[0]
+                print r.energy, '->', row['value']
+                r.energy = row['value']
+            else:
+                r = MeterReading()
+                r.userid = user
+                r.cost = row['cost']
+                r.energy = row['value']
+                r.start = row['start']
+                r.duration = row['duration']
             r.save()
             counter += 1
         return  {'added_count': counter, 'uid':self.uid}
