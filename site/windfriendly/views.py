@@ -209,9 +209,10 @@ def history(request, userid):
     'percent_green': round(percent_green,3)
   }
   return data
-  template = 'templates/default.json'
-  return render_to_response(template, RequestContext(request,{'json':data}))
+  #template = 'templates/default.json'
+  #return render_to_response(template, RequestContext(request,{'json':data}))
 
+@json_response
 def average_usage_for_period(request, userid):
   # get time info
   grouping = request.GET.get('grouping')
@@ -267,7 +268,7 @@ def average_usage_for_period(request, userid):
                            [used_green_kwh(row) for row in subgroup])
       results[key][subkey]['total_kwhs'] = reduce(lambda x, y: x+y,
                      map(total_kwh, subgroup))
-      results[key][subkey]['precent_green'] = results[key][subkey]['total_green_kwh'] / results[key][subkey]['total_kwhs'] * 100.0
+      results[key][subkey]['percent_green'] = results[key][subkey]['total_green_kwh'] / results[key][subkey]['total_kwhs'] * 100.0
       results[key][subkey]['total_cost'] = row.cost * row.duration / 3600.0 / 10000.0
 
   total_green_kwh = reduce(lambda x, y: x+y,
@@ -281,11 +282,9 @@ def average_usage_for_period(request, userid):
     'userid': userid,
     'percent_green': round(percent_green,3),
     'total_kwh': total_kwhs,
-    'buckets': json.dumps(results)
+    'buckets': results
   }
-  
-  template = 'templates/default.json'
-  return render_to_response(template, RequestContext(request,{'json':data}))
+  return data
   
 
 def min_date(userid):
