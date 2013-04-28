@@ -311,8 +311,6 @@ class GreenButtonParser(UserDataParser):
             r.cost = row['cost']
             r.energy = row['value']
             r.start = row['start']
-            #get this in sync with the bpa data we have
-            r.start = r.start + relativedelta(years=1, months=1, days=20)
             r.duration = row['duration']
             r.save()
             counter += 1
