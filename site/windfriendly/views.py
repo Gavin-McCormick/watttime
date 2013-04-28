@@ -16,12 +16,14 @@
 
 
 from datetime import datetime, timedelta
+import pytz
 import json
 
 from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
+from django.db.models import Q
 
 from windfriendly.models import BPA, Normalized, User, MeterReading
 from windfriendly.parsers import BPAParser, GreenButtonParser
@@ -139,14 +141,15 @@ def history(request, userid):
   # get date range
   start = request.GET.get('start', '')
   if start:
-    starttime = datetime.strptime(start, '%Y%m%d%H%M')
+    starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
   else:
     starttime = datetime.min
   end = request.GET.get('end', '')
   if end:
-    endtime = datetime.strptime(end, '%Y%m%d%H%M')
+    endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
   else:
-    endtime = datetime.utcnow()
+    endtime = datetime.utcnow().replace(tzinfo=pytz.utc)
+  print starttime, endtime
 
   # get numbers for BPA
   if userid == 'bpa':
@@ -155,17 +158,23 @@ def history(request, userid):
       starttime = BPA.objects.order_by('date')[0].date
     if endtime > BPA.objects.latest('date').date:
       endtime = BPA.objects.latest('date').date
-    
+    print starttime, endtime
+
     # get rows
     utility_rows = BPA.objects.filter(date__gte=starttime, date__lt=endtime)
+    if utility_rows.count() == 0:
+      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
 
     # collect sums
-    total_green_kw = reduce(sum, map(fraction_nonfossil, utility_rows))
-    total_kw = reduce(sum, map(total_load, utility_rows))
+    total_green_kw = reduce(lambda x, y: x+y,
+                            map(fraction_nonfossil, utility_rows))
+    total_kw = reduce(lambda x, y: x+y,
+                      map(total_load, utility_rows))
     percent_green = total_green_kw / total_kw * 100.0
 
   # get numbers for user
   else:
+    userid = int(userid)
     # get dates
     min = min_date(userid)
     max = max_date(userid)
@@ -178,10 +187,14 @@ def history(request, userid):
     user_rows = MeterReading.objects.filter(start__gte=starttime,
                                             start__lt=endtime,
                                             userid__exact=userid)
+    if user_rows.count() == 0:
+      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
 
     # collect sums
-    total_green_kwh = reduce(sum, map(used_kwh, user_rows, 'green'))
-    total_kwh = reduce(sum, map(used_kwh, user_rows))
+    total_green_kwh = reduce(lambda x, y: x+y,
+                             map(used_kwh, user_rows, 'green'))
+    total_kwh = reduce(lambda x, y: x+y,
+                       map(used_kwh, user_rows))
     percent_green = total_green_kwh / total_kwh * 100.0
 
   # collect data
@@ -198,16 +211,32 @@ def history(request, userid):
   template = 'templates/default.json'
   return render_to_response(template, RequestContext(request,{'json':data}))
 
-def average(request):
+def average_usage_for_period(request):
   # get balancing authority
   lat = request.GET.get('lat', '')
   lng = request.GET.get('lng', '')
   ba = getBalancingAuthority(lat, lng)
 
   # get time info
-  hour = request.GET.get('hour', '')
+  hour = request.GET.get('hour', None)
   doweekday = request.GET.get('doweekday', 0)
+  doweekend = request.GET.get('doweekend', 1)
+  month = request.GET.get('month', None)
   
+  # get user data
+  user_rows = MeterReading.objects.filter(userid__exact=userid)
+  if hour is not None:
+    user_rows = user_rows.filter(start__hour=int(hour))
+  if month is not None:
+    user_rows = user_rows.filter(start__month=int(month))
+  if doweekday is not None:
+    if doweekday:
+      user_rows = user_rows.filter(Q(start__day=2) | Q(start__day=3) |
+                                   Q(start__day=4) | Q(start__day=5) | Q(start__day=6) )
+  if doweekend is not None:
+    if doweekend:
+      user_rows = user_rows.filter(Q(start__day=1) | Q(start__day=7) )
+
 
 def min_date(userid):
   """ Returns the earliest date with both BPA and user data """
