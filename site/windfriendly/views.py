@@ -275,7 +275,6 @@ def average_usage_for_period(request, userid):
   total_kwhs = reduce(lambda x, y: x+y,
                      map(total_kwh, user_rows))
   percent_green = total_green_kwh / total_kwhs * 100.0
->>>>>>> 5b8337cce0105d82632a1c6264c5d1e9a1da0003
 
   # collect data
   data = {
