@@ -28,35 +28,37 @@ function makeParams(paramsObj) {
 };
 
 $(document).ready(function() {
+    $('#backbtn').hide();
     // Get current mix info.
-		var url = 'localhost:8080';
-
+		var url = 'http://108.59.82.94/api/';
 		var mixParams = {
 			'callback': '?',
 			'ba': 'BPA'
     };
 		$.getJSON(url + 'status?' + makeParams(mixParams), drawMix);
-
 		var forecastParams = {
 			'callback': '?',
 			'ba': 'BPA'
     };
 		$.getJSON(url + 'forecast?' + makeParams(forecastParams), drawNextbest);
-
-		var historyParams = {
-			'callback': '?',
-			'ba': 'BPA',
-			
-    };
-		$.getJSON(url + 'history?' + makeParams(mixParams), drawMix);
-
-
 		init();
 });
 
 function init() {
+$('#return').click(function() {
+   $('#barchart').removeClass('expandedpane');
+   $('#barchart').css({'display':'none'});
+   
+});
   $('#waitbtn').click(function() {
     $('#action').addClass('expandedpane');
+    $('#backbtn').show();
+    $('#waitbtn').hide();
+  });
+  $('#backbtn').click(function() {
+    $('#backbtn').hide();
+    $('#waitbtn').show();
+    $('#action').removeClass('expandedpane');
   });
   $('#action input').click(function() {
     $(this)[0].checked = false;
@@ -66,6 +68,8 @@ function init() {
   $('#donebtn').click(function() {
     $('#thanks').removeClass('expandedpane');
     $('#thanks').delay(250).hide(1);
+    $('#backbtn').hide();
+    $('#waitbtn').show();
   });
   $('#getforecastbtn').click(function() {
     var forecastEl = $('#forecast');
@@ -85,7 +89,14 @@ function drawMix(data) {
   var percentGreen = Math.round(data.percent_green);
   var color = rainbow.colourAt(percentGreen);
   mixnumber = $('#mixnumber');
-  mixnumber.text(percentGreen + '%').css({ 'color': color });
+  if (percentGreen < 25) {
+    mixnumber.text(percentGreen + '%').css({ 'color': 'rgb(255,0,0)'});
+  } else if (percentGreen < 50) {
+     mixnumber.text(percentGreen + '%').css({ 'color': 'rgb(198,111,0)' });
+  } else {
+     mixnumber.text(percentGreen + '%').css({ 'color': color });
+  }
+  $('#txtSpeed').val(percentGreen);
 }
 
 function drawNextbest(data) {

@@ -2,7 +2,7 @@ body,
 button {
   font-size: 24px;
   font-family: 'Quicksand', sans-serif;
-  background: #efe;
+  
   text-align: center;
   margin: 0px;
 }
@@ -29,6 +29,22 @@ button:active {
   background: #090;
 }
 
+#action {
+}
+
+#buttomArea {
+  bottom: 0px;
+  width: 100%;
+  height: 200px;
+  background-color: black;
+  color: black;
+}
+#constBar {
+  width: 100%;
+  clear: both;
+  z-index: 1;
+}
+
 #location {
   background: #666;
   margin-bottom: 30px;
@@ -50,6 +66,17 @@ button:active {
   position: relative;
   margin: 40px 10%;
   text-transform: uppercase;
+  
+
+  float: left;
+}
+
+#tutorial {
+  position: absolute;
+  top: 20%;
+  float: right;
+  display: inline;
+  padding-right: 10px;
 }
 
 #mixnumber {
@@ -57,12 +84,16 @@ button:active {
   position: relative;
   font-weight: 700;
   margin: -20px 0;
-  color: #eee;
+  color: #0a0;
 }
 
 #quickcast {
+  margin-left: 20px;
   color: #0a0;
   font-weight: 700;
+  float: left;
+  font-size: 30px;
+display: inline;
 }
 
 #forecast {
@@ -71,12 +102,18 @@ button:active {
   height: 225px;
 }
 
-#action {
-  top: 350px;
+
+#backbtn {
+  font-size: 30px;
 }
 
 #waitbtn {
-  font-size: 36px;
+  font-size: 30px;
+}
+
+#getforecastbtn {
+  display: inline;
+  font-size: 40px;
 }
 
 #intent {
@@ -88,16 +125,34 @@ button:active {
 #intent input {
   vertical-align: middle;
   margin-right: 10px;
+  position: fixed;
 }
 
+.moveToMiddle {
+  font-size:18px;
+  position: fixed;
+  left: 40%;
+  bottom: 10%;
+}
 .expandedpane #intent {
   display: block !important;
+}
+
+#logo {
+bottom: 0;
+  float: left;
+}
+
+#return {
+  position: absolute;
+  left: 40%;
+  clear:both;
 }
 
 #thanks {
   font-size: 30px;
   padding: 15px;
-  top: 500px;
+  top: 30%;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -109,13 +164,18 @@ button:active {
   white-space: nowrap;
 }
 
+#topBar {
+  width: 100%;
+  margin-bottom: 0px;
+}
+
 #donebtn {
   margin-top: 15px;
 }
 
 #footer {
+  position: fixed;
   background: #666;
-  position: absolute;
   bottom: 0px;
   font-size: 18px;
   color: #ccc;
@@ -124,7 +184,143 @@ button:active {
   width: 100%;
 }
 
+#topPic {
+}
+
+#slideshow { 
+    margin: 20px auto; 
+    position: relative; 
+    width: 100%; 
+    height: 350px; 
+    padding: 10px; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.4); 
+}
+
+#slideshow > div { 
+    position: absolute; 
+    top: 10px; 
+    left: 10px; 
+    right: 10px; 
+    bottom: 10px; 
+}
+
+#slideText1 {
+  float: left;
+}
+
+#slogan {
+  float: left;
+}
+
+#titleSpace {
+  clear: both;
+  width: 100%;
+  height: 20px;
+}
+#clock {
+  margin-left: 2%;
+}
+
+#barchart {
+  width: 95%;
+  top: 0;
+  left: 2.5%;
+  position:fixed;
+  color: white;
+}
+
+#barcharttitle {
+  color: black;
+}
+#bodyLeft {
+  margin-top: 20px;
+  margin-right: 10px;
+  bottom: 0;
+  float: right;
+  text-align:center;
+}
+
+#bodyRight {
+  float: right;
+  width: 67%;
+}
+
+#bodyText {
+  margin-top: 5%;
+  clear: both;
+  display: block;
+  margin-bottom: 2.5%;
+}
+
+#peerMessage {
+  color: #EE3B3B;
+  margin-left: 20px;
+  font-family: Impact;
+  font-size: 14px;
+  display: inline;
+}
+
+.Title {
+  position: absolute;
+  left: 150px;
+  font-weight:bold;
+  font-family: Verdana;
+  font-size: 18px;
+  color: #336699;
+  text-align: left;
+  padding:5px 5px 5px 5px;
+  display:inline;
+  margin-top: 70px;
+}
+
+#kw-chart {
+  display:inline;
+}
+
+#cost-chart{
+  display:inline;
+}
+
+#bottomArea {
+  width: 100%;
+  height: 200px;
+}
+
+.barcharttext {
+  display:inline;
+  margin-right: 60px;
+  margin-left: 80px;
+}
+
+.Content {
+  margin-left: 50px;
+  text-wrap: normal;
+  width: 35%;
+  position: absolute;
+  right: 150px;
+  font-family: Palatino Linotype;
+  font-size: 18px;
+  text-align: left;
+  display:inline;
+  margin-top: 70px;
+}
+
 .pane {
+  top: 0px;
+  width: 100%;
+  box-shadow: 0px -1px 10px 1px #888888;
+  background: #fff;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  -webkit-transition: .25s;
+  transition: .25s;
+}
+
+.expandedpane {
+  top: 50% !important;
+}
+
+.expandedpane2 {
   position: absolute;
   bottom: 0px;
   width: 100%;
@@ -133,9 +329,38 @@ button:active {
   padding-top: 10px;
   -webkit-transition: .25s;
   transition: .25s;
-  
+  top: 40px !important;
+  z-index: 4;
 }
 
-.expandedpane {
-  top: 40px !important;
+.section {
+  clear: both;
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+  left: 5%;
+  height: 300px;
 }
+
+.section2 {
+  border: grey 2px;
+  clear: both;
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+  left: 5%;
+  height: 300px;
+  background-color:#EBECE4;
+}
+
+.slideText {
+  text-align: center;
+  position: absolute;
+  top:40%;
+  left: 10%;
+}
+
+.sticky {
+     position: fixed;
+     top: 0;
+  }

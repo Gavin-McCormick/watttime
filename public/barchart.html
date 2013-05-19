@@ -3,15 +3,10 @@
   <head>
     <title>bar charts</title>
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
 <style type="text/css">
-
-div {
-  float: left;
-}
-
+ 
 svg {
-  width: 400px;
+  width: 300px;
   height: 300px;
   border: solid 1px #ccc;
   font: 10px sans-serif;
@@ -36,196 +31,150 @@ svg {
   stroke: #000;
   shape-rendering: crispEdges;
 }
-
-.x.axis path,
-.x.axis line {
-  stroke: white;
-}
-
+ 
     </style>
   </head>
   <body>
-<div id='kw-chart-weekdays'></div>
-<div id='kw-chart-weekends'></div>
-<div id='cost-chart-weekdays'></div>
-<div id='cost-chart-weekends'></div>
+<div id='kw-chart'></div>
+<div id='cost-chart'></div>
     <script type="text/javascript">
 
+var json_data = {
+'av_cost': [0.022459821428571426, 0.022539732142857143,
+0.022734821428571427, 0.06784419642857144, 0.22558750000000005,
+0.22985803571428579, 0.22979821428571423, 0.22803839285714284,
+0.1657861607142857, 0.16275044642857134, 0.16255892857142856,
+0.16002767857142855, 0.28811383928571427, 0.4203272321428572,
+0.5473955357142858, 0.8197022321428572, 0.9742178571428568,
+0.7826566964285713, 0.5832098214285715, 0.39012544642857144,
+0.12940625, 0.03681634615384615, 0.022650892857142852,
+0.02277991071428571],
+'av_kw': [0.06731116071428574, 0.06753616071428571,
+0.06814687500000001, 0.20344821428571436, 0.3382714285714286,
+0.3446839285714286, 0.3446035714285714, 0.34196785714285705,
+0.24858883928571432, 0.24403660714285705, 0.2437433035714285,
+0.23994241071428574, 0.24003883928571426, 0.2422808035714287,
+0.24163794642857137, 0.29369732142857136, 0.34095937500000006,
+0.34105982142857144, 0.3412486607142857, 0.34177500000000005,
+0.24226875000000003, 0.1103841346153846, 0.06787767857142857,
+0.06827142857142858],
+'lat': '', 'userid': '1', 'lng': '', 'month': 'all',
+'balancing_authority': 'BPA', 'days': 'all',
+'av_percent_greens': [80.3707845961223, 80.05327413116888,
+79.78421344466119, 75.41184580448645, 79.76575908941231,
+79.89636541404616, 80.07231772832381, 81.43999308625243,
+81.56913111830694, 81.49734195696092, 81.61863459377196,
+81.59437491594096, 81.57390828342686, 81.56766567204387,
+81.58277497908036, 81.76742729023842, 81.84588308153961,
+82.26166409974891, 82.72305853463389, 83.01434696503354,
+82.85735677119435, 82.60120541836233, 82.30802810767638,
+81.64891019974934]
+};
+
+// get data to plot from json
+var data = [];
+for (var i=0; i < json_data.av_percent_greens.length; i++) {
+green_point = {'hour': i,
+'kw': json_data.av_percent_greens[i]/100.0 *
+json_data.av_kw[i],
+'cost': json_data.av_percent_greens[i]/100.0 *
+json_data.av_cost[i]};
+data.push(green_point);
+fossil_point = {'hour': i,
+'kw': -(1.0-json_data.av_percent_greens[i]/100.0) *
+json_data.av_kw[i],
+'cost': -(1.0-json_data.av_percent_greens[i]/100.0) *
+json_data.av_cost[i]};
+data.push(fossil_point);
+}
+
 // set up chart variables
-var margin = {top: 30, right: 10, bottom: 10, left: 40},
-    width = 400 - margin.left - margin.right,
+var margin = {top: 10, right: 10, bottom: 10, left: 40},
+    width = 300 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
-var hraxis_padding = 20;
-var hraxis_height = (height - hraxis_padding) / 2.0;
-
-// define chart drawing function
-var draw_bar_chart = function(data_green, data_fossil,
-                              div_id, title, yaxis_label) {
-
-var max_green = d3.max(data_green, function(d) {return d.val ;})
-var max_fossil = d3.max(data_fossil, function(d) {return d.val ;})
-var max_data = Math.max(max_green, max_fossil);
-
 var x = d3.scale.ordinal()
-.domain(d3.range(0, 24))
+.domain(data.map(function(d) {return d.hour; }))
 .rangeRoundBands([0, width], 0.2);
 
-var y_green = d3.scale.linear()
-.domain([0, max_data]).nice()
-.range([hraxis_height, 0]).nice();
 
-var y_fossil = d3.scale.linear()
-.domain([0, max_data]).nice()
-.range([hraxis_height+hraxis_padding, height]).nice();
+var y_kw = d3.scale.linear()
+.domain(d3.extent(data, function(d) {return d.kw ;})).nice()
+.rangeRound([height,0]).nice();
+var y_cost = d3.scale.linear()
+.domain(d3.extent(data, function(d) {return d.cost ;})).nice()
+.rangeRound([height, 0]).nice();
 
 // add the canvas to the DOM
-var chart = d3.select(div_id).append("svg:svg")
+var kw_chart = d3.select("#kw-chart").append("svg:svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height/2.0 + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// add green data
-chart.selectAll(".bar.green")
-  .data(data_green)
-  .enter()
-  .append("rect")
-.attr("class", "bar green")
-  .attr("x", function(d) { return x(d.hour); })
-  .attr("y", function(d) { return Math.min(y_green(d.val), y_green(0)); })
-  .attr("height", function(d) { return Math.abs(y_green(d.val)-y_green(0)); })
-  .attr("width", x.rangeBand());
+kw_chart.selectAll("rect").
+  data(data).
+  enter().
+  append("svg:rect").
+attr("class", function(d) { return d.kw < 0 ? "bar fossil" : "bar green"; }).
+  attr("x", function(d, i) { return x(d.hour); }).
+  attr("y", function(d) { return y_kw(Math.max(0,d.kw)); }).
+  attr("height", function(d) { return Math.abs(y_kw(d.kw)-y_kw(0)); }).
+  attr("width", x.rangeBand()).
+  attr("fill", d3.rgb("rgb(7,153,72)"));
 
-// add fossil data
-chart.selectAll(".bar.fossil")
-  .data(data_fossil)
-  .enter()
-  .append("rect")
-.attr("class", "bar fossil")
-  .attr("x", function(d) { return x(d.hour); })
-  .attr("y", function(d) { return Math.min(y_fossil(d.val), y_fossil(0)); })
-  .attr("height", function(d) { return Math.abs(y_fossil(d.val)-y_fossil(0)); })
-  .attr("width", x.rangeBand());
-
-  chart.append("g")
-     // .attr("class", "x axis")
+  kw_chart.append("g")
+      .attr("class", "x axis")
     .append("line")
-      .attr("y1", y_green(0))
-      .attr("y2", y_green(0))
+      .attr("y1", y_kw(0))
+      .attr("y2", y_kw(0))
       .attr("x1", width);
 
-var yAxis = d3.svg.axis()
-    .scale(y_green)
-   .orient("left");
-
-chart.append("g")
-.attr("class", "y axis green")
-.call(d3.svg.axis()
-    .scale(y_green)
-   .orient("left"));
-chart.append("text")
-.attr("text-anchor", "middle")
-.attr("transform", "translate(-"+margin.left*3/4+","+hraxis_height*0.5+")rotate(-90)")
-.text(yaxis_label + " from green sources");
-
-chart.append("g")
-.attr("class", "y axis fossil")
-.call(d3.svg.axis()
-    .scale(y_fossil)
-   .orient("left"));
-chart.append("text")
-.attr("text-anchor", "middle")
-.attr("transform", "translate(-"+margin.left*3/4+","+height*3/4+")rotate(-90)")
-.text(yaxis_label + " from other sources");
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-   .orient("bottom");
-chart.append("g")
-.attr("class", "x axis")
-.attr("transform", "translate(" + 0 + "," + y_green(0) + ")")
-.call(xAxis);
-
-chart.append("text")
-.attr("text-anchor", "middle")
-.attr("transform", "translate("+width/2.0+","+0+")")
-.text(title);
-
-}
-
-var data = {"total_kwh": 349.4335, "percent_green": 13.647, "userid": "1", "buckets": {"weekends": {"0": {"total_cost": 0.02055, "percent_green": 14.312246069902834, "total_green_kwh": 0.17113868238086313, "total_kwhs": 1.1957499999999999}, "1": {"total_cost": 0.0206, "percent_green": 13.295147769863863, "total_green_kwh": 0.16023976849628419, "total_kwhs": 1.20525}, "2": {"total_cost": 0.020775, "percent_green": 18.719504501328696, "total_green_kwh": 0.3813163066920655, "total_kwhs": 2.037}, "3": {"total_cost": 0.066325, "percent_green": 12.43907524855147, "total_green_kwh": 0.6073378490105255, "total_kwhs": 4.882499999999999}, "4": {"total_cost": 0.204425, "percent_green": 11.0040964399514, "total_green_kwh": 0.6637120767756687, "total_kwhs": 6.031499999999999}, "5": {"total_cost": 0.240275, "percent_green": 10.45291937866971, "total_green_kwh": 0.6442918182027542, "total_kwhs": 6.163749999999999}, "6": {"total_cost": 0.2244, "percent_green": 10.772267700618388, "total_green_kwh": 0.6517760572259156, "total_kwhs": 6.0505}, "7": {"total_cost": 0.246125, "percent_green": 8.937071945686274, "total_green_kwh": 0.49468927487359937, "total_kwhs": 5.53525}, "8": {"total_cost": 0.12565, "percent_green": 10.288407207298816, "total_green_kwh": 0.5081701529865068, "total_kwhs": 4.93925}, "9": {"total_cost": 0.1416, "percent_green": 10.810818196355882, "total_green_kwh": 0.5325679313979816, "total_kwhs": 4.9262500000000005}, "10": {"total_cost": 0.1309, "percent_green": 11.829624019874919, "total_green_kwh": 0.5537447003703447, "total_kwhs": 4.680999999999998}, "11": {"total_cost": 0.146875, "percent_green": 13.518831519553864, "total_green_kwh": 0.6539396776796194, "total_kwhs": 4.83725}, "12": {"total_cost": 0.266575, "percent_green": 15.608116735728991, "total_green_kwh": 0.7520771049111016, "total_kwhs": 4.818500000000001}, "13": {"total_cost": 0.417, "percent_green": 18.581309630441524, "total_green_kwh": 0.8964088298465749, "total_kwhs": 4.824249999999998}, "14": {"total_cost": 0.5257, "percent_green": 20.077755049274533, "total_green_kwh": 1.0283324192362184, "total_kwhs": 5.1217500000000005}, "15": {"total_cost": 0.954275, "percent_green": 21.741785321314367, "total_green_kwh": 1.2637412718013976, "total_kwhs": 5.8125}, "16": {"total_cost": 1.0507, "percent_green": 21.93313260061162, "total_green_kwh": 1.6167460368225843, "total_kwhs": 7.371250000000001}, "17": {"total_cost": 0.97025, "percent_green": 21.935600864920797, "total_green_kwh": 1.3476136391364093, "total_kwhs": 6.1435}, "18": {"total_cost": 0.672725, "percent_green": 20.233056608356183, "total_green_kwh": 1.24630570443322, "total_kwhs": 6.159750000000001}, "19": {"total_cost": 0.4886, "percent_green": 18.406370718670104, "total_green_kwh": 1.0040215067766576, "total_kwhs": 5.454750000000001}, "20": {"total_cost": 0.133475, "percent_green": 15.08558331070435, "total_green_kwh": 0.45750802785538625, "total_kwhs": 3.03275}, "21": {"total_cost": 0.024225, "percent_green": 14.002880087051672, "total_green_kwh": 0.1661441722328681, "total_kwhs": 1.1865}, "22": {"total_cost": 0.024025, "percent_green": 14.089141480485068, "total_green_kwh": 0.1695275948639366, "total_kwhs": 1.2032500000000002}, "23": {"total_cost": 0.020475, "percent_green": 14.389496124360768, "total_green_kwh": 0.1720623999070439, "total_kwhs": 1.19575}}, "weekdays": {"0": {"total_cost": 0.0209, "percent_green": 14.96586770109975, "total_green_kwh": 0.44905086037149794, "total_kwhs": 3.0004999999999997}, "1": {"total_cost": 0.0218, "percent_green": 16.30290816072777, "total_green_kwh": 0.49259237007638956, "total_kwhs": 3.0214999999999996}, "2": {"total_cost": 0.0213, "percent_green": 17.633129087762878, "total_green_kwh": 1.4027595017542565, "total_kwhs": 7.955250000000001}, "3": {"total_cost": 0.066275, "percent_green": 16.920908912644865, "total_green_kwh": 2.31981430965133, "total_kwhs": 13.709750000000003}, "4": {"total_cost": 0.205, "percent_green": 15.874539914595495, "total_green_kwh": 2.410667945080685, "total_kwhs": 15.185749999999997}, "5": {"total_cost": 0.24135, "percent_green": 13.673509075101926, "total_green_kwh": 2.119188804004672, "total_kwhs": 15.498500000000002}, "6": {"total_cost": 0.208025, "percent_green": 11.253222951625363, "total_green_kwh": 1.7030064953842243, "total_kwhs": 15.133500000000002}, "7": {"total_cost": 0.21065, "percent_green": 10.592584363196606, "total_green_kwh": 1.2381671862140515, "total_kwhs": 11.689000000000004}, "8": {"total_cost": 0.149325, "percent_green": 10.01384378675214, "total_green_kwh": 1.0404884386624806, "total_kwhs": 10.390499999999996}, "9": {"total_cost": 0.126775, "percent_green": 9.876188527914458, "total_green_kwh": 1.0142845618168144, "total_kwhs": 10.269999999999996}, "10": {"total_cost": 0.146725, "percent_green": 9.883662592995632, "total_green_kwh": 1.0077629471383172, "total_kwhs": 10.196250000000001}, "11": {"total_cost": 0.136275, "percent_green": 10.266039016614906, "total_green_kwh": 1.0454164181594376, "total_kwhs": 10.183250000000003}, "12": {"total_cost": 0.247475, "percent_green": 11.178979912526708, "total_green_kwh": 1.142212272562416, "total_kwhs": 10.217499999999996}, "13": {"total_cost": 0.38095, "percent_green": 12.242422671782887, "total_green_kwh": 1.2572355962787438, "total_kwhs": 10.269500000000003}, "14": {"total_cost": 0.519925, "percent_green": 12.972427900328507, "total_green_kwh": 1.5729068829148312, "total_kwhs": 12.124999999999998}, "15": {"total_cost": 0.985875, "percent_green": 13.89556120844036, "total_green_kwh": 2.023471623173086, "total_kwhs": 14.562000000000003}, "16": {"total_cost": 1.13005, "percent_green": 13.421545080216207, "total_green_kwh": 1.8407313538889527, "total_kwhs": 13.714750000000002}, "17": {"total_cost": 0.987275, "percent_green": 13.438221252259977, "total_green_kwh": 2.04640592784728, "total_kwhs": 15.22825}, "18": {"total_cost": 0.6325, "percent_green": 12.962674207834828, "total_green_kwh": 1.9461186855077626, "total_kwhs": 15.013250000000001}, "19": {"total_cost": 0.421525, "percent_green": 12.649011583354527, "total_green_kwh": 1.5266092079950577, "total_kwhs": 12.068999999999999}, "20": {"total_cost": 0.14505, "percent_green": 11.863772217999886, "total_green_kwh": 0.7236901052979928, "total_kwhs": 6.099999999999999}, "21": {"total_cost": 0.020475, "percent_green": 12.250468126255297, "total_green_kwh": 0.36846345506744366, "total_kwhs": 3.0077499999999997}, "22": {"total_cost": 0.0241, "percent_green": 13.726299354197211, "total_green_kwh": 0.4229415988512016, "total_kwhs": 3.0812500000000003}, "23": {"total_cost": 0.024775, "percent_green": 14.346488505102775, "total_green_kwh": 0.4306457187019226, "total_kwhs": 3.0017500000000004}}}}
+var yAxis_kw = d3.svg.axis()
+    .scale(y_kw)
+    .orient("left");
+kw_chart.append("g")
+.attr("class", "y axis")
+.call(yAxis_kw);
 
 
-// get data to plot from json
-var weekdays_kw_green = [];
-var weekdays_kw_fossil = [];
-var weekends_kw_green = [];
-var weekends_kw_fossil = [];
-var weekdays_cost_green = [];
-var weekdays_cost_fossil = [];
-var weekends_cost_green = [];
-var weekends_cost_fossil = [];
+//////////////
+// add the canvas to the DOM
+var cost_chart = d3.select("#cost-chart").append("svg:svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height/2.0 + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var n_hours = 24; // data.buckets.weekends.length;
+cost_chart.selectAll("rect").
+  data(data).
+  enter().
+  append("svg:rect").
+attr("class", function(d) { return d.cost < 0 ? "bar fossil" : "bar green"; }).
+  attr("x", function(d, i) { return x(d.hour); }).
+  attr("y", function(d) { return y_cost(Math.max(0,d.cost)); }).
+  attr("height", function(d) { return Math.abs(y_cost(d.cost)-y_cost(0)); }).
+  attr("width", x.rangeBand()).
+  attr("fill", d3.rgb("rgb(7,153,72)"));
 
-for (var i=0; i < n_hours; i++) {
+  cost_chart.append("g")
+      .attr("class", "x axis")
+    .append("line")
+      .attr("y1", y_cost(0))
+      .attr("y2", y_cost(0))
+      .attr("x1", width);
 
-weekends_kw_green.push({
-'hour': (i)%24,
-'val': data.buckets.weekends[i].total_green_kwh
-});
-weekends_kw_fossil.push({
-'hour': i,
-'val': (data.buckets.weekends[i].total_kwhs - data.buckets.weekends[i].total_green_kwh)
-});
+var yAxis_cost = d3.svg.axis()
+    .scale(y_cost)
+    .orient("left");
+cost_chart.append("g")
+.attr("class", "y axis")
+.call(yAxis_cost);
 
-weekdays_kw_green.push({
-'hour': (i)%24,
-'val': data.buckets.weekdays[i].total_green_kwh
-});
-weekdays_kw_fossil.push({
-'hour': i,
-'val': (data.buckets.weekdays[i].total_kwhs - data.buckets.weekends[i].total_green_kwh)
-});
 
-weekends_cost_green.push({
-'hour': (i)%24,
-'val': data.buckets.weekends[i].total_cost *
-data.buckets.weekends[i].percent_green / 100
-});
-weekends_cost_fossil.push({
-'hour': i,
-'val':  data.buckets.weekends[i].total_cost * (100 -
-data.buckets.weekends[i].percent_green) / 100
-});
 
-weekdays_cost_green.push({
-'hour': (i)%24,
-'val': data.buckets.weekdays[i].total_cost *
-data.buckets.weekdays[i].percent_green / 100
-});
-weekdays_cost_fossil.push({
-'hour': i,
-'val':  data.buckets.weekdays[i].total_cost * (100 -
-data.buckets.weekdays[i].percent_green) / 100
-});
 
-}
 
-draw_bar_chart(weekdays_kw_green, weekdays_kw_fossil,
-               '#kw-chart-weekdays',
-               'average energy usage each hour on weekdays', 'kW');
-draw_bar_chart(weekends_kw_green, weekends_kw_fossil,
-               '#kw-chart-weekends',
-               'average energy usage each hour on weekends', 'kW');
-draw_bar_chart(weekdays_cost_green, weekdays_cost_fossil,
-               '#cost-chart-weekdays',
-               'average energy cost each hour on weekdays', '$');
-draw_bar_chart(weekends_cost_green, weekends_cost_fossil,
-               '#cost-chart-weekends',
-               'average energy cost each hour on weekends', '$');
-
-   </script>
+    </script>
   </body>
 </html>
