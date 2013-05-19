@@ -332,5 +332,3 @@ def used_green_kwh(user_row):
 def total_kwh(user_row):
   kwh = user_row.energy/3600.0 * user_row.duration
   return kwh
-
-
