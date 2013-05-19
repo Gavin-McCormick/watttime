@@ -156,3 +156,37 @@ DATABASES['default'] =  dj_database_url.config(default='postgres://watttime@loca
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# for django-allauth
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend',
+)
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.request",
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+)
+ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'SCOPE': ['email', 'publish_stream'],
+          'AUTH_PARAMS': { 'auth_type': 'reauthenticate' },
+          'METHOD': 'oauth2' 
+    },
+    'google': {
+        'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile'],
+         'AUTH_PARAMS': { 'access_type': 'online' }
+    }
+}
+
+# for facebook login
+FACEBOOK_APP_ID='411609345605022'
+FACEBOOK_API_SECRET='e1760826fbb9d58e2ab39d21c80293b3'
+
+# for google login
+GOOGLE_OAUTH2_CLIENT_ID = '838963675754'
+GOOGLE_OAUTH2_CLIENT_SECRET = 'jRGCatPXaMDUROQVJ8hy6FZc'
+
+# for user profile
+AUTH_PROFILE_MODULE = "accounts.UserProfile"
