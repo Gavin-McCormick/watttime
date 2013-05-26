@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html xml:lang="en" lang="en">
+	<head>
+		<title>wattTime.com</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+		<script type="text/javascript" 
+		    src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+		<script type="text/javascript" src="upclick.js"></script>
+		<script type="text/javascript" src="watttime.js"></script>
+		<script type="text/javascript" src="rainbowvis.js"></script>
+		<script src="speedometer.js"></script>
+		
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>
+      google.load("visualization", "1", {packages:["corechart"]});
+    </script>
+
+        <script type="text/javascript">
+            var image1 = "logo 1.jpg"
+            var image2 = "logo 2.jpg"
+        </script>
+
+		<link href="http://fonts.googleapis.com/css?family=Quicksand:300,400,700"
+		    rel="stylesheet" type="text/css">
+		<link href="watttime.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?1.29.1"></script>
+<style type="text/css">
+ 
+svg {
+  width: 300px;
+  height: 300px;
+  border: solid 1px #ccc;
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.bar.green {
+  fill: green;
+}
+
+.bar.fossil {
+  fill: black;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+    </style>
+
+</head>
+<!------------------------------------------------------------------------------------------------------>
+
+  <body id="body" onload='drawWithInputValue();' style="overflow: scroll;" >
+
+   
+  <div id="topBar">
+	<image id="logo" src="logo.jpg"></image>
+
+	<div id="bodyLeft" style="font-family:Trebuchet MS">
+	Upload your file.
+	<input type="button" id="uploader" value="Upload">
+	<script type="text/javascript">
+
+	   var uploader = document.getElementById('uploader');
+
+	   upclick(
+	     {
+	      element: uploader,
+	      action: '/path_to/you_server_script.php', 
+	      onstart:
+		function(filename)
+		{
+		  alert('Start upload: '+filename);
+		  // The blow line should be in the oncomplete part but for presentation purpose 
+		  $('#barchart').addClass('expandedpane2');
+		  $('#barchart').css({'display':'block'});
+		  $('#return').css({'display':'block'});
+		},
+	      oncomplete:
+		function(filename)
+		{
+		  alert('Finished upload: '+filename);
+		  
+		 // $('barchart').css({'display':'block'});
+		}
+
+	     });
+
+	   </script>
+	</div>
+	<br>
+	<div id="slogan" style="font-style:italic; font-family:Trebuchet MS">&#160;&#160; Go green just by procrastinating.</div>
+   </div>
+<div id="titleSpace"></div>
+<div id="scroller-anchor"></div>
+
+<!------------------------------------------------------------------------------------------------------->
+
+<div id="barchart" style="display:none; font-family:Palatino">
+<div id="barcharttitle" style="clear:both">Green vs fossil power by hour<br>
+<div class="barcharttext" style="color:black">Weekdays</div>
+<div class="barcharttext" style="color:black">Weekends</div>
+</div>
+<div id='kw-chart'></div>
+<div id='cost-chart'></div>
+<button id="return">Return to main page</button>
+    <script type="text/javascript">
+
+var json_data = {
+'av_cost': [0.022459821428571426, 0.022539732142857143,
+0.022734821428571427, 0.06784419642857144, 0.22558750000000005,
+0.22985803571428579, 0.22979821428571423, 0.22803839285714284,
+0.1657861607142857, 0.16275044642857134, 0.16255892857142856,
+0.16002767857142855, 0.28811383928571427, 0.4203272321428572,
+0.5473955357142858, 0.8197022321428572, 0.9742178571428568,
+0.7826566964285713, 0.5832098214285715, 0.39012544642857144,
+0.12940625, 0.03681634615384615, 0.022650892857142852,
+0.02277991071428571],
+'av_kw': [0.06731116071428574, 0.06753616071428571,
+0.06814687500000001, 0.20344821428571436, 0.3382714285714286,
+0.3446839285714286, 0.3446035714285714, 0.34196785714285705,
+0.24858883928571432, 0.24403660714285705, 0.2437433035714285,
+0.23994241071428574, 0.24003883928571426, 0.2422808035714287,
+0.24163794642857137, 0.29369732142857136, 0.34095937500000006,
+0.34105982142857144, 0.3412486607142857, 0.34177500000000005,
+0.24226875000000003, 0.1103841346153846, 0.06787767857142857,
+0.06827142857142858],
+'lat': '', 'userid': '1', 'lng': '', 'month': 'all',
+'balancing_authority': 'BPA', 'days': 'all',
+'av_percent_greens': [80.3707845961223, 80.05327413116888,
+79.78421344466119, 75.41184580448645, 79.76575908941231,
+79.89636541404616, 80.07231772832381, 81.43999308625243,
+81.56913111830694, 81.49734195696092, 81.61863459377196,
+81.59437491594096, 81.57390828342686, 81.56766567204387,
+81.58277497908036, 81.76742729023842, 81.84588308153961,
+82.26166409974891, 82.72305853463389, 83.01434696503354,
+82.85735677119435, 82.60120541836233, 82.30802810767638,
+81.64891019974934]
+};
+
+// get data to plot from json
+var data = [];
+for (var i=0; i < json_data.av_percent_greens.length; i++) {
+green_point = {'hour': i,
+'kw': json_data.av_percent_greens[i]/100.0 *
+json_data.av_kw[i],
+'cost': json_data.av_percent_greens[i]/100.0 *
+json_data.av_cost[i]};
+data.push(green_point);
+fossil_point = {'hour': i,
+'kw': -(1.0-json_data.av_percent_greens[i]/100.0) *
+json_data.av_kw[i],
+'cost': -(1.0-json_data.av_percent_greens[i]/100.0) *
+json_data.av_cost[i]};
+data.push(fossil_point);
+}
+
+// set up chart variables
+var margin = {top: 10, right: 10, bottom: 10, left: 40},
+    width = 300 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+.domain(data.map(function(d) {return d.hour; }))
+.rangeRoundBands([0, width], 0.2);
+
+
+var y_kw = d3.scale.linear()
+.domain(d3.extent(data, function(d) {return d.kw ;})).nice()
+.rangeRound([height,0]).nice();
+var y_cost = d3.scale.linear()
+.domain(d3.extent(data, function(d) {return d.cost ;})).nice()
+.rangeRound([height, 0]).nice();
+
+// add the canvas to the DOM
+var kw_chart = d3.select("#kw-chart").append("svg:svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height/2.0 + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+kw_chart.selectAll("rect").
+  data(data).
+  enter().
+  append("svg:rect").
+attr("class", function(d) { return d.kw < 0 ? "bar fossil" : "bar green"; }).
+  attr("x", function(d, i) { return x(d.hour); }).
+  attr("y", function(d) { return y_kw(Math.max(0,d.kw)); }).
+  attr("height", function(d) { return Math.abs(y_kw(d.kw)-y_kw(0)); }).
+  attr("width", x.rangeBand()).
+  attr("fill", d3.rgb("rgb(7,153,72)"));
+
+  kw_chart.append("g")
+      .attr("class", "x axis")
+    .append("line")
+      .attr("y1", y_kw(0))
+      .attr("y2", y_kw(0))
+      .attr("x1", width);
+
+var yAxis_kw = d3.svg.axis()
+    .scale(y_kw)
+    .orient("left");
+kw_chart.append("g")
+.attr("class", "y axis")
+.call(yAxis_kw);
+
+
+//////////////
+// add the canvas to the DOM
+var cost_chart = d3.select("#cost-chart").append("svg:svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height/2.0 + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+cost_chart.selectAll("rect").
+  data(data).
+  enter().
+  append("svg:rect").
+attr("class", function(d) { return d.cost < 0 ? "bar fossil" : "bar green"; }).
+  attr("x", function(d, i) { return x(d.hour); }).
+  attr("y", function(d) { return y_cost(Math.max(0,d.cost)); }).
+  attr("height", function(d) { return Math.abs(y_cost(d.cost)-y_cost(0)); }).
+  attr("width", x.rangeBand()).
+  attr("fill", d3.rgb("rgb(7,153,72)"));
+
+  cost_chart.append("g")
+      .attr("class", "x axis")
+    .append("line")
+      .attr("y1", y_cost(0))
+      .attr("y2", y_cost(0))
+      .attr("x1", width);
+
+var yAxis_cost = d3.svg.axis()
+    .scale(y_cost)
+    .orient("left");
+cost_chart.append("g")
+.attr("class", "y axis")
+.call(yAxis_cost);
+    </script>
+</div>
+<!--------------------------------------------end of barchart------------------------------------------------->
+
+<div id="constBar" >
+
+		<div id="forecast" style="display:none"></div>
+		<div id="action" class="pane">
+	<div id="quickcast">
+		  Greenest in
+		  <div id="getforecastbtn">-- hours</div>
+		  <div id="peerMessage">250,356 people have taken action!</div>
+	</div>
+	<!--	 -->
+		  <button id="waitbtn" style="font-family:Palatino">Okay, I'll wait</button>
+		  <button id="backbtn" style=" font-family:Palatino">Close</button>
+		  <div id="intent" style="display:none; font-family:Palatino">
+		    I was going to:<br/>
+		    <input type="radio" name="intent" /> &#160;&#160;&#160; Run the A/C<br/>
+		    <input type="radio" name="intent" /> &#160;&#160;&#160; Do the laundry<br/>
+		    <input type="radio" name="intent" /> &#160;&#160;&#160; Run my space heater<br/>
+		    <input type="radio" name="intent" /> &#160;&#160;&#160; Turn on some lights<br/>
+		  </div>
+		</div>
+
+	  <div id="thanks" class="pane" style="display:none">
+	    Thanks! You've joined
+	    <strong>11,564</strong> others in turning
+	    <strong>5,233 KWh</strong> of energy green.<br/>
+	    <button id="donebtn">No problem</button>
+	  </div>
+		  
+</div>
+
+
+<script type="text/javascript">
+$(function() {
+    moveScroller();
+  });
+
+function moveScroller() {
+    var move = function() {
+        var st = $(window).scrollTop();
+        var ot = $("#scroller-anchor").offset().top;
+        var s = $("#constBar");
+        if(st > ot) {
+            s.css({
+                position: "fixed",
+                top: "0px"
+            });
+        } else {
+            if(st <= ot) {
+                s.css({
+                    position: "relative",
+                    top: ""
+                });
+            }
+        }
+    };
+    $(window).scroll(move);
+    move();
+}
+</script>
+
+<div id="slideshow">
+  <div id="slide1" style="background-image: url(slidepic1.png);">
+	<div class="slideText" id="slideText1">
+       
+	</div>
+	<canvas id="tutorial" width="420" height="220">
+			Canvas not available.
+	</canvas>
+	<!--txtSpeed value zero means we extract value from the website instead of using our own value -->
+	<input type="text" id="txtSpeed" name="txtSpeed" value="87" maxlength="2"/>
+	<div id="readtime" style="color:white;float:right; font-weight:bold;position: absolute; right: 70px; bottom: 70px"> 08:15:31 </div>
+  </div>
+  <div id="slide2" style="background-image: url(slidepic2.png);"><div class="slideText"></div></div>
+  <div id="slide3" style="background-image: url(slidepic3.png);"><div class="slideText"></div></div>
+<!--
+  <div id="slide4">
+	<div id="bodyRight">
+		<div id="mix">
+		  Your energy mix
+			<div id="mixnumber">--%</div>
+		  green
+		</div>
+        </div>
+   </div>
+-->
+</div>
+<script>
+$("#slideshow > div:gt(0)").hide();
+
+setInterval(function() { 
+  $('#slideshow > div:first')
+    .fadeOut(1000)
+    .next()
+    .fadeIn(1000)
+    .end()
+    .appendTo('#slideshow');
+},  6000);
+</script>
+
+<!--
+<!--
+	if ($('#constBar').scrollTop() <= 0 && $('#topBar').offset().bottom < 0) {
+		$('#constBar').css({'position': 'fixed', 'top': 0});
+	} else {
+		$('#constBar').css({'position': 'static', 'top': ''});
+	}
+-->
+<!--
+    <div id="location">Location:
+      <a>CA</a> - 
+      <a>OR</a> - 
+      <a href="javascript:void(0);" class="current">WA</a>
+    </div>
+-->
+
+
+<div id="bodyText">
+
+	<div class="section">
+	<div class="Title">
+		<form id="topPic">
+		<img src="site title.jpg" name="slide" width="450px" height="150px" />
+		    <script>
+		        //variable that will increment through the images
+		        var step = 1
+		        function slideit(){
+		            //if browser does not support the image object, exit.
+		            switch(step){
+		                case 1:
+		                    document.images.slide.src = image1;
+		                    break;
+		                case 2:
+		                    document.images.slide.src = image2;
+		                    break;
+		            }
+		            if (step < 2) {
+		                step++
+		            }
+		            else {
+		                step = 1
+		            }
+		            //call function "slideit()" every 3 seconds
+		            setTimeout("slideit()", 3000)
+		        }
+		        slideit()
+		    </script>
+		</form>
+	</div>
+	<div class="Content">WattTime tells you at what time the electricity coming into your house is cleanest. Why not run choose that time to do laundry, or turn up the A/C? By doing this, you have the power to really make a difference in the amount of renewable energy your utility sends you.  
+	</div>
+	</div>
+
+	<div class="section2">
+	<div class="Title"><img src="sectionpic2.png" name="slide" width="450px" height="150px" /></div>
+	<div class="Content">Saving the planet doesn&#39;t have to mean sitting in the cold and dark. Instead, we can decide to make the energy we do use cleaner. Over time, we can use timing to support investment in renewable power, and to shut down the dirtiest coal plants. Even better, we  can start reducing carbon in minutes. </div>
+	</div>
+	
+	<div class="section">
+	<div class="Title"> <img src="sectionpic3.png" name="slide" width="450px" height="150px" /> </div>
+	<div class="Content">What&#39;s your cleanliness cut-off? Decide at what level of pollution you want us to drop you a line. 
+Do you want to be the greenest kid on your block? Let us text you whenever electricity is dirtier than average. Don&#39;t want to receive lots of text messages? Try just the 10 dirtiest times per year. You decide. Take control over what type of energy you use. Not sure how to go green? We&#39;ll send you a helpful hint with every text. Ignore it if you like! We&#39;re only here to help.    </div>
+	</div>
+
+	<div class="section2">
+	<div class="Title"><img src="sectionpic4.jpg" name="slide" width="450px" height="200px" /> </div>
+	<div class="Content">Do you have a smart meter? Let us give you a personalized green timing measurement. Thanks to President Obama's Green Button [link] initiative, working with your electricity data is easier than ever. Go cleaner now! Get personalized suggestions. Just upload your Green Button data here. </div>
+	</div>
+</div>
+
+<div id="bottomArea" style="background-color:black">
+	<img id="clock" src="Clock.gif" alt="File:Clock.gif" width="150px" height="150px" style="float:right"/>
+</div>		
+<script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-587715-10']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+
+	</body>
+</html>
