@@ -1,0 +1,16 @@
+
+#commentform .watermark_container .watermark {
+    top: -20px !important;
+}
+#form-section-comment .watermark_container .watermark {
+    top: -70px !important;
+}
+.watermark_container .watermark {
+    top: -15px !important;
+}
+.comments-textarea .watermark_container .watermark {
+    top: -52px !important;
+}
+.header-main .watermark_container .watermark {
+	top:-27px!important;
+}

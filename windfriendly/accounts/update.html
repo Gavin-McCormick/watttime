@@ -1,0 +1,6 @@
+<h3> info about what's going on! </h3>
+
+<form action="/profile/{{userid}}" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>

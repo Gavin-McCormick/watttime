@@ -1,0 +1,24 @@
+
+#commentform .watermark_container .watermark {
+    top: -20px !important;
+}
+#form-section-comment .watermark_container .watermark {
+    top: -70px !important;
+}
+.watermark_container .watermark {
+    top: 0px !important;
+}
+.comments-textarea .watermark_container .watermark {
+    top: 35px !important;
+}
+.flywheel-contact-form .span4.offset4{
+	width:100%;
+	text-align:center;
+	margin:0px;
+}
+.switch-page .lock-header .techy-toggle span, .switch-page .lock-header .toggle {
+	float:left;
+}
+.lock-header{
+	display:none!important;
+}
