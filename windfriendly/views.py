@@ -27,8 +27,8 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.db.models import Q
 
-from windfriendly.models import BPA, Normalized, User, MeterReading
-from windfriendly.parsers import BPAParser, GreenButtonParser
+from windfriendly.models import BPA, NE, Normalized, User, MeterReading
+from windfriendly.parsers import BPAParser, NEParser, GreenButtonParser
 
 def json_response(func):
   """
@@ -75,27 +75,42 @@ def fraction_nonfossil(row):
   """ Returns the fraction of the total load from anything besides fossil fuels (ie wind+hydro) """
   return (row.wind) / float(row.wind + row.hydro + row.thermal)
 
+def fraction_green_ne(row):
+    green = row.hydro + row.nuclear + row.other_renewable
+    brown = row.coal + row.gas + row.other_fossil
+    return green / (green + brown)
+
 @json_response
-def status(request):
-  lat = request.GET.get('lat', '')
-  lng = request.GET.get('lng', '')
+def status(request, utility):
+    if utility == 'bpa':
+        lat = request.GET.get('lat', '')
+        lng = request.GET.get('lng', '')
 
-  ba = getBalancingAuthority(lat, lng)
-  row = BPA.objects.latest('date')
+        row = BPA.objects.latest('date')
 
-  percent_green = fraction_wind(row) * 100.0
-  time = row.date.strftime('%Y-%m-%d %H:%M')
+        percent_green = fraction_wind(row) * 100.0
+        time = row.date.strftime('%Y-%m-%d %H:%M')
 
-  data = {
-    'lat': lat,
-    'lng': lng,
-    'balancing_authority': 'BPA',
-    'time': time,
-    'percent_green': round(percent_green,3)
-  }
-  return data
-  template = 'templates/default.json'
-  return render_to_response(template, RequestContext(request,{'json':data}))
+        data = {
+            'lat': lat,
+            'lng': lng,
+            'balancing_authority': 'BPA',
+            'time': time,
+            'percent_green': round(percent_green,3)
+        }
+        return data
+        template = 'templates/default.json'
+        return render_to_response(template, RequestContext(request,{'json':data}))
+    if utility == 'ne':
+        row = NE.objects.latest('date')
+        percent_green = fraction_green_ne(row) * 100
+        time = row.date.strftime('%Y-%m-%d %H:%M')
+
+        return {
+                'balancing_authority': 'NE',
+                'time': time,
+                'percent_green': round(percent_green, 3)
+            }
 
 @json_response
 def forecast(request):
@@ -123,6 +138,8 @@ def forecast(request):
 def update(request, utility):
   if utility == 'bpa':
     parser = BPAParser(request.GET.get('file', None))
+  if utility == 'ne':
+    parser = NEParser()
   if utility == 'gb':
     xml_file = request.GET.get('file', '')
     uid = request.GET.get('uid', None)

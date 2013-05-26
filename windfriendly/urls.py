@@ -7,7 +7,7 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^status[/]?$',
+    url(r'^status/(?P<utility>[a-zA-Z0-9_-]+)[[/]?$',
         'windfriendly.views.status', name='status'),
     url(r'^forecast[/]?$',
         'windfriendly.views.forecast', name='forecast'),
