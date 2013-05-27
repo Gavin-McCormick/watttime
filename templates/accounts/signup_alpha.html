@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+
+<p> You're in luck: WattTime Alpha will be coming soon to your area. Want to be the first to try WattTime for yourself? Sign
+up here to join in!</p>
+
+<form action="/profile/{{userid}}" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Sign me up!" />
+</form>
+
+{% endblock %}

@@ -7,6 +7,8 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^[/]?$', 
+        'windfriendly.accounts.views.profile_create', name='profile_create'),
     url(r'^status[/]?$',
         'windfriendly.views.status', name='status'),
     url(r'^forecast[/]?$',

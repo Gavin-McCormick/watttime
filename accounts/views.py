@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
-from windfriendly.accounts.models import NewUserForm, User, UserProfileForm
+from accounts.models import NewUserForm, User, UserProfileForm
 from django.core.urlresolvers import reverse
 
 def profile_create(request):
@@ -10,45 +10,52 @@ def profile_create(request):
     if request.method == 'POST':
         form = NewUserForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
-            # Process the data in form.cleaned_data
+            # save form
             new_user = form.save()
+
+            # redirect
             if new_user.is_valid_state():
-                url = reverse('profile_complete', kwargs={'userid': new_user.id})
-                return HttpResponseRedirect(url) # Redirect after POST
+                # to alpha sign-up
+                url = reverse('profile_alpha', kwargs={'userid': new_user.id})
+                return HttpResponseRedirect(url)
             else:
-                return render(request, 'accounts/sorry.html', {
-                        'name': new_user.name,
-                        'state': new_user.long_state_name(),
-                        })
+                # to generic thanks
+                url = reverse('thanks')
+                return HttpResponseRedirect(url)
     else:
         form = NewUserForm() # An unbound form
 
     # display form
-    return render(request, 'accounts/profile.html', {'form': form})
+    return render(request, 'index.html', {'form': form})
 
-def profile_complete(request, userid):
+def profile_alpha(request, userid):
     # process submitted form
     if request.method == 'POST':
         form = UserProfileForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
-            # Process the data in form.cleaned_data
+            # save form
             new_profile = form.save(commit=False)
             new_profile.userid = User.objects.get(pk=userid)
             new_profile.save()
-            print 'got here?'
-            return HttpResponseRedirect('/welcome/%s' % userid) # Redirect after POST
+
+            # redirect
+            url = reverse('welcome_alpha')
+            return HttpResponseRedirect(url)
     else:
         form = UserProfileForm() # An unbound form
 
     # display form
-    return render(request, 'accounts/update.html', {
+    return render(request, 'accounts/signup_alpha.html', {
             'form': form,
             'userid': userid,
     })
 
-def welcome(request, userid):
-    name = User.objects.get(pk=userid).name
-    return render(request, 'accounts/welcome.html', {'name': name})
+def thanks(request):
+    return render(request, 'accounts/thanks_no_alpha.html')
+
+def welcome_alpha(request):
+    return render(request, 'accounts/thanks_alpha.html')
+
 
 #@login_required
 #def profile_edit(request):

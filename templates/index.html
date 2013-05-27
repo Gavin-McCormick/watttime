@@ -3,6 +3,8 @@
 
 <html>
 
+{% load staticfiles %}
+
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale = 1.0; maximum-scale=1.0, user-scalable=no" />
@@ -13,51 +15,51 @@
 
 	<title>WattTime Tells You When The Electricity Grid is Clean.</title>
 
-<link rel="stylesheet" type="text/css" href="css/style2.css" />
+<link rel="stylesheet" type="text/css" href="{% static "css/style2.css" %}" />
 
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
 
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
 
 <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 
-<link rel="stylesheet" type="text/css" href="css/style.css" />
+<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
 
 <!--[if lt IE 9]>
 
-	<link rel="stylesheet" type="text/css" href="css/ie8.css" />
+	<link rel="stylesheet" type="text/css" href="{% static "css/ie8.css" %}" />
 
 <![endif]-->
 
 <!--[if lt IE 98>
 
-	<link rel="stylesheet" type="text/css" href="css/ie7.css" />
+	<link rel="stylesheet" type="text/css" href="{% static "css/ie7.css" %} " />
 
 <![endif]-->
 
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
 
-<script src="js/jquery-1.8.2.min.js"></script>
+<script src="{% static "js/jquery-1.8.2.min.js" %} "></script>
 
-<script src="js/jquery.easing.1.3.js"></script>
+<script src="{% static "js/jquery.easing.1.3.js" %} "></script>
 
-<script src="js/jquery.validate.js"></script>
+<script src="{% static "js/jquery.validate.js" %} "></script>
 
-<script src="js/jquery.simplemodal.1.4.3.min.js"></script>
+<script src="{% static "js/jquery.simplemodal.1.4.3.min.js" %} "></script>
 
-<script src="js/gaparse.js"></script>
+<script src="{% static "js/gaparse.js" %} "></script>
 
-<script src="js/masonry.min.js"></script>
+<script src="{% static "js/masonry.min.js" %} "></script>
 
-<script src="js/jquery.watermark.min.js"></script>
+<script src="{% static "js/jquery.watermark.min.js" %} "></script>
 
-<script src="js/waypoints.min.js"></script>
+<script src="{% static "js/waypoints.min.js" %} "></script>
 
-<script src="js/jquery.parallax-1.1.3.js"></script>
+<script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
 
-<script src="js/flywheel.js"></script>
+<script src="{% static "js/flywheel.js" %} "></script>
 
-<script src="js/respond.min.js"></script>
+<script src="{% static "js/respond.min.js" %} "></script>
 
 
 </head>
@@ -81,7 +83,7 @@
 
 						<a href="http://WattTime.com" class="logo-link">
 
-							<img src="images/icon-.png" alt="WattTime">
+							<img src="{% static "images/icon-.png" %} " alt="WattTime">
 
 						</a>
 
@@ -128,8 +130,9 @@
 						<p>WattTime notifies you when your electricity consumption creates a cleaner energy economy. <br class="hidden-phone">Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
 						<h4>It's simple and easy. Just fill out this form* and we do the rest!</h4>
 						    		
-    						
-    						<form action="" method="post" id="subForm" class="flywheel-form sign-up-form" style="margin-bottom:0px!important;">
+					  {% include 'accounts/signup_splash.html' %}
+					  
+    					<!--	<form action="" method="post" id="subForm" class="flywheel-form sign-up-form" style="margin-bottom:0px!important;">
 
 							<input type="email" name="cm-ttkkn-ttkkn" id="ttkkn-ttkkn" class="phone required" value="" title="Your area code and phone number"/>
 
@@ -144,7 +147,7 @@
 							<input type="submit" value="YES, PLEASE!">
 
 							
-						</form>
+						</form> -->
 					<p style="font-size:small">*We are currently piloting Watt Time for electricity consumers in Massachusetts, Connecticut, New Hampshire, Vermont, Rhode Island, Maine.<br> If you fill out the form, we'll let you know when WattTime is available for your region!</p>
 
 					</div>
@@ -203,7 +206,7 @@
 
 				<div class="span12">
 
-					<img src="images/wheel-big.png" class="fly-wheel">
+					<img src="{% static "images/wheel-big.png" %} " class="fly-wheel">
 
 					<h1>WattTime is Built for You</h1>
 
@@ -217,7 +220,8 @@
 
 				<div class="span12">
 
-					<h4 class="icon-line"><span><img src="images/icon-sunflower.png" width="50"></span></h4>
+					<h4 class="icon-line"><span><img src="{% static "images/icon-sunflower.png" %}
+					"width="50"></span></h4>
 
 				</div>
 
@@ -285,7 +289,7 @@
 
 	<div class="wheel">
 
-		<img src="images/wheel.png" alt="WattTime" class="wheel-icon">
+		<img src="{% static "images/wheel.png" %} " alt="WattTime" class="wheel-icon">
 
 	</div>
 
@@ -363,7 +367,7 @@
 
 			<a href="http://watttime.com" class="logo">
 
-				<img src="images/logo-footer.png" alt="WattTime">
+				<img src="{% static "images/logo-footer.png" %} " alt="WattTime">
 
 			</a>
 
