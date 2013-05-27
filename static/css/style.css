@@ -492,13 +492,19 @@ label.error{
 	margin-top:5px;
 	display:block;
 }
+
+.errorlist {
+	color:#fff;
+}
+
 label {
 	opacity:0;
 	}
 textarea, input { outline: none; }
+
 .sign-up-form{
-	margin-top:20px;
-	margin-bottom:20px;
+	margin-top:5px;
+	margin-bottom:5px;
 	position:relative;
 }
 .sign-up-form label.error{
@@ -599,7 +605,7 @@ textarea, input { outline: none; }
 	padding-right:20px;
 }
 .watttime-form input[type="submit"]:hover{
-	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #339999;
+	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #66cc99;
 	-webkit-transition: background-color 200ms linear;
 	-moz-transition: background-color 200ms linear;
 	-o-transition: background-color 200ms linear;
