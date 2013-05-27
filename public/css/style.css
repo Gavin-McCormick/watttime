@@ -97,6 +97,17 @@ body a:hover{
 	z-index:100;
 }
 
+
+/*stately*/
+
+.stately  {
+      width: 300px;     //width and font size must match 
+  	  font-size: 300px; //width and font size must match 
+  	  color: #fff;
+    }
+    
+  
+    
 /* nav */
 ul.toggle{
 	list-style:none;
