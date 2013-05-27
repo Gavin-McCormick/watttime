@@ -1,1 +1,1 @@
-web: gunicorn windfriendly.wsgi
+web: gunicorn wsgi
