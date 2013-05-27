@@ -509,7 +509,7 @@ textarea, input { outline: none; }
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[type="email"], .watttime-form input[type="text"], #commentform textarea{
+.watttime-form input[type="email"], .watttime-form input[type="text"], .watttime-form input[type="tel"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
