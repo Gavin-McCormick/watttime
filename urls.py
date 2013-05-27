@@ -8,7 +8,7 @@ from django.conf import settings
 # basic patterns
 urlpatterns = patterns('',
     url(r'^[/]?$', 
-        'accounts.views.profile_create', name='profile_create'),
+        'accounts.views.profile_create', name='home'),
   #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
