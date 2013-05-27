@@ -10,5 +10,5 @@ six==1.3.0
 twilio==3.4.5
 unittest2==0.5.1
 wsgiref==0.1.2
-django-allauth>=0.10.1
+django-allauth==0.10.1
 django-localflavor-us==1.1
