@@ -498,6 +498,8 @@ label.error{
 	text-align:left;
 	position:absolute;
 	left:50%;
+	vertical-align:middle;
+
 }
 
 label {
