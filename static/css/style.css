@@ -496,8 +496,8 @@ label.error{
 .errorlist {
 	color:#fff;
 	text-align:left;
-	top:43px;
-
+	position:absolute;
+	left:50%;
 }
 
 label {
