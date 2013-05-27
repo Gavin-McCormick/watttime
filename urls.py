@@ -40,10 +40,7 @@ urlpatterns +=  patterns('windfriendly.views',
         'average_usage_for_period', name='average'),
 )
 
-# debug static
-if settings.DEBUG:
-  urlpatterns += patterns('',
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-      'document_root': settings.STATIC_ROOT,
-    }),
-  )
+# static
+urlpatterns += patterns('',
+                        url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT }),
+                        )
