@@ -9,6 +9,10 @@ from django.conf import settings
 urlpatterns = patterns('',
     url(r'^[/]?$', 
         'accounts.views.profile_create', name='profile_create'),
+    url(r'^faq[/]?$', 
+        'pages.views.faq', name='faq'),                
+    url(r'^contact[/]?$', 
+        'pages.views.contact', name='contact'),                
   #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
