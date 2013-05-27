@@ -39,7 +39,7 @@ body a:hover{
 	margin:50px auto 0px;
 }
 .home-container{
-	height:680px;
+	height:880px;
 }
 .lock-header{
 	position:fixed;
@@ -487,15 +487,24 @@ i.share-facebook{
 
 
 
-/* flywheel form */
+/* watttime form */
 label.error{
-	margin-top:10px;
+	margin-top:5px;
 	display:block;
 }
+
+.errorlist {
+	color:#fff;
+}
+
+label {
+	opacity:0;
+	}
 textarea, input { outline: none; }
+
 .sign-up-form{
-	margin-top:20px;
-	margin-bottom:120px;
+	margin-top:5px;
+	margin-bottom:5px;
 	position:relative;
 }
 .sign-up-form label.error{
@@ -509,7 +518,7 @@ textarea, input { outline: none; }
 .sign-up-form .watermark{
 	left:10px;
 }
-.flywheel-form input[type="email"], .flywheel-form input[type="text"], #commentform textarea{
+.watttime-form input[type="email"], .watttime-form input[type="text"], .watttime-form input[type="phone"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
@@ -527,7 +536,7 @@ textarea, input { outline: none; }
 	margin:0px;
 	font-family:Helvetica, Arial, sans-serif;
 }
-.flywheel-form-white input[type="text"]{
+.watttime-form-white input[type="text"]{
 	background:#fafafa;
 	border:1px solid #d4d4d4;
 	-webkit-border-radius: 3px;
@@ -569,13 +578,13 @@ textarea, input { outline: none; }
 	font-weight:700;
 	color:#fff;
 }
-.flywheel-form.sign-up-form-fixed input[type="submit"]:hover{
+.watttime-form.sign-up-form-fixed input[type="submit"]:hover{
 	background:#339999;;
 }
 .sign-up-form-fixed .watermark_container .watermark {
 	top:-11px!important;
 }
-.flywheel-form.sign-up-form input[type="submit"]{
+.watttime-form.sign-up-form input[type="submit"]{
 	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #339999;
 	border:none;
 	-webkit-border-top-right-radius: 3px;
@@ -595,8 +604,8 @@ textarea, input { outline: none; }
 	color:#fff;
 	padding-right:20px;
 }
-.flywheel-form input[type="submit"]:hover{
-	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #339999;
+.watttime-form input[type="submit"]:hover{
+	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #66cc99;
 	-webkit-transition: background-color 200ms linear;
 	-moz-transition: background-color 200ms linear;
 	-o-transition: background-color 200ms linear;
@@ -607,7 +616,7 @@ textarea, input { outline: none; }
 .sign-up-form-fixed input[type="submit"]:hover{
 	background:#111;
 }
-.flywheel-form#commentform input[type="email"], .flywheel-form#commentform input[type="text"],  #commentform textarea{
+.watttime-form#commentform input[type="email"], .watttime-form#commentform input[type="text"],  #commentform textarea{
 	background:#eee;
 	margin-bottom:10px;
 	-webkit-border-radius: 5px;
