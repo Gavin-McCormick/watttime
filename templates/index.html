@@ -85,7 +85,7 @@
 
 						<a href="http://WattTime.com" class="logo-link">
 
-							<img src="../images/WattTimeWhiteWordLogo.png" width="200" alt="WattTime">
+							<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
 
 						</a>
 
@@ -123,7 +123,7 @@
 						<p>WattTime notifies you when your electricity consumption creates a cleaner energy economy. <br class="hidden-phone">Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
 						<h4>It's simple and easy. Just fill out this form* and we do the rest!</h4>
 						    		
-					  {% include 'accounts/signup_splash.html' %}
+					  <div class="{% include 'accounts/signup_splash.html' %}" id="subForm" class="flywheel-form sign-up-form"></div>
 					  
     					<!--	<form action="" method="post" id="subForm" class="flywheel-form sign-up-form" style="margin-bottom:0px!important;">
 
@@ -257,7 +257,7 @@
 
 				<div class="span12">
 
-					<img src="{% static "../images/WattTimeShieldBW.png" %} " class="fly-wheel" width="120">
+					<img src="{% static "images/WattTimeShieldBW.png" %}" class="fly-wheel" width="120">
 
 					<h1>WattTime is Built for You</h1>
 
@@ -271,7 +271,7 @@
 
 				<div class="span12">
 
-					<h4 class="icon-line"><span><img src="{% static "../images/WattTimeShield_sm.png" %}" width="50"></span></h4>
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
 
 				</div>
 
@@ -307,7 +307,7 @@
 
 				<div class="span3">
 
-					<img src="{% static "../images/icon-sunflowerBW.png" %}" width="38" >
+					<img src="{% static "images/icon-sunflowerBW.png" %}" width="38" >
 
 					<h3>A resilient future</h3>
 
@@ -343,7 +343,7 @@
 
 				<div class="span12">
 
-					<h4 class="icon-line"><span><img src="{% static "../images/WattTimeShield_sm.png" %} width="50"></span></h4>
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %} width="50"></span></h4>
 
 				</div>
 
@@ -412,7 +412,7 @@
 
 	<div class="wheel">
 
-		<img src="{% static "../images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
+		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
 
 	</div>
 
@@ -490,7 +490,7 @@
 
 			<a href="http://watttime.com" class="logo">
 
-				<img src="{% static "../images/WattTimeWordLogo.png" %} " alt="WattTime" width="120">
+				<img src="{% static "images/WattTimeWordLogo.png" %} " alt="WattTime" width="120">
 
 			</a>
 
