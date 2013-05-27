@@ -179,13 +179,13 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # for django-allauth
 AUTHENTICATION_BACKENDS = (
-    "allauth.account.auth_backends.AuthenticationBackend",
+  #  "allauth.account.auth_backends.AuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
 )
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
-    "allauth.account.context_processors.account",
-    "allauth.socialaccount.context_processors.socialaccount",
+  #  "allauth.account.context_processors.account",
+  #  "allauth.socialaccount.context_processors.socialaccount",
 )
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 SOCIALACCOUNT_PROVIDERS = {
