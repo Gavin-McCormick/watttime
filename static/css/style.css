@@ -39,7 +39,7 @@ body a:hover{
 	margin:50px auto 0px;
 }
 .home-container{
-	height:880px;
+	height:980px;
 }
 .lock-header{
 	position:fixed;
@@ -495,11 +495,15 @@ label.error{
 
 .errorlist {
 	color:#fff;
+	text-align:left;
+	top:43px;
+
 }
 
 label {
 	opacity:0;
 	}
+	
 textarea, input { outline: none; }
 
 .sign-up-form{
