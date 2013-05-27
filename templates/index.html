@@ -19,6 +19,8 @@
 
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
 
+<link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" />
+
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
 
 <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
@@ -83,7 +85,7 @@
 
 						<a href="http://WattTime.com" class="logo-link">
 
-							<img src="{% static "images/icon-.png" %} " alt="WattTime">
+							<img src="images/WattTimeWhiteWordLogo.png" width="200" alt="WattTime">
 
 						</a>
 
@@ -123,7 +125,7 @@
 
 					<div class="header-main hidden-phone">
 
-						<h1>It's <span style="color:#339999">2:37 p.m.</span> and <br> Your Electricity Grid is <span style="color:#339999">27%</span> Green.</h1>
+						<h1>It's <span style="color:#66cc99">2:37 p.m.</span> and <br> Your Electricity Grid is <span style="color:#ffff33">27%</span> Green.</h1>
 
 						<h2>We Can Do Better</h2>
 
@@ -148,8 +150,66 @@
 
 							
 						</form> -->
-					<p style="font-size:small">*We are currently piloting Watt Time for electricity consumers in Massachusetts, Connecticut, New Hampshire, Vermont, Rhode Island, Maine.<br> If you fill out the form, we'll let you know when WattTime is available for your region!</p>
+						 
+	<!--	stately map for indicating launch locations
+	    <ul class="stately" id="launch"> 
+        <li data-state="al" class="al">A</li>
+        <li data-state="ak" class="ak">B</li>
+        <li data-state="ar" class="ar">C</li>						
+        <li data-state="az" class="az">D</li>
+        <li data-state="ca" class="ca">E</li>
+        <li data-state="co" class="co">F</li>
+        <li data-state="ct" class="ct">G</li>
+        <li data-state="de" class="de">H</li>
+        <li data-state="dc" class="dc">I</li>
+        <li data-state="fl" class="fl">J</li>
+        <li data-state="ga" class="ga">K</li>
+        <li data-state="hi" class="hi">L</li>
+        <li data-state="id" class="id">M</li>
+        <li data-state="il" class="il">N</li>
+        <li data-state="in" class="in">O</li>
+        <li data-state="ia" class="ia">P</li>
+        <li data-state="ks" class="ks">Q</li>
+        <li data-state="ky" class="ky">R</li>
+        <li data-state="la" class="la">S</li>
+        <li data-state="me" class="me">T</li>
+        <li data-state="md" class="md">U</li>
+        <li data-state="ma" class="ma">V</li>
+        <li data-state="mi" class="mi">W</li>
+        <li data-state="mn" class="mn">X</li>
+        <li data-state="ms" class="ms">Y</li>
+        <li data-state="mo" class="mo">Z</li>
+        <li data-state="mt" class="mt">a</li>
+        <li data-state="ne" class="ne">b</li>
+        <li data-state="nv" class="nv">c</li>
+        <li data-state="nh" class="nh">d</li>
+        <li data-state="nj" class="nj">e</li>
+        <li data-state="nm" class="nm">f</li>
+        <li data-state="ny" class="ny">g</li>
+        <li data-state="nc" class="nc">h</li>
+        <li data-state="nd" class="nd">i</li>
+        <li data-state="oh" class="oh">j</li>			
+        <li data-state="ok" class="ok">k</li>
+        <li data-state="or" class="or">l</li>
+        <li data-state="pa" class="pa">m</li>
+        <li data-state="ri" class="ri">n</li>
+        <li data-state="sc" class="sc">o</li>
+        <li data-state="sd" class="sd">p</li>
+        <li data-state="tn" class="tn">q</li>
+        <li data-state="tx" class="tx">r</li>
+        <li data-state="ut" class="ut">s</li>
+        <li data-state="va" class="va">t</li>
+        <li data-state="vt" class="vt">u</li>			
+        <li data-state="wa" class="wa">v</li>
+        <li data-state="wv" class="wv">w</li>
+        <li data-state="wi" class="wi">x</li>
+        <li data-state="wy" class="wy">y</li>
+    </ul> -->
 
+					<p style="font-size:small">*We are currently piloting Watt Time for electricity consumers in Massachusetts, Connecticut, New Hampshire, Vermont, Rhode Island, Maine.<br> If you fill out the form, we'll let you know when WattTime is available for your region!</p>
+		  
+		 
+	
 					</div>
 
 
@@ -179,13 +239,13 @@
 
 							
 						</form>
-
 					</div>
+		
 
 				</div>
 
 			</div>
-
+			
 		</div>
 
 		
@@ -206,7 +266,7 @@
 
 				<div class="span12">
 
-					<img src="{% static "images/wheel-big.png" %} " class="fly-wheel">
+					<img src="{% static "images/WattTimeShieldBW.png" %} " class="fly-wheel" width="120">
 
 					<h1>WattTime is Built for You</h1>
 
@@ -220,8 +280,7 @@
 
 				<div class="span12">
 
-					<h4 class="icon-line"><span><img src="{% static "images/icon-sunflower.png" %}
-					"width="50"></span></h4>
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
 
 				</div>
 
@@ -237,9 +296,9 @@
 
 				<div class="span3">
 
-					<i class="icon-features-mini icon-smile"></i>
+					<i class="icon-features-mini icon-demo"></i>
 
-					<h3>Relevant and painless</h3>
+					<h3>Easy and relevant</h3>
 
 					<p>WattTime is easy to use. Getting started is a cinch, and timely messages ensure that you get relevant information.</p>
 
@@ -251,15 +310,15 @@
 
 					<h3>Big impact</h3>
 
-					<p>By shifting your tasks–even just a little–tiny changes in energy consumption can have a big impact. WattTime helps you direct your impact where it's needed most.</p>
+					<p>By shifting your tasks–even just a little–your energy consumption can have a big impact. WattTime helps you direct that impact where it's most needed.</p>
 
 				</div>
 
 				<div class="span3">
 
-					<i class="icon-features-mini icon-hack"></i>
+					<img src="images/icon-sunflowerBW.png" width="38" >
 
-					<h3>More resilient futures</h3>
+					<h3>A resilient future</h3>
 
 					<p>Join others and create the clean energy economy. Help build a more resilient future, and use collective action to power the world.</p>
 
@@ -272,6 +331,79 @@
 	</div>
 
 	
+	
+	<div class="full-width-features feature-2">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h1>Getting Started is Easy</h1>
+
+					<h2>WattTime lets you know when the electricity you consume is coming from renewable sources. <br class="hidden-phone">You decide when and what kind of energy you want to use.</h2>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h4 class="icon-line"><span><img src="images/WattTimeShield_sm.png" width="50"></span></h4>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 1</h1>
+
+					<h3>Sign up is simple</h3>
+
+					<p>All we need is your phone number to get you started. We'll keep you updated about new features and regions if you include your name and email too.</p>
+					
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 2</h2>
+
+					<h3>Verify your device</h3>
+
+					<p>Just follow the instructions so we can send notifications directly to your device.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 3</h2>
+
+					<h3>Get more relevant notifications</h3>
+
+					<p>Context matters. With just a few questions about the kind of energy you use in your home or at work, we can make the notifications more relevant for you.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 4</h2>
+
+					<h3>Trigger a cleaner energy economy</h3>
+
+					<p>When you receive a text, join others and create the clean energy economy by shifting your consumption patterns to cleaner fuel sources.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+
 
 	<div class="container call-to-action">
 
@@ -289,7 +421,7 @@
 
 	<div class="wheel">
 
-		<img src="{% static "images/wheel.png" %} " alt="WattTime" class="wheel-icon">
+		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
 
 	</div>
 
@@ -367,7 +499,7 @@
 
 			<a href="http://watttime.com" class="logo">
 
-				<img src="{% static "images/logo-footer.png" %} " alt="WattTime">
+				<img src="{% static "images/WattTimeWordLogo.png" %} " alt="WattTime" width="120">
 
 			</a>
 
@@ -399,7 +531,7 @@
 
 				<li class="facebook">
 
-					<a href="https://www.facebook.com/pages/">Facebook</a>
+					<a href="https://www.facebook.com/wattTimeApp">Facebook</a>
 
 				</li>
 

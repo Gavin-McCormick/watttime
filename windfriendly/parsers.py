@@ -29,7 +29,7 @@ from twilio.rest import TwilioRestClient
 
 from dateutil.relativedelta import relativedelta
 
-from windfriendly.models import BPA, MeterReading, User
+from windfriendly.models import BPA, NE, MeterReading, User
 
 import xml.etree.ElementTree as ET
 
@@ -37,6 +37,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def send_text(msg):
+    pass
     account = os.environ.get('TWILIO_ACCOUNT_SID', '')
     token = os.environ.get('TWILIO_AUTH_TOKEN', '')
     client = TwilioRestClient(account = account, token = token)
@@ -299,6 +300,72 @@ class BPAParser(UtilityParser):
           'update_rows' : len(update),
           'latest_date' : self.getLatestExistingDate()
         }
+
+# This was written to imitate the BPA Parser somewhat
+class NEParser(UtilityParser):
+    def __init__(self, request_method = None):
+        if request_method is None:
+            url = 'http://isoexpress.iso-ne.com/ws/wsclient'
+            payload = {'_ns0_requestType':'url', '_ns0_requestUrl':'/genfuelmix/current'}
+            def wrapper():
+                return requests.post(url, data = payload).json()
+            self.request_method = wrapper
+        else:
+            self.request_method = request_method
+
+    def update(self):
+        try:
+            json = self.request_method()[0]['data']['GenFuelMixes']['GenFuelMix']
+
+            timestamp = None
+            ne = NE()
+            ne.gas = 0
+            ne.nuclear = 0
+            ne.hydro = 0
+            ne.coal = 0
+            ne.other_renewable = 0
+            ne.other_fossil = 0
+
+            for i in json:
+                if timestamp is None:
+                    timestamp = i['BeginDate']
+
+                fuel = i['FuelCategory']
+                gen = i['GenMw']
+
+                if fuel == 'Natural Gas':
+                    ne.gas += gen
+                elif fuel == 'Nuclear':
+                    ne.nuclear += gen
+                elif fuel == 'Hydro':
+                    ne.hydro += gen
+                elif fuel == 'Coal':
+                    ne.coal += gen
+                # I don't really know how I should be placing some of these fuels
+                elif fuel == 'Oil' or fuel == 'Landfill Gas' or fuel == 'Refuse':
+                    ne.other_fossil += gen
+                elif fuel == 'Wind' or fuel == 'Wood':
+                    ne.other_renewable += gen
+                else: # Unrecognized fuel
+                    ne.other_fossil += gen
+
+            if timestamp is None:
+                ne.date = None # Is this okay? Don't know.
+            else:
+                ne.date = dp.parse(timestamp)
+
+            ne.save()
+
+        except requests.exceptions.RequestException: # failed to get data
+            pass
+        except KeyError: # malformed json format
+            pass
+        except IndexError: # malformed json format
+            pass
+        except ValueError: # failed to parse time
+            pass
+
+        return {}
 
 class UserDataParser:
     pass

@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^[/]?$', 
         'windfriendly.accounts.views.profile_create', name='profile_create'),
-    url(r'^status[/]?$',
+    url(r'^status/(?P<utility>[a-zA-Z0-9_-]+)[[/]?$',
         'windfriendly.views.status', name='status'),
     url(r'^forecast[/]?$',
         'windfriendly.views.forecast', name='forecast'),

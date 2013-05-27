@@ -16,6 +16,16 @@ class BPA(models.Model):
   def get_title(self):
     return unidecode(self.wind)
 
+# All units are megawatts
+class NE(models.Model):
+    gas = models.FloatField()
+    nuclear = models.FloatField()
+    hydro = models.FloatField()
+    coal = models.FloatField()
+    other_renewable = models.FloatField()
+    other_fossil = models.FloatField()
+    date = models.DateTimeField()
+
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)
   total_watts = models.IntegerField() # capacity
