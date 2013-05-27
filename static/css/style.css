@@ -39,7 +39,7 @@ body a:hover{
 	margin:50px auto 0px;
 }
 .home-container{
-	height:800px;
+	height:880px;
 }
 .lock-header{
 	position:fixed;
@@ -492,10 +492,13 @@ label.error{
 	margin-top:5px;
 	display:block;
 }
+label {
+	opacity:0;
+	}
 textarea, input { outline: none; }
 .sign-up-form{
 	margin-top:20px;
-	margin-bottom:120px;
+	margin-bottom:20px;
 	position:relative;
 }
 .sign-up-form label.error{
@@ -509,7 +512,7 @@ textarea, input { outline: none; }
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[type="email"], .watttime-form input[type="text"], .watttime-form input[type="tel"], #commentform textarea{
+.watttime-form input[type="email"], .watttime-form input[type="text"], .watttime-form input[type="phone"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
