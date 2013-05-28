@@ -40,7 +40,7 @@ urlpatterns += patterns('accounts.views',
 
 # windfriendly API patterns
 urlpatterns +=  patterns('windfriendly.views',
-    url(r'^status[/]?$',
+    url(r'^status/(?P<utility>[a-zA-Z0-9_-]+)[/]?$',
         'status', name='status'),
     url(r'^forecast[/]?$',
         'forecast', name='forecast'),
