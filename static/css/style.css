@@ -503,7 +503,7 @@ label.error{
 }
 
 label {
-	opacity:0;
+	opacity:1;
 	}
 	
 textarea, input { outline: none; }

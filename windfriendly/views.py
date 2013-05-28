@@ -101,7 +101,7 @@ def status(request, utility):
         return data
         template = 'templates/default.json'
         return render_to_response(template, RequestContext(request,{'json':data}))
-    if utility == 'ne':
+    elif utility == 'ne':
         row = NE.objects.latest('date')
         percent_green = fraction_green_ne(row) * 100
         time = row.date.strftime('%Y-%m-%d %H:%M')
@@ -111,6 +111,8 @@ def status(request, utility):
                 'time': time,
                 'percent_green': round(percent_green, 3)
             }
+    else:
+    		return "Incorrect input of utility."
 
 @json_response
 def forecast(request):
