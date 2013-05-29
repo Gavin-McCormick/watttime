@@ -34,6 +34,13 @@ else:
 # common settings 
 ###############################
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'watttime.app@gmail.com'
+EMAIL_HOST_PASSWORD = '233fwef43'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
