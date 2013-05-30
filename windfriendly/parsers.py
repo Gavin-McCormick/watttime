@@ -1,4 +1,4 @@
-# Copyright 2013 The Climate Corporation
+# Copyright wattTime 2013
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Sunil Abraham (s.abraham@gmail.com)
+# Authors: Sunil Abraham, Eric Stansifer, Sam Marcellus
 
 
 import dateutil.parser as dp
@@ -298,7 +298,7 @@ class BPAParser(UtilityParser):
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : self.getLatestExistingDate()
+          'latest_date' : str(self.getLatestExistingDate())
         }
 
 # This was written to imitate the BPA Parser somewhat
