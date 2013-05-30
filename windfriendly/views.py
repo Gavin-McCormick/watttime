@@ -81,11 +81,11 @@ def ba_from_request(request):
       
 @json_response
 def status(request):
-    # get name and model for BA
-    ba_name, ba = ba_from_request(request)
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
 
     # get most recent row from model
-    row = ba.objects.latest('date')
+    row = ba_qset.latest('date')
 
     # get data from row
     percent_green = row.fraction_green() * 100.0
