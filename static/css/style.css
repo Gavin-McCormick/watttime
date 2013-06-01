@@ -39,7 +39,7 @@ body a:hover{
 	margin:50px auto 0px;
 }
 .home-container{
-	height:980px;
+	height:880px;
 }
 .lock-header{
 	position:fixed;
@@ -488,43 +488,40 @@ i.share-facebook{
 
 
 /* watttime form */
-label.error{
-	margin-top:5px;
-	display:block;
-}
-
 .errorlist {
-	color:#fff;
-	text-align:left;
-	position:absolute;
-	left:50%;
-	vertical-align:middle;
+	color:#ffff33;
 
 }
 
-label {
+ label {
 	opacity:1;
-	}
+	color:#fff;
 	
-textarea, input { outline: none; }
+} 
+	
+textarea, input { 
+	outline: none; 
+	
+}
 
 .sign-up-form{
 	margin-top:5px;
 	margin-bottom:5px;
 	position:relative;
 }
-.sign-up-form label.error{
+/*.sign-up-form label.error{
 	position:absolute;
 	left:50%;
 	width:180px;
-	text-align:center;
+	text-align:left;
 	color:#fff;
 	top:43px;
-}
+} */
+
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[type="email"], .watttime-form input[type="text"], .watttime-form input[type="phone"], #commentform textarea{
+.watttime-form input[name="name"], .watttime-form input[name="email"], .watttime-form input[name="phone"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
@@ -533,65 +530,33 @@ textarea, input { outline: none; }
 	-moz-border-radius-bottomleft: 3px;
 	border-top-left-radius: 3px;
 	border-bottom-left-radius: 3px;
-	padding:20px 20px;
-	height:20px;
-	width:230px;
-	color:#7f7f7f;
-	font-size:17px;
-	vertical-align: bottom;
-	margin:0px;
-	font-family:Helvetica, Arial, sans-serif;
-}
-.watttime-form-white input[type="text"]{
-	background:#fafafa;
-	border:1px solid #d4d4d4;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	padding:10px 20px;
-	margin-bottom:30px;
-	margin-top:5px;
-}
-.sign-up-form-fixed input[type="email"]{
-	padding:9px;
-	background:#fff;
-	width: 170px;
-	background: none repeat scroll 0 0 #FAFAFA;
-    border: 1px solid #ddd;
-    border-radius: 3px 3px 3px 3px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-}
-.sign-up-form-fixed label.error{
-	display:none!important;
-}
-.sign-up-form-fixed input[type="submit"]{
-	background:#339999;
-	border:none;
 	-webkit-border-top-right-radius: 3px;
 	-webkit-border-bottom-right-radius: 3px;
 	-moz-border-radius-topright: 3px;
 	-moz-border-radius-bottomright: 3px;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
+	padding:20px 20px;
+	height:20px;
+	width:290px;
+	color:#7f7f7f;
+	font-size:17px;
 	position:relative;
-	left:-5px;
-	height:40px;
-	width: 100px;
-	font-size:19px;
+	left:0px;
 	margin:0px;
-	font-family:"Source Sans Pro", sans-serif;
-	font-weight:700;
-	color:#fff;
+	font-family:Helvetica, Arial, sans-serif;
 }
-.watttime-form.sign-up-form-fixed input[type="submit"]:hover{
-	background:#339999;;
+
+.watttime-form input[name="state"] {
+	position:relative;
+	left:0px;
+	margin:0px;
 }
-.sign-up-form-fixed .watermark_container .watermark {
-	top:-11px!important;
-}
+
+
+
 .watttime-form.sign-up-form input[type="submit"]{
-	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #339999;
+	background:url(../images/icon-arrow-right.png) no-repeat 78px 23px #339999;
 	border:none;
 	-webkit-border-top-right-radius: 3px;
 	-webkit-border-bottom-right-radius: 3px;
@@ -602,13 +567,12 @@ textarea, input { outline: none; }
 	position:relative;
 	left:-5px;
 	height:60px;
-	width:180px;
+	width:100px;
 	font-size:19px;
 	margin:0px;
 	font-family:"Source Sans Pro", sans-serif;
 	font-weight:700;
 	color:#fff;
-	padding-right:20px;
 }
 .watttime-form input[type="submit"]:hover{
 	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #66cc99;
@@ -619,21 +583,7 @@ textarea, input { outline: none; }
 	transition: background-color 200ms linear;
 	cursor:pointer;
 }
-.sign-up-form-fixed input[type="submit"]:hover{
-	background:#111;
-}
-.watttime-form#commentform input[type="email"], .watttime-form#commentform input[type="text"],  #commentform textarea{
-	background:#eee;
-	margin-bottom:10px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	background: none repeat scroll 0 0 #FAFAFA;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-}
+
  #commentform textarea{
 	height:80px;
 }
@@ -801,7 +751,7 @@ h4.icon-line span{
 	top:2px;
 }
 
-/* modals */
+/* modals 
 
 .flywheel-modal{
 	background:#fff;
@@ -884,6 +834,9 @@ h4.icon-line span{
 .faq-wrap img{
 	cursor:pointer;
 }
+
+*/
+
 /* footer */
 .contact-form{
 	display:none;
