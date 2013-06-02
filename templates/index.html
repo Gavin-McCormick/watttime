@@ -75,7 +75,7 @@
 
 					<div class="top-nav">
 
-						<a href="http://WattTime.com" class="logo-link">
+						<a href="{% url 'home' %}" class="logo-link">
 
 							<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
 
@@ -91,20 +91,34 @@
 
 							<li>
 
-								<a href="{% url 'contact' %}">CONTACT</a>
+								<a href="{% url 'how-it-works' %}">HOW IT WORKS</a>
 
 							</li>
-
+							
 
 							<li>
+
 
 								<a href="{% url 'faq' %}">FAQ</a>
 
 							</li>
 
-						</ul>
+							<li>
 
-					
+
+								<a href="{% url 'about-us' %}">ABOUT US</a>
+
+							</li>
+
+							<li>
+
+								<a href="{% url 'contact' %}">CONTACT</a>
+
+							</li>
+
+
+						</ul>
+						
 
 					<div class="header-main">
 
@@ -403,7 +417,7 @@
 
 		<div class="copyright">
 
-			<a href="http://watttime.com" class="logo">
+			<a href="{% url 'home' %}" class="logo">
 
 				<img src="{% static "images/WattTimeWordLogo.png" %}" alt="WattTime" width="120">
 
@@ -411,7 +425,7 @@
 
 			<p>
 
-				Made by the team at <a href="http://watttime.com">WattTime</a>. Copyright 2013. <a href="http://watttime.com/terms-of-service">Terms of Service</a><br> 
+				Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013. <a href="{% url 'terms-of-service' %}">Terms of Service</a><br> 
 
 				Built in Berkeley, California with composted parts from around the world.
 

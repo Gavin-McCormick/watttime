@@ -42,7 +42,9 @@ urlpatterns += patterns('pages.views',
 	url(r'^about-us[/]?$', 
         'about_us', name='about-us'),                
     url(r'^how-it-works[/]?$', 
-        'how_it_works', name='how-it-works'),                
+        'how_it_works', name='how-it-works'),        
+    url(r'^terms-of-service[/]?$', 
+        'terms_of_service', name='terms-of-service'),                  
 )
 
 # accounts patterns

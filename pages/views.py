@@ -20,6 +20,10 @@ def how_it_works(request):
     return render(request, 'pages/placeholder.html', {'title': 'How WattTime works'})
 #    return render(request, 'pages/how_it_works.html')
 
+def terms_of_service(request):
+    return render(request, 'pages/placeholder.html', {'title': 'Terms of Service'})
+#    return render(request, 'pages/terms_of_service.html')
+
 
 
 def contact(request):
