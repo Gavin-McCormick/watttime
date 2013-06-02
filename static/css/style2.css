@@ -1,19 +1,46 @@
 /*
-Theme Name: Flywheel
-Description: Flywheel site!
-Author: Fancy Chap, LLC
-Author URI: http://getflywheel.com/
+Theme Name: 
+Description: 
+Author: 
+Author URI: 
 Version: 1.0
 */
 
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{font-size:100%;font:inherit;padding:0;border:0;margin:0;vertical-align:baseline}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}.sticky{}.bypostauthor{}.wp-caption{}.wp-caption-text{}.gallery-caption{}.alignright{}.alignleft{}.aligncenter{}
 
-#twitter-widget-1{
-	postion:relative;
-left:20px;
+select {
+	background:#fff;
+	border:none;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	padding:20px 20px;
+	height:20px;
+	width:230px;
+	color:#7f7f7f;
+	font-size:17px;
 }
 
-.faq-content img{
-width:auto!important;
-max-width:100%!important;
+
+
+select {
+    display: inline-block;
+    height: 60px;
+    padding: 20px 20px;
+    margin: 0px;
+    line-height: 20px;
+    vertical-align: bottom;
+
+	}
+
+input, button, select, textarea {
+    font-family:Helvetica, Arial, sans-serif;
+
+}
+
+label, select, button, input[type="button"], input[type="reset"], input[type="submit"], input[type="radio"], input[type="checkbox"] {
+    cursor: pointer;
 }
