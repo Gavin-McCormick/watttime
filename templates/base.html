@@ -13,9 +13,11 @@
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-	<title>{% block title %}WattTime{% endblock %}</title>
+<title>{% block title %}WattTime{% endblock %}</title>
 
 <link rel="stylesheet" type="text/css" href="{% static "css/style2.css" %}" />
+
+<link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" />
 
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
 
@@ -43,11 +45,7 @@
 
 <script src="{% static "js/jquery.easing.1.3.js" %} "></script>
 
-<script src="{% static "js/jquery.validate.js" %} "></script>
-
 <script src="{% static "js/jquery.simplemodal.1.4.3.min.js" %} "></script>
-
-<script src="{% static "js/gaparse.js" %} "></script>
 
 <script src="{% static "js/masonry.min.js" %} "></script>
 
@@ -56,8 +54,6 @@
 <script src="{% static "js/waypoints.min.js" %} "></script>
 
 <script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
-
-<script src="{% static "js/flywheel.js" %} "></script>
 
 <script src="{% static "js/respond.min.js" %} "></script>
 
@@ -117,7 +113,7 @@
 
 						</ul>
 						
-						<div class="header-main hidden-phone">
+						<div class="header-main">
 						{% block content %}
 		  				{% endblock %}
 		  				</div>

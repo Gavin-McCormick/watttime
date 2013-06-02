@@ -13,7 +13,7 @@ body{
 	background-position:center -580px;
 }
 body a{
-	color:#40b6cb;
+	color:#66cc99;
 	text-decoration:none;
 }
 body strong{
@@ -521,7 +521,7 @@ textarea, input {
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[name="name"], .watttime-form input[name="email"], .watttime-form input[name="phone"], #commentform textarea{
+.watttime-form input[name="name"], .watttime-form input[name="email"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
@@ -545,6 +545,7 @@ textarea, input {
 	left:0px;
 	margin:0px;
 	font-family:Helvetica, Arial, sans-serif;
+	
 }
 
 .watttime-form input[name="state"] {
@@ -567,7 +568,7 @@ textarea, input {
 	position:relative;
 	left:-5px;
 	height:60px;
-	width:100px;
+	width:105px;
 	font-size:19px;
 	margin:0px;
 	font-family:"Source Sans Pro", sans-serif;
@@ -839,25 +840,27 @@ h4.icon-line span{
 
 /* footer */
 .contact-form{
-	display:none;
 }
 .switch-page .contact-form{
 	display:block;
 }
-.contact-form input[type="text"], .contact-form input[type="email"]{
+.contact-form input[name="name"], .contact-form input[name="email"], .contact-form input[name="subject"], .contact-form input[name="message"]{
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	padding:10px 0px;
 	width:230px;
+	height:60px;
 	border:none;
-	padding:10px 20px;
+	padding:20px 20px;
 	background: none repeat scroll 0 0 #FAFAFA;
     padding-bottom: 7px;
     padding-top: 7px;
     border: 1px solid #CCCCCC;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+    color: #7F7F7F;
+    font-size: 17px;
+	font-family: Helvetica, Arial, sans-serf;
 }
 .contact-form textarea{
 	width:1130px;
@@ -878,7 +881,7 @@ h4.icon-line span{
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
 }
-.contact-form input[type="submit"], .flywheel-form-white input[type="submit"]{
+.contact-form input[type="submit"] {
 	background:#339999;
 	border:none;
 	-webkit-border-radius: 3px;
@@ -897,7 +900,7 @@ h4.icon-line span{
 	display:block;
 }
 .contact-form input[type="submit"]:hover{
-	background:#339999;
+	background:#66cc99;
 	-webkit-transition: background-color 200ms linear;
 	-moz-transition: background-color 200ms linear;
 	-o-transition: background-color 200ms linear;
@@ -908,7 +911,7 @@ h4.icon-line span{
 .contact-form h3{
 	font-family:"Source Sans Pro", sans-serif;
 	font-weight:200;
-	color:#7f7f7f;
+	color:#fff;
 	text-align:center;
 	font-size:44px;
 	margin-top:0px;

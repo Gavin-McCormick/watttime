@@ -8,13 +8,17 @@ from django import forms
 
 class User(models.Model):
     # name
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default='Name')
 
     # email
-    email = models.EmailField()
+    email = models.EmailField(default='Email')
 
     # US phone
+<<<<<<< HEAD
     phone = PhoneNumberField(blank = True)
+=======
+    phone = PhoneNumberField(default='Phone XXX-XXX-XXXX')
+>>>>>>> a338ef0010bf189e4c71e9fc5ee7b64f0df4f641
 
     # US state
     state = USStateField(default='MA')

@@ -8,6 +8,8 @@
 <p> Please enter the verification code below: </p>
 <form action="{% url 'profile_alpha' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
 	{% csrf_token %}
+	
+<p>Once you enter the 4 digit validation code below, you'll automatically be enrolled to receive occasional status updates from your regional electricity grid about the type of energy that's being produced. You can use those updates to decide if it's the right time for you to use electricity, or if your choice to wait can have a bigger impact in the near future.</p>
 	<input type="int" name="code"><br>
 	<input type="submit" value="Verify" /></p>
 </form>

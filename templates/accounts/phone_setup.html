@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-
 {% block title %}WattTime Alpha{% endblock %}
 
 {% block content %}
+
 
 <h1> Sign up for our message service! </h1>
 <p> We will send you a message to set up your phone. </p>
@@ -17,5 +17,7 @@
     <a href = "{% url 'home' %}">No thanks.</a>
     <p><input type="submit" name="phone_setup" value="Send message" /></p>
 </form>
+<h4>We will not share your phone number with any third parties.<a href = "{% url 'faq' %}" ><strong> Learn more.</strong></a></h4>
+
 
 {% endblock %}
