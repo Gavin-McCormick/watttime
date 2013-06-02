@@ -5,8 +5,9 @@
 {% block content %}
 
 <h1> Verify your phone! </h1>
-<p> Please enter the 4 digit verification code below: </p>
-<form action="{% url 'thanks' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+<p> Please enter the verification code below: </p>
+<form action="{% url 'profile_alpha' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+	{% csrf_token %}
 	<input type="int" name="code"><br>
 	<input type="submit" value="Verify" /></p>
 </form>

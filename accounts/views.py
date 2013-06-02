@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 
 def profile_create(request):
     # process submitted form
-    if request.method == 'POST':
+    if request.method == 'POST' and 'sign_up' in request.POST:
         form = NewUserForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # save form
@@ -15,7 +15,7 @@ def profile_create(request):
 
             # redirect
             if new_user.is_valid_state():
-                # to alpha sign-up
+                # to phone setup
                 url = reverse('phone_setup', kwargs={'userid': new_user.id})
                 return HttpResponseRedirect(url)
             else:
@@ -27,6 +27,26 @@ def profile_create(request):
 
     # display form
     return render(request, 'index.html', {'form': form})
+
+def phone_setup(request, userid):
+    # process submitted phone number
+    user = get_object_or_404(User, pk=userid)
+    if request.method == 'POST':
+    	form = UserPhoneForm(request.POST, instance = user)
+        if form.is_valid():# Check if the phone number entered is in the correct format
+            form.save()
+            # Redirect to the code verification
+            url = reverse('phone_verify', kwargs={'userid': userid})
+            return HttpResponseRedirect(url)
+    else:
+		form = UserPhoneForm(instance = user) # An unbound form
+
+    # display form
+    return render(request, 'accounts/phone_setup.html', {
+            'form': form,
+            'userid': userid,
+    })
+	
 
 def profile_alpha(request, userid):
     # process submitted form
@@ -50,32 +70,10 @@ def profile_alpha(request, userid):
             'userid': userid,
     })
 
-def phone_setup(request, userid):
-    # process submitted form
-    if request.method == 'POST':
-        form = UserPhoneForm(request.POST) # A form bound to the POST data
-        if form.is_valid(): # All validation rules pass
-            # save form
-            profile = User.objects.get(pk=userid)
-            print profile
-            profile.phone = form.phone
-            print profile.phone
-            profile.save()
-
-            # redirect
-            url = reverse('phone_verify', kwargs={'userid': user.id})
-            return HttpResponseRedirect(url)
-    else:
-        form = UserPhoneForm() # An unbound form
-
-    # display form
-    return render(request, 'accounts/phone_setup.html', {
-            'form': form,
-            'userid': userid,
-    })
-	
 def phone_verify(request, userid):
-    return render(request, 'accounts/phone_verify.html')
+    return render(request, 'accounts/phone_verify.html', {
+    		'userid': userid,
+    })
 
 def thanks(request):
     return render(request, 'accounts/thanks_no_alpha.html')
