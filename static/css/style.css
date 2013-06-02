@@ -863,8 +863,8 @@ h4.icon-line span{
 	font-family: Helvetica, Arial, sans-serf;
 }
 .contact-form textarea{
-	width:1130px;
-	height:70px;
+	width:800px;
+	height:170px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
