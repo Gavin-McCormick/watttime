@@ -8,21 +8,16 @@ from django import forms
 
 class User(models.Model):
     # name
-    name = models.CharField(max_length=100, default='Name')
+    name = models.CharField(max_length=100, help_text='Name')
 
     # email
-    email = models.EmailField(default='Email')
+    email = models.EmailField(help_text='Email')
 
     # US phone
-<<<<<<< HEAD
-    phone = PhoneNumberField(blank = True)
-=======
-    phone = PhoneNumberField(default='Phone XXX-XXX-XXXX')
->>>>>>> a338ef0010bf189e4c71e9fc5ee7b64f0df4f641
+    phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
 
     # US state
     state = USStateField(default='MA')
-
 
     # state logic
     VALID_STATE_CHOICES = ('MA',)
@@ -131,10 +126,6 @@ class NewUserForm(ModelForm):
     	super(NewUserForm, self).__init__(*args, **kwargs)
     	self.fields['phone'].widget = HiddenInput()
     	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
-
-
-class Phone(models.Model):
-	phone = PhoneNumberField()
 
 class UserPhoneForm(ModelForm):
 	class Meta:

@@ -12,26 +12,15 @@
     
     <p class="fieldWrapper">
         {{ form.email.errors }}
-        <a>{{ form.email }} </a>
-        <!--<label for="id_email">Email:</label>
-        -->
         {{ form.email }}
-    </p>
-    
-    <p class="fieldWrapper">
-        {{ form.state.errors }}
-        <!--<label for="id_state">State:</label>
-        -->
-        {{ form.state }}
     </p>
     
     <p class="fieldWrapper">
         {{ form.phone.errors }}
         {{ form.phone }}
     </p> 
-    <p><input type="submit" name="sign_up" value="Sign up" /></p>
-</form>
-   		<a class="dropdown-toggle" data-toggle="dropdown">{{ form.state }} </a>    
-    <input type="submit" value="Join!" />
-    </p>
+    <p class="fieldWrapper">
+        {{ form.state.errors }}
+        {{ form.state }}
+    <input type="submit" name="sign_up" value="Join!" /></p>
 </form>
