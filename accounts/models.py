@@ -111,6 +111,20 @@ class UserProfile(models.Model):
                                choices=GOALS_CHOICES,
                                )
 
+    def is_good_time_to_message(timestamp):
+        """ Returns True if hour/day are ok for user,
+            and if they haven't received a message too recently.
+            Returns False if not ok.
+        """
+        # TO DO
+        return True
+
+    def get_personalized_message(percent_green, percent_coal):
+        """ Select an appropriate message for a user
+            based on their preferences and the state of the grid.
+        """
+        # TO DO
+        return "It's a message"
 
 class SplashForm(ModelForm):
     class Meta:
