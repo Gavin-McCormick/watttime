@@ -2,35 +2,25 @@
 {{ form.as_p }}<input type="submit" value="YES LET'S!" />
 </form>  -->
 
-<form action="/" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+<form action="{% url 'home' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <p class="fieldWrapper">
         {{ form.name.errors }}
-        <!--<label for="id_name">Name:</label>
-        -->
         {{ form.name }}
     </p>
+    
     <p class="fieldWrapper">
         {{ form.email.errors }}
-        <!--<label for="id_email">Email:</label>
-        -->
         {{ form.email }}
     </p>
-    <p class="fieldWrapper">
-        {{ form.state.errors }}
-        <!--<label for="id_state">State:</label>
-        -->
-        {{ form.state }}
-   
-    <input type="submit" value="Join!" /></p>
-</form>
-
-
- 
-    <!--
+    
     <p class="fieldWrapper">
         {{ form.phone.errors }}
-        <label for="id_state">Phone:</label>
         {{ form.phone }}
-    </p> -->    
+    </p> 
+    <p class="fieldWrapper">
+        {{ form.state.errors }}
+        {{ form.state }}
+    <input type="submit" name="sign_up" value="Join!" /></p>
+</form>

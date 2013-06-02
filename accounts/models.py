@@ -1,22 +1,23 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, HiddenInput
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from django_localflavor_us.us_states import STATE_CHOICES
+from django.forms.widgets import HiddenInput
+from django import forms
 
 class User(models.Model):
     # name
-    name = models.CharField(max_length=100, default='Name')
+    name = models.CharField(max_length=100, help_text='Name')
 
     # email
-    email = models.EmailField(default='Email')
+    email = models.EmailField(help_text='Email')
 
     # US phone
-    phone = PhoneNumberField(default='Phone XXX-XXX-XXXX')
+    phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
 
     # US state
     state = USStateField(default='MA')
-
 
     # state logic
     VALID_STATE_CHOICES = ('MA',)
@@ -33,7 +34,8 @@ class User(models.Model):
         except KeyError:
             return self.state
 
-
+	def __unicode__(self):
+		return self.namepoll.id
 
 class UserProfile(models.Model):
 
@@ -119,25 +121,16 @@ class SplashForm(ModelForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = User
-        
-        fields = (
-        	'name',
-        	'email',
-        	'state',
-        #	'phone',
-        )
-        
-        #widget = {
-       # 	'phone': HiddenInput()
-       # }
+    
+    def __init__(self, *args, **kwargs):
+    	super(NewUserForm, self).__init__(*args, **kwargs)
+    	self.fields['phone'].widget = HiddenInput()
+    	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
 	class Meta:
 		model = User
-		
-		fields = (
-			'phone',
-		)
+		fields = ('phone',)
 
 
 class UserProfileForm(ModelForm):

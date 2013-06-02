@@ -1,21 +1,21 @@
 {% extends "base.html" %}
-
 {% block title %}WattTime Alpha{% endblock %}
 
 {% block content %}
 
+
 <h2>Welcome to WattTime!</h2>
 <p style="color:#ffff33">To begin using the service, please enter you phone number and hit 'verify'.</p>
-<form action="/" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+<!-- CAUTION: Must include in the action "phone_setup", or it will call the "profile_create" instead!!!!-->
+<form action="{% url 'phone_setup' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
 	{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.phone.errors }}
-        <!--<label for="id_state">Phone:</label>
-        -->
         {{ form.phone }}
-  <input type="submit" value="Verify   "/></p>
+    
+    <input type="submit" name="phone_setup" value="Send message   " /></p>
+    <a href = "{% url 'home' %}">No thanks.</a>
 </form>
-
 <h4>We will not share your phone number with any third parties.<a href = "{% url 'faq' %}" ><strong> Learn more.</strong></a></h4>
 
 
