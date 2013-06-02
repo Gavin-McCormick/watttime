@@ -34,8 +34,8 @@ class User(models.Model):
         except KeyError:
             return self.state
 
-	def __unicode__(self):
-		return self.namepoll.id
+    def __unicode__(self):
+        return self.namepoll.id
 
 class UserProfile(models.Model):
 
@@ -128,9 +128,9 @@ class NewUserForm(ModelForm):
     	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
-	class Meta:
-		model = User
-		fields = ('phone',)
+    class Meta:
+        model = User
+        fields = ('phone',)
 
 
 class UserProfileForm(ModelForm):
