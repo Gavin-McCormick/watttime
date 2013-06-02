@@ -36,7 +36,7 @@ def contact(request):
 				try:
 					send_mail(
 						cd['subject'],
-						cd['message'],
+						cd['email'] + '\n' + cd['message'],
 						cd['email'],
 						[EMAIL_HOST_USER],
 						fail_silently=False,
