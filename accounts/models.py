@@ -6,13 +6,13 @@ from django_localflavor_us.us_states import STATE_CHOICES
 
 class User(models.Model):
     # name
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default='Name')
 
     # email
-    email = models.EmailField()
+    email = models.EmailField(default='Email')
 
     # US phone
-    phone = PhoneNumberField()
+    phone = PhoneNumberField(default='Phone XXX-XXX-XXXX')
 
     # US state
     state = USStateField(default='MA')
