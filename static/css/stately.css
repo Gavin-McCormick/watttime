@@ -53,7 +53,7 @@
 
 #launch {
   color: #66cc99;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 #launch .me,
@@ -61,7 +61,10 @@
 #launch .ct,
 #launch .vt,
 #launch .nh,
-#launch .ma
+#launch .ma,
+#launch .ca,
+#launch .mi
+
 			 {
   color: #ffff33;
   opacity: 1;

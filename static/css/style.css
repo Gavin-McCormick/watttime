@@ -13,7 +13,7 @@ body{
 	background-position:center -580px;
 }
 body a{
-	color:#40b6cb;
+	color:#66cc99;
 	text-decoration:none;
 }
 body strong{
@@ -567,7 +567,7 @@ textarea, input {
 	position:relative;
 	left:-5px;
 	height:60px;
-	width:100px;
+	width:105px;
 	font-size:19px;
 	margin:0px;
 	font-family:"Source Sans Pro", sans-serif;
