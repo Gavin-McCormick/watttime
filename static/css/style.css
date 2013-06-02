@@ -521,7 +521,7 @@ textarea, input {
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[name="name"], .watttime-form input[name="email"], .watttime-form input[name="phone"], #commentform textarea{
+.watttime-form input[name="name"], .watttime-form input[name="email"], #commentform textarea{
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;
@@ -545,6 +545,7 @@ textarea, input {
 	left:0px;
 	margin:0px;
 	font-family:Helvetica, Arial, sans-serif;
+	
 }
 
 .watttime-form input[name="state"] {

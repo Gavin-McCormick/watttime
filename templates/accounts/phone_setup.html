@@ -5,16 +5,17 @@
 {% block content %}
 
 <h2>Welcome to WattTime!</h2>
-<p>To begin using the service, please enter you phone number and hit 'verify'.</p>
+<p style="color:#ffff33">To begin using the service, please enter you phone number and hit 'verify'.</p>
 <form action="/" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
 	{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.phone.errors }}
         <label for="id_state">Phone:</label>
         {{ form.phone }}
-  <input type="submit" value="Verify" /></p>
-
-    <a href = "{% url 'faq' %}" style="color:#ffff33">We promise not to share your phone number with any third parties.</a>
+  <input type="submit" value="Verify   "/></p>
 </form>
+
+<p>We will not share your phone number with any third parties.<a href = "{% url 'faq' %}" ><strong> Learn more.</strong></a></p>
+
 
 {% endblock %}

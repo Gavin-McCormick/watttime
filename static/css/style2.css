@@ -24,7 +24,23 @@ select {
 	font-size:17px;
 }
 
+.watttime-form input[name="phone"] {
+	background:#fff;
+	border:none;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	padding:20px 20px;
+	height:20px;
+	width:230px;
+	color:#7f7f7f;
+	font-size:17px;
+	    vertical-align: bottom;
 
+}
 
 select {
     display: inline-block;
