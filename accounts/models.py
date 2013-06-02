@@ -1,6 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, HiddenInput
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from django_localflavor_us.us_states import STATE_CHOICES
 
@@ -119,7 +119,25 @@ class SplashForm(ModelForm):
 class NewUserForm(ModelForm):
     class Meta:
         model = User
-    #    fields = '__all__'
+        
+        fields = (
+        	'name',
+        	'email',
+        	'state',
+        #	'phone',
+        )
+        
+        #widget = {
+       # 	'phone': HiddenInput()
+       # }
+
+class UserPhoneForm(ModelForm):
+	class Meta:
+		model = User
+		
+		fields = (
+			'phone',
+		)
 
 
 class UserProfileForm(ModelForm):

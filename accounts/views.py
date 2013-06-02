@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
-from accounts.models import NewUserForm, User, UserProfileForm
+from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm
 from django.core.urlresolvers import reverse
 
 def profile_create(request):
@@ -16,7 +16,7 @@ def profile_create(request):
             # redirect
             if new_user.is_valid_state():
                 # to alpha sign-up
-                url = reverse('profile_alpha', kwargs={'userid': new_user.id})
+                url = reverse('phone_setup', kwargs={'userid': new_user.id})
                 return HttpResponseRedirect(url)
             else:
                 # to generic thanks
@@ -49,6 +49,33 @@ def profile_alpha(request, userid):
             'form': form,
             'userid': userid,
     })
+
+def phone_setup(request, userid):
+    # process submitted form
+    if request.method == 'POST':
+        form = UserPhoneForm(request.POST) # A form bound to the POST data
+        if form.is_valid(): # All validation rules pass
+            # save form
+            profile = User.objects.get(pk=userid)
+            print profile
+            profile.phone = form.phone
+            print profile.phone
+            profile.save()
+
+            # redirect
+            url = reverse('phone_verify', kwargs={'userid': user.id})
+            return HttpResponseRedirect(url)
+    else:
+        form = UserPhoneForm() # An unbound form
+
+    # display form
+    return render(request, 'accounts/phone_setup.html', {
+            'form': form,
+            'userid': userid,
+    })
+	
+def phone_verify(request, userid):
+    return render(request, 'accounts/phone_verify.html')
 
 def thanks(request):
     return render(request, 'accounts/thanks_no_alpha.html')

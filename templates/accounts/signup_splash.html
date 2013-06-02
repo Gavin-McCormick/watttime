@@ -10,17 +10,21 @@
         <label for="id_name">Name:</label>
         {{ form.name }}
     </p>
-    
     <p class="fieldWrapper">
         {{ form.email.errors }}
         <label for="id_email">Email:</label>
-        <a>{{ form.email }} </a>
+        {{ form.email }}
     </p>
-    
     <p class="fieldWrapper">
         {{ form.state.errors }}
         <label for="id_state">State:</label>
-   		<a class="dropdown-toggle" data-toggle="dropdown">{{ form.state }} </a>    
-    <input type="submit" value="Join!" />
+        {{ form.state }}
     </p>
+    <!--
+    <p class="fieldWrapper">
+        {{ form.phone.errors }}
+        <label for="id_state">Phone:</label>
+        {{ form.phone }}
+    </p> -->    
+    <p><input type="submit" value="Send message" /></p>
 </form>

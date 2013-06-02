@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+
+<h1> Sign up for our message service! </h1>
+<p> We will send you a message to set up your phone. </p>
+<form action="/" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+	{% csrf_token %}
+    <p class="fieldWrapper">
+        {{ form.phone.errors }}
+        <label for="id_state">Phone:</label>
+        {{ form.phone }}
+    </p>  
+    <a href = "{% url 'home' %}">No thanks.</a>
+    <p><input type="submit" value="Send message" /></p>
+</form>
+
+{% endblock %}
