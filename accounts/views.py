@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm
 from django.core.urlresolvers import reverse
 from windfriendly.models import NE
+#from multi_choice import StringListField
 
 def profile_create(request):
     # process submitted form
@@ -67,6 +68,10 @@ def profile_alpha(request, userid):
             print goals
             new_profile = form.save(commit=False)
             new_profile.userid = User.objects.get(pk=userid)
+            new_profile.goal = ' '.join(each.encode('utf-8') for each in goals)
+            new_profile.goal = new_profile.goal[0]
+            #print type(new_profile.goal)
+            #print type(new_profile.goal[0])
             new_profile.save()
 
             # redirect
