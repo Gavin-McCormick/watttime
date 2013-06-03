@@ -159,12 +159,6 @@ class UserProfile(models.Model):
             else:
                 return dont_use_message(marginal_fuel)
 
-class SplashForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ('email',)
-
-
 class NewUserForm(ModelForm):
     class Meta:
         model = User
@@ -172,6 +166,8 @@ class NewUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
     	super(NewUserForm, self).__init__(*args, **kwargs)
     	self.fields['phone'].widget = HiddenInput()
+        self.fields['name'].initial = 'Name'
+        self.fields['email'].initial = 'Email'
     	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
