@@ -32,6 +32,7 @@ class NE(models.Model):
     coal = models.FloatField()
     other_renewable = models.FloatField()
     other_fossil = models.FloatField()
+    marginal_fuel = models.IntegerField() # See parsers.py for meaning
     date = models.DateTimeField(db_index=True)
 
     def total_load(self):
