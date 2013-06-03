@@ -19,7 +19,6 @@ def profile_create(request):
             # save form
             new_user = form.save(commit = False)
             new_user.verification_code = random.randint(100000, 999999)
-            print ("Generated code: {:d}".format(new_user.verification_code))
             new_user.is_verified = False
             new_user.save()
 
