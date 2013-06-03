@@ -5,6 +5,7 @@ from django_localflavor_us.models import PhoneNumberField, USStateField
 from django_localflavor_us.us_states import STATE_CHOICES
 from django.forms.widgets import HiddenInput
 from django import forms
+from accounts import messages
 
 class User(models.Model):
     # name
@@ -141,23 +142,23 @@ class UserProfile(models.Model):
         # marginal is renewable
         if marginal_fuel in ['wind', 'hydro', 'wood', 'landfill'] and goal in [0, 2, 3]:
             if ac == 1: # central
-                return use_central_ac_message(marginal_fuel)
+                return messages.use_central_ac_message(marginal_fuel)
             else:
-                return use_message(marginal_fuel)
+                return messages.use_message(marginal_fuel)
 
         # marginal is coal
         if marginal_fuel in ['coal'] and goal in [0, 1, 3]:
             if ac == 1: # central
-                return dont_use_central_ac_message(marginal_fuel)
+                return messages.dont_use_central_ac_message(marginal_fuel)
             else:
-                return dont_use_message(marginal_fuel)
+                return messages.dont_use_message(marginal_fuel)
 
         # marginal is oil
         if marginal_fuel in ['oil'] and goal in [0, 3]:
             if ac == 1: # central
-                return dont_use_central_ac_message(marginal_fuel)
+                return messages.dont_use_central_ac_message(marginal_fuel)
             else:
-                return dont_use_message(marginal_fuel)
+                return messages.messages.dont_use_message(marginal_fuel)
 
 class NewUserForm(ModelForm):
     class Meta:
