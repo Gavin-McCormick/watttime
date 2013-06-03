@@ -126,25 +126,24 @@ def forecast(request):
 
 @json_response
 def update(request, utility):
-  if utility == 'bpa':
-    parser = BPAParser(request.GET.get('file', None))
-  if utility == 'ne':
-    parser = NEParser()
-  if utility == 'gb':
-    xml_file = request.GET.get('file', '')
-    uid = request.GET.get('uid', None)
-    if uid is None:
-        name = request.GET.get('name', 'New User')
-        uid = User.objects.create(name=name).pk
-
-    parser = GreenButtonParser(xml_file, uid)
-  return parser.update()
+    if utility == 'bpa':
+        parser = BPAParser(request.GET.get('file', None))
+    if utility == 'ne':
+        parser = NEParser()
+    if utility == 'gb':
+        xml_file = request.GET.get('file', '')
+        uid = request.GET.get('uid', None)
+        if uid is None:
+            name = request.GET.get('name', 'New User')
+            uid = User.objects.create(name=name).pk
+        parser = GreenButtonParser(xml_file, uid)
+    return parser.update()
 
 @json_response
 def update_all(request):
-  bas = ['bpa', 'ne']
-  updates = [update(request, ba) for ba in bas]
-  return bas
+    bas = ['bpa', 'ne']
+    updates = [update(request, ba) for ba in bas]
+    return bas
 
 @json_response
 def history(request):

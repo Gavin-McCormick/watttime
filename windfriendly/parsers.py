@@ -153,7 +153,6 @@ class BPAParser(UtilityParser):
     def __init__(self, url = None):
 
         self.BPA_LOAD_URL = url or 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
-        print url
         #If we're pulling historical data, ignore latest
         if url is None:
             self.update_latest = True
