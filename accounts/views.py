@@ -61,9 +61,6 @@ def profile_alpha(request, userid):
             print goals
             new_profile = form.save(commit=False)
             new_profile.userid = User.objects.get(pk=userid)
-            new_profile.goal = ' '.join(each for each in goals)
-            new_profile.goal = ''
-            print new_profile.goal
             new_profile.save()
 
             # redirect
