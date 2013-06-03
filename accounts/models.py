@@ -36,8 +36,8 @@ class User(models.Model):
         except KeyError:
             return self.state
 
-	def __unicode__(self):
-		return self.namepoll.id
+    def __unicode__(self):
+        return self.namepoll.id
 
 class UserProfile(models.Model):
 
@@ -45,10 +45,10 @@ class UserProfile(models.Model):
 
     # air conditioning
     AC_CHOICES = (
-        (0, 'None'),
-        (1, 'Central A/C'),
-        (2, 'Window unit'),
-        (3, 'Other'),
+        (0, "None"),
+        (1, "Central A/C"),
+        (2, "Window unit"),
+        (3, "Other or don't know"),
         )
     ac = models.IntegerField('Air conditioner type',
                              blank=False, default=0,
@@ -60,7 +60,7 @@ class UserProfile(models.Model):
         (0, 'None'),
         (1, 'Electric'),
         (2, 'Gas'),
-        (3, 'Other'),
+        (3, "Other or don't know"),
         )
     furnace = models.IntegerField('Furnace type',
                                   blank=False, default=0,
@@ -104,7 +104,7 @@ class UserProfile(models.Model):
     GOALS_CHOICES = (
         (0, "I'm up for anything"),
         (1, 'Boycott coal'),
-        (2, 'Maximize wind'),
+        (2, 'Maximize renewables'),
         (3, 'Minimize carbon'),
         )
     goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?', blank=False,max_length=100,
@@ -120,6 +120,59 @@ choices=GOALS_CHOICES,)
     channel = models.IntegerField('How did you hear of WattTime?', blank=False,default=0, choices = CHANNEL_CHOICES)
     #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
     
+   # goal = models.IntegerField('Which goals would you like to receive notifications about?',
+   #                            blank=False, default=0,
+   #                           # blank=True,
+   #                            choices=GOALS_CHOICES,
+   #                            )
+
+    def is_good_time_to_message(timestamp):
+        """ Returns True if hour/day are ok for user,
+            and if they haven't received a message too recently.
+            Returns False if not ok.
+        """
+        # TO DO
+        current_hour = 0
+
+        # bools
+        hour_test = current_hour > 8 and current_hour < 22
+        recent_test = False # has text been sent recently, based on database
+
+        if hour_test and recent_test:
+            return True
+        else:
+            return False
+
+    def get_personalized_message(percent_green, percent_coal,
+                                 marginal_fuel):
+        """ Select an appropriate message for a user
+            based on their preferences and the state of the grid,
+            or None.
+        """
+        # if there's no marginal, there's no message
+        if marginal_fuel is None:
+            return None
+
+        # marginal is renewable
+        if marginal_fuel in ['wind', 'hydro', 'wood', 'landfill'] and goal in [0, 2, 3]:
+            if ac == 1: # central
+                return use_central_ac_message(marginal_fuel)
+            else:
+                return use_message(marginal_fuel)
+
+        # marginal is coal
+        if marginal_fuel in ['coal'] and goal in [0, 1, 3]:
+            if ac == 1: # central
+                return dont_use_central_ac_message(marginal_fuel)
+            else:
+                return dont_use_message(marginal_fuel)
+
+        # marginal is oil
+        if marginal_fuel in ['oil'] and goal in [0, 3]:
+            if ac == 1: # central
+                return dont_use_central_ac_message(marginal_fuel)
+            else:
+                return dont_use_message(marginal_fuel)
 
 class SplashForm(ModelForm):
     class Meta:
@@ -137,9 +190,9 @@ class NewUserForm(ModelForm):
     	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
-	class Meta:
-		model = User
-		fields = ('phone',)
+    class Meta:
+        model = User
+        fields = ('phone',)
 
 
 class UserProfileForm(ModelForm):

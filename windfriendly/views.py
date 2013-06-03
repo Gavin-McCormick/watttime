@@ -141,6 +141,12 @@ def update(request, utility):
   return parser.update()
 
 @json_response
+def update_all(request):
+  bas = ['bpa', 'ne']
+  updates = [update(request, ba) for ba in bas]
+  return bas
+
+@json_response
 def history(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)

@@ -25,8 +25,6 @@ import datetime
 import pytz
 import os
 
-from twilio.rest import TwilioRestClient
-
 from dateutil.relativedelta import relativedelta
 
 from windfriendly.models import BPA, NE, MeterReading, User
@@ -34,14 +32,6 @@ from windfriendly.models import BPA, NE, MeterReading, User
 import xml.etree.ElementTree as ET
 
 from django.core.exceptions import ObjectDoesNotExist
-
-
-def send_text(msg):
-    pass
-    account = os.environ.get('TWILIO_ACCOUNT_SID', '')
-    token = os.environ.get('TWILIO_AUTH_TOKEN', '')
-    client = TwilioRestClient(account = account, token = token)
-    client.sms.messages.create(to='+18575403535', from_='+14153668567', body=msg)
 
 class UtilityParser():
     pass

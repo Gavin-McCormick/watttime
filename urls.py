@@ -26,6 +26,8 @@ from django.conf import settings
 urlpatterns = patterns('',
     url(r'^[/]?$', 
         'accounts.views.profile_create', name='home'),
+    url(r'^ping5[/]?$', 
+        'windfriendly.views.update_all', name='ping5'),
   #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
@@ -42,7 +44,9 @@ urlpatterns += patterns('pages.views',
 	url(r'^about-us[/]?$', 
         'about_us', name='about-us'),                
     url(r'^how-it-works[/]?$', 
-        'how_it_works', name='how-it-works'),                
+        'how_it_works', name='how-it-works'),        
+    url(r'^terms-of-service[/]?$', 
+        'terms_of_service', name='terms-of-service'),                  
 )
 
 # accounts patterns
