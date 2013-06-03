@@ -191,6 +191,11 @@ LOGGING = {
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# twilio account info
+TWILIO_ACCOUNT_SID = ''
+TWILIO_AUTH_TOKEN = ''
+WATTTIME_PHONE = ''
+
 # for django-allauth
 AUTHENTICATION_BACKENDS = (
   #  "allauth.account.auth_backends.AuthenticationBackend",
