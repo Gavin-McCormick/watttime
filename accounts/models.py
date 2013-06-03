@@ -156,25 +156,25 @@ class UserProfile(models.Model):
             or None.
         """
         # if there's no marginal, there's no message
-        if marginal_fuel is None:
+        if marginal_fuel == 'None':
             return None
 
         # marginal is renewable
-        if marginal_fuel in ['wind', 'hydro', 'wood', 'landfill'] and goal in [0, 2, 3]:
+        if marginal_fuel in ['Wind', 'Hydro', 'Wood', 'Refuse'] and goal in [0, 2, 3]:
             if ac == 1: # central
                 return messages.use_central_ac_message(marginal_fuel)
             else:
                 return messages.use_message(marginal_fuel)
 
         # marginal is coal
-        if marginal_fuel in ['coal'] and goal in [0, 1, 3]:
+        if marginal_fuel in ['Coal'] and goal in [0, 1, 3]:
             if ac == 1: # central
                 return messages.dont_use_central_ac_message(marginal_fuel)
             else:
                 return messages.dont_use_message(marginal_fuel)
 
         # marginal is oil
-        if marginal_fuel in ['oil'] and goal in [0, 3]:
+        if marginal_fuel in ['Oil'] and goal in [0, 3]:
             if ac == 1: # central
                 return messages.dont_use_central_ac_message(marginal_fuel)
             else:

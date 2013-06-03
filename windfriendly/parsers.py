@@ -291,6 +291,9 @@ class BPAParser(UtilityParser):
           'latest_date' : str(self.getLatestExistingDate())
         }
 
+# Approximately in order from bad to good
+ne_fuels = ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood', 'Nuclear', 'Solar', 'Wind', 'None']
+
 # This was written to imitate the BPA Parser somewhat
 class NEParser(UtilityParser):
     def __init__(self, request_method = None):
@@ -316,6 +319,8 @@ class NEParser(UtilityParser):
             ne.other_renewable = 0
             ne.other_fossil = 0
 
+            marginal_fuel = len(ne_fuels) - 1
+
             for i in json:
                 if timestamp is None:
                     timestamp = i['BeginDate']
@@ -338,6 +343,12 @@ class NEParser(UtilityParser):
                     ne.other_renewable += gen
                 else: # Unrecognized fuel
                     ne.other_fossil += gen
+
+                if i['MarginalFlag'] == 'Y':
+                    if fuel in ne_fuels:
+                        marginal_fuel = min(marginal_fuel, ne_fuels.index(fuel))
+
+            ne.marginal_fuel = marginal_fuel
 
             if timestamp is None:
                 ne.date = None # Is this okay? Don't know.
