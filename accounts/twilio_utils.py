@@ -1,6 +1,7 @@
 from twilio.rest import TwilioRestClient
 from datetime import date
 from accounts.models import UserProfile
+from settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, WATTTIME_PHONE
 
 def send_text(msg, to):
     """ Send a text message to a phone number.
@@ -9,7 +10,7 @@ def send_text(msg, to):
     try:
         client = TwilioRestClient(account=TWILIO_ACCOUNT_SID,
                                   token=TWILIO_AUTH_TOKEN)
-        client.sms.messages.create(to=to,
+        c = client.sms.messages.create(to=to,
                                    from_=WATTTIME_PHONE,
                                    body=msg)
         return True
