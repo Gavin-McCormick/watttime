@@ -9,23 +9,30 @@ import twilio_utils
 import random
 #from multi_choice import StringListField
 
+def choose_new_id():
+    userid = random.randint(10000000, 99999999)
+    try:
+        User.objects.get(pk=userid)
+    except:
+        return userid
+    return choose_new_id()
+
 def profile_create(request):
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:
-        print (dir(request.POST))
-        print (request.POST)
         form = NewUserForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # save form
             new_user = form.save(commit = False)
             new_user.verification_code = random.randint(100000, 999999)
             new_user.is_verified = False
+            new_user.userid = choose_new_id()
             new_user.save()
 
             # redirect
             if new_user.is_valid_state():
                 # to phone setup
-                url = reverse('phone_setup', kwargs={'userid': new_user.id})
+                url = reverse('phone_setup', kwargs={'userid': new_user.userid})
                 return HttpResponseRedirect(url)
             else:
                 # to generic thanks

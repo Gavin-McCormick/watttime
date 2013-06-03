@@ -21,6 +21,7 @@ class User(models.Model):
 
     verification_code = models.IntegerField()
     is_verified = models.BooleanField()
+    userid = models.IntegerField(primary_key=True)
 
     # US state
     state = USStateField(default='MA')
@@ -186,7 +187,7 @@ class UserProfile(models.Model):
 class NewUserForm(ModelForm):
     class Meta:
         model = User
-        exclude = ['verification_code', 'is_verified']
+        exclude = ['verification_code', 'is_verified', 'userid']
 
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
