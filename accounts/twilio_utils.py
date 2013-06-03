@@ -6,7 +6,6 @@ def send_text(msg, to):
     """ Send a text message to a phone number.
         Return success status (True or False).
     """
-    # TO DO: add twilio vars to settings.py
     try:
         client = TwilioRestClient(account=TWILIO_ACCOUNT_SID,
                                   token=TWILIO_AUTH_TOKEN)

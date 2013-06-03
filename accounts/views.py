@@ -35,6 +35,9 @@ def phone_setup(request, userid):
     	form = UserPhoneForm(request.POST, instance = user)
         if form.is_valid():# Check if the phone number entered is in the correct format
             form.save()
+            # send text here!!! TO DO
+
+            
             # Redirect to the code verification
             url = reverse('phone_verify', kwargs={'userid': userid})
             return HttpResponseRedirect(url)
