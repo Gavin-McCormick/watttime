@@ -2,9 +2,11 @@ from django.db import models
 #from django.contrib.auth.models import User
 from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect
 from django_localflavor_us.models import PhoneNumberField, USStateField
+from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
 from django.forms.widgets import HiddenInput
 from django import forms
+from multi_choice import *
 
 class User(models.Model):
     # name
@@ -105,11 +107,24 @@ class UserProfile(models.Model):
         (2, 'Maximize renewables'),
         (3, 'Minimize carbon'),
         )
-    goal = models.IntegerField('Which goals would you like to receive notifications about?',
-                               blank=False, default=0,
-                              # blank=True,
-                               choices=GOALS_CHOICES,
-                               )
+    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?', blank=False,max_length=100,
+choices=GOALS_CHOICES,)
+
+    # On how user learned about WattTime
+    CHANNEL_CHOICES = (
+        (0, "Sierra Club"),
+        (1, "Internet"),
+        (2, "Word of mouth"),
+        (3, "Others"),
+        )
+    channel = models.IntegerField('How did you hear of WattTime?', blank=False,default=0, choices = CHANNEL_CHOICES)
+    #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
+    
+   # goal = models.IntegerField('Which goals would you like to receive notifications about?',
+   #                            blank=False, default=0,
+   #                           # blank=True,
+   #                            choices=GOALS_CHOICES,
+   #                            )
 
     def is_good_time_to_message(timestamp):
         """ Returns True if hour/day are ok for user,
@@ -177,15 +192,18 @@ class UserPhoneForm(ModelForm):
 
 
 class UserProfileForm(ModelForm):
+
+
     class Meta:
         model = UserProfile
         exclude = ['userid']
         widgets = {
-            'goal': RadioSelect(),
+            #'goal': RadioSelect(),
             'ac': RadioSelect(),
             'furnace': RadioSelect(),
             'water_heater': RadioSelect(),
             'text_freq': RadioSelect(),
+            'channel': RadioSelect(),
           #  'weekend_sendtext_hours': CheckboxSelectMultiple(),
           #  'weekday_sendtext_hours': CheckboxSelectMultiple(),
             }

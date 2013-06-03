@@ -57,6 +57,8 @@ def profile_alpha(request, userid):
         form = UserProfileForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # save form
+            goals = form.cleaned_data.get('goal')
+            print goals
             new_profile = form.save(commit=False)
             new_profile.userid = User.objects.get(pk=userid)
             new_profile.save()
