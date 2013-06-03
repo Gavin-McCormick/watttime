@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm
 from django.core.urlresolvers import reverse
+from windfriendly.models import NE
 
 def profile_create(request):
     # process submitted form
@@ -25,8 +26,13 @@ def profile_create(request):
     else:
         form = NewUserForm() # An unbound form
 
+    # Compute current greenery for NE
+    datum = NE.objects.all().latest('date')
+    percent_green = datum.fraction_green() * 100.0
+    greenery = str(int(percent_green + 0.5)) + '%'
+
     # display form
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'index.html', {'form': form, 'current_green' : greenery})
 
 def phone_setup(request, userid):
     # process submitted phone number
