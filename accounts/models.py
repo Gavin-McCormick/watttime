@@ -6,7 +6,7 @@ from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
 from django.forms.widgets import HiddenInput
 from django import forms
-from multi_choice import MultiSelectField
+from multi_choice import *
 
 class User(models.Model):
     # name
@@ -38,17 +38,6 @@ class User(models.Model):
 
 	def __unicode__(self):
 		return self.namepoll.id
-
-# Multi-choice for goal field
-class Choices(models.Model):
-    GOALS_CHOICES = (
-        (0, "I'm up for anything"),
-        (1, 'Boycott coal'),
-        (2, 'Maximize wind'),
-        (3, 'Minimize carbon'),
-        )
-    description = models.IntegerField('Which goals would you like to receive notifications about?',blank=False, default=0,
-choices=GOALS_CHOICES,)
 
 class UserProfile(models.Model):
 
@@ -118,16 +107,16 @@ class UserProfile(models.Model):
         (2, 'Maximize wind'),
         (3, 'Minimize carbon'),
         )
-    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?', blank=False,
+    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?', blank=False,max_length=100,
 choices=GOALS_CHOICES,)
 
     # On how user learned about WattTime
-    CHANNEL_CHOICES = [
+    CHANNEL_CHOICES = (
         (0, "Sierra Club"),
         (1, "Internet"),
         (2, "Word of mouth"),
         (3, "Others"),
-        ]
+        )
     channel = models.IntegerField('How did you hear of WattTime?', blank=False,default=0, choices = CHANNEL_CHOICES)
     #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
     
@@ -154,6 +143,7 @@ class UserPhoneForm(ModelForm):
 
 
 class UserProfileForm(ModelForm):
+
 
     class Meta:
         model = UserProfile
