@@ -55,7 +55,8 @@ def phone_setup(request, userid):
             for c in user.phone:
                 if c in '0123456789':
                     phonenumber += str(c)
-            twilio_utils.send_text(str(verification_code), phonenumber)
+            sent = twilio_utils.send_text(str(verification_code), phonenumber)
+            print sent
 
             # Redirect to the code verification
             url = reverse('phone_verify', kwargs={'userid': userid})
