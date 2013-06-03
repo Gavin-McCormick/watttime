@@ -19,6 +19,9 @@ class User(models.Model):
     # US phone
     phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
 
+    verification_code = models.IntegerField()
+    is_verified = models.BooleanField()
+
     # US state
     state = USStateField(default='MA')
 
@@ -183,13 +186,14 @@ class UserProfile(models.Model):
 class NewUserForm(ModelForm):
     class Meta:
         model = User
-    
+        exclude = ['verification_code', 'is_verified']
+
     def __init__(self, *args, **kwargs):
-    	super(NewUserForm, self).__init__(*args, **kwargs)
-    	self.fields['phone'].widget = HiddenInput()
+        super(NewUserForm, self).__init__(*args, **kwargs)
+        self.fields['phone'].widget = HiddenInput()
         self.fields['name'].initial = 'Name'
         self.fields['email'].initial = 'Email'
-    	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
+        #self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
     class Meta:
@@ -213,3 +217,6 @@ class UserProfileForm(ModelForm):
           #  'weekend_sendtext_hours': CheckboxSelectMultiple(),
           #  'weekday_sendtext_hours': CheckboxSelectMultiple(),
             }
+
+class UserVerificationForm(forms.Form):
+    verification_code = forms.IntegerField()

@@ -2,18 +2,26 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
-from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm
+from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
 from django.core.urlresolvers import reverse
 from windfriendly.models import NE
+import twilio_utils
+import random
 #from multi_choice import StringListField
 
 def profile_create(request):
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:
+        print (dir(request.POST))
+        print (request.POST)
         form = NewUserForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # save form
-            new_user = form.save()
+            new_user = form.save(commit = False)
+            new_user.verification_code = random.randint(100000, 999999)
+            print ("Generated code: {:d}".format(new_user.verification_code))
+            new_user.is_verified = False
+            new_user.save()
 
             # redirect
             if new_user.is_valid_state():
@@ -39,26 +47,36 @@ def phone_setup(request, userid):
     # process submitted phone number
     user = get_object_or_404(User, pk=userid)
     if request.method == 'POST':
-    	form = UserPhoneForm(request.POST, instance = user)
+        form = UserPhoneForm(request.POST, instance = user)
         if form.is_valid():# Check if the phone number entered is in the correct format
             form.save()
-            # send text here!!! TO DO
+            verification_code = user.verification_code
+            print ("Sending verification code: {:d}".format(verification_code))
+            phonenumber = '+1'
+            for c in user.phone:
+                if c in '0123456789':
+                    phonenumber += str(c)
+            twilio_utils.send_text(str(verification_code), phonenumber)
 
-            
             # Redirect to the code verification
             url = reverse('phone_verify', kwargs={'userid': userid})
             return HttpResponseRedirect(url)
     else:
-		form = UserPhoneForm(instance = user) # An unbound form
+        form = UserPhoneForm(instance = user) # An unbound form
 
     # display form
     return render(request, 'accounts/phone_setup.html', {
             'form': form,
             'userid': userid,
     })
-	
 
 def profile_alpha(request, userid):
+    user = get_object_or_404(User, pk=userid)
+
+    if not user.is_verified:
+        url = reverse('phone_setup', kwargs={'userid': userid})
+        return HttpResponseRedirect(url)
+
     # process submitted form
     if request.method == 'POST':
         form = UserProfileForm(request.POST) # A form bound to the POST data
@@ -67,7 +85,7 @@ def profile_alpha(request, userid):
             goals = form.cleaned_data.get('goal')
             print goals
             new_profile = form.save(commit=False)
-            new_profile.userid = User.objects.get(pk=userid)
+            new_profile.userid = user
             new_profile.goal = ' '.join(each.encode('utf-8') for each in goals)
             new_profile.goal = new_profile.goal[0]
             #print type(new_profile.goal)
@@ -87,8 +105,33 @@ def profile_alpha(request, userid):
     })
 
 def phone_verify(request, userid):
+    user = get_object_or_404(User,pk=userid)
+
+    if user.is_verified:
+        url = reverse('profile_alpha', kwargs={'userid':userid})
+        return HttpResponseRedirect(url)
+
+    if request.method == 'POST':
+        form = UserVerificationForm(request.POST)
+        if form.is_valid():
+            code1 = form.cleaned_data['verification_code']
+            code2 = user.verification_code
+            print ("Checking codes: {:d} vs. {:d}".format(code1, code2))
+            if code1 == code2:
+                user.is_verified = True
+                user.save()
+                url = reverse('profile_alpha', kwargs={'userid':userid})
+                return HttpResponseRedirect(url)
+            else:
+                # Meh
+                url = reverse('phone_setup', kwargs={'userid': userid})
+                return HttpResponseRedirect(url)
+    else:
+        form = UserVerificationForm()
+
     return render(request, 'accounts/phone_verify.html', {
-    		'userid': userid,
+        'form': form,
+        'userid': userid,
     })
 
 def thanks(request):

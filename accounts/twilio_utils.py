@@ -21,7 +21,7 @@ def get_latest_text(from_):
         Return body of text message, or None.
     """
     client = TwilioRestClient(account=TWILIO_ACCOUNT_SID,
-                              token=TWILIO_AUTH_TOKEN)    
+                              token=TWILIO_AUTH_TOKEN)
     messages = client.sms.messages.list(to=WATTTIME_PHONE,
                                         from_=from_,
                                         date_sent=date.today())
@@ -29,11 +29,3 @@ def get_latest_text(from_):
         return messages[0].body
     except IndexError:
         return None
-    
-def is_correct_verification(msg, expected code):
-    """ Return True if verification code is correct, 
-        False if not.
-    """
-    # TO DO
-    return True
-

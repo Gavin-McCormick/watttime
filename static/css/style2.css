@@ -24,7 +24,7 @@ select {
 	font-size:17px;
 }
 
-.watttime-form input[name="phone"], .watttime-form input[name="code"] {
+.watttime-form input[name="phone"], .watttime-form input[name="code"], .watttime-form input[name="verification_code"] {
 	background:#fff;
 	border:none;
 	-webkit-border-top-left-radius: 3px;

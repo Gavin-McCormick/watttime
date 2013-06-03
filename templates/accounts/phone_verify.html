@@ -5,12 +5,15 @@
 {% block content %}
 
 <h2>Please Verify Your Device</h2>
-<p>Please enter the 4 digit verification code below:</p>
+<p>Please enter the 6 digit verification code below:</p>
 
-<form action="{% url 'profile_alpha' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+<form action="{% url 'phone_verify' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
 	{% csrf_token %}
-	<input type="int" name="code">
-	<input type="submit" value="Verify   " /></p>
+        <p class="fieldWrapper">
+        {{ form.verification_code.errors }}
+        {{ form.verification_code }}
+        <!-- <input type="int" name="code"> -->
+	<input type="submit" name="phone_verify" value="Verify   " /></p>
 </form>
 
 
