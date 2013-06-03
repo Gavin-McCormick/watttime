@@ -6,6 +6,7 @@ from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
 from django.forms.widgets import HiddenInput
 from django import forms
+from accounts import messages
 from multi_choice import *
 
 class User(models.Model):
@@ -107,17 +108,22 @@ class UserProfile(models.Model):
         (2, 'Maximize renewables'),
         (3, 'Minimize carbon'),
         )
-    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?', blank=False,max_length=100,
-choices=GOALS_CHOICES,)
+    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?',
+                            blank=False,
+                            max_length=100,
+                            choices=GOALS_CHOICES,)
 
     # On how user learned about WattTime
     CHANNEL_CHOICES = (
         (0, "Sierra Club"),
         (1, "Internet"),
         (2, "Word of mouth"),
-        (3, "Others"),
+        (3, "Other"),
         )
-    channel = models.IntegerField('How did you hear of WattTime?', blank=False,default=0, choices = CHANNEL_CHOICES)
+    channel = models.IntegerField('How did you hear of WattTime?',
+                                  blank=False,
+                                  default=0,
+                                  choices=CHANNEL_CHOICES)
     #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
     
    # goal = models.IntegerField('Which goals would you like to receive notifications about?',
@@ -156,29 +162,23 @@ choices=GOALS_CHOICES,)
         # marginal is renewable
         if marginal_fuel in ['wind', 'hydro', 'wood', 'landfill'] and goal in [0, 2, 3]:
             if ac == 1: # central
-                return use_central_ac_message(marginal_fuel)
+                return messages.use_central_ac_message(marginal_fuel)
             else:
-                return use_message(marginal_fuel)
+                return messages.use_message(marginal_fuel)
 
         # marginal is coal
         if marginal_fuel in ['coal'] and goal in [0, 1, 3]:
             if ac == 1: # central
-                return dont_use_central_ac_message(marginal_fuel)
+                return messages.dont_use_central_ac_message(marginal_fuel)
             else:
-                return dont_use_message(marginal_fuel)
+                return messages.dont_use_message(marginal_fuel)
 
         # marginal is oil
         if marginal_fuel in ['oil'] and goal in [0, 3]:
             if ac == 1: # central
-                return dont_use_central_ac_message(marginal_fuel)
+                return messages.dont_use_central_ac_message(marginal_fuel)
             else:
-                return dont_use_message(marginal_fuel)
-
-class SplashForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ('email',)
-
+                return messages.messages.dont_use_message(marginal_fuel)
 
 class NewUserForm(ModelForm):
     class Meta:
@@ -187,6 +187,8 @@ class NewUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
     	super(NewUserForm, self).__init__(*args, **kwargs)
     	self.fields['phone'].widget = HiddenInput()
+        self.fields['name'].initial = 'Name'
+        self.fields['email'].initial = 'Email'
     	#self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
