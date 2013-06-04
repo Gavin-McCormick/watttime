@@ -192,8 +192,8 @@ class NewUserForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
         self.fields['phone'].widget = HiddenInput()
-        self.fields['name'].initial = 'Name'
-        self.fields['email'].initial = 'Email'
+        self.fields['name'].widget.attrs['placeholder'] = u'Name'
+        self.fields['email'].widget.attrs['placeholder'] = u'Email'
         #self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
 
 class UserPhoneForm(ModelForm):
