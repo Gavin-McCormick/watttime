@@ -27,7 +27,7 @@ urlpatterns = patterns('',
     url(r'^[/]?$',
         'accounts.views.profile_create', name='home'),
     url(r'^ping5[/]?$',
-        'windfriendly.views.update_all', name='ping5'),
+        'workers.views.recurring_events', name='ping5'),
   #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
