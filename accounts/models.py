@@ -227,7 +227,7 @@ class UserProfileForm(ModelForm):
             }
 
 class UserVerificationForm(forms.Form):
-    verification_code = forms.IntegerField()
+    verification_code = forms.IntegerField(min_value=100000, max_value=999999, error_messages = {'min_value': 'Please make sure to enter a 6 digits code', 'max_value' : 'Please make sure to enter a 6 digits code'})
 
     def __init__(self, *args, **kwargs):
         super(UserVerificationForm, self).__init__(*args, **kwargs)

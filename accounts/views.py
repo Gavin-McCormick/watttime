@@ -56,14 +56,7 @@ def phone_setup(request, userid):
         form = UserPhoneForm(request.POST, instance = user)
         if form.is_valid():# Check if the phone number entered is in the correct format
             form.save()
-            verification_code = user.verification_code
-            print ("Sending verification code: {:d}".format(verification_code))
-            phonenumber = '+1'
-            for c in user.phone:
-                if c in '0123456789':
-                    phonenumber += str(c)
-            sent = twilio_utils.send_text(str(verification_code), phonenumber)
-            print sent
+            send_verification_code(user)
 
             # Redirect to the code verification
             url = reverse('phone_verify', kwargs={'userid': userid})
@@ -110,10 +103,33 @@ def profile_alpha(request, userid):
             'form': form,
             'userid': userid,
     })
+    
+def send_verification_code(user):
+    verification_code = user.verification_code
+    print ("Sending verification code: {:d}".format(verification_code))
+    phonenumber = '+1'
+    for c in user.phone:
+        if c in '0123456789':
+            phonenumber += str(c)
+    sent = twilio_utils.send_text(str(verification_code), phonenumber)
+    print sent
 
 def phone_verify(request, userid):
     user = get_object_or_404(User,pk=userid)
+    print request.get_full_path()[-6:]
+    if "resend" == request.get_full_path()[-6:]:
+        print "resending message..."
+        send_verification_code(user)
+        form = UserVerificationForm()
+        return render(request, 'accounts/phone_verify.html', {
+    		'form': form,
+    		'userid': userid,
+    		'reenter': False,
+    		'resend' : True,
+    		'phone' : user.phone,
+        })
 
+    # Note: code after this won't get called until event triggers (this is like a listener)
     if user.is_verified:
         url = reverse('profile_alpha', kwargs={'userid':userid})
         return HttpResponseRedirect(url)
@@ -124,6 +140,8 @@ def phone_verify(request, userid):
             code1 = form.cleaned_data['verification_code']
             code2 = user.verification_code
             print ("Checking codes: {:d} vs. {:d}".format(code1, code2))
+            
+            
             if code1 == code2:
                 user.is_verified = True
                 user.save()
@@ -131,14 +149,19 @@ def phone_verify(request, userid):
                 return HttpResponseRedirect(url)
             else:
                 # Meh
-                url = reverse('phone_setup', kwargs={'userid': userid})
-                return HttpResponseRedirect(url)
+                #url = reverse('phone_verify', kwargs={'userid': userid, 'reenter' :True})
+                return render(request, 'accounts/phone_verify.html', {'form': form, 'userid' : userid, 'reenter' : True, 'resend' : False, 'phone' : user.phone})
+                #url = reverse('phone_setup', kwargs={'userid': userid})
+                #return HttpResponseRedirect(url)
     else:
         form = UserVerificationForm()
 
     return render(request, 'accounts/phone_verify.html', {
         'form': form,
         'userid': userid,
+        'reenter': False,
+        'resend' : False,
+        'phone' : user.phone,
     })
 
 def thanks(request):
