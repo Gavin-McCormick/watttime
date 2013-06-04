@@ -19,7 +19,7 @@
 
 def min_date(meter_qset, ba_qset):
   """ Returns the earliest date with both BA and user meter data """
-  min_for_user = meter_objs.order_by('start')[0].start
+  min_for_user = meter_qset.order_by('start')[0].start
   min_for_ba = ba_qset.order_by('date')[0].date
   return max(min_for_user, min_for_ba)
 
