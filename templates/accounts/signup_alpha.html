@@ -3,9 +3,9 @@
 {% block title %}WattTime Alpha{% endblock %}
 
 {% block content %}
+<h2>Welcome to WattTime!</h2><br><br><br>
 
-<p> You're in luck: WattTime Alpha will be coming soon to your area. Want to be the first to try WattTime for yourself? Sign
-up here to join in!</p>
+<p>We are currently piloting ways to make WattTime more relevant and effective for you and your energy choices. As we learn more about your energy needs and constraints, we can introduce tips and suggestions that will increase the value of your energy choices for your usage patterns and practices.</p>
 
 <form action="/profile/{{userid}}" method="post">{% csrf_token %}
 {{ form.as_p }}

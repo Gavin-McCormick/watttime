@@ -8,6 +8,9 @@ from django.forms.widgets import HiddenInput
 from django import forms
 from accounts import messages
 from multi_choice import *
+from pytz import timezone
+from datetime import datetime
+from django.utils.timezone import activate
 
 class User(models.Model):
     # name
@@ -42,7 +45,18 @@ class User(models.Model):
             return self.state
 
     def __unicode__(self):
-        return self.namepoll.id
+        return self.name
+
+    def local_now(self):
+        # TO DO BROKEN
+        if self.state == 'MA':
+            activate(timezone('US/Eastern'))
+            return datetime.now()
+        else:
+            return datetime.now()
+
+    def twilio_format_phone(self):
+        return '+1'+self.phone.replace('-', '')
 
 class UserProfile(models.Model):
 
@@ -136,24 +150,7 @@ class UserProfile(models.Model):
    #                            choices=GOALS_CHOICES,
    #                            )
 
-    def is_good_time_to_message(timestamp):
-        """ Returns True if hour/day are ok for user,
-            and if they haven't received a message too recently.
-            Returns False if not ok.
-        """
-        # TO DO
-        current_hour = 0
-
-        # bools
-        hour_test = current_hour > 8 and current_hour < 22
-        recent_test = False # has text been sent recently, based on database
-
-        if hour_test and recent_test:
-            return True
-        else:
-            return False
-
-    def get_personalized_message(percent_green, percent_coal,
+    def get_personalized_message(self, percent_green, percent_coal,
                                  marginal_fuel):
         """ Select an appropriate message for a user
             based on their preferences and the state of the grid,
@@ -163,26 +160,33 @@ class UserProfile(models.Model):
         if marginal_fuel == 'None':
             return None
 
+        # sort out goals
+        # TO DO hacky
+        goal_set = set(int(g) for g in self.goal[0].split())
+
         # marginal is renewable
-        if marginal_fuel in ['Wind', 'Hydro', 'Wood', 'Refuse'] and goal in [0, 2, 3]:
-            if ac == 1: # central
+        if marginal_fuel in ['Wind', 'Hydro', 'Wood', 'Refuse'] and len(goal_set & set([0, 2, 3])) > 0:
+            if self.ac == 1: # central
                 return messages.use_central_ac_message(marginal_fuel)
             else:
                 return messages.use_message(marginal_fuel)
 
         # marginal is coal
-        if marginal_fuel in ['Coal'] and goal in [0, 1, 3]:
-            if ac == 1: # central
+        if marginal_fuel in ['Coal'] and len(goal_set & set([0, 1, 3])) > 0:
+            if self.ac == 1: # central
                 return messages.dont_use_central_ac_message(marginal_fuel)
             else:
                 return messages.dont_use_message(marginal_fuel)
 
-        # marginal is oil
-        if marginal_fuel in ['Oil'] and goal in [0, 3]:
-            if ac == 1: # central
+        # marginal is oil or gas
+        if marginal_fuel in ['Oil', 'Natural Gas'] and len(goal_set & set([0, 3])) > 0:
+            if self.ac == 1: # central
                 return messages.dont_use_central_ac_message(marginal_fuel)
             else:
-                return messages.messages.dont_use_message(marginal_fuel)
+                return messages.dont_use_message(marginal_fuel)
+
+        # else
+        return 'No message found for marginal fuel %s and goal %d' % (marginal_fuel, self.goal)
 
 class NewUserForm(ModelForm):
     class Meta:

@@ -24,6 +24,10 @@ class BPA(models.Model):
   def fraction_high_carbon(self):
     return self.thermal / self.total_load()
 
+  @property
+  def marginal_fuel(self):
+    return None
+
 # All units are megawatts
 class NE(models.Model):
     gas = models.FloatField()
@@ -39,10 +43,10 @@ class NE(models.Model):
       return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
     
     def fraction_green(self):
-      return (self.hydro + self.nuclear + self.other_renewable) / self.total_load()
+      return (self.hydro + self.other_renewable) / self.total_load()
     
     def fraction_high_carbon(self):
-      return (self.coal + self.other_fossil) / self.total_load()
+      return (self.coal) / self.total_load()
     
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)

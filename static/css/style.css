@@ -1661,29 +1661,30 @@ h4.icon-line span{
 }
 .faq-categories h3{
 	font-family: "Source Sans Pro";
-	font-size: 21px;
-	color:#339999;
+	font-size: 24px;
+	color:#ffff33;
 }
 .faq-categories ul{
 	border-left:1px solid #d5d5d5;
 	padding:10px 0px 10px 10px;
 	margin-top:10px;
-	font-size: 16px;
+	font-size: 20px;
 	font-family: "Source Sans Pro";
 	font-weight: 200;
 }
 .faq-categories ul li{
 	margin-bottom:10px;
 	position:relative;
+	color:#fff;
 }
 .faq-categories ul li img{
 	display:none;
 }
 .faq-categories ul li a{
-	color:#7f7f7f;
+	color:#339999;
 }
 .faq-categories ul li a:hover{
-	color:#666;
+	color:#fff;
 }
 .faq-categories ul li.active a{
 	color:#40b6cb;

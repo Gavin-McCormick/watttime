@@ -126,9 +126,9 @@ def forecast(request):
 
 @json_response
 def update(request, utility):
-    if utility == 'bpa':
+    if utility in ['bpa', 'BPA']:
         parser = BPAParser(request.GET.get('file', None))
-    if utility == 'ne':
+    if utility in ['ne', 'ISONE']:
         parser = NEParser()
     if utility == 'gb':
         xml_file = request.GET.get('file', '')
@@ -139,9 +139,8 @@ def update(request, utility):
         parser = GreenButtonParser(xml_file, uid)
     return parser.update()
 
-@json_response
 def update_all(request):
-    bas = ['bpa', 'ne']
+    bas = ['BPA', 'ISONE']
     updates = [update(request, ba) for ba in bas]
     return bas
 

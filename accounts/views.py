@@ -146,7 +146,7 @@ def thanks(request):
 
 def welcome_alpha(request):
     return render(request, 'accounts/thanks_alpha.html')
-
+    
 
 #@login_required
 #def profile_edit(request):
