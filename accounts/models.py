@@ -201,9 +201,12 @@ class UserPhoneForm(ModelForm):
         model = User
         fields = ('phone',)
 
+    def __init__(self, *args, **kwargs):
+        super(UserPhoneForm, self).__init__(*args, **kwargs)
+        self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
+
 
 class UserProfileForm(ModelForm):
-
 
     class Meta:
         model = UserProfile
@@ -221,3 +224,7 @@ class UserProfileForm(ModelForm):
 
 class UserVerificationForm(forms.Form):
     verification_code = forms.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        super(UserVerificationForm, self).__init__(*args, **kwargs)
+        self.fields['verification_code'].widget.attrs['placeholder'] = u'xxxxxx'
