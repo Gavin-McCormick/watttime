@@ -150,23 +150,6 @@ class UserProfile(models.Model):
    #                            choices=GOALS_CHOICES,
    #                            )
 
-    def is_good_time_to_message(self, timestamp):
-        """ Returns True if hour/day are ok for user,
-            and if they haven't received a message too recently.
-            Returns False if not ok.
-        """
-        # TO DO
-        current_hour = 0
-
-        # bools
-        hour_test = current_hour > 8 and current_hour < 22
-        recent_test = False # has text been sent recently, based on database
-
-        if hour_test and recent_test:
-            return True
-        else:
-            return False
-
     def get_personalized_message(self, percent_green, percent_coal,
                                  marginal_fuel):
         """ Select an appropriate message for a user
