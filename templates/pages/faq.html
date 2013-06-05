@@ -17,7 +17,8 @@
 <li>Currently we are piloting WattTime in Massachusetts, and can also support users in New Hampshire, Connecticut, Rhode Island, Vermont, and Maine. We plan to include California, Washington, Oregon, and Idaho very soon. If you'd like to be notified when we are available in your state, just sign up on our main page!</li>
 
 <h3>How do I unsubscribe?</h3>
-<li>During our pilot phase, unsubscription works by email. At any time you can simply send the message "unsubscribe" to <a href="mailto://WattTime.app@gmail.com">WattTime.app@gmail.com</a>. If for some reason you cannot email from the address you signed up with, please just include your original email address, name, and phone number in the body of your email and we will remove you.</li>
+{% url 'unsubscribe' 5551231234 as the_url %}
+<li> To turn off SMS notifications, go to <a href="{{ the_url }}">http://wattTime.com{{ the_url }}</a> (where 5551231234 is replaced with your actual 10-digit phone number). To unsubscribe from occasional email updates, send the message "unsubscribe" to <a href="mailto://WattTime.app@gmail.com">WattTime.app@gmail.com</a>.</li>
 
 <h3>What's your privacy policy?</h3>
 <li>We believe that rigorous scientific research and people-centered design can be an important tool in the fight against climate change. We do collect anonymous user data and may eventually publish any important findings in scientific journals. But we take that anonymity seriously. We will never, ever, sell, share or publish any individually identifiable information without your explicit consent. That includes your contact information - no spam here.</li>
