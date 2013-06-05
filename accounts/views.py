@@ -8,7 +8,10 @@ from windfriendly.models import NE
 import twilio_utils
 import random
 import pytz
+from accounts.messages import verify_phone_message, email_signup_message
 from django.utils.timezone import now
+from django.core.mail import send_mail
+from settings import EMAIL_HOST_USER
 #from multi_choice import StringListField
 
 def choose_new_id():
@@ -31,6 +34,13 @@ def profile_create(request):
             new_user.is_active = False
             new_user.userid = choose_new_id()
             new_user.save()
+
+            # send email
+            send_mail('Welcome to WattTime',
+                      email_signup_message(new_user.userid, new_user.name),
+                      EMAIL_HOST_USER,
+                      [new_user.email],
+                      fail_silently=False)
 
             # redirect
             if new_user.is_valid_state():
@@ -116,7 +126,8 @@ def send_verification_code(user):
     for c in user.phone:
         if c in '0123456789':
             phonenumber += str(c)
-    sent = twilio_utils.send_text(str(verification_code), phonenumber)
+    msg = verify_phone_message(verification_code)
+    sent = twilio_utils.send_text(msg, phonenumber)
     print sent
 
 def phone_verify(request, userid):
