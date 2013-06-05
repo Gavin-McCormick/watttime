@@ -20,7 +20,7 @@ class User(models.Model):
     email = models.EmailField(help_text='Email')
 
     # US phone
-    phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
+    phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
 
     # verification info
     verification_code = models.IntegerField()
@@ -204,11 +204,11 @@ class UserProfile(models.Model):
 class NewUserForm(ModelForm):
     class Meta:
         model = User
-        exclude = ['verification_code', 'is_verified', 'userid']
+        exclude = ['verification_code', 'is_verified', 'userid', 'phone']
 
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
-        self.fields['phone'].widget = HiddenInput()
+        #self.fields['phone'].widget = HiddenInput()
         self.fields['name'].widget.attrs['placeholder'] = u'Name'
         self.fields['email'].widget.attrs['placeholder'] = u'Email'
         #self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
@@ -240,7 +240,7 @@ class UserProfileForm(ModelForm):
             }
 
 class UserVerificationForm(forms.Form):
-    verification_code = forms.IntegerField()
+    verification_code = forms.IntegerField(min_value=100000, max_value=999999, error_messages = {'min_value': 'Please make sure to enter a 6 digits code', 'max_value' : 'Please make sure to enter a 6 digits code'})
 
     def __init__(self, *args, **kwargs):
         super(UserVerificationForm, self).__init__(*args, **kwargs)
