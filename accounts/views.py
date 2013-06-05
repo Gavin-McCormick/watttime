@@ -28,6 +28,7 @@ def profile_create(request):
             new_user = form.save(commit = False)
             new_user.verification_code = random.randint(100000, 999999)
             new_user.is_verified = False
+            new_user.is_active = False
             new_user.userid = choose_new_id()
             new_user.save()
 
@@ -95,7 +96,6 @@ def profile_alpha(request, userid):
         if form.is_valid(): # All validation rules pass
             # save form
             goals = form.cleaned_data.get('goal')
-            print goals
             new_profile = form.save(commit=False)
             new_profile.userid = user
             new_profile.goal = ' '.join(each.encode('utf-8') for each in goals)
@@ -131,6 +131,7 @@ def phone_verify(request, userid):
             print ("Checking codes: {:d} vs. {:d}".format(code1, code2))
             if code1 == code2:
                 user.is_verified = True
+                user.is_active = True
                 user.save()
                 url = reverse('profile_alpha', kwargs={'userid':userid})
                 return HttpResponseRedirect(url)

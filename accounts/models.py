@@ -22,9 +22,15 @@ class User(models.Model):
     # US phone
     phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
 
+    # verification info
     verification_code = models.IntegerField()
     is_verified = models.BooleanField()
+
+    # long nonconsequetive userid
     userid = models.IntegerField(primary_key=True)
+
+    # is active user
+    is_active = models.BooleanField()
 
     # US state
     state = USStateField(default='MA')

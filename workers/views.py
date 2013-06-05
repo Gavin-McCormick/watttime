@@ -61,6 +61,7 @@ def recurring_events(request):
             msg = up.get_personalized_message(percent_greens[ba_ind],
                                               percent_coals[ba_ind],
                                               marginal_fuels[ba_ind])
+            print user.phone, msg
 
             if msg:
                 # send text
@@ -78,7 +79,7 @@ def recurring_events(request):
     return HttpResponseRedirect(url)
 
 def is_good_time_to_message(timestamp, userid, user_profile,
-                            min_hour=8, max_hour=22):
+                            min_hour=8, max_hour=22, do_rand=True):
     """ Returns True if hour/day are ok for user,
     and if they haven't received a message too recently,
     and if this time is randomly selected.
@@ -95,8 +96,11 @@ def is_good_time_to_message(timestamp, userid, user_profile,
         is_recently_notified = False
 
     # add some noise
-    n_5min_intervals = text_period_secs / 60 / 5
-    is_randomly_selected = randint(1, n_5min_intervals) == 1
+    if do_rand:
+        n_5min_intervals = text_period_secs / 60 / 5
+        is_randomly_selected = randint(1, n_5min_intervals) == 1
+    else:
+        is_randomly_selected = True
 
     # return bool
     if is_good_hour and (not is_recently_notified) and is_randomly_selected:
