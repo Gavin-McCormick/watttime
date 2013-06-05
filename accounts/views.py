@@ -153,6 +153,30 @@ def thanks(request):
 def welcome_alpha(request):
     return render(request, 'accounts/thanks_alpha.html')
     
+def unsubscribe(request, phone):
+    """ Set user(s) with matching phone number to verified but inactive """
+    if phone:
+        phone = phone[0:3]+'-'+phone[3:6]+'-'+phone[6:10]
+        users = User.objects.filter(phone=phone)
+        print users
+        if len(users) > 0:
+            for user in users:
+                print user
+                user.is_active = False
+                user.save()
+                return render(request, 'accounts/unsubscribe_success.html', {
+                        'phone': phone,
+                        'name': user.name,
+                        })
+        else:
+            return render(request, 'accounts/unsubscribe_fail.html', {
+                    'phone': phone,
+                    })            
+    else:
+        return render(request, 'accounts/unsubscribe_fail.html', {
+                'phone': phone,
+                })
+         
 
 #@login_required
 #def profile_edit(request):
