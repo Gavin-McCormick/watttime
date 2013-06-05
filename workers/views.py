@@ -22,10 +22,12 @@ from windfriendly.views import update_all
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from windfriendly.parsers import ne_fuels
 from accounts.twilio_utils import send_text
-from accounts.models import User, UserProfile
+from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 from workers.models import SMSLog
+from random import randint
 
 def recurring_events(request):
     ''' Called every 5 min with a GET request'''
@@ -52,44 +54,50 @@ def recurring_events(request):
 
         # check if it's a good time
         localtime = user.local_now()
-        if is_good_time_to_message(localtime, user.userid):
+        if is_good_time_to_message(localtime, user.userid, up):
             # get message
             ba_ind = updated_bas.index(BALANCING_AUTHORITIES[user.state])
             msg = up.get_personalized_message(percent_greens[ba_ind],
                                               percent_coals[ba_ind],
                                               marginal_fuels[ba_ind])
-            print msg, user.twilio_format_phone()
 
-            # send text
-            # UNCOMMENT NEXT LINE
-            #send_text(msg, to=user.phone)
+            if msg:
+                # send text
+                send_text(msg, to=user.phone)
             
-            # save to log
-            logitem = SMSLog(user=user,
-                             utctime=localtime,
-                             localtime=localtime,
-                             message=msg)
-            logitem.save()
-            print logitem.pk
+                # save to log
+                logitem = SMSLog(user=user,
+                                 utctime=now(),
+                                 localtime=localtime,
+                                 message=msg)
+                logitem.save()
 
     # return
     url = reverse('home')
     return HttpResponseRedirect(url)
 
-def is_good_time_to_message(timestamp, userid):
+def is_good_time_to_message(timestamp, userid, user_profile,
+                            min_hour=8, max_hour=22):
     """ Returns True if hour/day are ok for user,
-    and if they haven't received a message too recently.
+    and if they haven't received a message too recently,
+    and if this time is randomly selected.
     Returns False if not ok.
     """
-    current_hour = timestamp.hour
+    # is it a good time of day to text?
+    is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
-    # bools
-    hour_test = current_hour > 8 and current_hour < 22
-    recent_test = True 
-    # UNCOMMENT NEXT LINE
-    #recent_test = timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime > timedelta(hours=1)
-    
-    if hour_test and not recent_test:
+    # has the user been texted recently?
+    if SMSLog.objects.filter(user=userid).exists():
+        is_recently_notified = timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime < SENDTEXT_TIMEDELTAS[user_profile.text_freq]
+    else:
+        is_recently_notified = False
+
+    # add some noise
+    n_5min_intervals = SENDTEXT_TIMEDELTAS[user_profile.text_freq] / 60 / 5
+    is_randomly_selected = randint(1, n_5min_intervals) == 1
+
+    # return bool
+    if is_good_hour and (not is_recently_notified) and is_randomly_selected:
         return True
     else:
         return False

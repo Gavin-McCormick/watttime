@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from windfriendly.models import NE
 import twilio_utils
 import random
+import pytz
 #from multi_choice import StringListField
 
 def choose_new_id():
@@ -47,7 +48,10 @@ def profile_create(request):
     greenery = str(int(percent_green + 0.5)) + '%'
 
     # display form
-    return render(request, 'index.html', {'form': form, 'current_green' : greenery})
+    return render(request, 'index.html', {'form': form,
+                                          'current_green' : greenery,
+                                          now()
+                                          })
 
 def phone_setup(request, userid):
     # process submitted phone number
