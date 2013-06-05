@@ -63,6 +63,8 @@ urlpatterns += patterns('accounts.views',
         'welcome_alpha', name='welcome_alpha'),
     url(r'^thanks[/]?$',
         'thanks', name='thanks'),
+    url(r'^unsubscribe/(?P<phone>[0-9-]+)[/]?$',
+        'unsubscribe', name='unsubscribe'),
 )
 
 # windfriendly API patterns

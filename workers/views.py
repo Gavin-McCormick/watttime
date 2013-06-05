@@ -50,7 +50,7 @@ def recurring_events(request):
     for up in UserProfile.objects.all():
         # get matching user
         user = up.userid
-        print user
+        print user, user.is_verified, user.is_active
 
         # check if it's a good time
         localtime = user.local_now()
