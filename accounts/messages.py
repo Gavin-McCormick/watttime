@@ -30,12 +30,20 @@ def account_activated_message(userid, name, phone):
     lines = ["Hi %s," % name,
              "Thanks for signing up for WattTime! You are now subscribed to SMS notifications from WattTime about the status of your electricity source at this phone number:",
              "%s" % phone,
-             "To personalize this service and increase your impact, just answer a few quick questions at http://wattTime.herokuapp.com/profile/%s." % userid,
-             "To unsubscribe from our email list, please reply to this email with the message 'unsubscribe'.",
+             "To personalize this service and increase your impact, just answer a few quick questions at http://wattTime.herokuapp.com/profile/%s. You can return to this link to update your preferences at any time." % userid,
+             "To unsubscribe from SMS notifications, click on http://wattTime.herokuapp.com/unsubscribe/%s." % phone.replace('-',''),
              "Cheers,",
              "the team at WattTime"
              ]
     return "\n".join(lines)
 
-def account_unactivated_message():
-    return ""
+def account_inactivated_message(userid, name, phone):
+    lines = ["Hi %s," % name,
+             "You are now unsubscribed from SMS notifications from WattTime to this phone number:",
+             "%s" % phone,
+             "We're sorry to see you go! You can turn SMS notifications back on at any time by updating your preferences at http://wattTime.herokuapp.com/profile/%s." % userid,
+             "Cheers,",
+             "the team at WattTime"
+             ]
+    return "\n".join(lines)
+

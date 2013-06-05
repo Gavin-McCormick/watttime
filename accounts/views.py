@@ -8,7 +8,7 @@ from windfriendly.models import NE
 import twilio_utils
 import random
 import pytz
-from accounts.messages import verify_phone_message, email_signup_message, account_activated_message
+from accounts.messages import verify_phone_message, email_signup_message, account_activated_message, account_inactivated_message
 from django.utils.timezone import now
 from django.core.mail import send_mail
 from settings import EMAIL_HOST_USER
@@ -106,6 +106,20 @@ def profile_alpha(request, userid):
             #print type(new_profile.goal)
             #print type(new_profile.goal[0])
             new_profile.save()
+
+            # reactivate user
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+
+                # send email
+                send_mail('WattTime account activated',
+                          account_activated_message(user.userid,
+                                                    user.name,
+                                                    user.phone),
+                          EMAIL_HOST_USER,
+                          [user.email],
+                          fail_silently=False)
 
             # redirect
             url = reverse('welcome_alpha')
@@ -205,14 +219,38 @@ def unsubscribe(request, phone):
         users = User.objects.filter(phone=phone)
         print users
         if len(users) > 0:
+            show_name, show_id = None, None
             for user in users:
-                print user
-                user.is_active = False
-                user.save()
+                # inactivate
+                if user.is_active:
+                    # log
+                    print user
+                    show_name = user.name
+                    show_id = user.userid
+
+                    # save inactivation
+                    user.is_active = False
+                    user.save()
+                    
+                    # send email
+                    send_mail('WattTime account inactivated',
+                              account_inactivated_message(user.userid,
+                                                          user.name,
+                                                          user.phone),
+                              EMAIL_HOST_USER,
+                              [user.email],
+                              fail_silently=False)
+                 
+            if show_name:
                 return render(request, 'accounts/unsubscribe_success.html', {
                         'phone': phone,
-                        'name': user.name,
+                        'name': show_name,
+                        'userid': show_id,
                         })
+            else:
+                return render(request, 'accounts/unsubscribe_fail.html', {
+                        'phone': phone,
+                        })    
         else:
             return render(request, 'accounts/unsubscribe_fail.html', {
                     'phone': phone,
