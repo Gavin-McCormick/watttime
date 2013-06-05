@@ -120,32 +120,13 @@
 						
 
 					<div class="header-main">
-
-						<h1>It's <span style="color:#339999"><!--display user's local time -->
-						
-						<script type="text/javascript">
-						<!--
-						var currentTime = new Date()
-						var hours = currentTime.getHours()
-						var minutes = currentTime.getMinutes()
-
-						if (minutes < 10)
-						minutes = "0" + minutes
-
-						var suffix = "am";
-						if (hours >= 12) {
-						suffix = "pm";
-						hours = hours - 12;
-						}
-						if (hours == 0) {
-						hours = 12;
-						}
-
-						document.write("<b>" + hours + ":" + minutes + " " + suffix + "</b>")
-						//-->
-						</script>
-
-                                        </span> and <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span> Green. </h1>
+					  {% load tz %}
+					  {% timezone "US/Eastern" %}
+						<h1>It's <span style="color:#339999">{{ time|date:'I:m a' }}</span> and
+					  <br> the New England
+					  Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span>
+					  Green. </h1>
+					  {% endtimezone %}
  
                                         
                                         
