@@ -8,7 +8,7 @@ from windfriendly.models import NE
 import twilio_utils
 import random
 import pytz
-from accounts.messages import verify_phone_message, email_signup_message
+from accounts.messages import verify_phone_message, email_signup_message, account_activated_message
 from django.utils.timezone import now
 from django.core.mail import send_mail
 from settings import EMAIL_HOST_USER
@@ -157,11 +157,22 @@ def phone_verify(request, userid):
             code2 = user.verification_code
             print ("Checking codes: {:d} vs. {:d}".format(code1, code2))
             
-            
             if code1 == code2:
+                # save verification and activation state
                 user.is_verified = True
                 user.is_active = True
                 user.save()
+
+                # send email
+                send_mail('WattTime account activated',
+                          account_activated_message(user.userid,
+                                                    user.name,
+                                                    user.phone),
+                          EMAIL_HOST_USER,
+                          [user.email],
+                          fail_silently=False)
+
+                # redirect
                 url = reverse('profile_alpha', kwargs={'userid':userid})
                 return HttpResponseRedirect(url)
             else:
