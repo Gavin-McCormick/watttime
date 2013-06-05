@@ -17,7 +17,7 @@ class User(models.Model):
     name = models.CharField(max_length=100, help_text='Name')
 
     # email
-    email = models.EmailField(help_text='Email')
+    email = models.EmailField(help_text='Email',error_messages = {'blank': 'No name? OK, what should we call you?',})
 
     # US phone
     phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
@@ -88,9 +88,9 @@ HEATER_CHOICES = (
     )
 GOALS_CHOICES = (
     (0, "I'm up for anything"),
-    (1, 'Boycott coal'),
-    (2, 'Maximize renewables'),
-    (3, 'Minimize carbon'),
+    (1, 'Help me use less coal'),
+    (2, 'Help me use more renewables'),
+    (3, 'More renewables & nuclear, less coal & oil'),
     )
 CHANNEL_CHOICES = (
     (0, "Sierra Club"),
@@ -102,22 +102,12 @@ CHANNEL_CHOICES = (
 class UserProfile(models.Model):
 
     userid = models.ForeignKey(User)
-
-    # air conditioning
-    ac = models.IntegerField('Air conditioner type',
-                             blank=False, default=0,
-                             choices=AC_CHOICES,
-                             )
-
-    # furnace and water heater
-    furnace = models.IntegerField('Furnace type',
-                                  blank=False, default=0,
-                                  choices=HEATER_CHOICES,
-                                  )
-    water_heater = models.IntegerField('Water heater type',
-                                       blank=False, default=0,
-                                       choices=HEATER_CHOICES,
-                                       )
+    
+    # goals for using service
+    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?',
+                            blank=False,
+                            max_length=100,
+                            choices=GOALS_CHOICES,)
 
     # when to text
     SENDTEXT_HOURS_CHOICES = (
@@ -138,17 +128,10 @@ class UserProfile(models.Model):
     #)
 
     # how often to contact
-
     text_freq = models.IntegerField('How often you want to receive texts',
-                                    blank=False, default=1,
+                                    blank=False, default=2,
                                     choices=SENDTEXT_FREQ_CHOICES,
                                     )
-
-    # goals for using service
-    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?',
-                            blank=False,
-                            max_length=100,
-                            choices=GOALS_CHOICES,)
 
     # On how user learned about WattTime
     channel = models.IntegerField('How did you hear of WattTime?',
@@ -156,6 +139,27 @@ class UserProfile(models.Model):
                                   default=0,
                                   choices=CHANNEL_CHOICES)
     #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
+
+
+    # air conditioning
+    ac = models.IntegerField('Air conditioner type',
+                             blank=False, default=3,
+                             choices=AC_CHOICES,
+                             )
+
+    # furnace and water heater
+    furnace = models.IntegerField('Furnace type',
+                                  blank=False, default=3,
+                                  choices=HEATER_CHOICES,
+                                  )
+    water_heater = models.IntegerField('Water heater type',
+                                       blank=False, default=3,
+                                       choices=HEATER_CHOICES,
+                                       )
+
+
+
+
     
    # goal = models.IntegerField('Which goals would you like to receive notifications about?',
    #                            blank=False, default=0,
@@ -202,6 +206,8 @@ class UserProfile(models.Model):
         return 'No message found for marginal fuel %s and goal %d' % (marginal_fuel, self.goal)
 
 class NewUserForm(ModelForm):
+    name = forms.CharField(error_messages={'required': 'No name? OK, what should we call you?'})
+    email = forms.CharField(error_messages={'required': "That's not an email address!"})
     class Meta:
         model = User
         exclude = ['verification_code', 'is_verified', 'userid', 'phone']

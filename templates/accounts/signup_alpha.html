@@ -5,7 +5,8 @@
 {% block content %}
 <h2>Welcome to WattTime!</h2><br><br><br>
 
-<p>We are currently piloting ways to make WattTime more relevant and effective for you and your energy choices. As we learn more about your energy needs and constraints, we can introduce tips and suggestions that will increase the value of your energy choices for your usage patterns and practices.</p>
+<p>Great! You're now signed up to begin receiving messages that let you know when your power is especially clean or dirty.</p>
+<p>We are currently piloting ways to make WattTime even more relevant and effective for you and your energy choices. As we learn more about your energy needs and constraints, we can introduce tips and suggestions that will increase the value of your energy choices for your usage patterns and practices. Would you like to personalize any settings below?</p>
 
 <form action="/profile/{{userid}}" method="post">{% csrf_token %}
 {{ form.as_p }}
