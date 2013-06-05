@@ -4,10 +4,10 @@
 
 {% block content %}
 
-<h2>Frequently Asked Questions</h2>
+<h2>Frequent Questions</h2>
 
 <div class="well faq-categories">
-<ul><h3>What is WattTime?</h3>
+<ul style="font-size:16px; text-align:left"><h3>What is WattTime?</h3>
 <li>WattTime helps you take control of the energy sources that power your own electricity consumption. Similar to many municipal information systems, WattTime uses a text message notification service to inform you when your energy source is particularly dirty or particularly clean. For more details please see: <a href="{% url 'how-it-works' %}">How It Works</a>.</li>
 
 <h3>What does WattTime cost?</h3>
@@ -15,21 +15,14 @@
 
 <h3>Are you available in my region?</h3>
 <li>Currently we are piloting WattTime in Massachusetts, and can also support users in New Hampshire, Connecticut, Rhode Island, Vermont, and Maine. We plan to include California, Washington, Oregon, and Idaho very soon. If you'd like to be notified when we are available in your state, just sign up on our main page!</li>
+
+<h3>How do I unsubscribe?</h3>
+<li>During our pilot phase, unsubscription works by email. At any time you can simply send the message "unsubscribe" to <a href="mailto://WattTime.app@gmail.com">WattTime.app@gmail.com</a>. If for some reason you cannot email from the address you signed up with, please just include your original email address, name, and phone number in the body of your email and we will remove you.</li>
+
+<h3>What's your privacy policy?</h3>
+<li>We believe that rigorous scientific research and people-centered design can be an important tool in the fight against climate change. We do collect anonymous user data and may eventually publish any important findings in scientific journals. But we take that anonymity seriously. We will never, ever, sell, share or publish any individually identifiable information without your explicit consent. That includes your contact information - no spam here.</li>
+
+<h3>Are you a private company?</h3>
+<li>Right now we are a small group of dedicated individuals trying to do some good in the world. We may eventually expand our business model to ensure that we can continue to make it relevant and effective, but our top priority is to help energy consumers make decisions according to their own values. We believe that when people can freely choose their energy sources it can have a big impact in the fight against climate change.</li>
 </ul></div>
-
-<p><strong>How do I unsubscribe?</p></strong>
-<p>During our pilot phase, unsubscription works by email. At any time you can simply send the message "unsubscribe" to <a href="mailto://WattTime.app@gmail.com">WattTime.app@gmail.com</a>. If for some reason you cannot email from the address you signed up with, please just include your original email address, name, and phone number in the body of your email and we will remove you. </p>
-
-<p><strong>What's your privacy policy?</p></strong>
-<p>We believe that rigorous scientific research and people-centered design can be an important tool in the fight against climate change. We do collect anonymous user data and may eventually publish any important findings in scientific journals. But we take that anonymity seriously. We will never, ever, sell, share or publish any individually identifiable information without your explicit consent. That includes your contact information - no spam here.</p>
-
-<p><strong>Are you a private company?</p></strong>
-<p>Right now we are a small group of dedicated individuals trying to do some good in the world. We may eventually expand our business model to ensure that we can continue to make it relevant and effective, but our top priority is to help energy consumers make decisions according to their own values. We believe that when people can freely choose their energy sources it can have a big impact in the fight against climate change.</p>
-
-<p><strong>Why do you need pilot testing?</p></strong>
-<p>Every good product and service needs prototyping, iteration, and testing to be the best it can be. As far as we have been able to determine, this is a fundamentally novel approach to fighting climate change. While ours is not the first project to give users real-time information about the cleanliness of electricity, our approach is fundamentally different “under the hood” because it leverages marginal rather than average electricity information, dramatically increasing the impact of your actions. (See our How It Works for details.) While our novel design works according to economic theory, we never fully trust theory until it is backed up by hard data and experience. (And neither should you!) Our pilot testing and research will help validate the concept and provide critical insight for scaling WattTime to improve energy futures for millions of users.</p>
-
-<p><strong>What are your future plans?</p></strong>
-<p>Text messages are just one source of information that can trigger dynamic shifts in our energy consumption habits. We know many Americans have both the motivation and the ability to make a lasting, positive impact on our future energy security. That’s why we are working to make it easier to access precise, meaningful about your regional energy status. With these additional capabilities, we aim to increase your choices and convenience for taking control of your own energy future. </p>
-
 {% endblock %}

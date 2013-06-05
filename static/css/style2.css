@@ -65,7 +65,7 @@ label, select, button, input[type="button"], input[type="reset"], input[type="su
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
-  background-color: rgba(51, 102, 153, 0.6);  
+  background-color: rgba(51, 102, 153, 0.8);  
   border: 0px solid #e3e3e3;
   -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
