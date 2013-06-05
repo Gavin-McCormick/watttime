@@ -54,7 +54,8 @@ def recurring_events(request):
 
         # check if it's a good time
         localtime = user.local_now()
-        if is_good_time_to_message(localtime, user.userid, up):
+        if is_good_time_to_message(localtime, user.userid, up) and (
+            user.is_verified and user.is_active):
             # get message
             ba_ind = updated_bas.index(BALANCING_AUTHORITIES[user.state])
             msg = up.get_personalized_message(percent_greens[ba_ind],
@@ -87,13 +88,14 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
     # has the user been texted recently?
+    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].seconds
     if SMSLog.objects.filter(user=userid).exists():
-        is_recently_notified = timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime < SENDTEXT_TIMEDELTAS[user_profile.text_freq]
+        is_recently_notified = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).seconds < text_period_secs / 2
     else:
         is_recently_notified = False
 
     # add some noise
-    n_5min_intervals = SENDTEXT_TIMEDELTAS[user_profile.text_freq] / 60 / 5
+    n_5min_intervals = text_period_secs / 60 / 5
     is_randomly_selected = randint(1, n_5min_intervals) == 1
 
     # return bool
