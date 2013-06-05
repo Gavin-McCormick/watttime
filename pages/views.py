@@ -24,7 +24,8 @@ def terms_of_service(request):
 #    return render(request, 'pages/placeholder.html', {'title': 'Terms of Service'})
     return render(request, 'pages/terms_of_service.html')
 
-
+def status(request):
+    return HttpResponseRedirect('http://www.ugcs.caltech.edu/~stansife/watttime/')
 
 def contact(request):
     if request.method == 'POST':
@@ -54,3 +55,9 @@ def contact(request):
 
 def thankyou(request):
     return render_to_response('pages/contact_thank_you.html')
+    
+def facebook_pilot(request):
+    return render(request, 'pages/facebook_pilot.html')
+    
+def sierra_pilot(request):
+    return render(request, 'pages/sierra_pilot.html')
