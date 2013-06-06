@@ -203,7 +203,8 @@ class UserProfile(models.Model):
                 return messages.dont_use_message(marginal_fuel)
 
         # else
-        return 'No message found for marginal fuel %s and goal %d' % (marginal_fuel, self.goal)
+        print 'No message found for marginal fuel %s and goal %s' % (marginal_fuel, self.goal)
+        return None
 
 class NewUserForm(ModelForm):
     name = forms.CharField(error_messages={'required': 'No name? OK, what should we call you?'})
