@@ -1,6 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
@@ -9,28 +9,34 @@ from django import forms
 from accounts import messages
 from multi_choice import *
 from pytz import timezone
-from datetime import datetime
-from django.utils.timezone import activate
+from datetime import datetime, timedelta
+from django.utils.timezone import now, localtime
 
 class User(models.Model):
     # name
     name = models.CharField(max_length=100, help_text='Name')
 
     # email
-    email = models.EmailField(help_text='Email')
+    email = models.EmailField(help_text='Email',error_messages = {'blank': 'No name? OK, what should we call you?',})
 
     # US phone
-    phone = PhoneNumberField(blank = True, help_text='XXX-XXX-XXXX')
+    phone = PhoneNumberField(help_text='XXX-XXX-XXXX')
 
+    # verification info
     verification_code = models.IntegerField()
     is_verified = models.BooleanField()
+
+    # long nonconsequetive userid
     userid = models.IntegerField(primary_key=True)
+
+    # is active user
+    is_active = models.BooleanField()
 
     # US state
     state = USStateField(default='MA')
 
     # state logic
-    VALID_STATE_CHOICES = ('MA',)
+    VALID_STATE_CHOICES = ('MA', 'VT', 'CT', 'RI', 'NH', 'ME')
 
     def is_valid_state(self):
         if self.state in self.VALID_STATE_CHOICES:
@@ -48,47 +54,71 @@ class User(models.Model):
         return self.name
 
     def local_now(self):
-        # TO DO BROKEN
+        # TO DO make it work for other states
         if self.state == 'MA':
-            activate(timezone('US/Eastern'))
-            return datetime.now()
+            return localtime(now(), timezone('US/Eastern'))
         else:
-            return datetime.now()
+            return now()
 
     def twilio_format_phone(self):
         return '+1'+self.phone.replace('-', '')
 
+
+SENDTEXT_FREQ_CHOICES = (
+    (1, 'About once an hour! Woo!'),
+    (2, 'About once a day'),
+    (3, 'About once a week'),
+    )
+SENDTEXT_TIMEDELTAS = {
+    1: timedelta(hours=1),
+    2: timedelta(days=1),
+    3: timedelta(days=7),
+    }
+SENDTEXT_FREQWORDS = {
+    1: 'hourly',
+    2: 'daily',
+    3: 'weekly',
+    }
+AC_CHOICES = (
+    (0, "None"),
+    (1, "Central A/C"),
+    (2, "Window unit"),
+    (3, "Other or don't know"),
+    )
+HEATER_CHOICES = (
+    (0, 'None'),
+    (1, 'Electric'),
+    (2, 'Gas'),
+    (3, "Other or don't know"),
+    )
+GOALS_CHOICES = (
+    (0, "I'm up for anything"),
+    (1, 'Help me use less coal'),
+    (2, 'Help me use more renewables'),
+    (3, 'More renewables & nuclear, less coal & oil'),
+    )
+GOAL_WORDS = {
+    0: 'everything',
+    1: 'using less coal',
+    2: 'using more renewables',
+    3: 'lowering my carbon footprint',
+}
+CHANNEL_CHOICES = (
+    (0, "Sierra Club"),
+    (1, "Internet"),
+    (2, "Word of mouth"),
+    (3, "Other"),
+    )
+
 class UserProfile(models.Model):
 
     userid = models.ForeignKey(User)
-
-    # air conditioning
-    AC_CHOICES = (
-        (0, "None"),
-        (1, "Central A/C"),
-        (2, "Window unit"),
-        (3, "Other or don't know"),
-        )
-    ac = models.IntegerField('Air conditioner type',
-                             blank=False, default=0,
-                             choices=AC_CHOICES,
-                             )
-
-    # furnace and water heater
-    HEATER_CHOICES = (
-        (0, 'None'),
-        (1, 'Electric'),
-        (2, 'Gas'),
-        (3, "Other or don't know"),
-        )
-    furnace = models.IntegerField('Furnace type',
-                                  blank=False, default=0,
-                                  choices=HEATER_CHOICES,
-                                  )
-    water_heater = models.IntegerField('Water heater type',
-                                       blank=False, default=0,
-                                       choices=HEATER_CHOICES,
-                                       )
+    
+    # goals for using service
+    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?',
+                            blank=False,
+                            max_length=100,
+                            choices=GOALS_CHOICES,)
 
     # when to text
     SENDTEXT_HOURS_CHOICES = (
@@ -109,46 +139,70 @@ class UserProfile(models.Model):
     #)
 
     # how often to contact
-    SENDTEXT_FREQ_CHOICES = (
-        (1, 'About once an hour! Woo!'),
-        (2, 'About once a day'),
-        (3, 'About once a week'),
-        )
     text_freq = models.IntegerField('How often you want to receive texts',
-                                    blank=False, default=1,
+                                    blank=False, default=2,
                                     choices=SENDTEXT_FREQ_CHOICES,
                                     )
 
-    # goals for using service
-    GOALS_CHOICES = (
-        (0, "I'm up for anything"),
-        (1, 'Boycott coal'),
-        (2, 'Maximize renewables'),
-        (3, 'Minimize carbon'),
-        )
-    goal = MultiSelectField(verbose_name='Which goals would you like to receive notifications about?',
-                            blank=False,
-                            max_length=100,
-                            choices=GOALS_CHOICES,)
-
     # On how user learned about WattTime
-    CHANNEL_CHOICES = (
-        (0, "Sierra Club"),
-        (1, "Internet"),
-        (2, "Word of mouth"),
-        (3, "Other"),
-        )
     channel = models.IntegerField('How did you hear of WattTime?',
                                   blank=False,
                                   default=0,
                                   choices=CHANNEL_CHOICES)
     #channel = ChoiceWithOtherField(choices = UserProfile.CHANNEL_CHOICES)
+
+
+    # air conditioning
+    ac = models.IntegerField('Air conditioner type',
+                             blank=False, default=3,
+                             choices=AC_CHOICES,
+                             )
+
+    # furnace and water heater
+    furnace = models.IntegerField('Furnace type',
+                                  blank=False, default=3,
+                                  choices=HEATER_CHOICES,
+                                  )
+    water_heater = models.IntegerField('Water heater type',
+                                       blank=False, default=3,
+                                       choices=HEATER_CHOICES,
+                                       )
+
+
+
+
     
    # goal = models.IntegerField('Which goals would you like to receive notifications about?',
    #                            blank=False, default=0,
    #                           # blank=True,
    #                            choices=GOALS_CHOICES,
    #                            )
+
+    def goal_set(self):
+        # TO DO hacky
+        return set(int(g) for g in self.goal[0].split())
+
+    def get_intro_message(self):
+        return messages.intro_message(SENDTEXT_FREQWORDS[self.text_freq])
+
+    def get_edit_profile_message(self):
+        goal_set = self.goal_set()
+        if len(goal_set) == 0:
+            goal_words = None
+        elif len(goal_set) == 1:
+            goal_words = GOAL_WORDS[goal_set.pop()]
+        elif len(goal_set) == 2:
+            goal_words = ' and '.join([GOAL_WORDS[g] for g in goal_set])
+        else:
+            goal_words = ''
+            while len(goal_set) > 1:
+                goal_words += GOAL_WORDS[goal_set.pop()]+', '
+            goal_words += 'and '+GOAL_WORDS[goal_set.pop()]
+            
+        msg = messages.edit_profile_message(SENDTEXT_FREQWORDS[self.text_freq],
+                                             goal_words)
+        print msg
+        return msg
 
     def get_personalized_message(self, percent_green, percent_coal,
                                  marginal_fuel):
@@ -161,8 +215,7 @@ class UserProfile(models.Model):
             return None
 
         # sort out goals
-        # TO DO hacky
-        goal_set = set(int(g) for g in self.goal[0].split())
+        goal_set = self.goal_set()
 
         # marginal is renewable
         if marginal_fuel in ['Wind', 'Hydro', 'Wood', 'Refuse'] and len(goal_set & set([0, 2, 3])) > 0:
@@ -186,16 +239,19 @@ class UserProfile(models.Model):
                 return messages.dont_use_message(marginal_fuel)
 
         # else
-        return 'No message found for marginal fuel %s and goal %d' % (marginal_fuel, self.goal)
+        print 'No message found for marginal fuel %s and goal %s' % (marginal_fuel, self.goal)
+        return None
 
 class NewUserForm(ModelForm):
+    name = forms.CharField(error_messages={'required': 'No name? OK, what should we call you?'})
+    email = forms.CharField(error_messages={'required': "That's not an email address!"})
     class Meta:
         model = User
-        exclude = ['verification_code', 'is_verified', 'userid']
+        exclude = ['verification_code', 'is_verified', 'userid', 'phone']
 
     def __init__(self, *args, **kwargs):
         super(NewUserForm, self).__init__(*args, **kwargs)
-        self.fields['phone'].widget = HiddenInput()
+        #self.fields['phone'].widget = HiddenInput()
         self.fields['name'].widget.attrs['placeholder'] = u'Name'
         self.fields['email'].widget.attrs['placeholder'] = u'Email'
         #self.fields['phone'].initial = '000-000-0000' # set the initial value of phone number
@@ -209,6 +265,26 @@ class UserPhoneForm(ModelForm):
         super(UserPhoneForm, self).__init__(*args, **kwargs)
         self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
 
+    def clean_phone(self):
+        # this should probably be done using User unique_together
+        email = self.instance.email
+        phone = self.cleaned_data['phone']
+        preexisting_users =  User.objects.filter(phone=phone, email=email)
+        if preexisting_users.count() > 0:
+            userid = preexisting_users[0].userid
+            msg = "User %d already exists with email %s and phone %s.\n" % (userid,
+                                                                          email,
+                                                                          phone)
+            if preexisting_users[0].is_verified:
+                if preexisting_users[0].is_active:
+                    msg += "Edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
+                else:
+                    msg += "Reactivate SMS notifications and edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
+            else:
+                msg += "Verify phone: http://wattTime.herokuapp.com/phone_verify/%s" % userid
+            raise ValidationError(msg)
+        else:
+            return phone
 
 class UserProfileForm(ModelForm):
 
@@ -227,7 +303,7 @@ class UserProfileForm(ModelForm):
             }
 
 class UserVerificationForm(forms.Form):
-    verification_code = forms.IntegerField()
+    verification_code = forms.IntegerField(min_value=100000, max_value=999999, error_messages = {'min_value': 'Please make sure to enter a 6 digits code', 'max_value' : 'Please make sure to enter a 6 digits code'})
 
     def __init__(self, *args, **kwargs):
         super(UserVerificationForm, self).__init__(*args, **kwargs)

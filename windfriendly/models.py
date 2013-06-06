@@ -47,6 +47,16 @@ class NE(models.Model):
     
     def fraction_high_carbon(self):
       return (self.coal) / self.total_load()
+
+    def marginal_names(self):
+      marginal_fuels = []
+      for point in newest_timepoints:
+        try:
+          marginal_name = ne_fuels[point.marginal_fuel]
+        except TypeError: # point.marginal_fuel is None
+          marginal_name = 'None'
+        marginal_fuels.append(marginal_name)
+      return marginal_fuels
     
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)

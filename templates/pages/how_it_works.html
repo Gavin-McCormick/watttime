@@ -1,14 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}title here{% endblock %}
+{% block title %}How It Works{% endblock %}
 
 {% block content %}
 
-<h2>How WattTime Works</h2>
+<h2>How WattTime Works</h2><br>
+<div class="well">
+<p>Imagine going into a shoe store and trying to buy shoes without being able to see what's inside the shoe boxes. Some days it's all hiking boots, other days high heels. If you didn't know what shoes you were buying, you'd probably take your business somewhere else! And yet for most of us, that’s what buying electricity is like. When you flip a light switch, what are you getting—solar power? Coal? You probably have opinions about what power source you’d prefer if you had a choice.</p>
 
-<h4>well...it doesn't yet, but it will soon!</h4>
+<p>With WattTime, you can finally know what fuel you’re getting. Check out our real-time <a href="http://www.ugcs.caltech.edu/~stansife/watttime/">graphs</a> of the electricity grid in New England. You’ll see that the answer varies a lot from time to time! And sometimes it’s unpredictable. So we also offer a text message notification service. To avoid you having to check the website constantly, we can notify you when your fuel meets the criteria you’d like to be notified about—like, when it’s probably going to be the cleanest point of the week, or days when you’re running on coal.</p> 
 
-<p>And now, for something completely different (sorry about the ugly graph Gabe!):</p>
-<img src="http://www.ugcs.caltech.edu/~stansife/watttime/abs.png" alt="ugly graph">
+<p>And what to do with this information? We spend a lot of time thinking about small, easy ways to make a big impact with your fuel choices. We’ll send you helpful hints with our texts and can personalize them to ways that are convenient for you in particular to make a big impact on the issues you tell us you care about. Do you have air conditioning and want to encourage renewable energy? We’ll let you know at moments when turning up your A/C briefly would mean you could cool more with renewable power. And over time, with your help we can measure our impact ever more precisely and continually improve the quality and relevance of our hints.</p>
 
+<br><br>
+<p>
+And now, for anyone who’s an energy geek like we are, here’s rather more technical information about how it works.</p>
+<br><br>
+<h2>Technical Questions</h2>
+<div class="well faq-categories">
+<ul style="font-size:16px; text-align:left">
+<h3>How do you know what fuels I’m running on?</h3>
+<li>
+Since electrons are all the same, utilities assume you don’t care about where they came from. And you can’t just check which power plants you live near. Since power travels so incredibly fast, when you flip a light switch you’re often turning on a plant hundreds of miles away. Instead, to find out your source you need to use economics. Modern electricity markets in the United States work much like giant auctions, with utilities constantly hunting for the lowest bids from different suppliers to generate power. And they do it every five minutes, 24/7!
+<br>
+By collecting data on these auctions and applying a little economics, WattTime can tell you where your power is coming from despite all that. You can check on your current fuel mix at any time at the Status page. One key feature of these auctions is that at any given moment, there’s just one fuel type that is the most expensive (marginal) fuel at that moment. So when that fuel type is one you don’t like - maybe coal - if you reduce your energy use a little, that’s the plant that will be affected. The cheapest plants just keep running, but at any given moment whichever plant is marginal will be affected by your actions.</li>
+
+<h3>How big are the energy impacts of my choices?</h3>
+<li>
+There are a lot of indirect ways you can influence the energy system. If you shift your energy use away from coal, you are hurting their profits and may hasten their exit from the system. And wind power in particular can benefit from indirect impacts.
+<br>
+But for now let’s focus on the direct impacts. The U.S. Department of Energy’s Energy Information Administration (EIA) estimates the pollution from different fuels. If you shift from coal to natural gas, you’re talking about reducing direct pollution from 1.67 to 1.12 pounds of carbon dioxide per kilowatt-hour, or a savings of 33% for anything you shift. If you shift to renewable fuels, of course, that’s a savings of 100%.</li>
+
+<h3>If electricity is cleaner at some times than others, why don't you just store the energy?</h3>
+<li>
+Batteries are really expensive! For a tiny amount of energy like powering a flashlight, they work great. But the battery for, say, an electric car can cost over $10,000! Imagine the cost of a battery big enough to power an entire state. But there are lots of ways to store energy without using regular batteries. Like pre-cooling your house. If you turn up your A/C a notch for half an hour and then turn it back, your house is pretty good at staying cool for a while longer - as if you had just basically just turned all the air in your house into a giant battery. You might say that’s pretty... cool.</li>
+
+<h3>Can I use WattTime to help solar power?</h3>
+<li>
+WattTime works by affecting whatever power plants are economically marginal at a given moment in your region (see how-to page). Because solar power is essentially never the marginal power plant, unfortunately WattTime can't really do anything to help out. (Same with nuclear power). But take heart! Solar plants typically are able to sell all the power they create anyway. So in a sense they don't really need our help.</li>
+
+<h3>How is all this any different from time-of-use pricing / critical peak pricing / real-time-pricing / demand response?</h3>
+<li>
+We’re glad you asked! There are many programs out there that already try to get people to save energy at peak time. Often utilities justify these programs by talking about the environment. And in some circumstances, they really can help the environment a little. But that’s not why they’re doing it! Real-time pricing is completely determined by money.  During peak times electricity is more expensive in wholesale markets, and utilities are trying to cut costs. In many cases that can actually be worse for the environment. At WattTime, we’re here to give you control over your environmental impact, so we don’t focus on peak times unless they happen to be dirty times as well.</li>
+
+</div>
 {% endblock %}

@@ -84,7 +84,9 @@
 						<ul class="nav nav-home">
 
 
-							
+							<li>
+							<a href="{% url 'status' %}">STATUS</a>
+							</li>
 
 							<li>
 
@@ -121,6 +123,7 @@
 
 					<div class="header-main">
 
+
 						<h1>It's <span style="color:#339999"><!--display user's local time -->
 						
 						<script type="text/javascript">
@@ -145,9 +148,19 @@
 						//-->
 						</script>
 
-                                        </span> and <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span> Green. </h1>
- 
-                                        
+                        </span> and <br> the New England electricity grid is <span style="color:#ffff33">{{ current_green }}</span> green. </h1>
+
+
+                <!-- Time Zone Localization
+                
+                	  <div class="header-main">
+					  {% load tz %}
+					  {% timezone "US/Eastern" %}
+					  <h1>It's <span style="color:#339999">{{ time|date:'I:m a' }}</span> and
+					  <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span>
+					  Green. </h1>
+					  {% endtimezone %} -->
+                                                  
                                         
 <!-- Grid localization script: identifies users by IP; prints location field
 
@@ -187,17 +200,21 @@
 
 
 
+
 				</div>
 
 			</div>
 			
 		</div>
 
-		
+		</div><div class="agency-credit">
+			Photo Credit:<a href="http://www.flickr.com/photos/93371523@N00/" target="_blank">
+				j_palmucci</a>
+		</div>
 
 	</div>
 
-	<a href="#feature-set" class="down-tab hidden-phone" name="feature-set">
+	<a href="#feature-set" class="down-tab" name="feature-set">
 
 		TELL ME MORE! <i class="arrow arrow-down">&nbsp;</i>
 
@@ -373,70 +390,6 @@
 		
 
 <div class="footer" name="contact">
-
-<!--	<div class="container contact-form">
-
-		<div class="row">
-
-			<div class="span12">
-
-				<h3>Comments? Questions? Get in Touch!</h3>
-
-			</div>
-
-			<form action="" method="post" class="">
-
-				<div class="span3">
-
-					<input type="text" name="namefield"  title="Name" class="required" id="name-field">
-
-				</div>	
-
-				<div class="span3">
-
-					<input type="email" name="emailfield" title="Email" class="email required" id="email-field">
-
-				</div>
-
-				<div class="span3">
-
-					<input type="text" name="phonefield" title="Phone" id="phone-field">
-
-				</div>
-
-				<div class="span3">
-
-					<input type="text" name="companyfield" title="Company" id="company-field">
-
-				</div>
-
-				<div class="span12  comments-textarea">
-
-					<textarea name="commentsfield" title="Your thoughts" id="comments-field"></textarea>
-
-				</div>
-
-				<div class="span4 offset4">
-
-					<input type="hidden" name="" id="Campaign2"  />
-
-					<input type="hidden" name="" id="Source2" />
-
-					<input type="hidden" name="" id="Medium2"  />
-
-					<input type="hidden" name="" id="Keywords2"/>
-
-					<input type="hidden" name="say" value="hello">
-
-					<input type="submit" value="SAY HELLO!">
-
-				</div>
-
-			</form>
-
-		</div>
-
-	</div> -->
 
 	<div class="container">
 

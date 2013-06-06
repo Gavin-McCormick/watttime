@@ -5,7 +5,8 @@
 
 
 <h2>Welcome to WattTime!</h2>
-<p style="color:#ffff33">WattTime works by sending occasional sms updates about the status of your electricity source directly to your phone. </p><h4>To begin, please enter your phone number. <br>You will receive a sms message with a 6 digit code to verify your device and enrollment. <br>You can stop the service at any time.</h4>
+<p style="color:#ffff33">You're in luck, a pilot version of WattTime is available in your area!</p>
+<p style="color:#ffff33">WattTime works by sending occasional sms updates about the status of your electricity source directly to your phone. </p><h4>Want to participate? To begin, please enter your phone number. <br>You will receive a sms message with a 6 digit code to verify your device and enrollment. <br>You can stop the service at any time.</h4>
 <!-- CAUTION: Must include in the action "phone_setup", or it will call the "profile_create" instead!!!!-->
 <form action="{% url 'phone_setup' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
 	{% csrf_token %}

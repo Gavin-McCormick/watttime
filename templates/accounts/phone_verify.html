@@ -5,6 +5,10 @@
 {% block content %}
 
 <h2>Please Verify Your Device</h2>
+{% if resend %}
+<p> The verification code has been resend to your phone.</p>
+{% endif %}
+
 <p>Please enter the 6 digit verification code below:</p>
 
 <form action="{% url 'phone_verify' userid %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
@@ -16,5 +20,14 @@
 	<input type="submit" name="phone_verify" value="Verify   " /></p>
 </form>
 
+{% if not reenter %}
+<p>Have trouble receiving the message? <a href="{% url 'phone_verify' userid %}/resend"> send me another message</a>.</p>
+{% endif %}
+
+{% if reenter %}
+<p> The verification code you entered isn't correct. <p>
+<P> Please enter the code above or <a href="{% url 'phone_verify' userid %}/resend"> Send me another message</a>. </p>
+<p> Not {{ phone }}? Reset your phone number <a href="{% url 'phone_setup' userid %}">here</a>.</p>
+{% endif %}
 
 {% endblock %}

@@ -47,6 +47,12 @@ urlpatterns += patterns('pages.views',
         'how_it_works', name='how-it-works'),
     url(r'^terms-of-service[/]?$',
         'terms_of_service', name='terms-of-service'),
+    url(r'^status[/]?$',
+        'status', name='status'),
+    url(r'^facebook_pilot[/]?$', 
+        'facebook_pilot', name='facebook_pilot'),
+    url(r'^sierra_pilot[/]?$', 
+        'sierra_pilot', name='sierra_pilot'),
 )
 
 # accounts patterns
@@ -63,6 +69,8 @@ urlpatterns += patterns('accounts.views',
         'welcome_alpha', name='welcome_alpha'),
     url(r'^thanks[/]?$',
         'thanks', name='thanks'),
+    url(r'^unsubscribe/(?P<phone>[0-9-]+)[/]?$',
+        'unsubscribe', name='unsubscribe'),
 )
 
 # windfriendly API patterns
@@ -83,3 +91,5 @@ urlpatterns +=  patterns('windfriendly.views',
 urlpatterns += patterns('',
                         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT }),
                         )
+                        
+
