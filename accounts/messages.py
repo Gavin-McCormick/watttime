@@ -19,7 +19,7 @@ def verify_phone_message(code):
 def email_signup_message(userid, name):
     lines = ["Hi %s," % name,
              "Thanks for your interest in WattTime! You are now subscribed to occasional email updates about WattTime products and services.",
-             "Currently we are piloting WattTime's SMS notification service in Massachusetts. To participate in the pilot, just enter your phone number at http://wattTime.herokuapp.com/phone_setup/%s." % userid,
+             "Currently we are piloting WattTime's SMS notification service in New England. To participate in the pilot, just enter your phone number at http://wattTime.herokuapp.com/phone_setup/%s." % userid,
              "To unsubscribe from our email list, please reply to this email with the message 'unsubscribe'.",
              "Cheers,",
              "the team at WattTime"
