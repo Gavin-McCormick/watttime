@@ -1,6 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
@@ -36,7 +36,7 @@ class User(models.Model):
     state = USStateField(default='MA')
 
     # state logic
-    VALID_STATE_CHOICES = ('MA',)
+    VALID_STATE_CHOICES = ('MA', 'VT', 'CT', 'RI', 'NH', 'ME')
 
     def is_valid_state(self):
         if self.state in self.VALID_STATE_CHOICES:
@@ -203,7 +203,8 @@ class UserProfile(models.Model):
                 return messages.dont_use_message(marginal_fuel)
 
         # else
-        return 'No message found for marginal fuel %s and goal %d' % (marginal_fuel, self.goal)
+        print 'No message found for marginal fuel %s and goal %s' % (marginal_fuel, self.goal)
+        return None
 
 class NewUserForm(ModelForm):
     name = forms.CharField(error_messages={'required': 'No name? OK, what should we call you?'})
@@ -228,6 +229,26 @@ class UserPhoneForm(ModelForm):
         super(UserPhoneForm, self).__init__(*args, **kwargs)
         self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
 
+    def clean_phone(self):
+        # this should probably be done using User unique_together
+        email = self.instance.email
+        phone = self.cleaned_data['phone']
+        preexisting_users =  User.objects.filter(phone=phone, email=email)
+        if preexisting_users.count() > 0:
+            userid = preexisting_users[0].userid
+            msg = "User %d already exists with email %s and phone %s.\n" % (userid,
+                                                                          email,
+                                                                          phone)
+            if preexisting_users[0].is_verified:
+                if preexisting_users[0].is_active:
+                    msg += "Edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
+                else:
+                    msg += "Reactivate SMS notifications and edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
+            else:
+                msg += "Verify phone: http://wattTime.herokuapp.com/phone_verify/%s" % userid
+            raise ValidationError(msg)
+        else:
+            return phone
 
 class UserProfileForm(ModelForm):
 
