@@ -16,6 +16,17 @@ def dont_use_message(marginal_fuel):
 def verify_phone_message(code):
     return "Hello from WattTime! Enter [%s] on the sign up page to verify your device. This is a 1-time message." % code
 
+def intro_message(frequency='daily'):
+    return "Thanks for signing up for %s SMS notifications from WattTime!" % (frequency)
+
+def edit_profile_message(frequency, goals):
+    msg = "Thanks for editing your WattTime preferences! You are now signed up for %s SMS notifications" % frequency
+    if goals:
+        msg += " about %s." % goals
+    else:
+        msg += '.'
+    return msg
+
 def email_signup_message(userid, name):
     lines = ["Hi %s," % name,
              "Thanks for your interest in WattTime! You are now subscribed to occasional email updates about WattTime products and services.",

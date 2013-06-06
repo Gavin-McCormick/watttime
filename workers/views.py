@@ -36,13 +36,7 @@ def recurring_events(request):
     newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in updated_bas]
     percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
     percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
-    marginal_fuels = []
-    for point in newest_timepoints:
-        try:
-            marginal_name = ne_fuels[point.marginal_fuel]
-        except TypeError: # point.marginal_fuel is None
-            marginal_name = 'None'
-        marginal_fuels.append(marginal_name)
+    marginal_fuels = [point.marginal_names() for point in newest_timepoints]
 
     print updated_bas, percent_greens, percent_coals, marginal_fuels
 

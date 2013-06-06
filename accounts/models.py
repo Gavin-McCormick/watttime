@@ -74,6 +74,11 @@ SENDTEXT_TIMEDELTAS = {
     2: timedelta(days=1),
     3: timedelta(days=7),
     }
+SENDTEXT_FREQWORDS = {
+    1: 'hourly',
+    2: 'daily',
+    3: 'weekly',
+    }
 AC_CHOICES = (
     (0, "None"),
     (1, "Central A/C"),
@@ -92,6 +97,12 @@ GOALS_CHOICES = (
     (2, 'Help me use more renewables'),
     (3, 'More renewables & nuclear, less coal & oil'),
     )
+GOAL_WORDS = {
+    0: 'everything',
+    1: 'using less coal',
+    2: 'using more renewables',
+    3: 'lowering my carbon footprint',
+}
 CHANNEL_CHOICES = (
     (0, "Sierra Club"),
     (1, "Internet"),
@@ -167,6 +178,32 @@ class UserProfile(models.Model):
    #                            choices=GOALS_CHOICES,
    #                            )
 
+    def goal_set(self):
+        # TO DO hacky
+        return set(int(g) for g in self.goal[0].split())
+
+    def get_intro_message(self):
+        return messages.intro_message(SENDTEXT_FREQWORDS[self.text_freq])
+
+    def get_edit_profile_message(self):
+        goal_set = self.goal_set()
+        if len(goal_set) == 0:
+            goal_words = None
+        elif len(goal_set) == 1:
+            goal_words = GOAL_WORDS[goal_set.pop()]
+        elif len(goal_set) == 2:
+            goal_words = ' and '.join([GOAL_WORDS[g] for g in goal_set])
+        else:
+            goal_words = ''
+            while len(goal_set) > 1:
+                goal_words += GOAL_WORDS[goal_set.pop()]+', '
+            goal_words += 'and '+GOAL_WORDS[goal_set.pop()]
+            
+        msg = messages.edit_profile_message(SENDTEXT_FREQWORDS[self.text_freq],
+                                             goal_words)
+        print msg
+        return msg
+
     def get_personalized_message(self, percent_green, percent_coal,
                                  marginal_fuel):
         """ Select an appropriate message for a user
@@ -178,8 +215,7 @@ class UserProfile(models.Model):
             return None
 
         # sort out goals
-        # TO DO hacky
-        goal_set = set(int(g) for g in self.goal[0].split())
+        goal_set = self.goal_set()
 
         # marginal is renewable
         if marginal_fuel in ['Wind', 'Hydro', 'Wood', 'Refuse'] and len(goal_set & set([0, 2, 3])) > 0:

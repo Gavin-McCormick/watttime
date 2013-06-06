@@ -8,7 +8,8 @@ from windfriendly.models import NE
 import twilio_utils
 import random
 import pytz
-from accounts.messages import verify_phone_message, email_signup_message, account_activated_message, account_inactivated_message
+from accounts.messages import verify_phone_message, email_signup_message, account_activated_message, account_inactivated_message, intro_message
+from accounts.twilio_utils import send_text
 from django.utils.timezone import now
 from django.core.mail import send_mail
 from settings import EMAIL_HOST_USER
@@ -107,6 +108,10 @@ def profile_alpha(request, userid):
             #print type(new_profile.goal[0])
             new_profile.save()
 
+            # send text
+            msg = new_profile.get_edit_profile_message()
+            send_text(msg, to=user.phone)
+
             # reactivate user
             if not user.is_active:
                 user.is_active = True
@@ -120,7 +125,7 @@ def profile_alpha(request, userid):
                           EMAIL_HOST_USER,
                           [user.email],
                           fail_silently=False)
-
+                
             # redirect
             url = reverse('welcome_alpha')
             return HttpResponseRedirect(url)
@@ -186,6 +191,10 @@ def phone_verify(request, userid):
                           [user.email],
                           fail_silently=False)
 
+                # send text
+                msg = intro_message()
+                send_text(msg, to=user.phone)
+                
                 # redirect
                 url = reverse('profile_alpha', kwargs={'userid':userid})
                 return HttpResponseRedirect(url)
