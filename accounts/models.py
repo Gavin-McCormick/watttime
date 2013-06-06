@@ -36,7 +36,7 @@ class User(models.Model):
     state = USStateField(default='MA')
 
     # state logic
-    VALID_STATE_CHOICES = ('MA',)
+    VALID_STATE_CHOICES = ('MA', 'VT', 'CT', 'RI', 'NH', 'ME')
 
     def is_valid_state(self):
         if self.state in self.VALID_STATE_CHOICES:
