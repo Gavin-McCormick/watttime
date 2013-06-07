@@ -75,8 +75,8 @@ urlpatterns += patterns('accounts.views',
 
 # windfriendly API patterns
 urlpatterns +=  patterns('windfriendly.views',
-    url(r'^status[/]?$',
-        'status', name='status'),
+    #url(r'^status[/]?$',
+        #'status', name='status'),
     url(r'^forecast[/]?$',
         'forecast', name='forecast'),
     url(r'^update/(?P<utility>[a-zA-Z0-9_-]+)[/]?$',

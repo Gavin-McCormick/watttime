@@ -54,8 +54,8 @@ class CAISOParser(UtilityParser):
 
     def RowstoDicts(rows):
         header = rows[0]
-        return [dict(zip(header, row)) for row in rows[1:]]            
-        
+        return [dict(zip(header, row)) for row in rows[1:]]
+
     def getData(self, energy_type, forecast_type, start_date, end_date):
         # returns list of dicts
         payload_update = {'queryname': energy_type,

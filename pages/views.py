@@ -6,6 +6,8 @@ from django import forms
 from django.forms.widgets import *
 from django.core.mail import send_mail, BadHeaderError
 from django.core.urlresolvers import reverse
+from windfriendly.models import NE
+from windfriendly.parsers import ne_fuels
 from settings import EMAIL_HOST_USER
 
 def faq(request):
@@ -25,14 +27,27 @@ def terms_of_service(request):
     return render(request, 'pages/terms_of_service.html')
 
 def status(request):
-    return HttpResponseRedirect('http://www.ugcs.caltech.edu/~stansife/watttime/')
+    datum = NE.objects.all().latest('date')
+    percent_green = datum.fraction_green() * 100.0
+    greenery = str(int(percent_green + 0.5))
+    marginal_fuel = ne_fuels[datum.marginal_fuel]
+    if marginal_fuel == 'None':
+        marginal_fuel = 'Mixed'
+    if marginal_fuel in ['Coal', 'Oil']:
+        message = "Right now in New England {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a great time to SAVE energy."
+    elif marginal_fuel in ['Natural Gas', 'Refuse', 'Mixed']:
+        message = "Right now in New England {p} percent of all power is coming from renewable energy. Right now any new power that's needed will come from {fuel}. That means this is an AVERAGE time to use energy."
+    else:
+        message = "Right now in New England {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a fine time to use MORE power."
+    message = message.format(p = greenery, fuel = marginal_fuel.lower())
+    return render(request, 'pages/status.html', {'marginal_message' : message})
 
 def contact(request):
     if request.method == 'POST':
-       	form = ContactForm(request.POST)
-       	if form.is_valid():
+        form = ContactForm(request.POST)
+        if form.is_valid():
             cd = form.cleaned_data
-			
+
             if cd['subject'] and cd['message'] and cd['email']:
                 try:
                     send_mail(
@@ -47,10 +62,10 @@ def contact(request):
                 except BadHeaderError:
                     return HttpResponse('Invalid header found.')
             else:
-                return HttpResponse('Make sure all fields are entered.')			
+                return HttpResponse('Make sure all fields are entered.')
     else:
         form = ContactForm()
-		
+
     return render_to_response('pages/contact.html', {'form':form}, RequestContext(request))
 
 def thankyou(request):

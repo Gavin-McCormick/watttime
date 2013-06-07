@@ -33,12 +33,21 @@ def recurring_events(request):
     ''' Called every 5 min with a GET request'''
     # update and query BAs
     updated_bas = update_all(request)
+    # Only support NE right now
+    updated_bas = ['ISONE']
     newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in updated_bas]
     percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
     percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
-    marginal_fuels = [point.marginal_names() for point in newest_timepoints]
+    marginal_fuels = [ne_fuels[point.marginal_fuel] for point in newest_timepoints]
 
-    print updated_bas, percent_greens, percent_coals, marginal_fuels
+
+    #newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in updated_bas]
+    #percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
+    #percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
+    #marginal_fuels = [point.marginal_names() for point in newest_timepoints]
+    #
+#
+    #print updated_bas, percent_greens, percent_coals, marginal_fuels
 
     # loop over users
     for up in UserProfile.objects.all():
@@ -49,24 +58,25 @@ def recurring_events(request):
         # check if it's a good time
         localtime = user.local_now()
         if is_good_time_to_message(localtime, user.userid, up) and (
-            user.is_verified and user.is_active):
+                user.is_verified and user.is_active):
             # get message
-            ba_ind = updated_bas.index(BALANCING_AUTHORITIES[user.state])
-            msg = up.get_personalized_message(percent_greens[ba_ind],
-                                              percent_coals[ba_ind],
-                                              marginal_fuels[ba_ind])
-            print user.phone, msg
+            ba = BALANCING_AUTHORITIES[user.state]
+            if ba in updated_bas:
+                ba_ind = updated_bas.index(ba)
+                msg = up.get_personalized_message(percent_greens[ba_ind],
+                        percent_coals[ba_ind], marginal_fuels[ba_ind])
+                print user.phone, msg
 
-            if msg:
-                # send text
-                send_text(msg, to=user.phone)
-            
-                # save to log
-                logitem = SMSLog(user=user,
-                                 utctime=now(),
-                                 localtime=localtime,
-                                 message=msg)
-                logitem.save()
+                if msg:
+                    # send text
+                    send_text(msg, to=user.phone)
+
+                    # save to log
+                    logitem = SMSLog(user=user,
+                                     utctime=now(),
+                                     localtime=localtime,
+                                     message=msg)
+                    logitem.save()
 
     # return
     url = reverse('home')
@@ -83,9 +93,9 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
     # has the user been texted recently?
-    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].seconds
+    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
     if SMSLog.objects.filter(user=userid).exists():
-        is_recently_notified = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).seconds < text_period_secs / 2
+        is_recently_notified = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).total_seconds() < text_period_secs / 2
     else:
         is_recently_notified = False
 

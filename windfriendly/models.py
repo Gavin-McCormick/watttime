@@ -1,32 +1,36 @@
 from django.db import models
+# from windfriendly.parsers import ne_fuels
 #from accounts.models import User
 
 class CAISO(models.Model):
   pass
 
 class BPA(models.Model):
-  """Raw BPA data"""
-  load = models.IntegerField()
-  wind = models.IntegerField()
-  thermal = models.IntegerField()
-  hydro = models.IntegerField()
-  date = models.DateTimeField(db_index=True)
+    """Raw BPA data"""
+    load = models.IntegerField()
+    wind = models.IntegerField()
+    thermal = models.IntegerField()
+    hydro = models.IntegerField()
+    date = models.DateTimeField(db_index=True)
 
-  def get_title(self):
-    return unidecode(self.wind)
+    def get_title(self):
+        return unidecode(self.wind)
 
-  def total_load(self):
-    return float(self.wind + self.hydro + self.thermal)
+    def total_load(self):
+        return float(self.wind + self.hydro + self.thermal)
 
-  def fraction_green(self):
-    return self.wind / self.total_load()
+    def fraction_green(self):
+        return self.wind / self.total_load()
 
-  def fraction_high_carbon(self):
-    return self.thermal / self.total_load()
+    def fraction_high_carbon(self):
+        return self.thermal / self.total_load()
 
-  @property
-  def marginal_fuel(self):
-    return None
+    @property
+    def marginal_fuel(self):
+        return 'None'
+
+    #def marginal_names(self):
+        #return ['None']
 
 # All units are megawatts
 class NE(models.Model):
@@ -40,24 +44,22 @@ class NE(models.Model):
     date = models.DateTimeField(db_index=True)
 
     def total_load(self):
-      return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
-    
-    def fraction_green(self):
-      return (self.hydro + self.other_renewable) / self.total_load()
-    
-    def fraction_high_carbon(self):
-      return (self.coal) / self.total_load()
+        return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
 
-    def marginal_names(self):
-      marginal_fuels = []
-      for point in newest_timepoints:
-        try:
-          marginal_name = ne_fuels[point.marginal_fuel]
-        except TypeError: # point.marginal_fuel is None
-          marginal_name = 'None'
-        marginal_fuels.append(marginal_name)
-      return marginal_fuels
-    
+    def fraction_green(self):
+        return (self.hydro + self.other_renewable) / self.total_load()
+
+    def fraction_high_carbon(self):
+        return (self.coal) / self.total_load()
+
+    #def marginal_names(self):
+        #return [ne_fuels[self.marginal_fuel]]
+        #marginal_fuels = []
+        #for point in newest_timepoints:
+            #marginal_name = ne_fuels[point.marginal_fuel]
+            #marginal_fuels.append(marginal_name)
+        #return marginal_fuels
+
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)
   total_watts = models.IntegerField() # capacity
