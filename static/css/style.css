@@ -576,8 +576,46 @@ textarea, input {
 	font-weight:700;
 	color:#fff;
 }
+
 .watttime-form input[type="submit"]:hover{
 	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #66cc99;
+	-webkit-transition: background-color 200ms linear;
+	-moz-transition: background-color 200ms linear;
+	-o-transition: background-color 200ms linear;
+	-ms-transition: background-color 200ms linear;
+	transition: background-color 200ms linear;
+	cursor:pointer;
+}
+
+
+.watttime-form.sign-up-form.survey input[type="submit"]{
+	background: #339999;
+	border:none;
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	position:relative;
+	left:-5px;
+	height:60px;
+	width:150px;
+	font-size:19px;
+	margin:0px;
+	font-family:"Source Sans Pro", sans-serif;
+	font-weight:700;
+	color:#fff;
+}
+
+.watttime-form.sign-up-form.survey input[type="submit"]:hover{
+	background: #66cc99;
 	-webkit-transition: background-color 200ms linear;
 	-moz-transition: background-color 200ms linear;
 	-o-transition: background-color 200ms linear;
