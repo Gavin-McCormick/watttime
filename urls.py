@@ -28,6 +28,8 @@ urlpatterns = patterns('',
         'accounts.views.profile_create', name='home'),
     url(r'^ping5[/]?$',
         'workers.views.recurring_events', name='ping5'),
+    url(r'^demo[/]?$',
+        'workers.views.demo', name='demo'),
   #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
@@ -49,9 +51,9 @@ urlpatterns += patterns('pages.views',
         'terms_of_service', name='terms-of-service'),
     url(r'^status[/]?$',
         'status', name='status'),
-    url(r'^facebook_pilot[/]?$', 
+    url(r'^facebook_pilot[/]?$',
         'facebook_pilot', name='facebook_pilot'),
-    url(r'^sierra_pilot[/]?$', 
+    url(r'^sierra_pilot[/]?$',
         'sierra_pilot', name='sierra_pilot'),
 )
 
@@ -91,5 +93,3 @@ urlpatterns +=  patterns('windfriendly.views',
 urlpatterns += patterns('',
                         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT }),
                         )
-                        
-

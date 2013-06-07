@@ -18,16 +18,47 @@
 from datetime import datetime, timedelta, date
 from dateutil import tz
 import pytz
-from windfriendly.views import update_all
+from windfriendly.views import update, update_all
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from windfriendly.parsers import ne_fuels
 from accounts.twilio_utils import send_text
 from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from workers.models import SMSLog
 from random import randint
+
+def demo(request):
+    message = []
+
+    update(request, 'ne')
+    message.append('Updated latest New England data.')
+
+    last = BA_MODELS['ISONE'].objects.all().latest('date')
+    message.append('Natural Gas: {:.2f} MW'.format(last.gas))
+    message.append('Nuclear: {:.2f} MW'.format(last.nuclear))
+    message.append('Hydro: {:.2f} MW'.format(last.hydro))
+    message.append('Coal: {:.2f} MW'.format(last.coal))
+    message.append('Other renewable fuels: {:.2f} MW'.format(last.other_renewable))
+    message.append('Other fossil fuels: {:.2f} MW'.format(last.other_fossil))
+    marginal = ne_fuels[last.marginal_fuel]
+    if marginal == 'None':
+        marginal = 'Mixed Fuels'
+    message.append('Current marginal fuel: {}'.format(marginal))
+    message.append('Timestamp of update: {}'.format(str(last.date)))
+
+    user_profiles = UserProfile.objects.all()
+    message.append('{:d} users in database'.format(len(user_profiles)))
+
+    names = []
+    for up in user_profiles:
+        names.append('{} ({})'.format(up.userid.name, str(up.userid.phone)))
+    message.append('All users are: [{}]'.format(', '.join(names)))
+
+    message = '\n'.join(message)
+    print (message)
+    return HttpResponse(message, "application/json")
 
 def recurring_events(request):
     ''' Called every 5 min with a GET request'''
