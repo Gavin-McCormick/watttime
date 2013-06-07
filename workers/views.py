@@ -43,8 +43,8 @@ def demo(request):
     message.append('Other renewable fuels: {:.2f} MW'.format(last.other_renewable))
     message.append('Other fossil fuels: {:.2f} MW'.format(last.other_fossil))
     marginal = ne_fuels[last.marginal_fuel]
-    if marginal == 'None':
-        marginal = 'Mixed Fuels'
+    #if marginal == 'None':
+        #marginal = 'Mixed Fuels'
     message.append('Current marginal fuel: {}'.format(marginal))
     message.append('Timestamp of update: {}'.format(str(last.date)))
 
@@ -53,8 +53,23 @@ def demo(request):
 
     names = []
     for up in user_profiles:
-        names.append('{} ({})'.format(up.userid.name, str(up.userid.phone)))
-    message.append('All users are: [{}]'.format(', '.join(names)))
+        user = up.userid
+        if user.is_verified and user.is_active:
+            names.append('{} ({})'.format(user.name, str(user.phone)))
+    message.append('Active, verified users are: [{}]'.format(', '.join(names)))
+
+    for up in user_profiles:
+        user = up.userid
+        if user.is_verified and user.is_active:
+            ba = BALANCING_AUTHORITIES[user.state]
+            if ba == 'ISONE':
+                msg = up.get_personalized_message(last.fraction_green(),
+                        last.fraction_high_carbon(), marginal)
+                if msg is None:
+                    message.append('No message sent to {}'.format(user.name))
+                else:
+                    message.append('To {}: "{}"'.format(user.name, msg))
+                    send_text(msg, to=user.phone)
 
     message = '\n'.join(message)
     print (message)
