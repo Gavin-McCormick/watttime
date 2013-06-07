@@ -125,7 +125,7 @@ def profile_alpha(request, userid):
                           EMAIL_HOST_USER,
                           [user.email],
                           fail_silently=False)
-                
+
             # redirect
             url = reverse('welcome_alpha')
             return HttpResponseRedirect(url)
@@ -137,7 +137,7 @@ def profile_alpha(request, userid):
             'form': form,
             'userid': userid,
     })
-    
+
 def send_verification_code(user):
     verification_code = user.verification_code
     print ("Sending verification code: {:d}".format(verification_code))
@@ -175,7 +175,7 @@ def phone_verify(request, userid):
             code1 = form.cleaned_data['verification_code']
             code2 = user.verification_code
             print ("Checking codes: {:d} vs. {:d}".format(code1, code2))
-            
+
             if code1 == code2:
                 # save verification and activation state
                 user.is_verified = True
@@ -194,7 +194,7 @@ def phone_verify(request, userid):
                 # send text
                 msg = intro_message()
                 send_text(msg, to=user.phone)
-                
+
                 # redirect
                 url = reverse('profile_alpha', kwargs={'userid':userid})
                 return HttpResponseRedirect(url)
@@ -220,7 +220,7 @@ def thanks(request):
 
 def welcome_alpha(request):
     return render(request, 'accounts/thanks_alpha.html')
-    
+
 def unsubscribe(request, phone):
     """ Set user(s) with matching phone number to verified but inactive """
     if phone:
@@ -240,7 +240,7 @@ def unsubscribe(request, phone):
                     # save inactivation
                     user.is_active = False
                     user.save()
-                    
+
                     # send email
                     send_mail('WattTime account inactivated',
                               account_inactivated_message(user.userid,
@@ -249,7 +249,7 @@ def unsubscribe(request, phone):
                               EMAIL_HOST_USER,
                               [user.email],
                               fail_silently=False)
-                 
+
             if show_name:
                 return render(request, 'accounts/unsubscribe_success.html', {
                         'phone': phone,
@@ -259,16 +259,16 @@ def unsubscribe(request, phone):
             else:
                 return render(request, 'accounts/unsubscribe_fail.html', {
                         'phone': phone,
-                        })    
+                        })
         else:
             return render(request, 'accounts/unsubscribe_fail.html', {
                     'phone': phone,
-                    })            
+                    })
     else:
         return render(request, 'accounts/unsubscribe_fail.html', {
                 'phone': phone,
                 })
-         
+
 
 #@login_required
 #def profile_edit(request):

@@ -57,8 +57,8 @@ def recurring_events(request):
 
         # check if it's a good time
         localtime = user.local_now()
-        if is_good_time_to_message(localtime, user.userid, up) and (
-                user.is_verified and user.is_active):
+        if (user.is_verified and user.is_active and
+                is_good_time_to_message(localtime, user.userid, up)):
             # get message
             ba = BALANCING_AUTHORITIES[user.state]
             if ba in updated_bas:
@@ -101,7 +101,9 @@ def is_good_time_to_message(timestamp, userid, user_profile,
 
     # add some noise
     if do_rand:
-        n_5min_intervals = text_period_secs / 60 / 5
+        n_5min_intervals = (text_period_secs / 60 / 5) / 3
+        if n_5min_intervals < 1:
+            n_5min_intervals = 1
         is_randomly_selected = randint(1, n_5min_intervals) == 1
     else:
         is_randomly_selected = True

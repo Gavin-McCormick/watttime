@@ -55,27 +55,28 @@ class User(models.Model):
 
     def local_now(self):
         # TO DO make it work for other states
-        if self.state == 'MA':
-            return localtime(now(), timezone('US/Eastern'))
-        else:
-            return now()
+        return localtime(now(), timezone('US/Eastern'))
+        #if self.state == 'MA':
+            #return localtime(now(), timezone('US/Eastern'))
+        #else:
+            #return now()
 
     def twilio_format_phone(self):
         return '+1'+self.phone.replace('-', '')
 
 
 SENDTEXT_FREQ_CHOICES = (
-    (1, 'About once an hour! Woo!'),
+    (1, 'Several times per day'),
     (2, 'About once a day'),
     (3, 'About once a week'),
     )
 SENDTEXT_TIMEDELTAS = {
-    1: timedelta(hours=1),
+    1: timedelta(hours=3),
     2: timedelta(days=1),
     3: timedelta(days=7),
     }
 SENDTEXT_FREQWORDS = {
-    1: 'hourly',
+    1: 'several-times-daily',
     2: 'daily',
     3: 'weekly',
     }
@@ -140,7 +141,7 @@ class UserProfile(models.Model):
 
     # how often to contact
     text_freq = models.IntegerField('How often you want to receive texts',
-                                    blank=False, default=2,
+                                    blank=False, default=3,
                                     choices=SENDTEXT_FREQ_CHOICES,
                                     )
 
@@ -171,7 +172,6 @@ class UserProfile(models.Model):
 
 
 
-    
    # goal = models.IntegerField('Which goals would you like to receive notifications about?',
    #                            blank=False, default=0,
    #                           # blank=True,
@@ -198,7 +198,7 @@ class UserProfile(models.Model):
             while len(goal_set) > 1:
                 goal_words += GOAL_WORDS[goal_set.pop()]+', '
             goal_words += 'and '+GOAL_WORDS[goal_set.pop()]
-            
+
         msg = messages.edit_profile_message(SENDTEXT_FREQWORDS[self.text_freq],
                                              goal_words)
         print msg

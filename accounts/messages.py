@@ -10,16 +10,16 @@ def use_central_ac_message(marginal_fuel):
 		return "WattTime Alert! You're now running on clean %s power. Won't last long! Can you think of something you could do to use power now instead of later?." % marginal_fuel
 	else:
 		return "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop? Phone?" % marginal_fuel
-		
+
 def use_message(marginal_fuel):
 	randint = random.randint(0,2)
 	if randint == 0:
 		return "WattTime Alert! Your power is unusually clean right now - %s. Can you avoid wasting that clean power? Great time to do laundry, or dishes! " % marginal_fuel
 	elif randint == 1:
 		return "WattTime Alert! You're now running on clean %s power. Won't last long! Can you think of something you could do to use power now instead of later?." % marginal_fuel
-	else:	
+	else:
 		return "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop? Phone?" % marginal_fuel
-		
+
 def dont_use_central_ac_message(marginal_fuel):
 	randint = random.randint(0,3)
 	if randint == 0:
@@ -41,7 +41,7 @@ def dont_use_message(marginal_fuel):
 		return "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?" % marginal_fuel
 	else:
 		return "WattTime Alert! You're now on dirty %s power. Great time to save energy! Anything charging that you could unplug now and put back later when power is cleaner?" % marginal_fuel
-	
+
 def verify_phone_message(code):
     return "Hello from WattTime! Enter [%s] on the sign up page to verify your device. This is a 1-time message." % code
 
@@ -51,7 +51,7 @@ def intro_message(frequency='daily'):
 def edit_profile_message(frequency, goals):
     msg = "Thanks for editing your WattTime preferences! You are now signed up for %s SMS notifications" % frequency
     if goals:
-        msg += " about %s." % goals
+        msg += " %s." % goals
     else:
         msg += '.'
     return msg
