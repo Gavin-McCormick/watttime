@@ -94,3 +94,37 @@ label, select, button, input[type="button"], input[type="reset"], input[type="su
           border-radius: 3px;
 }
 
+input[name="text_freq"], 
+input[type="channel"], 
+input[type="ac"], 
+input[type="furnace"], 
+input[type="water_heater"], 
+input[type="goal"] {
+  cursor: pointer;
+  margin: 4px 0 0;
+  line-height: normal;
+  width: auto;
+
+}
+
+select:focus,
+input[type="radio"]:focus,
+input[type="checkbox"]:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+
+
+
+
+input[type="radio"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][readonly],
+input[type="checkbox"][readonly] {
+  background-color: transparent;
+}
+
+
+

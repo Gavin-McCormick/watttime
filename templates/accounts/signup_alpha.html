@@ -5,11 +5,49 @@
 {% block content %}
 <h2>Welcome to WattTime!</h2><br><br><br>
 
-<p>Great! You're now signed up to begin receiving messages that let you know when your power is especially clean or dirty.</p>
-<p>We are currently piloting ways to make WattTime even more relevant and effective for you and your energy choices. As we learn more about your energy needs and constraints, we can introduce tips and suggestions that will increase the value of your energy choices for your usage patterns and practices. Would you like to personalize any settings below?</p>
+<h4>Now that you've signed up you should expect to receive messages that signal when your power is especially clean or especially dirty.</h4>
+<h4 style="color:#ffff33">Please help us make WattTime more relevant and effective for you by answering a few simple questions about your preferences and the technology you use.</h4>
+<br><br>
+<form action="/profile/{{userid}}" method="post" class="watttime-form sign-up-form survey">{% csrf_token %}
+<table class="well" style="background-color:#666;"><tr><td>
+{{ form.non_field_errors }}
+    <h4 style="color:#ffff33;">How often would you like to receive notifications?</h4>
+ <h4>{{ form.text_freq.errors }}
+        {{ form.text_freq }}
+    </h4></td>
+    <td>
+    <h4 style="color:#ffff33;">How did you hear of WattTime?</h4>
+        <h4>{{ form.channel.errors }}
+        {{ form.channel }}</h4>
+    </td></tr>
+    
+    <tr>
+    <td>
+    <h4 style="color:#ffff33;">If you use an air conditioner, what type is it?</h4>
+        <h4>{{ form.ac.errors }}
+        {{ form.ac }}<h4>
+ 		</td>
+    <td>
+    <h4 style="color:#ffff33;">If you use an furnace, what type is it?</h4>
+        <h4>{{ form.furnace.errors }}
+        {{ form.furnace }}</h4>
 
-<form action="/profile/{{userid}}" method="post">{% csrf_token %}
-{{ form.as_p }}
+  </td></tr>
+  
+  <tr><td>
+    <h4 style="color:#ffff33;">If you use an water heater, what type is it?</h4>
+        <h4>{{ form.water_heater.errors }}
+        {{ form.water_heater }}</h4>
+    </td>
+    <td>
+    <h4 style="color:#ffff33;">Do you have specific goals that WattTime notifications would help you achieve?</h4>
+        <h4>{{ form.goal.errors }}
+        {{ form.goal }}
+    </h4></td>
+    
+    </tr></table>
+    
+
 <input type="submit" value="Sign me up!" />
 </form>
 
