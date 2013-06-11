@@ -231,8 +231,8 @@ class UserProfile(models.Model):
             else:
                 return messages.dont_use_message(marginal_fuel)
 
-        # marginal is oil or gas
-        if marginal_fuel in ['Oil', 'Natural Gas'] and len(goal_set & set([0, 3])) > 0:
+        # marginal is oil
+        if marginal_fuel in ['Oil'] and len(goal_set & set([0, 3])) > 0:
             if self.ac == 1: # central
                 return messages.dont_use_central_ac_message(marginal_fuel)
             else:
