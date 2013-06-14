@@ -2,6 +2,7 @@ from twilio.rest import TwilioRestClient
 from datetime import date
 from accounts.models import UserProfile
 from settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, WATTTIME_PHONE
+from windfriendly.models import debug
 
 def send_text(msg, to):
     """ Send a text message to a phone number.
@@ -13,8 +14,10 @@ def send_text(msg, to):
         c = client.sms.messages.create(to=to,
                                    from_=WATTTIME_PHONE,
                                    body=msg)
+        debug("texted '{}' to {}".format(msg, str(to)))
         return True
     except:
+        debug("failed to text '{}' to {}".format(msg, str(to)))
         return False
 
 def get_latest_text(from_):

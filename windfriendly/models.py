@@ -1,6 +1,17 @@
 from django.db import models
+from django.utils.timezone import now
 # from windfriendly.parsers import ne_fuels
 #from accounts.models import User
+
+class DebugMessage(models.Model):
+    date = models.DateTimeField(db_index=True)
+    message = models.CharField(max_length=300)
+
+def debug(message):
+    dm = DebugMessage()
+    dm.date = now()
+    dm.message = message
+    dm.save()
 
 class CAISO(models.Model):
   pass

@@ -87,6 +87,8 @@ urlpatterns +=  patterns('windfriendly.views',
         'history', name='history'),
     url(r'^average/(?P<userid>[a-zA-Z0-9_-]+)[/]?$',
         'average_usage_for_period', name='average'),
+    url(r'^debug[/]?$',
+        'debug_messages', name='debug_messages'),
 )
 
 # static

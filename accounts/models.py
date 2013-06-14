@@ -11,6 +11,7 @@ from multi_choice import *
 from pytz import timezone
 from datetime import datetime, timedelta
 from django.utils.timezone import now, localtime
+from windfriendly.models import debug
 
 class User(models.Model):
     # name
@@ -212,6 +213,7 @@ class UserProfile(models.Model):
         """
         # if there's no marginal, there's no message
         if marginal_fuel == 'None':
+            debug('      No message (no marginal fuel)')
             return None
 
         # sort out goals
@@ -240,6 +242,7 @@ class UserProfile(models.Model):
 
         # else
         print 'No message found for marginal fuel %s and goal %s' % (marginal_fuel, self.goal)
+        debug('      No message (marginal fuel {}, goal {})'.format(marginal_fuel, self.goal))
         return None
 
 class NewUserForm(ModelForm):

@@ -28,7 +28,7 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.db.models import Q
 
-from windfriendly.models import User, MeterReading
+from windfriendly.models import DebugMessage, User, MeterReading
 from windfriendly.parsers import BPAParser, NEParser, GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 import windfriendly.utils as windutils
@@ -98,6 +98,17 @@ def status(request):
       'percent_green': round(percent_green,3)
     }
     return data
+
+def debug_messages(request):
+    dms = DebugMessage.objects.all()
+    xs = []
+    for dm in dms:
+        xs.append((dm.date, dm.message))
+    xs.sort()
+    result = []
+    for x, y in xs:
+        result.append('{}: {}'.format(str(x), y))
+    return HttpResponse('\n'.join(result), "application/json")
 
 @json_response
 def forecast(request):

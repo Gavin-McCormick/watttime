@@ -18,6 +18,7 @@
 from datetime import datetime, timedelta, date
 from dateutil import tz
 import pytz
+from windfriendly.models import debug
 from windfriendly.views import update, update_all
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from windfriendly.parsers import ne_fuels
@@ -86,6 +87,7 @@ def recurring_events(request):
     percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
     marginal_fuels = [ne_fuels[point.marginal_fuel] for point in newest_timepoints]
 
+    debug("ping called (marginal fuel {})".format(marginal_fuels[0]))
 
     #newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in updated_bas]
     #percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
@@ -114,6 +116,7 @@ def recurring_events(request):
                 print user.phone, msg
 
                 if msg:
+                    debug('      sending message!')
                     # send text
                     send_text(msg, to=user.phone)
 
@@ -123,6 +126,8 @@ def recurring_events(request):
                                      localtime=localtime,
                                      message=msg)
                     logitem.save()
+                else:
+                    debug('      active, verified user, but not right fuel now')
 
     # return
     url = reverse('home')
@@ -141,21 +146,26 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     # has the user been texted recently?
     text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
     if SMSLog.objects.filter(user=userid).exists():
-        is_recently_notified = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).total_seconds() < text_period_secs / 2
+        dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').locatime).total_seconds()
+        is_recently_notified = dt < text_period_secs / 2
     else:
         is_recently_notified = False
+        dt = -1
 
     # add some noise
     if do_rand:
         n_5min_intervals = (text_period_secs / 60 / 5) / 3
+        n_5min_intervals 
         if n_5min_intervals < 1:
             n_5min_intervals = 1
         is_randomly_selected = randint(1, n_5min_intervals) == 1
     else:
         is_randomly_selected = True
 
+    debug('    is good hour? {}, {:f} seconds since last message, {:f} seconds desired interval, recently notified? {}, randomly selected? {}'.format(str(is_good_hour), dt, text_period_secs, is_recently_notified, is_randomly_selected))
     # return bool
-    if is_good_hour and (not is_recently_notified) and is_randomly_selected:
+    # if is_good_hour and (not is_recently_notified) and is_randomly_selected:
+    if is_good_hour and (not is_recently_notified):
         return True
     else:
         return False
