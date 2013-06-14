@@ -102,14 +102,18 @@ def recurring_events(request):
     for up in UserProfile.objects.all():
         # get matching user
         user = up.userid
-        debug("  looking at user {}".format(user.name))
+        debug("  looking at user {} ({}): verified? {} active? {}".format(user.name,
+                str(user.phone), str(user.is_verified), str(user.is_active)))
         print user, user.is_verified, user.is_active
 
         # check if it's a good time
         localtime = user.local_now()
         if (user.is_verified and user.is_active and
                 is_good_time_to_message(localtime, user.userid, up)):
-            debug("  is verified, is active, and is good time to message")
+            debug("    is verified, is active, and is good time to message")
+            pass
+        if (str(user.phone) == "971-208-5136"):
+            debug("    is eric")
             # get message
             ba = BALANCING_AUTHORITIES[user.state]
             if ba in updated_bas:
@@ -132,11 +136,13 @@ def recurring_events(request):
                 else:
                     debug('      active, verified user, but not right fuel now')
         else:
-            debug('    either not verified, not active, or not good time to message')
+            pass
+            #debug('    either not verified, not active, or not good time to message')
 
     # return
-    url = reverse('home')
-    return HttpResponseRedirect(url)
+    #url = reverse('home')
+    #return HttpResponseRedirect(url)
+    return HttpResponse('ping5 {}'.format(str(now())), "application/json")
 
 def is_good_time_to_message(timestamp, userid, user_profile,
                             min_hour=8, max_hour=22, do_rand=True):
