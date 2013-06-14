@@ -18,6 +18,7 @@
 from datetime import datetime, timedelta, date
 from dateutil import tz
 import pytz
+import traceback
 from windfriendly.models import debug
 from windfriendly.views import update, update_all
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
@@ -130,6 +131,8 @@ def recurring_events(request):
                     logitem.save()
                 else:
                     debug('      active, verified user, but not right fuel now')
+        else:
+            debug('    either not verified, not active, or not good time to message')
 
     # return
     url = reverse('home')
@@ -142,13 +145,19 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     and if this time is randomly selected.
     Returns False if not ok.
     """
+    debug('    calling is-good-time-to-message')
     # is it a good time of day to text?
     is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
     # has the user been texted recently?
     text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
     if SMSLog.objects.filter(user=userid).exists():
-        dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').locatime).total_seconds()
+        try:
+            dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').locatime).total_seconds()
+        except:
+            debug('    caught exception')
+            debug(str(traceback.format_exc()))
+
         is_recently_notified = dt < text_period_secs / 2
     else:
         is_recently_notified = False
