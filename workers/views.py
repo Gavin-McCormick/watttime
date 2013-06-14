@@ -153,7 +153,7 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
     if SMSLog.objects.filter(user=userid).exists():
         try:
-            dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').locatime).total_seconds()
+            dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).total_seconds()
         except:
             debug('    caught exception')
             debug(str(traceback.format_exc()))
