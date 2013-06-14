@@ -99,14 +99,13 @@ def recurring_events(request):
 
     # loop over users
     for up in UserProfile.objects.all():
-        debug("  looking at user {}".format(user.name))
         # get matching user
         user = up.userid
+        debug("  looking at user {}".format(user.name))
         print user, user.is_verified, user.is_active
 
         # check if it's a good time
         localtime = user.local_now()
-        debug("  localtime {}".format(str(localtime)))
         if (user.is_verified and user.is_active and
                 is_good_time_to_message(localtime, user.userid, up)):
             debug("  is verified, is active, and is good time to message")
@@ -143,7 +142,6 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     and if this time is randomly selected.
     Returns False if not ok.
     """
-    debug("  calling is good-time-to-message")
     # is it a good time of day to text?
     is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
