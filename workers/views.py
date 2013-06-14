@@ -111,9 +111,8 @@ def recurring_events(request):
         if (user.is_verified and user.is_active and
                 is_good_time_to_message(localtime, user.userid, up)):
             debug("    is verified, is active, and is good time to message")
-            pass
-        if (str(user.phone) == "971-208-5136"):
-            debug("    is eric")
+        #if (str(user.phone) == "971-208-5136"):
+            #debug("    is eric")
             # get message
             ba = BALANCING_AUTHORITIES[user.state]
             if ba in updated_bas:
@@ -136,8 +135,7 @@ def recurring_events(request):
                 else:
                     debug('      active, verified user, but not right fuel now')
         else:
-            pass
-            #debug('    either not verified, not active, or not good time to message')
+            debug('    either not verified, not active, or not good time to message')
 
     # return
     #url = reverse('home')
