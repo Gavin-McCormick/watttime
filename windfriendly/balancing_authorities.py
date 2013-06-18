@@ -76,6 +76,7 @@ BALANCING_AUTHORITIES = {
 
 BA_MODELS = {
     'BPA': BPA,
+    'NE': NE,
     'ISONE': NE,
     'CAISO': CAISO,
 }

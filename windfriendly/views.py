@@ -80,7 +80,7 @@ def ba_from_request(request):
     return None, None
       
 @json_response
-def status(request):
+def green(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
 
@@ -89,13 +89,15 @@ def status(request):
 
     # get data from row
     percent_green = row.fraction_green() * 100.0
-    time = row.date.strftime('%Y-%m-%d %H:%M')
+    time = row.date.strftime('%Y-%m-%d %H:%M %z')
+    load = row.total_load()
 
     # package and return data
     data = {
       'balancing_authority': ba_name,
-      'time': time,
-      'percent_green': round(percent_green,3)
+      'local_time': time,
+      'percent_green': round(percent_green,3),
+      'load_MW': round(load, 1),
     }
     return data
 
@@ -156,7 +158,7 @@ def update_all(request):
     return bas
 
 @json_response
-def history(request):
+def summarystats(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
@@ -233,6 +235,76 @@ def history(request):
       'percent_green': round(percent_green,3)
       }
     return data
+
+@json_response
+def history(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+
+    # get date range
+    start = request.GET.get('start', None)
+    if start:
+      starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+    else:
+      starttime = datetime.min.replace(tzinfo=pytz.utc)
+    end = request.GET.get('end', None)
+    if end:
+      endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+    else:
+      endtime = datetime.utcnow().replace(tzinfo=pytz.utc)
+
+    # get rows
+    ba_rows = ba_qset.filter(date__range=(starttime, endtime))
+    if len(ba_rows) == 0:
+      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+    
+    # collect sums
+    data = []
+    for row in ba_rows:
+      data.append({
+          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
+          'percent_green': round(row.fraction_green() * 100, 3),
+          'marginal_fuel': row.marginal_fuel,
+          'load_MW': round(row.total_load(), 1),
+          })
+
+    # return
+    return data
+
+@json_response
+def today(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+
+    # get date range
+    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    starttime = utc_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    endtime = starttime + timedelta(1) - timedelta(0, 1)
+
+    # get rows
+    ba_rows = ba_qset.filter(date__range=(starttime, endtime))
+    if len(ba_rows) == 0:
+      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+    
+    # collect sums
+    data = []
+    for row in ba_rows:
+      data.append({
+          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
+          'percent_green': round(row.fraction_green() * 100, 3),
+          'marginal_fuel': row.marginal_fuel,
+          'load_MW': round(row.total_load(), 1),
+          })
+
+    # return
+    return data
+
 
 @json_response
 def average_usage_for_period(request, userid):
