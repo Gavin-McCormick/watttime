@@ -132,6 +132,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -154,9 +158,26 @@ INSTALLED_APPS = (
     'pages',
     'workers',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+#    'allauth.socialaccount.providers.bitly',
+#    'allauth.socialaccount.providers.dropbox',
+    'allauth.socialaccount.providers.facebook',
+#    'allauth.socialaccount.providers.github',
+#    'allauth.socialaccount.providers.google',
+#    'allauth.socialaccount.providers.linkedin',
+#    'allauth.socialaccount.providers.openid',
+#    'allauth.socialaccount.providers.persona',
+#    'allauth.socialaccount.providers.soundcloud',
+#    'allauth.socialaccount.providers.stackexchange',
+#    'allauth.socialaccount.providers.twitch',
+#    'allauth.socialaccount.providers.twitter',
+#    'allauth.socialaccount.providers.vimeo',
+#    'allauth.socialaccount.providers.weibo',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -199,20 +220,29 @@ WATTTIME_PHONE = '+16175534837'
 
 # for django-allauth
 AUTHENTICATION_BACKENDS = (
-  #  "allauth.account.auth_backends.AuthenticationBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
 )
+
 TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
     "django.core.context_processors.request",
-  #  "allauth.account.context_processors.account",
-  #  "allauth.socialaccount.context_processors.socialaccount",
+    "django.contrib.messages.context_processors.messages",
+
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
 )
+
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'SCOPE': ['email', 'publish_stream'],
           'AUTH_PARAMS': { 'auth_type': 'reauthenticate' },
-          'METHOD': 'oauth2' 
+          'METHOD': 'js_sdk' #'oauth2' 
     },
     'google': {
         'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile'],
