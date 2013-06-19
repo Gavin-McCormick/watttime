@@ -14,13 +14,15 @@
 #
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
+import allauth
+from django.views.generic.base import TemplateView
 
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 # basic patterns
 urlpatterns = patterns('',
@@ -30,9 +32,18 @@ urlpatterns = patterns('',
         'workers.views.recurring_events', name='ping5'),
     url(r'^demo[/]?$',
         'workers.views.demo', name='demo'),
-  #  url(r'accounts', include('allauth.urls')),
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+     url(r'^admin/', include(admin.site.urls)),
+)
+
+# allauth patterns
+urlpatterns += patterns('',
+    url(r'accounts[/]', include('allauth.urls')),
+    url(r'^accounts/profile[/]$', TemplateView.as_view(template_name='account/profile.html')),
+    url(r'^login[/]$', 'login', name='account_login'),
+    url(r'^logout[/]$', 'logout', name='account_logout'),
+    url(r'^login/cancelled[/]$', 'login_cancelled', name='socialaccount_login_cancelled'),
+    url(r'^login/error[/]$', 'login_error', name='socialaccount_login_error'),
 )
 
 # pages patterns
