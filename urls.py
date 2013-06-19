@@ -40,8 +40,6 @@ urlpatterns = patterns('',
 urlpatterns += patterns('',
     url(r'accounts[/]', include('allauth.urls')),
     url(r'^accounts/profile[/]$', TemplateView.as_view(template_name='account/profile.html')),
-    url(r'^login[/]$', 'login', name='account_login'),
-    url(r'^logout[/]$', 'logout', name='account_logout'),
     url(r'^login/cancelled[/]$', 'login_cancelled', name='socialaccount_login_cancelled'),
     url(r'^login/error[/]$', 'login_error', name='socialaccount_login_error'),
 )

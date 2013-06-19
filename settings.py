@@ -132,6 +132,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
 ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -219,12 +223,20 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
 )
+
 TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.request",
     "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.contrib.messages.context_processors.messages",
+
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
 )
+
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
