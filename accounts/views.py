@@ -24,6 +24,8 @@ def choose_new_id():
     return choose_new_id()
 
 def profile_create(request):
+    last_url = request.get_full_path()[-8:]
+    print last_url
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:
         form = NewUserForm(request.POST) # A form bound to the POST data
@@ -61,10 +63,13 @@ def profile_create(request):
     greenery = str(int(percent_green + 0.5)) + '%'
 
     # display form
-    return render(request, 'index.html', {'form': form,
-                                          'current_green' : greenery,
-                                          'time': now()
-                                          })
+    if last_url == 'profile/':
+        return render(request, 'account/profile.html', {'form': form})
+    else:
+        return render(request, 'index.html', {'form': form,
+                                              'current_green' : greenery,
+                                              'time': now()
+                                              })
 
 def phone_setup(request, userid):
     # process submitted phone number
@@ -269,7 +274,8 @@ def unsubscribe(request, phone):
                 'phone': phone,
                 })
 
-
+def user_profile(request):
+	pass
 #@login_required
 #def profile_edit(request):
 #    success = False

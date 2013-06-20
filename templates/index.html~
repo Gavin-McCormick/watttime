@@ -121,7 +121,7 @@
 							</li>
 {% else %}
 							<li>
-								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>
+								<a href="{% url 'account_signup' %}">SIGN UP</a><a href="{% url 'account_login' %}">LOG IN</a>
 							</li>
 {% endif %}
 
