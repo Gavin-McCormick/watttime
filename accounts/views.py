@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
 from django.core.urlresolvers import reverse
 from windfriendly.models import NE
+from windfriendly.parsers import NEParser
 import twilio_utils
 import random
 import pytz
@@ -58,6 +59,9 @@ def profile_create(request):
         form = NewUserForm() # An unbound form
 
     # Compute current greenery for NE
+    if NE.objects.count() == 0:
+        parser = NEParser()
+        parser.update()
     datum = NE.objects.all().latest('date')
     percent_green = datum.fraction_green() * 100.0
     greenery = str(int(percent_green + 0.5)) + '%'

@@ -19,17 +19,16 @@ from datetime import datetime, timedelta, date
 from dateutil import tz
 import pytz
 import traceback
-from windfriendly.models import debug
+from windfriendly.models import debug, MARGINAL_FUELS
 from windfriendly.views import update, update_all
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
-from windfriendly.parsers import ne_fuels
 from accounts.twilio_utils import send_text
 from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from workers.models import SMSLog
-from workers.utils import run_frequent_tasks
+from workers.tasks import run_frequent_tasks
 from random import randint
 
 def demo(request):
@@ -45,7 +44,7 @@ def demo(request):
     message.append('Coal: {:.2f} MW'.format(last.coal))
     message.append('Other renewable fuels: {:.2f} MW'.format(last.other_renewable))
     message.append('Other fossil fuels: {:.2f} MW'.format(last.other_fossil))
-    marginal = ne_fuels[last.marginal_fuel]
+    marginal = MARGINAL_FUELS[last.marginal_fuel]
     #if marginal == 'None':
         #marginal = 'Mixed Fuels'
     message.append('Current marginal fuel: {}'.format(marginal))

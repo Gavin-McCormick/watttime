@@ -6,8 +6,8 @@ from django import forms
 from django.forms.widgets import *
 from django.core.mail import send_mail, BadHeaderError
 from django.core.urlresolvers import reverse
-from windfriendly.models import NE
-from windfriendly.parsers import ne_fuels
+from windfriendly.models import NE, MARGINAL_FUELS
+from windfriendly.parsers import NEParser
 from settings import EMAIL_HOST_USER
 
 def faq(request):
@@ -27,10 +27,16 @@ def terms_of_service(request):
     return render(request, 'pages/terms_of_service.html')
 
 def status(request):
+    # get current data
+    if NE.objects.count() == 0:
+        parser = NEParser()
+        parser.update()
     datum = NE.objects.all().latest('date')
     percent_green = datum.fraction_green() * 100.0
+    marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
+
+    # compose message
     greenery = str(int(percent_green + 0.5))
-    marginal_fuel = ne_fuels[datum.marginal_fuel]
     if marginal_fuel == 'None':
         marginal_fuel = 'Mixed'
     if marginal_fuel in ['Coal', 'Oil']:

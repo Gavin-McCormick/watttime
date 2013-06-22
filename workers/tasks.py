@@ -28,10 +28,9 @@ from datetime import datetime, timedelta, date
 from dateutil import tz
 import pytz
 import traceback
-from windfriendly.models import debug
+from windfriendly.models import debug, MARGINAL_FUELS
 from windfriendly.views import update
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
-from windfriendly.parsers import ne_fuels
 from accounts.twilio_utils import send_text
 from accounts.models import User, UserProfile
 from django.utils.timezone import now
@@ -55,7 +54,7 @@ def update_bas(bas):
 
     # log
     newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in bas]
-    marginal_fuels = [ne_fuels[point.marginal_fuel] for point in newest_timepoints]
+    marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
     debug("ping called (marginal fuel {})".format(marginal_fuels[0]))
 
     # return
@@ -67,7 +66,7 @@ def send_text_notifications(bas):
     newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in bas]
     percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
     percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
-    marginal_fuels = [ne_fuels[point.marginal_fuel] for point in newest_timepoints]
+    marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
     print [tp.date for tp in newest_timepoints]
 
     # loop over users

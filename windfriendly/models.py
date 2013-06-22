@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.timezone import now
 #from accounts.models import User
 
+# Approximately in order from bad to good
 MARGINAL_FUELS = ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood', 'Nuclear', 'Solar', 'Wind', 'None']
 
 
@@ -64,14 +65,6 @@ class NE(models.Model):
 
     def fraction_high_carbon(self):
         return (self.coal) / self.total_load()
-
-    #def marginal_names(self):
-        #return [ne_fuels[self.marginal_fuel]]
-        #marginal_fuels = []
-        #for point in newest_timepoints:
-            #marginal_name = ne_fuels[point.marginal_fuel]
-            #marginal_fuels.append(marginal_name)
-        #return marginal_fuels
 
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)

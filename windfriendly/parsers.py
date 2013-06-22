@@ -27,7 +27,7 @@ import os
 
 from dateutil.relativedelta import relativedelta
 
-from windfriendly.models import BPA, NE, MeterReading, User
+from windfriendly.models import BPA, NE, MeterReading, User, MARGINAL_FUELS
 
 import xml.etree.ElementTree as ET
 
@@ -44,6 +44,7 @@ class CAISOParser(UtilityParser):
         self.CLEAN_CODE = 'SLD_REN_FCST'
         self.ACTUAL_CODE = 'ACTUAL'
         self.FRCST_CODE = 'DAM'
+        self.DEVIATE_CODE = 'HASP'
         self.DATE_FRMT = '%Y%m%d'
 
     def CSVtoRows(s):
@@ -290,8 +291,6 @@ class BPAParser(UtilityParser):
           'latest_date' : str(self.getLatestExistingDate())
         }
 
-# Approximately in order from bad to good
-ne_fuels = ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood', 'Nuclear', 'Solar', 'Wind', 'None']
 
 # This was written to imitate the BPA Parser somewhat
 class NEParser(UtilityParser):
@@ -318,7 +317,7 @@ class NEParser(UtilityParser):
             ne.other_renewable = 0
             ne.other_fossil = 0
 
-            marginal_fuel = len(ne_fuels) - 1
+            marginal_fuel = len(MARGINAL_FUELS) - 1
 
             for i in json:
                 if timestamp is None:
@@ -344,8 +343,8 @@ class NEParser(UtilityParser):
                     ne.other_fossil += gen
 
                 if i['MarginalFlag'] == 'Y':
-                    if fuel in ne_fuels:
-                        marginal_fuel = min(marginal_fuel, ne_fuels.index(fuel))
+                    if fuel in MARGINAL_FUELS:
+                        marginal_fuel = min(marginal_fuel, MARGINAL_FUELS.index(fuel))
 
             ne.marginal_fuel = marginal_fuel
 
