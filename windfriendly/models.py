@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.timezone import now
-# from windfriendly.parsers import ne_fuels
 #from accounts.models import User
+
+MARGINAL_FUELS = ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood', 'Nuclear', 'Solar', 'Wind', 'None']
+
 
 class DebugMessage(models.Model):
     date = models.DateTimeField(db_index=True)
@@ -38,7 +40,7 @@ class BPA(models.Model):
 
     @property
     def marginal_fuel(self):
-        return 'None'
+        return MARGINAL_FUELS.index('None')
 
     #def marginal_names(self):
         #return ['None']

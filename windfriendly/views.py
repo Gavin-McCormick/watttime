@@ -139,17 +139,31 @@ def forecast(request):
 
 @json_response
 def update(request, utility):
-    if utility in ['bpa', 'BPA']:
-        parser = BPAParser(request.GET.get('file', None))
-    if utility in ['ne', 'ISONE']:
-        parser = NEParser()
-    if utility == 'gb':
-        xml_file = request.GET.get('file', '')
+    # try to get info from request
+    try:
+        file = request.GET.get('file', None)
         uid = request.GET.get('uid', None)
+        name = request.GET.get('name', 'New User')
+
+    # ok if passed without request
+    except:
+        file = None
+        uid = None
+        name = None
+
+    # update utility
+    if utility in ['bpa', 'BPA']:
+        parser = BPAParser(file)
+    elif utility in ['ne', 'ISONE']:
+        parser = NEParser()
+    elif utility == 'gb':
         if uid is None:
-            name = request.GET.get('name', 'New User')
             uid = User.objects.create(name=name).pk
-        parser = GreenButtonParser(xml_file, uid)
+        parser = GreenButtonParser(file, uid)
+    else:
+        raise ValueError("No update instructions found for %s" % utility)
+
+    # return
     return parser.update()
 
 def update_all(request):
