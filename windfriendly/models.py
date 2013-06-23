@@ -17,7 +17,19 @@ def debug(message):
     dm.save()
 
 class CAISO(models.Model):
-  pass
+
+    def total_load(self):
+        return 0
+        
+    def fraction_green(self):
+        return 0
+        
+    def fraction_high_carbon(self):
+        return 0
+
+    @property
+    def marginal_fuel(self):
+        return MARGINAL_FUELS.index('None')
 
 class BPA(models.Model):
     """Raw BPA data"""

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Sunil Abraham, Eric Stansifer, Sam Marcellus
+# Authors: Sunil Abraham, Eric Stansifer, Sam Marcellus, Anna Schneider
 
 
 import dateutil.parser as dp
@@ -20,44 +20,108 @@ import requests
 import StringIO
 import urllib2
 import zipfile
-import itertools
 import datetime
 import pytz
-import os
 
-from dateutil.relativedelta import relativedelta
-
-from windfriendly.models import BPA, NE, MeterReading, User, MARGINAL_FUELS
+from windfriendly.models import BPA, NE, CAISO, MeterReading, User, MARGINAL_FUELS
 
 import xml.etree.ElementTree as ET
 
 from django.core.exceptions import ObjectDoesNotExist
 
 class UtilityParser():
-    pass
+    """Base class for utility/balancing authority data scrapers and parsers"""
+    #### interface: implement these in derived classes
+
+    def __init__(self):
+        self.MODEL = None
+    def update(self):
+        """Scrape and store latest data"""
+        pass
+    def timepoint_to_db(self, row):
+        """Save data point to database"""
+        pass
+    def scrape(self):
+        """Get data from web"""
+        pass
+    def parse(self):
+        """Parse incoming data"""
+        pass
+    def is_good_row(self):
+        pass
+    
+    #### helper functions
+    
+    def latest_date(self):
+        """Return most recent stored datetime"""
+        latest = self.MODEL.objects.all().order_by('-date')
+        if latest:
+            return latest[0].date
+        else:
+            return None
+
+    def today(self):
+        return datetime.date.today()
+
+    def tomorrow(self):
+        return self.today() + datetime.timedelta(1)
+
+    def getCurrentHour(self):
+        return datetime.datetime.now().hour
+    
+    def dateGen(self, start_date, end_date):
+        while start_date < end_date:
+            yield start_date
+            start_date = start_date + datetime.timedelta(1)
+
+    def RowstoDicts(rows):
+        header = rows[0]
+        return [dict(zip(header, row)) for row in rows[1:]]
 
 class CAISOParser(UtilityParser):
     def __init__(self):
+        self.MODEL = CAISO
         self.CAISO_BASE_URL = 'http://oasis.caiso.com/mrtu-oasis/SingleZip'
         self.BASE_PAYLOAD = {'resultformat': '6'}
         self.TOTAL_CODE = 'SLD_FCST'
         self.CLEAN_CODE = 'SLD_REN_FCST'
         self.ACTUAL_CODE = 'ACTUAL'
         self.FRCST_CODE = 'DAM'
-        self.DEVIATE_CODE = 'HASP'
+        self.HRAHEAD_CODE = 'HASP'
         self.DATE_FRMT = '%Y%m%d'
+        
+    def update(self):
+        latest_date = self.latest_date()
+        streams = self.scrape_all()
+        rows = self.parse(streams)
+        for row in rows:
+            if row.date > latest_date:
+                self.timepoint_to_db(row)
 
-    def CSVtoRows(s):
-        # poor string->list of lists. should use real CSV parsing
-        # library. import csv was giving me problems...
-        # file ends on \n, so skipping last (empty) row
-        return [y.split(',') for y in x.split('\n')][:-1]
+        return {
+          'prior_latest_date' : str(latest_date),
+          'update_rows' : len(rows),
+          'latest_date' : self.latest_date(),
+        }
 
-    def RowstoDicts(rows):
-        header = rows[0]
-        return [dict(zip(header, row)) for row in rows[1:]]
-
-    def getData(self, energy_type, forecast_type, start_date, end_date):
+    def scrape_all(self):
+        """ Returns a dictionary with 
+            streams[(energy_type, forecast_type, date)] = stream
+        """
+        streams = {}
+        for energy_type in [self.TOTAL_CODE, self.CLEAN_CODE]:
+            for forecast_type in [self.ACTUAL_CODE, self.FRCST_CODE,
+                                  self.HRAHEAD_CODE]:
+                for date in [self.today(), self.tomorrow()]:
+                    stream = self.scrape(energy_type, forecast_type, date, date)
+                    streams[(energy_type, forecast_type, date)] = stream
+        return streams
+                                   
+    def scrape(self, energy_type, forecast_type, start_date, end_date):
+        """ Returns a dictionary with
+            stream[header_name] = [list of values]
+            for each header_name in the csv in the zip file
+        """
         # returns list of dicts
         payload_update = {'queryname': energy_type,
                           'market_run_id': forecast_type,
@@ -69,7 +133,40 @@ class CAISOParser(UtilityParser):
             raise Exception('unable to get CAISO data' + str(e))
         z = zipfile.ZipFile(StringIO.StringIO(r.content)) # have zipfile
         f = z.read(z.namelist()[0]) # have csv
-        return self.RowstoDicts(self.CSVtoRows(f))
+     #   return self.RowstoDicts(self.CSVtoRows(f))
+        return self._csv2dict(f)
+                
+    def _csv2dict(self, csv_string):
+        # headers are a bunch of fields, then HE01 to HE25 for the hours
+        rows = [y.split(',') for y in csv_string.split('\n')][:-1]
+        header = rows.pop(0)
+        data = {}
+        for i in range(len(header)):
+            data[header[i]] = [row[i] for row in rows]
+        return data
+        
+    def _is_energy_header(self, key):
+        return key[:2] == 'HE'
+        
+    def _header_to_hour(self, key):
+        return int(key[2:])
+
+    def parse(self, streams):
+        # set up storage
+        timepoints = {}
+        
+        # parse all streams
+        for streamkey, stream in streams.iteritems():
+            # unpack streamkey
+            energy_type, forecast_type, date = streamkey
+            
+            # parse stream
+            for header, data in stream.iteritems():
+                # parse data type
+                if self._is_energy_header(header):
+                    hour = self._header_to_hour(header)
+                    
+            
 
     def getEnergySubsetAndCast(self, data):
         energy_keys = filter(lambda x: x[:2] == 'HE', data.keys())
@@ -95,33 +192,19 @@ class CAISOParser(UtilityParser):
         return agged
 
     def getForecastTypeRatio(self, forecast_type, start_date, end_date):
-        total_agged = getDataAndAgg(self.TOTAL_CODE, forecast_type, start_date,
+        total_agged = self.getDataAndAgg(self.TOTAL_CODE, forecast_type, start_date,
                                     end_date)
-        clean_agged = getDataAndAgg(self.CLEAN_CODE, forecast_type, start_date,
+        clean_agged = self.getDataAndAgg(self.CLEAN_CODE, forecast_type, start_date,
                                     end_date)
         agged_dict = self.getRatio(clean_agged, total_agged)
         agged_arr = [agged_dict[k] for k in sorted(agged_dict.keys())][:-1]
         # weird HE25 col has no data... so dropping last entry
         return agged_arr
-
-    def getLatestExistingDate(self):
-        latest = CAISO.objects.all().order_by('-date')
-        if latest:
-            return latest.date
-    
-    def getToday(self):
-        return datetime.date.today()
-
-    def getTomorrow(self):
-        return self.getToday() + datetime.timedelta(1)
-
-    def getCurrentHour(self):
-        return datetime.datetime.now().hour
     
     def getCAISOForecast(self):
         # returns in-order array of forecast ratios
-        today = self.getToday().strftime(self.DATE_FRMT)
-        tomorrow = self.getTomorrow().strftime(self.DATE_FRMT)
+        today = self.today().strftime(self.DATE_FRMT)
+        tomorrow = self.tomorrow().strftime(self.DATE_FRMT)
         forecast_today = self.getForecastTypeRatio(self.FRCST_CODE, today,
                                                    today)
         forecast_tomorrow = self.getForecastTypeRatio(self.FRCST_CODE, tomorrow,
@@ -131,11 +214,6 @@ class CAISOParser(UtilityParser):
         # return all future predictions -- if it's 12:30 am, return
         # predictions for 1 am and onward
         return forecast_total[current_hour + 1:]
-
-    def dateGen(self, start_date, end_date):
-        while start_date < end_date:
-            yield start_date
-            start_date = start_date + datetime.timedelta(1)
     
     def getCAISOHistory(self, latest=None):
         # returns history as in-order array of ratios, starting with
@@ -143,16 +221,16 @@ class CAISOParser(UtilityParser):
         # at march 13, 2013, historical data goes back to january
         # 2009, so if latest date not specified, grab previous 4 years
         if not latest:
-            latest = getToday() - datetime.timedelta(365 * 4)
+            latest = self.today() - datetime.timedelta(365 * 4)
         forecast_total = []
-        for d in dateGen():
+        for d in self.dateGen():
             forecast = self.getForecastTypeRatio(self.FRCST_CODE, d, d)
             forecast_total.append(forecast)
         return forecast
 
 class BPAParser(UtilityParser):
     def __init__(self, url = None):
-
+        self.MODEL = BPA
         self.BPA_LOAD_URL = url or 'http://transmission.bpa.gov/business/operations/wind/baltwg.txt'
         #If we're pulling historical data, ignore latest
         if url is None:
@@ -170,7 +248,7 @@ class BPAParser(UtilityParser):
         # Make request for data
         try:
             data = requests.get(url).text
-        except requests.exceptions.RequestException, e:
+        except requests.exceptions.RequestException:
             data = urllib2.urlopen(url).read()
             #raise Exception('unable to get BPA data' + str(e))
         return data
@@ -186,11 +264,6 @@ class BPAParser(UtilityParser):
             dt = dt.replace(tzinfo = tz)
         dt = dt.astimezone(pytz.UTC)
         return dt
-
-    def getLatestExistingDate(self):
-        latest = BPA.objects.all().order_by('-date')
-        if latest:
-          return latest[0].date
 
     def parseLoadRow(self, row):
         fields = row.split('\t')
@@ -269,32 +342,21 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.getLatestExistingDate() if self.update_latest else None
-        update = self.getBPA (latest_date)
+        latest_date = self.latest_date() if self.update_latest else None
+        update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
-        if self.update_latest:
-            if len(update) > 0:
-                row = update[len(update)-1]
-                pct_green = (row['wind'] + row['hydro']) / float(row['wind'] + row['hydro'] + row['thermal'])
-            else:
-                pct_green = .9
-            if pct_green > .9:
-                #send_text('Hey! Energy is super clean right now.  Perfect time to do the laundry or something.')
-                pass
-            else:
-                #send_text('Hey! Dirty energy alert.  Think twice before using unnecessary energy for the next 30 min.')
-                pass
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.getLatestExistingDate())
+          'latest_date' : str(self.latest_date())
         }
 
 
 # This was written to imitate the BPA Parser somewhat
 class NEParser(UtilityParser):
     def __init__(self, request_method = None):
+        self.MODEL = NE
         if request_method is None:
             url = 'http://isoexpress.iso-ne.com/ws/wsclient'
             payload = {'_ns0_requestType':'url', '_ns0_requestUrl':'/genfuelmix/current'}
@@ -309,7 +371,7 @@ class NEParser(UtilityParser):
             json = self.request_method()[0]['data']['GenFuelMixes']['GenFuelMix']
 
             timestamp = None
-            ne = NE()
+            ne = self.MODEL()
             ne.gas = 0
             ne.nuclear = 0
             ne.hydro = 0
