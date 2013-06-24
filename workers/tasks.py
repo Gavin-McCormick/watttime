@@ -24,15 +24,10 @@ import settings
 setup_environ(settings)
 
 # regular imports
-from datetime import datetime, timedelta, date
-from dateutil import tz
-import pytz
-import traceback
 from windfriendly.models import debug, MARGINAL_FUELS
-from windfriendly.views import update
-from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
+from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 from accounts.twilio_utils import send_text
-from accounts.models import User, UserProfile
+from accounts.models import UserProfile
 from django.utils.timezone import now
 from workers.models import SMSLog
 from workers.utils import is_good_time_to_message
@@ -41,19 +36,28 @@ def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
     # scrape new info from utilities
     updated_bas = update_bas(['BPA', 'ISONE'])
-
+    print updated_bas
+    
     # send notifications to users in updated regions
     notified_users = send_text_notifications(['ISONE'])
     print notified_users
 
+def run_hourly_tasks():
+    """ Should be run every hour by a clock process or scheduler """
+    # scrape new info from utilities
+    updated_bas = update_bas(['CAISO'])
+    print updated_bas
+    
+    # send notifications to users in updated regions
+   # notified_users = send_text_notifications(['CAISO'])
+   # print notified_users
 
 def update_bas(bas):
-    """ Should be run every 5-10 min for BPA, ISONE """
     # update and query BAs
-    updates = [update(None, ba) for ba in bas]
+    updates = [BA_PARSERS[ba]().update() for ba in bas]
 
     # log
-    newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in bas]
+    newest_timepoints = [BA_MODELS[ba].latest_point() for ba in bas]
     marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
     debug("ping called (marginal fuel {})".format(marginal_fuels[0]))
 
@@ -63,7 +67,7 @@ def update_bas(bas):
 def send_text_notifications(bas):
     """ Should be run every 5-10 min, after updating BAs """
     # get newest info
-    newest_timepoints = [BA_MODELS[ba].objects.all().latest('date') for ba in bas]
+    newest_timepoints = [BA_MODELS[ba].latest_point() for ba in bas]
     percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
     percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
     marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]

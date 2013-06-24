@@ -12,24 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Anna Schneider
+# Authors: Anna Schneider, Eric Stansifer
 
 
-from datetime import datetime, timedelta, date
-from dateutil import tz
-import pytz
-import traceback
-from windfriendly.models import debug, MARGINAL_FUELS
-from windfriendly.views import update, update_all
+from windfriendly.models import MARGINAL_FUELS
+from windfriendly.views import update
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from accounts.twilio_utils import send_text
-from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
-from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+from accounts.models import UserProfile
+from django.http import HttpResponse
 from django.utils.timezone import now
 from workers.models import SMSLog
-from workers.tasks import run_frequent_tasks
-from random import randint
+from workers.tasks import run_frequent_tasks, run_hourly_tasks
 
 def demo(request):
     message = []
@@ -37,7 +31,7 @@ def demo(request):
     update(request, 'ne')
     message.append('Updated latest New England data.')
 
-    last = BA_MODELS['ISONE'].objects.all().latest('date')
+    last = BA_MODELS['ISONE'].latest_point()
     message.append('Natural Gas: {:.2f} MW'.format(last.gas))
     message.append('Nuclear: {:.2f} MW'.format(last.nuclear))
     message.append('Hydro: {:.2f} MW'.format(last.hydro))
@@ -80,5 +74,6 @@ def demo(request):
 def recurring_events(request):
     ''' Called every 5 min with a GET request'''
     run_frequent_tasks()
+    run_hourly_tasks()
     return HttpResponse('ping5 {}'.format(str(now())), "application/json")
 
