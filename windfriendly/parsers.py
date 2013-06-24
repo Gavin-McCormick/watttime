@@ -15,15 +15,16 @@
 # Authors: Sunil Abraham, Eric Stansifer, Sam Marcellus, Anna Schneider
 
 
-import dateutil.parser as dp
+import dateutil.parser
 import requests
 import StringIO
 import urllib2
 import zipfile
 import datetime
 import pytz
+import pandas
 
-from windfriendly.models import BPA, NE, CAISO, MeterReading, User, MARGINAL_FUELS
+from windfriendly.models import BPA, NE, CAISO, MeterReading, User, MARGINAL_FUELS, FORECAST_CODES
 
 import xml.etree.ElementTree as ET
 
@@ -35,48 +36,34 @@ class UtilityParser():
 
     def __init__(self):
         self.MODEL = None
+        
     def update(self):
         """Scrape and store latest data"""
         pass
-    def timepoint_to_db(self, row):
-        """Save data point to database"""
-        pass
-    def scrape(self):
-        """Get data from web"""
-        pass
-    def parse(self):
-        """Parse incoming data"""
-        pass
-    def is_good_row(self):
-        pass
+    
+    def datapoint_to_db(self, dp):
+        """Store data in the database and return success code"""
+        return False
+        
+    def scrape(self, **kwargs):
+        """Get data from web and return a file buffer or StringIO"""
+        return None
+        
+    def parse(self, streams):
+        """Parse list of data streams and return a time-sorted list of dicts,
+            datapoint[k]=v
+        """
+        return [{}]
     
     #### helper functions
     
-    def latest_date(self):
-        """Return most recent stored datetime"""
-        latest = self.MODEL.objects.all().order_by('-date')
-        if latest:
-            return latest[0].date
-        else:
-            return None
+    def today(self, tz):
+        now = datetime.datetime.today()
+        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        return tz.localize(today)
 
-    def today(self):
-        return datetime.date.today()
-
-    def tomorrow(self):
-        return self.today() + datetime.timedelta(1)
-
-    def getCurrentHour(self):
-        return datetime.datetime.now().hour
-    
-    def dateGen(self, start_date, end_date):
-        while start_date < end_date:
-            yield start_date
-            start_date = start_date + datetime.timedelta(1)
-
-    def RowstoDicts(rows):
-        header = rows[0]
-        return [dict(zip(header, row)) for row in rows[1:]]
+    def tomorrow(self, tz):
+        return self.today(tz) + datetime.timedelta(1)
 
 class CAISOParser(UtilityParser):
     def __init__(self):
@@ -89,144 +76,190 @@ class CAISOParser(UtilityParser):
         self.FRCST_CODE = 'DAM'
         self.HRAHEAD_CODE = 'HASP'
         self.DATE_FRMT = '%Y%m%d'
+        self.TZ = pytz.timezone('US/Pacific')
         
     def update(self):
-        latest_date = self.latest_date()
-        streams = self.scrape_all()
-        rows = self.parse(streams)
-        for row in rows:
-            if row.date > latest_date:
-                self.timepoint_to_db(row)
+        # figure out dates to pull for
+        dates_to_update = {self.ACTUAL_CODE : self.today(self.TZ),
+                           self.FRCST_CODE : self.tomorrow(self.TZ),
+                           self.HRAHEAD_CODE : self.today(self.TZ),
+                          }
+                          
+        # return data
+        to_return = {}
+        
+        # update each forecast type
+        for forecast_code in [self.ACTUAL_CODE, self.FRCST_CODE]:
+            # scrape and parse data
+            streams = self.scrape_all(forecast_code,
+                                      dates_to_update[forecast_code],
+                                      dates_to_update[forecast_code])
+            datapoints = self.parse(streams)
+            
+            # save to db
+            old_latest_date = self.MODEL.latest_date(forecast_code)
+            n_stored_points = 0
+            for dp in datapoints:
+                success = self.datapoint_to_db(dp)
+                if success:
+                    n_stored_points += 1
+            new_latest_date = self.MODEL.latest_date(forecast_code)
 
-        return {
-          'prior_latest_date' : str(latest_date),
-          'update_rows' : len(rows),
-          'latest_date' : self.latest_date(),
-        }
+            # log
+            to_return[forecast_code] = {'prior_latest_date' : str(old_latest_date),
+                                        'update_rows' : n_stored_points,
+                                        'latest_date' : str(new_latest_date),
+                                        }
+        
+        # return
+        return to_return
 
-    def scrape_all(self):
-        """ Returns a dictionary with 
+    def _date_gen(self, start_date, end_date):
+        if start_date == end_date:
+            yield start_date
+        while start_date < end_date:
+            yield start_date
+            start_date = start_date + datetime.timedelta(1)
+
+    def scrape_all(self, forecast_type, start_date, end_date):
+        """ Gets all data for this forecast type
+                for dates between start and end (inclusive).
+            Returns a dictionary with 
             streams[(energy_type, forecast_type, date)] = stream
         """
         streams = {}
         for energy_type in [self.TOTAL_CODE, self.CLEAN_CODE]:
-            for forecast_type in [self.ACTUAL_CODE, self.FRCST_CODE,
-                                  self.HRAHEAD_CODE]:
-                for date in [self.today(), self.tomorrow()]:
-                    stream = self.scrape(energy_type, forecast_type, date, date)
-                    streams[(energy_type, forecast_type, date)] = stream
+            for date in self._date_gen(start_date, end_date):
+                stream = self.scrape(energy_type, forecast_type, date, date)
+                streams[(energy_type, forecast_type, date)] = stream
         return streams
                                    
     def scrape(self, energy_type, forecast_type, start_date, end_date):
-        """ Returns a dictionary with
-            stream[header_name] = [list of values]
-            for each header_name in the csv in the zip file
+        """ Queries the CAISO API and returns a ZipExtFile
+            (file-like, supports read()) containing the requested data
         """
-        # returns list of dicts
-        payload_update = {'queryname': energy_type,
-                          'market_run_id': forecast_type,
-                          'startdate': start_date, 'enddate': end_date}
-        payload = dict(self.BASE_PAYLOAD.items() + payload_update)
+        # set up get request
+        payload = {'queryname': energy_type,
+                   'market_run_id': forecast_type,
+                   'startdate': start_date.strftime(self.DATE_FRMT),
+                   'enddate': end_date.strftime(self.DATE_FRMT),
+                  }
+        payload.update(self.BASE_PAYLOAD)
+ 
+        # try get
         try: 
-            r = requests.get(self.CAISO_BASE_URL, payload) # have request
+            r = requests.get(self.CAISO_BASE_URL, params=payload) # have request
         except requests.exceptions.RequestException, e:
             raise Exception('unable to get CAISO data' + str(e))
+            
+        # read data from zip
         z = zipfile.ZipFile(StringIO.StringIO(r.content)) # have zipfile
         f = z.read(z.namelist()[0]) # have csv
-     #   return self.RowstoDicts(self.CSVtoRows(f))
-        return self._csv2dict(f)
-                
-    def _csv2dict(self, csv_string):
-        # headers are a bunch of fields, then HE01 to HE25 for the hours
-        rows = [y.split(',') for y in csv_string.split('\n')][:-1]
-        header = rows.pop(0)
-        data = {}
-        for i in range(len(header)):
-            data[header[i]] = [row[i] for row in rows]
-        return data
+        z.close()
         
+        # return file-like object
+        stream = StringIO.StringIO(f)
+        return stream
+                        
     def _is_energy_header(self, key):
-        return key[:2] == 'HE'
+        # energy columns have header HEXX
+        if key[:2] == 'HE':
+            if self._header_to_hour(key) < 24:
+                return True
+        return False
         
     def _header_to_hour(self, key):
-        return int(key[2:])
+        # 0 to 24
+        return int(key[2:])-1
+        
+    def _extract_values(self, energy_type, forecast_type, vals):
+        # set up storage
+        data_dict = {}
+        
+        # get any interesting info for this energy and forecast type
+        data_dict['forecast_type'] = forecast_type
+        if energy_type == self.TOTAL_CODE:
+            data_dict['load'] = sum(vals)
+        elif energy_type == self.CLEAN_CODE:
+            data_dict['solar'] = vals[0] + vals[2]
+            data_dict['wind'] = vals[1] + vals[3]
+        else:
+            raise ValueError("bad energy type %s" % energy_type)
+            
+        # return
+        return data_dict
 
     def parse(self, streams):
         # set up storage
-        timepoints = {}
+        # datapoints[timestamp] = datapoint
+        datapoints = {}
         
         # parse all streams
         for streamkey, stream in streams.iteritems():
+            
             # unpack streamkey
             energy_type, forecast_type, date = streamkey
             
-            # parse stream
-            for header, data in stream.iteritems():
-                # parse data type
-                if self._is_energy_header(header):
-                    hour = self._header_to_hour(header)
-                    
+            # load stream into dataframe
+            df = pandas.read_csv(stream, lineterminator='\n')
             
-
-    def getEnergySubsetAndCast(self, data):
-        energy_keys = filter(lambda x: x[:2] == 'HE', data.keys())
-        subset = dict((k, float(data[k])) for k in energy_keys)
-        return subset
-
-    def aggData(self, data):
-        # take in output of getData, return dict of agged
-        energy_subsets = map(self.getEnergySubsetAndCast, data)
-        agged = dict([(k, reduce(lambda x, y: x.get(k, 0) + y.get(k, 0), energy_subsets))
-                      for k in energy_subsets])
-        return agged
-
-    def getRatio(self, clean_energy, total_energy):
-        # clean, total energy params are dicts
-        ratio = dict([(k, clean_energy[k] / total_energy[k])
-                 for k in clean_energy.keys()])
-        return ratio
-
-    def getDataAndAgg(self, energy_type, forecast_type, start_date, end_date):
-        data = self.getData(energy_type, forecast_type, start_date, end_date)
-        agged = self.aggData(data)
-        return agged
-
-    def getForecastTypeRatio(self, forecast_type, start_date, end_date):
-        total_agged = self.getDataAndAgg(self.TOTAL_CODE, forecast_type, start_date,
-                                    end_date)
-        clean_agged = self.getDataAndAgg(self.CLEAN_CODE, forecast_type, start_date,
-                                    end_date)
-        agged_dict = self.getRatio(clean_agged, total_agged)
-        agged_arr = [agged_dict[k] for k in sorted(agged_dict.keys())][:-1]
-        # weird HE25 col has no data... so dropping last entry
-        return agged_arr
-    
-    def getCAISOForecast(self):
-        # returns in-order array of forecast ratios
-        today = self.today().strftime(self.DATE_FRMT)
-        tomorrow = self.tomorrow().strftime(self.DATE_FRMT)
-        forecast_today = self.getForecastTypeRatio(self.FRCST_CODE, today,
-                                                   today)
-        forecast_tomorrow = self.getForecastTypeRatio(self.FRCST_CODE, tomorrow,
-                                                 tomorrow)
-        forecast_total = forecast_today + forecast_tomorrow
-        current_hour = self.getCurrentHour()
-        # return all future predictions -- if it's 12:30 am, return
-        # predictions for 1 am and onward
-        return forecast_total[current_hour + 1:]
-    
-    def getCAISOHistory(self, latest=None):
-        # returns history as in-order array of ratios, starting with
-        # 'latest' date.
-        # at march 13, 2013, historical data goes back to january
-        # 2009, so if latest date not specified, grab previous 4 years
-        if not latest:
-            latest = self.today() - datetime.timedelta(365 * 4)
-        forecast_total = []
-        for d in self.dateGen():
-            forecast = self.getForecastTypeRatio(self.FRCST_CODE, d, d)
-            forecast_total.append(forecast)
-        return forecast
+            # parse dataframe columns
+            for header, vals in df.iteritems():
+                if self._is_energy_header(header):
+                    
+                    # set up storage for hourly energy data
+                    hour = self._header_to_hour(header)
+                    timestamp = date.replace(hour=hour)
+                    if timestamp not in datapoints:
+                        datapoints[timestamp] = {'timestamp' : timestamp}
+                        
+                    # extract and store the data
+                    data_dict = self._extract_values(energy_type, 
+                                                     forecast_type, 
+                                                     vals)
+                    datapoints[timestamp].update(data_dict)
+                        
+        # convert to list and return
+        datapoints_list = datapoints.values()
+        sorted_dps = sorted(datapoints_list, key=lambda x: x['timestamp'])
+        return sorted_dps
+        
+    def datapoint_to_db(self, dp):
+        """Store data in the CAISO database and return success code"""
+        if self._is_datapoint_to_store(dp):
+            row = self.MODEL()
+            row.load = dp['load']  
+            row.wind = dp['wind']
+            row.solar = dp['solar']
+            row.forecast_code = FORECAST_CODES[dp['forecast_type']]
+            row.date = dp['timestamp']
+            row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.save()
+            return True
+        else:
+            return False
+            
+    def _is_datapoint_to_store(self, dp):
+        """Returns bool for whether or not to store this data point in db"""
+        # reject if invalid data
+        if not dp['load'] > 0:
+            return False
+            
+        if dp['forecast_type'] == self.ACTUAL_CODE:
+            # only store past data for actual
+            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
+            if latest:
+                if dp['timestamp'] > latest:
+                    return True # this is new data
+                else:
+                    return False # this is old data
+            else:
+                return True # no existing data
+                
+        else:
+            # any time is ok for forecasts
+            return True
+            
 
 class BPAParser(UtilityParser):
     def __init__(self, url = None):
@@ -259,7 +292,7 @@ class BPAParser(UtilityParser):
             'PDT': -25200,
         }
         tz = pytz.timezone('US/Pacific')
-        dt = dp.parse(datestring, tzinfos=tzd)
+        dt = dateutil.parser.parse(datestring, tzinfos=tzd)
         if dt.tzinfo == None:
             dt = dt.replace(tzinfo = tz)
         dt = dt.astimezone(pytz.UTC)
@@ -342,14 +375,14 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.latest_date() if self.update_latest else None
+        latest_date = self.MODEL.latest_date() if self.update_latest else None
         update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.latest_date())
+          'latest_date' : str(self.MODEL.latest_date())
         }
 
 
@@ -413,7 +446,7 @@ class NEParser(UtilityParser):
             if timestamp is None:
                 ne.date = None # Is this okay? Don't know.
             else:
-                ne.date = dp.parse(timestamp)
+                ne.date = dateutil.parser.parse(timestamp)
 
             ne.save()
 
