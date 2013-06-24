@@ -16,6 +16,7 @@
 
 
 from windfriendly.models import BPA, NE, CAISO
+from windfriendly.parsers import BPAParser, NEParser, CAISOParser
 
 # BALANCING_AUTHORTIES is a dict that maps state 2-letter abbrevs to balancing authority abbrevs
 # BA_MODELS is a dict that maps balancing authoriy abbrevs to models in models.py
@@ -79,4 +80,11 @@ BA_MODELS = {
     'NE': NE,
     'ISONE': NE,
     'CAISO': CAISO,
+}
+
+BA_PARSERS = {
+    'BPA': BPAParser,
+    'NE': NEParser,
+    'ISONE': NEParser,
+    'CAISO': CAISOParser,
 }
