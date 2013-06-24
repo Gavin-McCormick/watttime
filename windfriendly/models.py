@@ -49,16 +49,27 @@ class CAISO(models.Model):
         return MARGINAL_FUELS.index('None')
         
     @classmethod
-    def latest_date(cls, forecast_type):
+    def latest_date(cls, forecast_type=None):
         """Return most recent stored datetime for forecast type"""
-        forecast_code = FORECAST_CODES[forecast_type]
-        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
         try:
-            latest = forecast_qset.order_by('-date')[0]
+            latest = cls.latest_point(forecast_type)
             return latest.date
         except:
             return None
         
+    @classmethod
+    def latest_point(cls, forecast_type=None):
+        """Return most recent stored data point for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            latest = forecast_qset.order_by('-date')[0]
+            return latest
+        except:
+            return None
+            
 
 class BPA(models.Model):
     """Raw BPA data"""
@@ -93,10 +104,27 @@ class BPA(models.Model):
             return latest.date
         except:
             return None
-
-    #def marginal_names(self):
-        #return ['None']
-
+            
+    @classmethod
+    def latest_date(cls, forecast_type=None):
+        """Return most recent stored datetime for forecast type"""
+        try:
+            latest = cls.latest_point(forecast_type)
+            return latest.date
+        except:
+            return None
+        
+    @classmethod
+    def latest_point(cls, forecast_type=None):
+        """Return most recent stored data point for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            latest = forecast_qset.order_by('-date')[0]
+            return latest
+        except:
+            return None
+            
+            
 # All units are megawatts
 class NE(models.Model):
     gas = models.FloatField()
@@ -118,12 +146,21 @@ class NE(models.Model):
         return (self.coal) / self.total_load()
 
     @classmethod
-    def latest_date(cls, forecast_code=None):
+    def latest_date(cls, forecast_type=None):
         """Return most recent stored datetime for forecast type"""
+        try:
+            latest = cls.latest_point(forecast_type)
+            return latest.date
+        except:
+            return None
+        
+    @classmethod
+    def latest_point(cls, forecast_type=None):
+        """Return most recent stored data point for forecast type"""
         forecast_qset = cls.objects.all()
         try:
             latest = forecast_qset.order_by('-date')[0]
-            return latest.date
+            return latest
         except:
             return None
             
