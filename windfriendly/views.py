@@ -19,18 +19,13 @@ from datetime import datetime, timedelta
 from dateutil import tz
 import pytz
 import json
-import time
 import logging
 
-from django.conf import settings
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
-from django.db.models import Q
+from django.http import HttpResponse
 
 from windfriendly.models import DebugMessage, User, MeterReading
-from windfriendly.parsers import BPAParser, NEParser, GreenButtonParser
-from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
+from windfriendly.parsers import GreenButtonParser
+from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
 
 def json_response(func):
@@ -152,10 +147,9 @@ def update(request, utility):
         name = None
 
     # update utility
-    if utility in ['bpa', 'BPA']:
-        parser = BPAParser(file)
-    elif utility in ['ne', 'ISONE']:
-        parser = NEParser()
+    ba = utility.upper()
+    if ba in BA_PARSERS:
+        parser = BA_PARSERS[ba]()
     elif utility == 'gb':
         if uid is None:
             uid = User.objects.create(name=name).pk
@@ -165,11 +159,6 @@ def update(request, utility):
 
     # return
     return parser.update()
-
-def update_all(request):
-    bas = ['BPA', 'ISONE']
-    updates = [update(request, ba) for ba in bas]
-    return bas
 
 @json_response
 def summarystats(request):
