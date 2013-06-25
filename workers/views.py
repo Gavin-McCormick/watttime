@@ -111,8 +111,6 @@ def recurring_events(request):
         if (user.is_verified and user.is_active and
                 is_good_time_to_message(localtime, user.userid, up)):
             debug("    is verified, is active, and is good time to message")
-        #if (str(user.phone) == "971-208-5136"):
-            #debug("    is eric")
             # get message
             ba = BALANCING_AUTHORITIES[user.state]
             if ba in updated_bas:
@@ -122,16 +120,19 @@ def recurring_events(request):
                 print user.phone, msg
 
                 if msg:
-                    debug('      sending message!')
-                    # send text
-                    send_text(msg, to=user.phone)
+                    if len(msg) < 150:
+                        debug('      sending message!')
+                        # send text
+                        send_text(msg, to=user.phone)
 
-                    # save to log
-                    logitem = SMSLog(user=user,
-                                     utctime=now(),
-                                     localtime=localtime,
-                                     message=msg)
-                    logitem.save()
+                        # save to log
+                        logitem = SMSLog(user=user,
+                                         utctime=now(),
+                                         localtime=localtime,
+                                         message=msg)
+                        logitem.save()
+                    else:
+                        debug('      Failed to send message "{}" as it is too long.'.format(msg))
                 else:
                     debug('      active, verified user, but not right fuel now')
         else:
