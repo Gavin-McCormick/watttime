@@ -178,6 +178,7 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.twitter',
 #    'allauth.socialaccount.providers.vimeo',
 #    'allauth.socialaccount.providers.weibo',
+    'south',
 )
 
 # A sample logging configuration. The only tangible logging
