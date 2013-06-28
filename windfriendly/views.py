@@ -74,28 +74,6 @@ def ba_from_request(request):
     logging.debug('returning null BA')
     return None, None
       
-@json_response
-def green(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-
-    # get most recent row from model
-    row = ba_qset.latest('date')
-
-    # get data from row
-    percent_green = row.fraction_green() * 100.0
-    time = row.date.strftime('%Y-%m-%d %H:%M %z')
-    load = row.total_load()
-
-    # package and return data
-    data = {
-      'balancing_authority': ba_name,
-      'local_time': time,
-      'percent_green': round(percent_green,3),
-      'load_MW': round(load, 1),
-    }
-    return data
-
 def debug_messages(request):
     dms = DebugMessage.objects.all()
     xs = []
@@ -161,6 +139,28 @@ def update(request, utility):
     return parser.update()
 
 @json_response
+def green(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+
+    # get most recent row from model
+    row = BA_MODELS[ba_name].latest_point()
+
+    # get data from row
+    percent_green = row.fraction_green() * 100.0
+    time = row.date.strftime('%Y-%m-%d %H:%M %z')
+    load = row.total_load()
+
+    # package and return data
+    data = {
+      'balancing_authority': ba_name,
+      'local_time': time,
+      'percent_green': round(percent_green,3),
+      'load_MW': round(load, 1),
+    }
+    return data
+
+@json_response
 def summarystats(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
@@ -188,14 +188,14 @@ def summarystats(request):
     # get numbers for BA only
     if userid is None:
       # get dates
-      if starttime < ba_qset.order_by('date')[0].date:
-        starttime = ba_qset.order_by('date')[0].date
-      if endtime > ba_qset.latest('date').date:
-        endtime = ba_qset.latest('date').date
+      if starttime < BA_MODELS[ba_name].earliest_date():
+        starttime = BA_MODELS[ba_name].earliest_date()
+      if endtime > BA_MODELS[ba_name].latest_date():
+        endtime = BA_MODELS[ba_name].latest_date()
      # print starttime, endtime
 
       # get rows
-      ba_rows = ba_qset.filter(date__range=(starttime, endtime))
+      ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
       if len(ba_rows) == 0:
         raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
 
@@ -205,6 +205,7 @@ def summarystats(request):
 
     # get numbers for user and BA data
     else:
+        # TODO broken!!!! need to fix date handling
         userid = int(userid)
 
         # get user meter objects
@@ -260,7 +261,7 @@ def history(request):
       endtime = datetime.utcnow().replace(tzinfo=pytz.utc)
 
     # get rows
-    ba_rows = ba_qset.filter(date__range=(starttime, endtime))
+    ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
     if len(ba_rows) == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
     
@@ -291,7 +292,7 @@ def today(request):
     endtime = starttime + timedelta(1) - timedelta(0, 1)
 
     # get rows
-    ba_rows = ba_qset.filter(date__range=(starttime, endtime))
+    ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
     if len(ba_rows) == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
     
@@ -311,6 +312,8 @@ def today(request):
 
 @json_response
 def average_usage_for_period(request, userid):
+    # TODO untested and probably broken!!! check date handling
+
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
