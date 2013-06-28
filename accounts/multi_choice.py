@@ -2,7 +2,12 @@ from django import forms
 from django.db import models
 from django.utils.text import capfirst
 from django.core import exceptions
+from south.modelsinspector import add_introspection_rules
 
+# add introspection rules for user-defined fields to south
+add_introspection_rules([], ["^accounts\.multi_choice\.MultiSelectFormField"])
+add_introspection_rules([], ["^accounts\.multi_choice\.MultiSelectField"])
+add_introspection_rules([], ["^accounts\.multi_choice\.StringListField"])
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
