@@ -172,14 +172,17 @@ class CAISOParser(UtilityParser):
         # 0 to 24
         return int(key[2:])-1
         
-    def _extract_values(self, energy_type, forecast_type, vals):
+    def _extract_values(self, energy_type, forecast_type, vals, total_index=None):
         # set up storage
         data_dict = {}
         
         # get any interesting info for this energy and forecast type
         data_dict['forecast_type'] = forecast_type
         if energy_type == self.TOTAL_CODE:
-            data_dict['load'] = sum(vals)
+            if total_index is not None:
+                data_dict['load'] = vals[total_index]
+            else:
+                data_dict['load'] = sum(vals)
         elif energy_type == self.CLEAN_CODE:
             data_dict['solar'] = vals[0] + vals[2]
             data_dict['wind'] = vals[1] + vals[3]
@@ -201,7 +204,18 @@ class CAISOParser(UtilityParser):
             energy_type, forecast_type, date = streamkey
             
             # load stream into dataframe
+            # TODO: check for non-csv content here! and return without updating if error
             df = pandas.read_csv(stream, lineterminator='\n')
+            
+            # if total, get row number to use
+            if energy_type == self.TOTAL_CODE:
+                try:
+                    tac_col = df['TAC_AREA_NAME']
+                except KeyError:
+                    raise KeyError('no tac found for %s %s' % (energy_type, forecast_type))
+                total_index = tac_col.index[tac_col == 'CA ISO-TAC']
+            else:
+                total_index = None
             
             # parse dataframe columns
             for header, vals in df.iteritems():
@@ -216,7 +230,8 @@ class CAISOParser(UtilityParser):
                     # extract and store the data
                     data_dict = self._extract_values(energy_type, 
                                                      forecast_type, 
-                                                     vals)
+                                                     vals,
+                                                     total_index)
                     datapoints[timestamp].update(data_dict)
                         
         # convert to list and return
