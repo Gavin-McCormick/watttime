@@ -127,16 +127,38 @@
 							</li>
 							
 {% if user.is_authenticated %}
+
 							<li>
-								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
+							
+								<a href="{% url 'account_logout' %}">LOG OUT</a>
+								
 							</li>
 {% else %}
 							<li>
-								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>
+						
+								<a href="{% url 'account_signup' %}">SIGN UP</a> 
+							
+							</li>
+							
+							<li>
+								
+								<a href="{% url 'account_login' %}">LOG IN</a>
+								
 							</li>
 {% endif %}
-							
-							
+
+<!-- Gavin removed the following more complicated log in / sign up / log out snippet which was put there by Kevin:
+{% if user.is_authenticated %}
+							<li>
+								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
+							</li						
+{% else %}						
+							<li>							
+								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>								
+							</li>							
+{% endif %}
+<-->
+						
 						</ul>
 						
 						<div class="header-main">
