@@ -179,6 +179,8 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.vimeo',
 #    'allauth.socialaccount.providers.weibo',
     'south',
+    'invitation',
+    'registration',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -233,9 +235,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
-
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
+    "invitation.context_processors.remaining_invitations",
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
@@ -250,6 +252,14 @@ SOCIALACCOUNT_PROVIDERS = {
          'AUTH_PARAMS': { 'access_type': 'online' }
     }
 }
+
+# for django-invitation https://github.com/arctelix/django-invitation
+INVITATION_USE_ALLAUTH = True
+INVITE_MODE = True
+ACCOUNT_INVITATION_DAYS = 14
+INVITATIONS_PER_USER = 20
+SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
+ALLOW_NEW_REGISTRATIONS = True
 
 # for facebook login
 FACEBOOK_APP_ID='411609345605022'

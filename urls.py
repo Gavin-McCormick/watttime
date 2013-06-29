@@ -15,6 +15,7 @@
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
 import allauth
+import registration
 from django.views.generic.base import TemplateView
 
 from django.conf.urls import patterns, include, url
@@ -38,11 +39,16 @@ urlpatterns = patterns('',
 
 # allauth patterns
 urlpatterns += patterns('',
-    url(r'accounts[/]', include('allauth.urls')),
+    url(r'accounts[/]',  include('allauth.urls')),
 #    url(r'^accounts/profile[/]$', TemplateView.as_view(template_name='account/profile.html')),
     url(r'^accounts/profile[/]$', 'accounts.views.profile_create', name='user_profile'),
     url(r'^login/cancelled[/]$', 'login_cancelled', name='socialaccount_login_cancelled'),
     url(r'^login/error[/]$', 'login_error', name='socialaccount_login_error'),
+)
+
+# invitation patterns
+urlpatterns += patterns('',
+    url(r'accounts[/]',  include('invitation.urls')),
 )
 
 # pages patterns
@@ -89,8 +95,8 @@ urlpatterns += patterns('accounts.views',
         'thanks', name='thanks'),
     url(r'^unsubscribe/(?P<phone>[0-9-]+)[/]?$',
         'unsubscribe', name='unsubscribe'),
-	url(r'^dashboard[/]?$',
-        'dashboard', name='dashboard'),	
+	#url(r'^dashboard[/]?$',
+      #  'dashboard', name='dashboard'),	
 )
 
 # windfriendly API patterns
