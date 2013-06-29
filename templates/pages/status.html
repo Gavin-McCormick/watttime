@@ -22,7 +22,7 @@
         <li data-state="fl" class="fl">J</li>
         <li data-state="ga" class="ga">K</li>
         <li data-state="hi" class="hi">L</li>
-        <li data-state="id" class="id">M</li>
+        <a href="{% url 'BPA_status' %}"><li data-state="id" class="id">M</li></a>
         <li data-state="il" class="il">N</li>
         <li data-state="in" class="in">O</li>
         <li data-state="ia" class="ia">P</li>
@@ -47,7 +47,7 @@
         <li data-state="nd" class="nd">i</li>
         <li data-state="oh" class="oh">j</li>			
         <li data-state="ok" class="ok">k</li>
-        <li data-state="or" class="or">l</li>
+        <a href="{% url 'BPA_status' %}"><li data-state="or" class="or">l</li></a>
         <li data-state="pa" class="pa">m</li>
         <a href="{% url 'NE_status' %}"><li data-state="ri" class="ri">n</li></a>
         <li data-state="sc" class="sc">o</li>
@@ -64,9 +64,9 @@
     </ul> 
 
 <!-- Gabe here are the links: Gavin -->
-<li><a href="{% url 'NE_status' %}">Massachusetts</a></li>
+<li><a href="{% url 'NE_status' %}">Massachusetts, New Hampshire, Vermont, Connecticut, Rhode Island, Maine</a></li>
 <li><a href="{% url 'CA_status' %}">California</a></li>
-<li><a href="{% url 'BPA_status' %}">Washington</a></li>
+<li><a href="{% url 'BPA_status' %}">Washington, Oregon, Idaho</a></li>
 	
 </div>
 
