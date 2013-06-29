@@ -60,9 +60,9 @@ def edit_profile_message(frequency, goals):
 
 def email_signup_message(userid, name):
     lines = ["Hi %s," % name,
-             "Thanks for your interest in WattTime! You are now subscribed to occasional email updates about WattTime products and services.",
-             "Currently we are piloting WattTime's SMS notification service in New England. To participate in the pilot, just enter your phone number at http://wattTime.herokuapp.com/phone_setup/%s." % userid,
-             "To unsubscribe from our email list, please reply to this email with the message 'unsubscribe'.",
+             "Thank you for your interest in WattTime! As of Monday July 1 we will support California and will begin beta testing.",
+             "We'll send you a note on Monday with an access code for the beta.", 
+             "We hope you'll enjoy the service, and hope you won't mind if we ask you a few questions about it after a week or two.",
              "Cheers,",
              "the team at WattTime"
              ]
