@@ -89,8 +89,6 @@ urlpatterns += patterns('accounts.views',
         'thanks', name='thanks'),
     url(r'^unsubscribe/(?P<phone>[0-9-]+)[/]?$',
         'unsubscribe', name='unsubscribe'),
-	url(r'^dashboard[/]?$',
-        'dashboard', name='dashboard'),	
 )
 
 # windfriendly API patterns
