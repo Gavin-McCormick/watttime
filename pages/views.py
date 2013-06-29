@@ -26,6 +26,9 @@ def terms_of_service(request):
 #    return render(request, 'pages/placeholder.html', {'title': 'Terms of Service'})
     return render(request, 'pages/terms_of_service.html')
 
+def status_offline(request):
+    return render(request, 'pages/status.html', {'marginal_message' : 'Status is offline until July 1.'})
+
 def status(request):
     datum = NE.objects.all().latest('date')
     percent_green = datum.fraction_green() * 100.0

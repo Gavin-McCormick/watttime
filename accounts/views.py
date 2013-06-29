@@ -23,6 +23,9 @@ def choose_new_id():
         return userid
     return choose_new_id()
 
+def shut_down(request):
+    return render(request, 'shut_down.html')
+
 def profile_create(request):
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:

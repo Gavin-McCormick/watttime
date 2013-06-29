@@ -1,0 +1,434 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+{% load staticfiles %}
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale = 1.0; maximum-scale=1.0, user-scalable=no" />
+
+<META NAME="Description" CONTENT="WattTime notifies you when your electricity consumption contributes to a cleaner energy economy.">
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+	<title>WattTime</title>
+
+<link rel="stylesheet" type="text/css" href="{% static "css/style2.css" %}" />
+
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
+
+<link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" />
+
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
+
+<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+
+<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
+
+<!--[if lt IE 9]>
+
+	<link rel="stylesheet" type="text/css" href="{% static "css/ie8.css" %}" />
+
+<![endif]-->
+
+<!--[if lt IE 98>
+
+	<link rel="stylesheet" type="text/css" href="{% static "css/ie7.css" %} " />
+
+<![endif]-->
+
+<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
+
+<script src="{% static "js/jquery-1.8.2.min.js" %} "></script>
+
+<script src="{% static "js/jquery.easing.1.3.js" %} "></script>
+
+<script src="{% static "js/masonry.min.js" %} "></script>
+
+<script src="{% static "js/jquery.watermark.min.js" %} "></script>
+
+<script src="{% static "js/waypoints.min.js" %} "></script>
+
+<script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
+
+<script src="{% static "js/respond.min.js" %} "></script>
+
+
+</head>
+
+<body name="top">
+
+
+
+
+<div class="page-wrapper">
+
+	<div class="agency-wrap">
+
+		<div class="container page-container home-container">
+
+			<div class="row">
+
+				<div class="span12">
+
+					<div class="top-nav">
+
+						<a href="{% url 'home' %}" class="logo-link">
+
+							<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
+
+						</a>
+
+						<ul class="nav nav-home">
+
+
+							<li>
+							<a href="{% url 'status' %}">STATUS</a>
+							</li>
+
+							<li>
+
+								<a href="{% url 'how-it-works' %}">HOW IT WORKS</a>
+
+							</li>
+
+							<li>
+
+								<a href="{% url 'about-us' %}">ABOUT US</a>
+
+							</li>
+
+
+							<li>
+
+
+								<a href="{% url 'faq' %}">FAQ</a>
+
+							</li>
+							
+							<li>
+
+								<a href="{% url 'contact' %}">CONTACT</a>
+
+							</li>
+
+
+
+
+
+						</ul>
+						
+
+					<div class="header-main">
+
+
+                <!-- Time Zone Localization
+                
+                	  <div class="header-main">
+					  {% load tz %}
+					  {% timezone "US/Eastern" %}
+					  <h1>It's <span style="color:#339999">{{ time|date:'I:m a' }}</span> and
+					  <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span>
+					  Green. </h1>
+					  {% endtimezone %} -->
+                                                  
+                                        
+<!-- Grid localization script: identifies users by IP; prints location field
+
+<script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
+ 
+<br>Country Code:
+<script language="JavaScript">document.write(geoip_country_code());</script>
+<br>Country Name:
+<script language="JavaScript">document.write(geoip_country_name());</script>
+<br>City:
+<script language="JavaScript">document.write(geoip_city());</script>
+<br>Region:
+<script language="JavaScript">document.write(geoip_region());</script>
+<br>Region Name:
+<script language="JavaScript">document.write(geoip_region_name());</script>
+<br>Latitude:
+<script language="JavaScript">document.write(geoip_latitude());</script>
+<br>Longitude:
+<script language="JavaScript">document.write(geoip_longitude());</script>
+<br>Postal Code:
+<script language="JavaScript">document.write(geoip_postal_code());</script> 
+
+-->
+                                        
+                                       
+						<h2>We Can Do Better</h2>
+
+						<p>WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
+                                                <h4>Update: The alpha test is currently over and we will be resuming service with the beta test for California users on July 1.</h4>
+		 
+	
+					</div>
+
+
+
+
+				</div>
+
+			</div>
+			
+		</div>
+
+		</div><div class="agency-credit">
+			Photo Credit:<a href="http://www.flickr.com/photos/93371523@N00/" target="_blank">
+				j_palmucci</a>
+		</div>
+
+	</div>
+
+	<a href="#feature-set" class="down-tab" name="feature-set">
+
+		TELL ME MORE! <i class="arrow arrow-down">&nbsp;</i>
+
+	</a>
+
+	<div class="full-width-features feature-1">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="span12">
+
+					<img src="{% static "images/WattTimeShieldBW.png" %}" class="fly-wheel" width="120">
+
+					<h1>WattTime is Built for You</h1>
+
+					<h2>WattTime is designed to support and enhance your livelihood <br class="hidden-phone"> while fostering smart energy use. It’s more than just a message. It's a movement.</h2>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-medal"></i>
+
+					<h3>Empowering</h3>
+
+					<p>You get choices you've never had before and the freedom to maintain control over your energy needs. Find out what works for you.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-demo"></i>
+
+					<h3>Easy and relevant</h3>
+
+					<p>WattTime is easy to use. Getting started is a cinch, and timely messages ensure that you get relevant information.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-income"></i>
+
+					<h3>Big impact</h3>
+
+					<p>By shifting your tasks–even just a little–your energy consumption can have a big impact. WattTime helps you direct that impact where it's most needed.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<img src="{% static "images/icon-sunflowerBW.png" %}" width="38" >
+
+					<h3>A resilient future</h3>
+
+					<p>Join others and create the clean energy economy. Help build a more resilient future, and use collective action to power the world.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	
+	
+	<div class="full-width-features feature-2">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h1>Getting Started is Easy</h1>
+
+					<h2>WattTime lets you know when the electricity you consume is coming from renewable sources. <br class="hidden-phone">You decide when and what kind of energy you want to use.</h2>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 1</h1>
+
+					<h3>Sign up is simple</h3>
+
+					<p>All we need is your phone number to get you started. We'll keep you updated about new features and regions if you include your name and email too.</p>
+					
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 2</h2>
+
+					<h3>Verify your device</h3>
+
+					<p>Just follow the instructions so we can send notifications directly to your device.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 3</h2>
+
+					<h3>Get more relevant notifications</h3>
+
+					<p>Context matters. With just a few questions about the kind of energy you use in your home or at work, we can make the notifications more relevant for you.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 4</h2>
+
+					<h3>Trigger a cleaner energy economy</h3>
+
+					<p>When you receive a text, join others and create the clean energy economy by shifting your consumption patterns to cleaner fuel sources.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+
+	<div class="container call-to-action">
+
+		<h1>WE'RE <br class="visible-phone"> FLIPPING THE SWITCH <br class="visible-phone"> SOON</h1>
+
+		<h2>Join WattTime</h2>
+
+		<a href="#top" class="scroll-top">
+
+			YES, PLEASE! <i class="arrow arrow-up">&nbsp;</i>
+
+		</a>
+
+	</div>
+
+	<div class="wheel">
+
+		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
+
+	</div>
+
+		
+
+<div class="footer" name="contact">
+
+	<div class="container">
+
+		<div class="copyright">
+
+			<a href="{% url 'home' %}" class="logo">
+
+				<img src="{% static "images/WattTimeWordLogo.png" %}" alt="WattTime" width="120">
+
+			</a>
+
+			<p>
+
+				Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013. <a href="{% url 'terms-of-service' %}">Terms of Service</a><br> 
+
+				Built in Berkeley, California with composted parts from around the world.
+
+			</p>
+
+		</div>
+
+		<div class="social-policies">
+
+			<ul class="links">
+
+				<li class="contact">
+
+					<a href="mailto:watttime.app@gmail.com" class="">Contact</a>
+
+				</li>
+
+				<!-- <li class="blog">
+
+					<a href="http://watttime.com/blog">Blog</a>
+
+				</li> -->
+
+				<li class="facebook">
+
+					<a href="https://www.facebook.com/wattTimeApp">Facebook</a>
+
+				</li>
+
+				<li class="twitter">
+
+					<a href="https://twitter.com/watttime">Twitter</a>
+
+				</li>
+
+			</ul>
+
+			<!--
+
+			<div class="policies">
+
+				<a href="http://watttime.com/privacy-policy">Privacy Policy</a> &bull; <a href="#">Terms of Use</a>
+
+			</div>
+
+			-->
+
+		</div>
+
+	</div>
+
+</div>
+
+</div>
+
+
+</body>
+
+</html>
