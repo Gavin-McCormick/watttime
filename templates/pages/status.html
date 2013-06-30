@@ -5,64 +5,116 @@
 {% block content %}
 
 <br><br>
-<div class="well"><p>Please select a region to see how clean its electricity is right now. <br>(Currently supported states are in yellow.)</p>
+<div class="well"><p>Please select a region to see how clean its electricity is right now. <br>(Currently supported states are in green.)</p>
 
-<!-- This is the stately font ed to show US states for the launch map. Update by adding state abbreviations to the Style customizations .stately class #launch is in stately.css -->
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    google.load('visualization', '1', {packages: ['geochart']});
 
-	    <ul class="stately" id="launch"> 
-        <li data-state="al" class="al">A</li>
-        <li data-state="ak" class="ak">B</li>
-        <li data-state="ar" class="ar">C</li>						
-        <li data-state="az" class="az">D</li>
-		<a href="{% url 'CA_status' %}"><li data-state="ca" class="ca">E</li></a>
-        <li data-state="co" class="co">F</li>
-        <li data-state="ct" class="ct">G</li>
-        <li data-state="de" class="de">H</li>
-        <li data-state="dc" class="dc">I</li>
-        <li data-state="fl" class="fl">J</li>
-        <li data-state="ga" class="ga">K</li>
-        <li data-state="hi" class="hi">L</li>
-        <a href="{% url 'BPA_status' %}"><li data-state="id" class="id">M</li></a>
-        <li data-state="il" class="il">N</li>
-        <li data-state="in" class="in">O</li>
-        <li data-state="ia" class="ia">P</li>
-        <li data-state="ks" class="ks">Q</li>
-        <li data-state="ky" class="ky">R</li>
-        <li data-state="la" class="la">S</li>
-        <a href="{% url 'NE_status' %}"><li data-state="me" class="me">T</li></a>
-        <li data-state="md" class="md">U</li>
-        <a href="{% url 'NE_status' %}"><li data-state="ma" class="ma">V</li></a>
-        <li data-state="mi" class="mi">W</li>
-        <li data-state="mn" class="mn">X</li>
-        <li data-state="ms" class="ms">Y</li>
-        <li data-state="mo" class="mo">Z</li>
-        <li data-state="mt" class="mt">a</li>
-        <li data-state="ne" class="ne">b</li>
-        <li data-state="nv" class="nv">c</li>
-        <a href="{% url 'NE_status' %}"><li data-state="nh" class="nh">d</li></a>
-        <li data-state="nj" class="nj">e</li>
-        <li data-state="nm" class="nm">f</li>
-        <li data-state="ny" class="ny">g</li>
-        <li data-state="nc" class="nc">h</li>
-        <li data-state="nd" class="nd">i</li>
-        <li data-state="oh" class="oh">j</li>			
-        <li data-state="ok" class="ok">k</li>
-        <a href="{% url 'BPA_status' %}"><li data-state="or" class="or">l</li></a>
-        <li data-state="pa" class="pa">m</li>
-        <a href="{% url 'NE_status' %}"><li data-state="ri" class="ri">n</li></a>
-        <li data-state="sc" class="sc">o</li>
-        <li data-state="sd" class="sd">p</li>
-        <li data-state="tn" class="tn">q</li>
-        <li data-state="tx" class="tx">r</li>
-        <li data-state="ut" class="ut">s</li>
-        <li data-state="va" class="va">t</li>
-        <li data-state="vt" class="vt">u</li>			
-        <a href="{% url 'BPA_status' %}"><li data-state="wa" class="wa">v</li></a>
-        <li data-state="wv" class="wv">w</li>
-        <li data-state="wi" class="wi">x</li>
-        <li data-state="wy" class="wy">y</li>
-    </ul> 
+    function drawVisualization() {
+        var data = google.visualization.arrayToDataTable([
+            ['State', 'Site'],
+            ['Alabama', 0],
+            ['Alaska', 0],
+            ['American Samoa', 0],
+            ['Arizona', 0],
+            ['Arkansas', 0],
+            ['California', 1],
+            ['Colorado', 0],
+            ['Connecticut', 3],
+            ['Delaware', 0],
+            ['District of Columbia', 0],
+            ['Florida', 0],
+            ['Georgia', 0],
+            ['Guam', 0],
+            ['Hawaii', 0],
+            ['Idaho', 2],
+            ['Illinois', 0],
+            ['Indiana', 0],
+            ['Iowa', 0],
+            ['Kansas', 0],
+            ['Kentucky', 0],
+            ['Louisiana', 0],
+            ['Maine', 3],
+            ['Maryland', 0],
+            ['Massachusetts', 3],
+            ['Michigan', 0],
+            ['Minnesota', 0],
+            ['Mississippi', 0],
+            ['Missouri', 0],
+            ['Montana', 0],
+            ['Nebraska', 0],
+            ['Nevada', 0],
+            ['New Hampshire', 3],
+            ['New Jersey', 0],
+            ['New Mexico', 0],
+            ['New York', 0],
+            ['North Carolina', 0],
+            ['North Dakota', 0],
+            ['Northern Marianas Islands', 0],
+            ['Ohio', 0],
+            ['Oklahoma', 0],
+            ['Oregon', 2],
+            ['Pennsylvania', 0],
+            ['Puerto Rico', 0],
+            ['Rhode Island', 3],
+            ['South Carolina', 0],
+            ['South Dakota', 0],
+            ['Tennessee', 0],
+            ['Texas', 0],
+            ['Utah', 0],
+            ['Vermont', 3],
+            ['Virginia', 0],
+            ['Virgin Islands', 0],
+            ['Washington', 2],
+            ['West Virginia', 0],
+            ['Wisconsin', 0],
+            ['Wyoming', 0]
+        ]);
+        
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1, {
+            type: 'string',
+            role: 'tooltip',
+            calc: function () {
+                return '';
+            }
+        }]);
+        
+        var geochart = new google.visualization.GeoChart(document.getElementById('visualization'));
+        var options = {};
+        options['region'] = 'US';
+        options['resolution'] = 'provinces';
+        options['width'] = 620;
+        options['height'] = 430;
+        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
+        options['legend'] = 'none';
+    
+        google.visualization.events.addListener(geochart, 'select', function() {
+            var selectionIdx = geochart.getSelection()[0].row;
+            var stateName = data.getValue(selectionIdx, 0);
+            var value = data.getValue(selectionIdx, 1);
+            
+            if (value == '1') {
+                window.open('{% url 'CA_status' %}');
+            }
+          
+          if (value == '2') {
+                window.open('{% url 'BPA_status' %}');
+            }
+          
+          if (value == '3') {
+                window.open('{% url 'NE_status' %}');
+            }
+        });
+    
+        geochart.draw(view, options);
+    }
+    
 
+    google.setOnLoadCallback(drawVisualization);
+  </script>
+<div id="visualization"></div>
 <!-- Gabe here are the links: Gavin -->
 <li><a href="{% url 'NE_status' %}">Massachusetts, New Hampshire, Vermont, Connecticut, Rhode Island, Maine</a></li>
 <li><a href="{% url 'CA_status' %}">California</a></li>
