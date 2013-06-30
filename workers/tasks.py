@@ -102,22 +102,26 @@ def send_text_notifications(bas):
                                           percent_coals[ba_ind],
                                           marginal_fuels[ba_ind])
 
-        # send notification
-        if msg:
-            debug('      sending message!')
-            # send text
-            send_text(msg, to=user.phone)
-
-            # save to log
-            logitem = SMSLog(user=user,
-                             utctime=now(),
-                             localtime=localtime,
-                             message=msg)
-            logitem.save()
-            notified_users.append(user.userid)
-            
-        else:
+        if msg is None:
             debug('      active, verified user, but not right fuel now')
+            continue
+
+        if len(msg) >= 150:
+            debug('      Failed to send message "{}" as it is too long.'.format(msg))
+            continue
+
+        # send notification
+        debug('      sending message!')
+        # send text
+        send_text(msg, to=user.phone)
+
+        # save to log
+        logitem = SMSLog(user=user,
+                         utctime=now(),
+                         localtime=localtime,
+                         message=msg)
+        logitem.save()
+        notified_users.append(user.userid)
 
     # return
     return notified_users

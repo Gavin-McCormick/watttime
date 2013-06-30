@@ -15,7 +15,7 @@
 # Authors: Anna Schneider, Eric Stansifer
 
 
-from windfriendly.models import MARGINAL_FUELS
+from windfriendly.models import MARGINAL_FUELS, debug
 from windfriendly.views import update
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from accounts.twilio_utils import send_text
@@ -73,7 +73,7 @@ def demo(request):
 
 def recurring_events(request):
     ''' Called every 5 min with a GET request'''
+    debug('recurring_events called at {}'.format(str(now())))
     run_frequent_tasks()
     run_hourly_tasks()
     return HttpResponse('ping5 {}'.format(str(now())), "application/json")
-
