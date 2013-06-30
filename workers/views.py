@@ -26,6 +26,7 @@ from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from windfriendly.parsers import ne_fuels
 from accounts.twilio_utils import send_text
 from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
+from accounts.messages import alpha_completed
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
@@ -266,3 +267,10 @@ def data_dump(request, database):
                 str(list(model_formats.keys())))
     return HttpResponse(msg, 'application/json')
 
+def end_of_alpha_email():
+    for user in User.objects.all():
+        if user.is_active and user.is_verified:
+            print ("Sending email to {}".format(user.name))
+            print (alpha_completed(user.name))
+            if user.name == 'Gavin':
+                print ("Actually sending email now!")

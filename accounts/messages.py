@@ -89,3 +89,18 @@ def account_inactivated_message(userid, name, phone):
              ]
     return "\n".join(lines)
 
+def alpha_completed(name):
+    lines = ["Hi {name},",
+        "",
+        "Thank you for being one of the first WattTime users and helping us test out the earliest version of our service! We're going to wrap up this early alpha test now in order to switch to a slightly more advanced beta version.",
+        "",
+        "We learned a lot from the alpha test. What was your experience with the service so far? Was it interesting to be receiving the texts? Was it annoying to receive them too often, or in the middle of a workday? Did you actually follow any of the suggestions? If you'd like to reply to this email address with any and all reactions that come to mind, we'd love to hear any thoughts you might have.",
+        "",
+        "It seemed to us here at WattTime that the information so far was interesting, but maybe not well tailored enough yet to really be very actionable or engaging. We hope you'll find that future versions steadily improve in that regard.  ",
+        "",
+        "Now our site is going to go down for the rest of the weekend during the switch. On Monday, we'll send you a link and a code that will allow you to access the beta version if you like. We hope you'll consider joining us for that pilot as well!",
+        "Thanks again for helping us out,",
+        "",
+        "Gavin",
+        "and rest of the WattTime team"]
+    return "\n".join(lines.format(name = name))
