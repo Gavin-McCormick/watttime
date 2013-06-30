@@ -259,6 +259,7 @@ INVITE_MODE = True
 ACCOUNT_INVITATION_DAYS = 14
 INVITATIONS_PER_USER = 20
 SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
+ACCOUNT_ADAPTER ="allauth.accountadapter.AccountAdapter"
 ALLOW_NEW_REGISTRATIONS = True
 
 # for facebook login

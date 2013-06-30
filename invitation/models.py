@@ -138,7 +138,7 @@ class InvitationKey(models.Model):
     
     def get_context(self, sender_note=None):
         invitation_url = root_url + reverse('invitation_invited', kwargs={'invitation_key':self.key})
-        exp_date = self.date_invited + datetime.timedelta(days=settings.ACCOUNT_INVITATION_DAYS)
+        exp_date = (self.date_invited + datetime.timedelta(days=settings.ACCOUNT_INVITATION_DAYS)).strftime("%x")
         context = { 'invitation_key': self,
                     'expiration_days': settings.ACCOUNT_INVITATION_DAYS,
                     'from_user': self.from_user,

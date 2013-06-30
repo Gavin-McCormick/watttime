@@ -52,19 +52,23 @@ def login_by_token(request):
     if request.method == 'POST':
         form = FacebookConnectForm(request.POST)
         if form.is_valid():
-            try:
-                app = providers.registry.by_id(FacebookProvider.id) \
-                    .get_app(request)
-                access_token = form.cleaned_data['access_token']
-                token = SocialToken(app=app,
-                                    token=access_token)
-                login = fb_complete_login(app, token)
-                login.token = token
-                login.state = SocialLogin.state_from_request(request)
-                ret = complete_social_login(request, login)
-            except:
+          #  try:
+            print 'trying'
+            app = providers.registry.by_id(FacebookProvider.id) \
+                .get_app(request)
+            access_token = form.cleaned_data['access_token']
+            token = SocialToken(app=app,
+                                token=access_token)
+            login = fb_complete_login(app, token)
+            login.token = token
+            login.state = SocialLogin.state_from_request(request)
+            print access_token, token, login.token
+            ret = complete_social_login(request, login)
+            print ret
+          #  except:
+          #      print 'error'
                 # FIXME: Catch only what is needed
-                pass
+          #      pass
     if not ret:
         ret = render_authentication_error(request)
     return ret
