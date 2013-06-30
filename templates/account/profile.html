@@ -3,6 +3,8 @@
 {% providers_media_js %}
 
 {% block content %}
+
+<!-- Gavin commented out this block>
 <a href="#" onClick="postToFacebook()">Post to Facebook</a>
 <script>
 	function postToFacebook() {
@@ -18,6 +20,8 @@
           }
         });
     }
+<end Gavin's commenting out -->
+	
 </script>
 <div id="fb-root"></div>
 <script>
@@ -48,16 +52,22 @@
 
 <h1>Profile</h1>
 
-<p>Please complete your profile</p>
+<p>Please complete your profile below.</p>
 <div class="header-main">
 {% include 'accounts/signup_splash.html' %}
 </div>
+
 <!-- Facebook Like button -->
+	<!-- Gavin commented out this block>
 <div class="fb-like" data-href="http://watttime.herokuapp.com/" data-send="true" data-width="450" data-show-faces="true"></div>
+	<end Gavin's commenting out -->
 <!-- Facebook Share button -->
+	<!-- Gavin commented out this block>
 <a href="https://www.facebook.com/sharer/sharer.php?u=watttime.herokuapp.com" target="_blank">
   Share on Facebook
 </a>
+	<end Gavin's commenting out -->
+
 
 {% endblock %}
 

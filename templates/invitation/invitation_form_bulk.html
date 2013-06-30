@@ -1,0 +1,64 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_modify %}
+{% load i18n l10n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+	<div>
+		<fieldset class="module aligned">
+			<div class="form-row field-from_email">
+				<div>
+					<label for="id_from_email" class="required">From Email:</label>
+					<input id="id_from_email" class="vTextField" type="text" name="from_email" value=""/>
+				</div>
+			</div>
+			<div class="form-row field-to-email">
+				<div>
+					<label for="id_to_emails" class="required">To Emails:<br>email; email; or email, firstname, lastname;</label>
+					<textarea id="id_to_emails" rows="5" cols="75" name="to_emails"></textarea>
+				</div>
+			</div>
+			<div class="form-row field-sender-note">
+				<div>
+					<label for="id_sender_note" class="required">Note:</label>
+					<textarea id="id_sender_note" rows="10" cols="75" name="sender_note"></textarea>
+				</div>
+			</div>
+			<div id="id_text" class="form-row field-text-preview">
+				<div style="float:left; width:110px;">Preview Text:</div>
+				<pre style="white-space: pre-wrap; display:inline-block; width:550px;">
+					{{text_preview}}
+				</pre>
+			</div>
+			<div id="id_html" class="form-row field-text-preview">
+				<div style="float:left; width:110px;">Preview Html:</div>
+				<div style="display:inline-block; width:550px;">
+					{{html_preview}}
+				</div>
+			</div>
+		</fieldset>
+	</div>
+
+    <div>
+    <input type="hidden" name="action" value="send_email" />
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="Send Email" />
+    </div>
+</form>
+<script>
+document.getElementById('id_sender_note').addEventListener('change', onChange, false);
+oldText = "--your note will be inserted here--";
+function onChange(e){
+	console.warn(e);
+	console.warn(e.target);
+	text = e.target.value;
+	console.warn(e.target.value);
+	document.getElementById('sender_note').innerHTML = text;
+	text = text.replace(/<.*?>/g, '')
+	preview_text = document.getElementById('id_text')
+	preview_text.innerHTML = preview_text.innerHTML.replace(oldText, text);
+	oldText = text;
+}
+</script>
+{% endblock %}

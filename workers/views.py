@@ -17,13 +17,29 @@
 
 from windfriendly.models import MARGINAL_FUELS, debug
 from windfriendly.views import update
+import json
+import pytz
+import traceback
+from windfriendly.models import debug
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from django.http import HttpResponse
 from django.utils.timezone import now
-from workers.models import SMSLog
 from workers.tasks import run_frequent_tasks, run_hourly_tasks
+from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
+from accounts.messages import alpha_completed
+from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
+from django.utils.timezone import now
+from workers.models import SMSLog
+from django.core.mail import send_mail
+from settings import EMAIL_HOST_USER
+from random import randint
+
+import accounts.models
+import windfriendly.models
+import workers.models
 
 def demo(request):
     message = []
@@ -77,3 +93,97 @@ def recurring_events(request):
     run_frequent_tasks()
     run_hourly_tasks()
     return HttpResponse('ping5 {}'.format(str(now())), "application/json")
+
+# A dictionary
+#   keys: strings (database name)
+#   values: pairs of:
+#       model class
+#       lists of either a string (attribute name) or a pair of
+#           a string (attribute name)
+#           a function taking one argument (an instance of the model class) and
+#               returning attribute value, or None
+model_formats = {
+    'User' : (accounts.models.User, [
+            'name',
+            'email',
+            'phone',
+            'verification_code',
+            'is_verified',
+            'is_active',
+            'userid',
+            'state']),
+    'UserProfile' : (accounts.models.UserProfile, [
+            ('userid', (lambda up : up.userid.userid)),
+            'goal',
+            'text_freq',
+            'channel',
+            'ac',
+            'furnace',
+            'water_heater']),
+    'Debug' : (windfriendly.models.DebugMessage, [
+            'date',
+            'message']),
+    'SMSLog' : (workers.models.SMSLog, [
+            ('user', (lambda sms : sms.user.userid)),
+            'utctime',
+            'message']),
+    'BPA'   : (windfriendly.models.BPA, [
+            'load',
+            'wind',
+            'thermal',
+            'hydro',
+            'date']),
+    'NE'    : (windfriendly.models.NE, [
+            'gas',
+            'nuclear',
+            'hydro',
+            'coal',
+            'other_renewable',
+            'other_fossil',
+            'marginal_fuel',
+            'date'])
+        }
+
+def data_dump_one(model, attributes):
+    results = []
+    for i in model.objects.all():
+        value = {}
+        for attribute in attributes:
+            if isinstance(attribute, str):
+                value[attribute] = str(getattr(i, attribute))
+            else:
+                if len(attribute) == 1:
+                    value[attribute[0]] = str(getattr(i, attribute[0]))
+                elif len(attribute) == 2:
+                    value[attribute[0]] = str(attribute[1](i))
+        results.append(value)
+    return results
+
+def data_dump(request, database):
+    if database in model_formats:
+        model, attributes = model_formats[database]
+        msg = json.dumps(data_dump_one(model, attributes))
+    elif database == 'all':
+        result = {}
+        for name in model_formats:
+            model, attributes = model_formats[name]
+            result[name] = data_dump_one(model, attributes)
+        msg = json.dumps(result)
+    else:
+        msg = "Don't recognize '{}', known models are: {}".format(
+                str(database),
+                str(list(model_formats.keys())))
+    return HttpResponse(msg, 'application/json')
+
+def end_of_alpha_email():
+    send_mail('Thanks for participating in the WattTime test',
+            alpha_completed('Eric'),
+            EMAIL_HOST_USER,
+            ['eric.stansifer@gmail.com'])
+    for user in User.objects.all():
+        if user.is_active and user.is_verified:
+            print ("Sending email to {} ({})".format(user.name, user.email))
+            send_mail('Thanks for participating in the WattTime test',
+                    alpha_completed(user.name),
+                    EMAIL_HOST_USER,
+                    [user.email])

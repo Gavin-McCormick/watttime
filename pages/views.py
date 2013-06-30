@@ -26,16 +26,42 @@ def terms_of_service(request):
 #    return render(request, 'pages/placeholder.html', {'title': 'Terms of Service'})
     return render(request, 'pages/terms_of_service.html')
 
-def status(request):
-    # get current data
+def BPA_status(request):
+#    return render(request, 'pages/placeholder.html', {'title': 'Pacific Northwest current status'})
+	
+	 # compose message
+    message = "Hi Anna! This is as far as I got. Couldn't figure out how to pull BPA data after all. :-/ Gavin"
+    
+    return render(request, 'pages/BPA_status.html', {'marginal_message' : message})
+	
+    return render(request, 'pages/BPA_status.html')
+	
+def CA_status(request):
+#    return render(request, 'pages/placeholder.html', {'title': 'California current status'})
+	
+	 # compose message
+    message = "Hi Anna! This is as far as I got. Couldn't figure out how to pull CAISO data after all. :-/ Gavin"
+    
+    return render(request, 'pages/CA_status.html', {'marginal_message' : message})
+	
+    return render(request, 'pages/CA_status.html')
+	
+def NE_status(request):
+#    return render(request, 'pages/placeholder.html', {'title': 'New England current status'})
+	# get current data
     if NE.objects.count() == 0:
         parser = NEParser()
         parser.update()
+
+def status_offline(request):
+    return render(request, 'pages/status.html', {'marginal_message' : 'Status is offline until July 1.'})
+
+def status(request):
     datum = NE.objects.all().latest('date')
     percent_green = datum.fraction_green() * 100.0
     marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
-
-    # compose message
+	
+	 # compose message
     greenery = str(int(percent_green + 0.5))
     if marginal_fuel == 'None':
         marginal_fuel = 'Mixed'
@@ -46,8 +72,10 @@ def status(request):
     else:
         message = "Right now in New England {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a fine time to use MORE power."
     message = message.format(p = greenery, fuel = marginal_fuel.lower())
-    return render(request, 'pages/status.html', {'marginal_message' : message})
-
+    return render(request, 'pages/NE_status.html', {'marginal_message' : message})
+	
+    return render(request, 'pages/NE_status.html')
+	
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)

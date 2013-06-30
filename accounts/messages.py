@@ -60,9 +60,9 @@ def edit_profile_message(frequency, goals):
 
 def email_signup_message(userid, name):
     lines = ["Hi %s," % name,
-             "Thanks for your interest in WattTime! You are now subscribed to occasional email updates about WattTime products and services.",
-             "Currently we are piloting WattTime's SMS notification service in New England. To participate in the pilot, just enter your phone number at http://wattTime.herokuapp.com/phone_setup/%s." % userid,
-             "To unsubscribe from our email list, please reply to this email with the message 'unsubscribe'.",
+             "Thank you for your interest in WattTime! As of Monday July 1 we will support California and will begin beta testing.",
+             "We'll send you a note on Monday with an access code for the beta.", 
+             "We hope you'll enjoy the service, and hope you won't mind if we ask you a few questions about it after a week or two.",
              "Cheers,",
              "the team at WattTime"
              ]
@@ -89,3 +89,17 @@ def account_inactivated_message(userid, name, phone):
              ]
     return "\n".join(lines)
 
+def alpha_completed(name):
+    lines = ["Hi {name},",
+        "",
+        "Thank you for being one of the first WattTime users and helping us test out the earliest version of our service! We're going to wrap up this alpha test now in order to switch to a slightly more advanced beta version.",
+        "",
+        "We've already learned a lot from the alpha test, and we'd love to hear any thoughts you'd like to share. What has your experience been like with the service so far? Was it interesting to be receiving the texts? Or was it annoying to receive them too often, or in the middle of a workday? Did you actually follow any of the suggestions? What could make our advice more relevant to you? Drop us a line by replying to this email - we'd love to hear your thoughts!",
+        "",
+        "Now our site is going to go down for the rest of the weekend during the switch. On Monday, we'll send you a link and a code that will allow you to access the beta version if you like. We hope you'll consider joining us for that pilot as well!",
+        "",
+        "Thanks again for helping us out,",
+        "",
+        "Gavin",
+        "and rest of the WattTime team"]
+    return ("\n".join(lines)).format(name = name)

@@ -15,6 +15,7 @@
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
 import allauth
+import registration
 from django.views.generic.base import TemplateView
 
 from django.conf.urls import patterns, include, url
@@ -27,22 +28,32 @@ admin.autodiscover()
 # basic patterns
 urlpatterns = patterns('',
     url(r'^[/]?$',
-        'accounts.views.profile_create', name='home'),
+        # 'accounts.views.profile_create', name='home'),
+        'accounts.views.shut_down', name='home'),
+    url(r'^fakeindex[/]?$',
+         'accounts.views.profile_create', name='fakehome'),
     url(r'^ping5[/]?$',
         'workers.views.recurring_events', name='ping5'),
     url(r'^demo[/]?$',
         'workers.views.demo', name='demo'),
+    url(r'^data_dump/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+        'workers.views.data_dump', name='data_dump'),
     # Uncomment the next line to enable the admin:
-     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 # allauth patterns
 urlpatterns += patterns('',
-    url(r'accounts[/]', include('allauth.urls')),
+    url(r'accounts[/]',  include('allauth.urls')),
 #    url(r'^accounts/profile[/]$', TemplateView.as_view(template_name='account/profile.html')),
     url(r'^accounts/profile[/]$', 'accounts.views.profile_create', name='user_profile'),
     url(r'^login/cancelled[/]$', 'login_cancelled', name='socialaccount_login_cancelled'),
     url(r'^login/error[/]$', 'login_error', name='socialaccount_login_error'),
+)
+
+# invitation patterns
+urlpatterns += patterns('',
+    url(r'accounts[/]',  include('invitation.urls')),
 )
 
 # pages patterns
@@ -60,7 +71,13 @@ urlpatterns += patterns('pages.views',
     url(r'^terms-of-service[/]?$',
         'terms_of_service', name='terms-of-service'),
     url(r'^status[/]?$',
-        'status', name='status'),
+        'status_offline', name='status'),
+	url(r'^NE_status[/]?$',
+        'NE_status', name='NE_status'),
+	url(r'^CA_status[/]?$',
+        'CA_status', name='CA_status'),
+	url(r'^BPA_status[/]?$',
+        'BPA_status', name='BPA_status'),
     url(r'^facebook_pilot[/]?$',
         'facebook_pilot', name='facebook_pilot'),
     url(r'^sierra_pilot[/]?$',

@@ -37,7 +37,7 @@ def run_frequent_tasks():
     # scrape new info from utilities
     updated_bas = update_bas(['BPA', 'ISONE'])
     print updated_bas
-    
+
     # send notifications to users in updated regions
     notified_users = send_text_notifications(['ISONE'])
     print notified_users
@@ -47,10 +47,10 @@ def run_hourly_tasks():
     # scrape new info from utilities
     updated_bas = update_bas(['CAISO'])
     print updated_bas
-    
+
     # send notifications to users in updated regions
-   # notified_users = send_text_notifications(['CAISO'])
-   # print notified_users
+    # notified_users = send_text_notifications(['CAISO'])
+    # print notified_users
 
 def update_bas(bas):
     # update and query BAs
@@ -63,7 +63,7 @@ def update_bas(bas):
 
     # return
     return updates
- 
+
 def send_text_notifications(bas):
     """ Should be run every 5-10 min, after updating BAs """
     # get newest info

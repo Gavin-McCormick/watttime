@@ -70,6 +70,41 @@ class CAISO(models.Model):
         except:
             return None
             
+    @classmethod
+    def earliest_date(cls, forecast_type=None):
+        """Return oldest stored datetime for forecast type"""
+        try:
+            earliest = cls.earliest_point(forecast_type)
+            return earliest.date
+        except:
+            return None
+
+    @classmethod
+    def earliest_point(cls, forecast_type=None):
+        """Return oldest stored data point for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            earliest = forecast_qset.order_by('date')[0]
+            return earliest
+        except:
+            return None
+                    
+    @classmethod
+    def points_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return all data ponits in the date range for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            points = forecast_qset.filter(date__range=(starttime, endtime))
+            return points
+        except:
+            return []
+                        
 
 class BPA(models.Model):
     """Raw BPA data"""
@@ -96,16 +131,6 @@ class BPA(models.Model):
         return MARGINAL_FUELS.index('None')
 
     @classmethod
-    def latest_date(cls, forecast_code=None):
-        """Return most recent stored datetime for forecast type"""
-        forecast_qset = cls.objects.all()
-        try:
-            latest = forecast_qset.order_by('-date')[0]
-            return latest.date
-        except:
-            return None
-            
-    @classmethod
     def latest_date(cls, forecast_type=None):
         """Return most recent stored datetime for forecast type"""
         try:
@@ -124,6 +149,34 @@ class BPA(models.Model):
         except:
             return None
             
+    @classmethod
+    def earliest_date(cls, forecast_type=None):
+        """Return oldest stored datetime for forecast type"""
+        try:
+            earliest = cls.earliest_point(forecast_type)
+            return earliest.date
+        except:
+            return None
+
+    @classmethod
+    def earliest_point(cls, forecast_type=None):
+        """Return oldest stored data point for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            earliest = forecast_qset.order_by('date')[0]
+            return earliest
+        except:
+            return None
+
+    @classmethod
+    def points_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return all data ponits in the date range for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            points = forecast_qset.filter(date__range=(starttime, endtime))
+            return points
+        except:
+            return []                               
             
 # All units are megawatts
 class NE(models.Model):
@@ -164,7 +217,35 @@ class NE(models.Model):
         except:
             return None
             
-            
+    @classmethod
+    def earliest_date(cls, forecast_type=None):
+        """Return oldest stored datetime for forecast type"""
+        try:
+            earliest = cls.earliest_point(forecast_type)
+            return earliest.date
+        except:
+            return None
+
+    @classmethod
+    def earliest_point(cls, forecast_type=None):
+        """Return oldest stored data point for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            earliest = forecast_qset.order_by('date')[0]
+            return earliest
+        except:
+            return None
+ 
+    @classmethod
+    def points_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return all data ponits in the date range for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            points = forecast_qset.filter(date__range=(starttime, endtime))
+            return points
+        except:
+            return []                                   
+                              
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)
   total_watts = models.IntegerField() # capacity

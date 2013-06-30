@@ -24,6 +24,9 @@ def choose_new_id():
         return userid
     return choose_new_id()
 
+def shut_down(request):
+    return render(request, 'shut_down.html')
+
 def profile_create(request):
     last_url = request.get_full_path()[-8:]
     print last_url
