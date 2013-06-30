@@ -28,13 +28,18 @@ admin.autodiscover()
 # basic patterns
 urlpatterns = patterns('',
     url(r'^[/]?$',
-        'accounts.views.profile_create', name='home'),
+        # 'accounts.views.profile_create', name='home'),
+        'accounts.views.shut_down', name='home'),
+    url(r'^fakeindex[/]?$',
+         'accounts.views.profile_create', name='fakehome'),
     url(r'^ping5[/]?$',
         'workers.views.recurring_events', name='ping5'),
     url(r'^demo[/]?$',
         'workers.views.demo', name='demo'),
+    url(r'^data_dump/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+        'workers.views.data_dump', name='data_dump'),
     # Uncomment the next line to enable the admin:
-     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 # allauth patterns
@@ -66,7 +71,7 @@ urlpatterns += patterns('pages.views',
     url(r'^terms-of-service[/]?$',
         'terms_of_service', name='terms-of-service'),
     url(r'^status[/]?$',
-        'status', name='status'),
+        'status_offline', name='status'),
 	url(r'^NE_status[/]?$',
         'NE_status', name='NE_status'),
 	url(r'^CA_status[/]?$',

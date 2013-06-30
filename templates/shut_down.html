@@ -4,9 +4,7 @@
 <html>
 
 {% load staticfiles %}
-{% load url from future %}
-{% load socialaccount %}
-{% providers_media_js %}
+
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale = 1.0; maximum-scale=1.0, user-scalable=no" />
@@ -87,10 +85,6 @@
 
 
 							<li>
-							<a href="{% url 'status' %}">STATUS</a>
-							</li>
-
-							<li>
 
 								<a href="{% url 'how-it-works' %}">HOW IT WORKS</a>
 
@@ -102,7 +96,9 @@
 
 							</li>
 
+
 							<li>
+
 
 								<a href="{% url 'faq' %}">FAQ</a>
 
@@ -114,69 +110,14 @@
 
 							</li>
 
-{% if user.is_authenticated %}
-							<li>
-							
-								<a href="{% url 'account_logout' %}">LOG OUT</a>
-								
-							</li>
-{% else %}
-							<li>
-							
-								<a href="{% url 'account_signup' %}">SIGN UP</a>
-								
-							</li>
-							
-							<li>
-							
-								<a href="{% url 'account_login' %}">LOG IN</a>
-								
-							</li>
-{% endif %}
 
-<!-- Gavin removed the following more complicated log in / sign up / log out snippet which was put there by Kevin:
-{% if user.is_authenticated %}
-							<li>
-								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
-							</li						
-{% else %}						
-							<li>							
-								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>								
-							</li>							
-{% endif %}
-<-->
+
+
 
 						</ul>
 						
 
 					<div class="header-main">
-
-
-						<h1>It's <span style="color:#339999"><!--display user's local time -->
-						
-						<script type="text/javascript">
-						<!--
-						var currentTime = new Date()
-						var hours = currentTime.getHours()
-						var minutes = currentTime.getMinutes()
-
-						if (minutes < 10)
-						minutes = "0" + minutes
-
-						var suffix = "am";
-						if (hours >= 12) {
-						suffix = "pm";
-						hours = hours - 12;
-						}
-						if (hours == 0) {
-						hours = 12;
-						}
-
-						document.write("<b>" + hours + ":" + minutes + " " + suffix + "</b>")
-						//-->
-						</script>
-
-                        </span> and <br> the New England electricity grid is <span style="color:#ffff33">{{ current_green }}</span> green. </h1>
 
 
                 <!-- Time Zone Localization
@@ -217,12 +158,7 @@
 						<h2>We Can Do Better</h2>
 
 						<p>WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
-   		
-						<p>Here for the Facebook beta? Want to be notified when WattTime is available in your area? Sign up here for our mailing list and we'll let you know as soon as WattTime is available for your state.</p>  
-						  
-					    {% include 'accounts/signup_splash.html' %}
-					  
-    					
+                                                <h4>Update: The alpha test is currently over and we will be resuming service with the beta test for California users on July 1.</h4>
 		 
 	
 					</div>

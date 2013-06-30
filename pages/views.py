@@ -52,6 +52,11 @@ def NE_status(request):
     if NE.objects.count() == 0:
         parser = NEParser()
         parser.update()
+
+def status_offline(request):
+    return render(request, 'pages/status.html', {'marginal_message' : 'Status is offline until July 1.'})
+
+def status(request):
     datum = NE.objects.all().latest('date')
     percent_green = datum.fraction_green() * 100.0
     marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
@@ -71,10 +76,6 @@ def NE_status(request):
 	
     return render(request, 'pages/NE_status.html')
 	
-def status(request):
-  	#    return render(request, 'pages/placeholder.html', {'title': 'current status'})
-    return render(request, 'pages/status.html')
-
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
