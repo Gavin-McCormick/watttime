@@ -103,4 +103,4 @@ def alpha_completed(name):
         "",
         "Gavin",
         "and rest of the WattTime team"]
-    return "\n".join(lines.format(name = name))
+    return ("\n".join(lines)).format(name = name)
