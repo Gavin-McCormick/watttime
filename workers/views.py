@@ -214,6 +214,10 @@ model_formats = {
     'Debug' : (windfriendly.models.DebugMessage, [
             'date',
             'message']),
+    'SMSLog' : (workers.models.SMSLog, [
+            ('user', (lambda sms : sms.user.userid)),
+            'utctime',
+            'message']),
     'BPA'   : (windfriendly.models.BPA, [
             'load',
             'wind',
