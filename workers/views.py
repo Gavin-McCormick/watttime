@@ -17,6 +17,7 @@
 
 from datetime import datetime, timedelta, date
 from dateutil import tz
+import json
 import pytz
 import traceback
 from windfriendly.models import debug
@@ -30,6 +31,10 @@ from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from workers.models import SMSLog
 from random import randint
+
+import accounts.models
+import windfriendly.models
+import workers.models
 
 def demo(request):
     message = []
@@ -179,3 +184,81 @@ def is_good_time_to_message(timestamp, userid, user_profile,
         return True
     else:
         return False
+
+# A dictionary
+#   keys: strings (database name)
+#   values: pairs of:
+#       model class
+#       lists of either a string (attribute name) or a pair of
+#           a string (attribute name)
+#           a function taking one argument (an instance of the model class) and
+#               returning attribute value, or None
+model_formats = {
+    'User' : (accounts.models.User, [
+            'name',
+            'email',
+            'phone',
+            'verification_code',
+            'is_verified',
+            'is_active',
+            'userid',
+            'state']),
+    'UserProfile' : (accounts.models.UserProfile, [
+            ('userid', (lambda up : up.userid.userid)),
+            'goal',
+            'text_freq',
+            'channel',
+            'ac',
+            'furnace',
+            'water_heater']),
+    'Debug' : (windfriendly.models.DebugMessage, [
+            'date',
+            'message']),
+    'BPA'   : (windfriendly.models.BPA, [
+            'load',
+            'wind',
+            'thermal',
+            'hydro',
+            'date']),
+    'NE'    : (windfriendly.models.NE, [
+            'gas',
+            'nuclear',
+            'hydro',
+            'coal',
+            'other_renewable',
+            'other_fossil',
+            'marginal_fuel',
+            'date'])
+        }
+
+def data_dump_one(model, attributes):
+    results = []
+    for i in model.objects.all():
+        value = {}
+        for attribute in attributes:
+            if isinstance(attribute, str):
+                value[attribute] = str(getattr(i, attribute))
+            else:
+                if len(attribute) == 1:
+                    value[attribute[0]] = str(getattr(i, attribute[0]))
+                elif len(attribute) == 2:
+                    value[attribute[0]] = str(attribute[1](i))
+        results.append(value)
+    return results
+
+def data_dump(request, database):
+    if database in model_formats:
+        model, attributes = model_formats[database]
+        msg = json.dumps(data_dump_one(model, attributes))
+    elif database == 'all':
+        result = {}
+        for name in model_formats:
+            model, attributes = model_formats[name]
+            result[name] = data_dump_one(model, attributes)
+        msg = json.dumps(result)
+    else:
+        msg = "Don't recognize '{}', known models are: {}".format(
+                str(database),
+                str(list(model_formats.keys())))
+    return HttpResponse(msg, 'application/json')
+
