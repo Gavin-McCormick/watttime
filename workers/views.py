@@ -277,7 +277,9 @@ def end_of_alpha_email():
     for user in User.objects.all():
         if user.is_active and user.is_verified:
             print ("Sending email to {} ({})".format(user.name, user.email))
-            send_mail('Thanks for participating in the WattTime test',
-                    alpha_completed(user.name),
-                    EMAIL_HOST_USER,
-                    [user.email])
+            if user.name == 'Test5':
+                send_mail('Thanks for participating in the WattTime test',
+                        alpha_completed(user.name),
+                        EMAIL_HOST_USER,
+                        [user.email])
+                print ("Actually sending email now!")
