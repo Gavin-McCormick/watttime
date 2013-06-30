@@ -12,8 +12,8 @@ unittest2==0.5.1
 wsgiref==0.1.2
 django-allauth==0.10.1
 django-localflavor-us==1.1
-pandas==0.11.0
 numpy==1.7.1
+pandas==0.11.0
 South==0.8.1
 django-registration==1.0
 django-picklefield==0.3.0
