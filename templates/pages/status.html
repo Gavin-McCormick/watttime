@@ -96,15 +96,15 @@
             var value = data.getValue(selectionIdx, 1);
             
             if (value == '1') {
-                window.open('{% url 'CA_status' %}' + stateName);
+                window.open('{% url 'CA_status' %}');
             }
           
           if (value == '2') {
-                window.open('{% url 'BPA_status' %}' + stateName);
+                window.open('{% url 'BPA_status' %}');
             }
           
           if (value == '3') {
-                window.open('{% url 'NE_status' %}' + stateName);
+                window.open('{% url 'NE_status' %}');
             }
         });
     
