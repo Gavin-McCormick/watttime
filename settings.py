@@ -242,7 +242,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
-    "invitation.context_processors.remaining_invitations",
+    #"invitation.context_processors.remaining_invitations",
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")

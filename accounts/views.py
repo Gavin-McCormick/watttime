@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 # from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
-from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ
+from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ_SHORT, EQUIPMENT_SHORT
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
@@ -160,6 +160,21 @@ def profile_edit(request):
                     print ("Changing message frequency")
                     up.message_frequency = freq
 
+                fe = form.cleaned_data['forecast_email']
+                if fe and (fe != up.forecast_email):
+                    print ("Changing forecast email")
+                    up.forecast_email = fe
+
+                eq = list(int(i) for i in (form.cleaned_data['equipment']))
+                if eq != up.get_equipment():
+                    print ("Changing equipment")
+                    up.set_equipment(eq)
+
+                beta_test = form.cleaned_data['beta_test']
+                if beta_test and (beta_test != up.beta_test):
+                    print ("Changing beta test")
+                    up.beta_test = beta_test
+
                 up.save()
 
                 print ("Saved profile information")
@@ -168,8 +183,12 @@ def profile_edit(request):
                 return HttpResponseRedirect(url)
         else:
             form = UserProfileForm(initial =
-                    {'name' : up.name, 'phone' : up.phone,
-                        'message_frequency' : up.message_frequency})
+                    {'name' : up.name,
+                    'phone' : up.phone,
+                    'message_frequency' : up.message_frequency,
+                    'forecast_email' : up.forecast_email,
+                    'equipment' : up.get_equipment(),
+                    'beta_test' : up.beta_test})
             # User is viewing profile information
             print ("Display profile information")
 
@@ -198,7 +217,23 @@ def profile_view(request):
         else:
             phone = '(none)'
 
-        freq = SENDTEXT_FREQ[up.message_frequency]
+        freq = SENDTEXT_FREQ_SHORT[up.message_frequency]
+
+        if up.forecast_email:
+            morning_forecast = 'Yes'
+        else:
+            morning_forecast = 'No'
+
+        equipment = up.get_equipment()
+        if equipment:
+            equipment = '; '.join(EQUIPMENT_SHORT[i] for i in equipment)
+        else:
+            equipment = '(none)'
+
+        if up.beta_test:
+            beta_test = 'Yes'
+        else:
+            beta_test = 'No'
 
         vals = {
                 'name' : up.name,
@@ -206,6 +241,9 @@ def profile_view(request):
                 'state' : up.state,
                 'phone_number' : phone,
                 'message_frequency' : freq,
+                'morning_forecast' : morning_forecast,
+                'equipment' : equipment,
+                'beta_test' : beta_test,
                 'phone_verified' : up.is_verified,
                 'phone_blank' : (len(up.phone) == 0),
                 'deactivated' : (not user.is_active)

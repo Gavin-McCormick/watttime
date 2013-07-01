@@ -44,12 +44,43 @@
             <h4>{{ form.phone }}</h4>
         </td>
     </tr>
+</table>
+<br>
+<table class="well" style="background-color:#666;">
     <tr>
         <td>
             <h4>Message frequency</h4>
         </td>
         <td>
+            {{ form.message_frequency.errors }}
             <h4>{{ form.message_frequency }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Email me a morning forecast</h4>
+        </td>
+        <td>
+            {{ form.forecast_email.errors }}
+            <h4>{{ form.forecast_email }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Energy-hogging equipment</h4>
+        </td>
+        <td>
+            {{ form.equipment.errors }}
+            <h4>{{ form.equipment }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Tell me about future experimental features?</h4>
+        </td>
+        <td>
+            {{ form.beta_test.errors }}
+            <h4>{{ form.beta_test }}</h4>
         </td>
     </tr>
 </table>

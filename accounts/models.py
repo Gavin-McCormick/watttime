@@ -1,6 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError, CheckboxInput
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
@@ -15,11 +15,35 @@ from windfriendly.models import debug
 from django.contrib.auth.models import User
 
 SENDTEXT_FREQ_CHOICES = (
-    (1, 'Never'),
-    (2, 'About once a day'),
-    (3, 'About once a week'),
+        (1, 'Text me the dirtiest hour of the day so I can try to use less energy then'),
+        (2, 'Text me the cleanest hour of the evening so I can try to time some appliances that way'),
+        (3, 'Text me whenever something unusual happens, less than once per day'),
+        (4, 'Only text me during dirty energy emergencies, at most once a week')
     )
-SENDTEXT_FREQ = dict(SENDTEXT_FREQ_CHOICES)
+SENDTEXT_FREQ_LONG = dict(SENDTEXT_FREQ_CHOICES)
+SENDTEXT_FREQ_SHORT = {
+        1 : 'Dirtiest hour each day',
+        2 : 'Cleanest hour each evening',
+        3 : 'Less than once a day',
+        4 : 'Only in extremes (once a week)'
+    }
+
+EQUIPMENT_CHOICES = (
+        (1, 'I have A/C at home (biggest single use of power in the summer)'),
+        (2, 'I have A/C at work (and can control the thermostat)'),
+        (3, 'I have a dishwasher (one of the easiest major appliances to time better)'),
+        (4, 'I have a pool pump (these use a LOT of energy and are easy to time better)'),
+        (5, 'My water heater is electric (gas heaters don\'t help with electricity timing)')
+    )
+
+EQUIPMENT_LONG = dict(EQUIPMENT_CHOICES)
+EQUIPMENT_SHORT = {
+        1 : 'A/C at home',
+        2 : 'A/C at work',
+        3 : 'dishwasher',
+        4 : 'pool pump',
+        5 : 'electric water heater'
+    }
 
 #     furnace = models.IntegerField('Furnace type',
 #                                   blank=False, default=3,
@@ -29,14 +53,28 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     magic_login_code = models.IntegerField(db_index = True)
-    name = models.CharField(max_length=100, help_text='Name')
+    name = models.CharField(max_length=100, help_text='Name', blank=True)
     email = models.EmailField(help_text='Email')
     phone = PhoneNumberField()
     verification_code = models.IntegerField()
     is_verified = models.BooleanField()
     state = USStateField(default='CA')
-    message_frequency = models.IntegerField(default=1,
+
+
+    message_frequency = models.IntegerField(default = 1,
             choices = SENDTEXT_FREQ_CHOICES)
+    forecast_email = models.BooleanField(default = False)
+    equipment = models.CommaSeparatedIntegerField(default = '', max_length=100, blank=True)
+    beta_test = models.BooleanField(default = False)
+
+    def set_equipment(self, indices):
+        self.equipment = ','.join(str(index) for index in indices)
+
+    def get_equipment(self):
+        if len(self.equipment) > 0:
+            return list(int(index) for index in self.equipment.split(','))
+        else:
+            return []
 
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
@@ -47,19 +85,15 @@ class PhoneVerificationForm(forms.Form):
 class UserProfileForm(forms.Form):
     # Immutable fields:
     #   email
-    # password = models.CharField(help_text='Password (leave blank to '
-    name = forms.CharField(help_text='Name', required = False)
-    # password = forms.CharField(help_text='Password (leave blank to not change)', required = False)
-    phone = forms.CharField(help_text='Phone', required = False)
-    message_frequency = forms.ChoiceField(choices = SENDTEXT_FREQ_CHOICES)
-    # state = forms.CharField(help_text='State', required = False)
+    #   state
 
-    class Meta:
-        widgets = {
-                    # 'name' :,
-                    # 'phone' :,
-                    'message_frequency' : RadioSelect()
-                }
+    name = forms.CharField(help_text='Name', required = False)
+    phone = forms.CharField(help_text='Phone', required = False)
+    message_frequency = forms.ChoiceField(choices = SENDTEXT_FREQ_CHOICES, widget = RadioSelect(), required = False)
+    forecast_email = forms.BooleanField(help_text='Forecast emails in morning', widget = CheckboxInput(), required = False)
+    equipment = forms.MultipleChoiceField(help_text='Equipment', choices = EQUIPMENT_CHOICES, widget = CheckboxSelectMultiple(), required = False)
+    beta_test = forms.BooleanField(help_text='Beta test', widget = CheckboxInput(), required = False)
+
 
 # class OldUser(models.Model):
 #     # name
