@@ -8,17 +8,19 @@
 
 <div class="well faq-categories">
 <ul style="font-size:16px; text-align:left"><h3>What is WattTime?</h3>
-<li>WattTime helps you take control of the energy sources that power your own electricity consumption. Similar to many municipal information systems, WattTime uses a text message notification service to inform you when your energy source is particularly dirty or particularly clean. For more details please see: <a href="{% url 'how-it-works' %}">How It Works</a>.</li>
+<li>WattTime helps you take control of the energy sources that power your own electricity consumption. Similar to many municipal information systems, WattTime uses a text message notification service to inform you when your energy source is particularly dirty or particularly clean.</li>
 
-<h3>What does WattTime cost?</h3>
+<h3>How does it work?</h3>
+<li>Most modern electricity markets in America are run like giant auctions, with power traded in a single market across large regions. WattTime tracks goings-on in these markets in real time, bringing you information about the current sources of power in different markets, so you can decide whether it's a good time to buy power. Future versions will track more precise details about these markets, bringing you ever greater flexibility and impact in your ability to have a say in how these markets work.</li>
+
+<h3>What does the service cost?</h3>
 <li>WattTime does not charge users to receive energy status notifications or to send replies to WattTIme. Please note that the current version of WattTime does send occasional text messages (you control the frequency), and if you pay to receive and send text messages, normal rates may apply. Please check with your carrier.</li>
 
 <h3>Are you available in my region?</h3>
 <li>Currently we are in closed beta in California and Massachusetts. If you'd like to be notified when we are available in your state, just sign up on our main page! In the meantime, if you live in California, New England, or the Pacific Northwest, you can still see how clean electricity is in your are at any time by visiting our <a href="{% url 'status' %}">status</a> page.</li> 
 
 <h3>How do I unsubscribe or change my settings?</h3>
-{% url 'unsubscribe' 5551231234 as the_url %}
-<li> To turn off SMS notifications, go to <a href="{{ the_url }}">http://wattTime.com{{ the_url }}</a> (where 5551231234 is replaced with your actual 10-digit phone number). To unsubscribe from occasional email updates, send the message "unsubscribe" to <a href="mailto://WattTime.app@gmail.com">WattTime.app@gmail.com</a>.</li>
+<li> To change your settings, including unsubscribing, just <a href="{% url 'user_login' %}">log in</a> and edit your preferences.</li>
 
 <h3>What's your privacy policy?</h3>
 <li>We believe that rigorous scientific research and people-centered design can be an important tool in the fight against climate change. We do collect anonymous user data and may eventually publish any important findings in scientific journals. But we take that anonymity seriously. We will never, ever, sell, share or publish any individually identifiable information without your explicit consent. That includes your contact information - no spam here.</li>

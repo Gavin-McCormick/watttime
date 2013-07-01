@@ -3,9 +3,9 @@
 {% block title %}WattTime Beta{% endblock %}
 
 {% block content %}
-<h2>Profile details</h2><br>
+<h2>Settings</h2><br>
 
-<p>Hi {{ name }}, here are the preferences we have stored for your account. You may edit them <a href="{% url 'profile_edit' %}">here</a>.</p>
+<p>Hi {{ name }}, here are the preferences we have stored for your account. You can edit them <a href="{% url 'profile_edit' %}">here</a>.</p>
 
 {% if deactivated %}
 <p>Your account is currently deactivated, and you will not receive any further emails or text messages from us. You can <a href="{% url 'reactivate' %}">reactivate</a> your account at any time.</p>
