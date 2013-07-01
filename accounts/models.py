@@ -81,6 +81,10 @@ class UserProfile(models.Model):
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
 
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['placeholder'] = u'Email'
+
 class LoginForm(forms.Form):
     email = forms.CharField(help_text='Email')
     password = forms.CharField(help_text='Password', widget=PasswordInput(), required = False)

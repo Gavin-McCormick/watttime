@@ -174,7 +174,7 @@
 						//-->
 						</script>
 
-                        </span> and <br> the New England electricity grid is <span style="color:#ffff33">{{ current_green }}</span> green. </h1>
+                        </span> and <br> the California electricity grid is <span style="color:#ffff33">{{ current_green }}</span> green. </h1>
 
 
                 <!-- Time Zone Localization
@@ -216,7 +216,15 @@
 
 						<p>WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
    		
-						<p>Here for the Facebook beta? Want to be notified when WattTime is available in your area? Sign up here for our mailing list and we'll let you know as soon as WattTime is available for your state.</p>  
+						<p>Here for the Facebook beta? Sign up here.</p>  
+
+                                                <form action="{% url 'create_user' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+                                                    <p class="fieldWrapper">
+                                                        {{ form.email.errors }}
+                                                        {{ form.email }}
+                                                    </p>
+                                                    <input type="submit" name="sign_up" value="Join!">
+                                                </form>
 						<!-- took out  
 					    { % include 'accounts/signup_splash.html' % }
                         this -->					  

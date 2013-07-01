@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
 from django_localflavor_us.us_states import STATE_CHOICES
-from windfriendly.models import NE
-from windfriendly.parsers import NEParser
+from windfriendly.models import NE, CAISO
+from windfriendly.parsers import NEParser, CAISOParser
 import random
 import pytz
 from accounts import messages
@@ -380,8 +380,16 @@ def create_user(request):
     return render(request, 'accounts/signup.html', {'form' : form})
 
 def frontpage(request):
-    return create_user(request)
-    # return render(request, 'shut_down.html')
+    if CAISO.objects.count() == 0:
+        parser = CAISOParser()
+        parser.update()
+    datum = CAISO.objects.all().latest('date')
+    percent_green = datum.fraction_green() * 100.0
+    greenery = str(int(percent_green + 0.5)) + '%'
+
+    form = SignupForm()
+    return render(request, 'index.html',
+            {'form' : form, 'current_green' : greenery})
 
 def deactivate(request):
     user = request.user
