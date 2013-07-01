@@ -127,6 +127,13 @@ def invite_message(email, url):
             "Go to {url} to join us."]
     return ("\n".join(lines)).format(email = email, url = url)
 
+def resend_login_message(name, url):
+    lines = ["Hi {name},",
+            "You can log in to your account at {url}.",
+            "Cheers,",
+            "the team at WattTime"]
+    return ("\n".join(lines)).format(name = name, url = url)
+
 def alpha_completed(name):
     lines = ["Hi {name},",
         "",

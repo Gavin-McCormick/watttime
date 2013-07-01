@@ -5,7 +5,7 @@
 {% block content %}
 <h2>Profile details</h2><br>
 
-<p>Hi {{ name }}, here are the preferences we have for your account. You may edit them <a href="{% url 'profile_edit' %}">here</a>.</p>
+<p>Hi {{ name }}, here are the preferences we have for your account.</p>
 
 <br>
 
@@ -18,6 +18,14 @@
         </td>
         <td>
             <h4>{{ form.name }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Password</h4>
+        </td>
+        <td>
+            <h4>{{ form.password }}</h4>
         </td>
     </tr>
     <tr>
@@ -67,7 +75,7 @@
     </tr>
     <tr>
         <td>
-            <h4>Energy-hogging equipment</h4>
+            <h4>Energy-intensive equipment</h4>
         </td>
         <td>
             {{ form.equipment.errors }}
@@ -76,7 +84,7 @@
     </tr>
     <tr>
         <td>
-            <h4>Tell me about future experimental features?</h4>
+            <h4>Tell me about future experimental features</h4>
         </td>
         <td>
             {{ form.beta_test.errors }}

@@ -4,14 +4,18 @@
 {% block content %}
 
 <h2>Welcome to WattTime!</h2>
-<p>To log in, enter your email address below, an you will receive an email from us with a link to log in to your account.</p>
+<p>Enter your email address and password below to login into your WattTime account. If you have not set a password, or you have forgotten your password, leave the password blank to receive an email with a link to login.</p>
 
-<form action="{% url 'login' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+<form action="{% url 'user_login' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.email.errors }}
         {{ form.email }}
     </p>
-    <input type="submit" name="sign_up" value="Join!" />
+    <p class="fieldWrapper">
+        {{ form.password.errors }}
+        {{ form.password }}
+    </p>
+    <input type="submit" name="login" value="Login" />
 </form>
 
 {% endblock %}

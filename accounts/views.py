@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 # from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
-from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ_SHORT, EQUIPMENT_SHORT
+from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ_SHORT, EQUIPMENT_SHORT, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
@@ -59,6 +59,7 @@ def create_new_user(email):
 
     up = UserProfile()
     up.user = user
+    up.password_is_set = False
     up.magic_login_code = random.randint(100000000, 999999999)
     # If the user doesn't specify a name, email is used as the default
     up.name = email
@@ -67,7 +68,11 @@ def create_new_user(email):
     up.verification_code = new_phone_verification_number()
     up.is_verified = False
     up.state = 'CA'
+
     up.message_frequency = 1
+    up.forecast_email = False
+    up.set_equipment([])
+    up.beta_test = False
 
     # In the future, we should separate phone-number, etc., into a separate model
 
@@ -78,17 +83,30 @@ def create_new_user(email):
 
 def create_and_email_user(email):
     user = create_new_user(email)
-    magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
-            user.get_profile().magic_login_code)
     if user:
+        magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
+                user.get_profile().magic_login_code)
         send_mail('Welcome to WattTime',
                 messages.invite_message(email, magic_url),
                 EMAIL_HOST_USER,
                 [email])
+        return True
+    else:
+        return False
 
 def http_invite(request, email):
-    create_and_email_user(email)
-    return HttpResponse("Sent email to {}".format(email), "application/json")
+    if create_and_email_user(email):
+        return HttpResponse("Sent email to {}".format(email), "application/json")
+    else:
+        return HttpResponse("User already exists", "application/json")
+
+def email_login_user(user):
+    magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
+            user.get_profile().magic_login_code)
+    send_mail('Account recovery for WattTime',
+            messages.resend_login_message(user.get_profile().name, magic_url),
+            EMAIL_HOST_USER,
+            [user.get_profile().email])
 
 def magic_login(request, magic_login_code):
     magic_login_code = int(magic_login_code)
@@ -99,8 +117,11 @@ def magic_login(request, magic_login_code):
     except:
         # No such user.
         print ("No user with login code {}".format(magic_login_code))
+        url = reverse('accounts.views.frontpage')
+        return HttpResponseRedirect(url)
     else:
         # This is necessary because one cannot login without authenticating
+        up.password_is_set = False
         user = up.user
         pw = str(random.randint(1000000000, 9999999999))
         user.set_password(pw)
@@ -114,7 +135,6 @@ def magic_login(request, magic_login_code):
         print ("Logged in user {}".format(up.name))
         url = reverse('profile_view')
         return HttpResponseRedirect(url)
-
 
 # Returns True if code sent successfully, otherwise False
 def send_verification_code(user):
@@ -146,8 +166,15 @@ def profile_edit(request):
                     print ("Changing name")
                     up.name = name
 
-                # TODO -- permit changing email addresses
-                # (requires confirmation)
+                password = form.cleaned_data['password']
+                if password == '' and up.password_is_set:
+                    print ("Removing password")
+                    up.password_is_set = False
+                elif not (password == '(not used)') and (not password == '######'):
+                    print ("Setting password")
+                    up.user.set_password(password)
+                    up.user.save()
+                    up.password_is_set = True
 
                 phone = form.cleaned_data['phone']
                 if phone and (phone != up.phone):
@@ -155,13 +182,13 @@ def profile_edit(request):
                     up.phone = phone
                     up.is_verified = False
 
-                freq = form.cleaned_data['message_frequency']
-                if freq and (freq != up.message_frequency):
+                freq = int(form.cleaned_data['message_frequency'])
+                if freq != up.message_frequency:
                     print ("Changing message frequency")
                     up.message_frequency = freq
 
                 fe = form.cleaned_data['forecast_email']
-                if fe and (fe != up.forecast_email):
+                if fe != up.forecast_email:
                     print ("Changing forecast email")
                     up.forecast_email = fe
 
@@ -171,7 +198,7 @@ def profile_edit(request):
                     up.set_equipment(eq)
 
                 beta_test = form.cleaned_data['beta_test']
-                if beta_test and (beta_test != up.beta_test):
+                if beta_test != up.beta_test:
                     print ("Changing beta test")
                     up.beta_test = beta_test
 
@@ -182,8 +209,14 @@ def profile_edit(request):
                 url = reverse('profile_view')
                 return HttpResponseRedirect(url)
         else:
+            if up.password_is_set:
+                password = '######'
+            else:
+                password = '(not used)'
+
             form = UserProfileForm(initial =
                     {'name' : up.name,
+                    'password' : password,
                     'phone' : up.phone,
                     'message_frequency' : up.message_frequency,
                     'forecast_email' : up.forecast_email,
@@ -202,7 +235,8 @@ def profile_edit(request):
         return render(request, 'accounts/profile_edit.html', vals)
     else:
         print ("User not authenticated")
-        # User not authenticated
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
 
 def profile_view(request):
     user = request.user
@@ -252,7 +286,8 @@ def profile_view(request):
         return render(request, 'accounts/profile.html', vals)
     else:
         print ("User not authenticated")
-        # User not authenticated
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
 
 def phone_verify_view(request):
     user = request.user
@@ -300,17 +335,37 @@ def phone_verify_view(request):
                         {'phone_number' : phone})
     else:
         print ("User not authenticated")
-        # user not authenticated
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
 
 def user_login(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
+    if request.user.is_authenticated():
+        url = reverse('profile_view')
+        return HttpResponseRedirect(url)
+    elif request.method == 'POST':
+        form = LoginForm(request.POST)
         if form.is_valid():
-            create_and_email_user(form.cleaned_data['email'])
-            url = reverse('accounts.views.frontpage')
-            return HttpResponseRedirect(url)
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            try:
+                up = UserProfile.objects.get(email = email)
+            except:
+                return render(request, 'accounts/no_such_user.html', {'email' : email})
+            else:
+                if password:
+                    user = authenticate(username = up.user.username, password = password)
+                    if user and up.password_is_set:
+                        login(request, user)
+                        url = reverse('profile_view')
+                        return HttpResponseRedirect(url)
+                    else:
+                        return render(request, 'accounts/wrong_password.html', {'email' : email})
+                else:
+                    email_login_user(up.user)
+                    url = reverse('accounts.views.frontpage')
+                    return HttpResponseRedirect(url)
     else:
-        form = SignupForm()
+        form = LoginForm()
     return render(request, 'accounts/login.html', {'form' : form})
 
 def create_user(request):
@@ -336,7 +391,8 @@ def deactivate(request):
         url = reverse('accounts.views.frontpage')
         return HttpResponseRedirect(url)
     else:
-        pass # TODO
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
 
 def reactivate(request):
     user = request.user
@@ -347,7 +403,8 @@ def reactivate(request):
         url = reverse('profile_view')
         return HttpResponseRedirect(url)
     else:
-        pass # TODO
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
 
 ### Old stuff
 

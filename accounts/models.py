@@ -1,6 +1,6 @@
 from django.db import models
 #from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError, CheckboxInput
+from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError, CheckboxInput, PasswordInput
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
@@ -52,6 +52,8 @@ EQUIPMENT_SHORT = {
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
+    password_is_set = models.BooleanField()
+
     magic_login_code = models.IntegerField(db_index = True)
     name = models.CharField(max_length=100, help_text='Name', blank=True)
     email = models.EmailField(help_text='Email')
@@ -79,15 +81,21 @@ class UserProfile(models.Model):
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
 
+class LoginForm(forms.Form):
+    email = forms.CharField(help_text='Email')
+    password = forms.CharField(help_text='Password', widget=PasswordInput(), required = False)
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['placeholder'] = u'Email'
+        self.fields['password'].widget.attrs['placeholder'] = u'Password'
+
 class PhoneVerificationForm(forms.Form):
     verification_code = forms.IntegerField(label='Verification code')
 
 class UserProfileForm(forms.Form):
-    # Immutable fields:
-    #   email
-    #   state
-
     name = forms.CharField(help_text='Name', required = False)
+    password = forms.CharField(help_text='Password', required = False)
     phone = forms.CharField(help_text='Phone', required = False)
     message_frequency = forms.ChoiceField(choices = SENDTEXT_FREQ_CHOICES, widget = RadioSelect(), required = False)
     forecast_email = forms.BooleanField(help_text='Forecast emails in morning', widget = CheckboxInput(), required = False)
