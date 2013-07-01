@@ -37,7 +37,6 @@ def use_central_ac_message(marginal_fuel):
     else:
         msg = "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?" % marginal_fuel
     return Message.use_more_message(msg)
->>>>>>> setting up twilio handling for incoming sms
 
 def use_message(marginal_fuel):
     randint = random.randint(0,2)
