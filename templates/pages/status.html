@@ -89,6 +89,7 @@
         options['height'] = 430;
         options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
         options['legend'] = 'none';
+        options['backgroundColor'] = 'none';
     
         google.visualization.events.addListener(geochart, 'select', function() {
             var selectionIdx = geochart.getSelection()[0].row;
