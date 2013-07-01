@@ -14,11 +14,10 @@ from settings import WATTTIME_PHONE
 def twilio_endpoint(request):
     """Handle incoming twilio messages"""
 
-    params = json.loads(request.body)
-    from_number = params['From']
+    from_number = request.POST.get('From')
     from_number = "%s-%s-%s" % (from_number[2:5], from_number[5:8], from_number[8:12])
-    to_number = params['To']
-    body = params['Body']
+    to_number = request.POST.get('To')
+    body = request.POST.get('Body')
 
     user = User.objects.filter(phone=from_number)[0]
     # get_latest should do a db lookup, not twilio
