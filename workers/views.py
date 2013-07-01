@@ -80,8 +80,7 @@ def demo(request):
                 if msg is None:
                     message.append('No message sent to {}'.format(user.name))
                 else:
-                    message.append('To {}: "{}"'.format(user.name, msg))
-                    # send_text(msg, to=user.phone)
+                    message.append('To {}: "{}"'.format(user.name, msg.msg))
 
     message = '\n'.join(message)
     print (message)

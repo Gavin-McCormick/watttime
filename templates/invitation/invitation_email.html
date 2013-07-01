@@ -14,12 +14,12 @@
 				{% endblocktrans %}
 				{% endif %}
 				{% blocktrans with site.name as sitename and from_user.username|capfirst as from_user %}
-				<div>Congratulations! You have been invited by {{ from_user }} to join
+				<div>You have been invited by {{ from_user }} to join
 				{% endblocktrans %}
 					<a class="brand" href="{{root_url}}">{{site.name}}</a>
 				</div><br>
 				<div>
-					{% trans "Membership is by invitation only, so click the link below to join us now! This link will be valid until {{expiration_date}}" %}<br><br>
+					{% trans "Welcome! Membership is by invitation only, so click the link below to join us now!" %}<br><br>
 					<a class="brand" href="{{invitation_url}}">Get started with {{site.name}}!</a>
 				</div><br>
 				<div>			

@@ -29,7 +29,7 @@ from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS,
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from django.utils.timezone import now
-from workers.models import SMSLog
+from sms_tools.models import TwilioSMSEvent
 from workers.utils import is_good_time_to_message
 
 def run_frequent_tasks():
@@ -102,26 +102,18 @@ def send_text_notifications(bas):
                                           percent_coals[ba_ind],
                                           marginal_fuels[ba_ind])
 
-        if msg is None:
-            debug('      active, verified user, but not right fuel now')
-            continue
-
-        if len(msg) >= 150:
-            debug('      Failed to send message "{}" as it is too long.'.format(msg))
-            continue
-
         # send notification
-        debug('      sending message!')
-        # send text
-        send_text(msg, to=user.phone)
+        if msg:
+            if len(msg) >= 150:
+                debug('      sending message!')
+                # send text
+                send_text(msg, to=user)
 
-        # save to log
-        logitem = SMSLog(user=user,
-                         utctime=now(),
-                         localtime=localtime,
-                         message=msg)
-        logitem.save()
-        notified_users.append(user.userid)
+                notified_users.append(user.userid)
+            else:
+                debug('      Failed to send message "{}" as it is too long.'.format(msg))
+        else:
+            debug('      active, verified user, but not right fuel now')
 
     # return
     return notified_users

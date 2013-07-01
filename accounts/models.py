@@ -62,9 +62,6 @@ class User(models.Model):
         #else:
             #return now()
 
-    def twilio_format_phone(self):
-        return '+1'+self.phone.replace('-', '')
-
 
 SENDTEXT_FREQ_CHOICES = (
     (1, 'Several times per day'),

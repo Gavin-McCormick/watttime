@@ -6,10 +6,9 @@ from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, U
 from django.core.urlresolvers import reverse
 from windfriendly.models import NE
 from windfriendly.parsers import NEParser
-import twilio_utils
 import random
 import pytz
-from accounts.messages import verify_phone_message, email_signup_message, account_activated_message, account_inactivated_message, intro_message
+from accounts import messages
 from accounts.twilio_utils import send_text
 from django.utils.timezone import now
 from django.core.mail import send_mail
@@ -52,7 +51,7 @@ def profile_create(request):
 
             # send email
             send_mail('Welcome to WattTime',
-                      email_signup_message(new_user.userid, new_user.name),
+                      messages.email_signup_message(new_user.userid, new_user.name).msg,
                       EMAIL_HOST_USER,
                       [new_user.email],
                       fail_silently=False)
@@ -139,9 +138,9 @@ def profile_alpha(request, userid):
 
                 # send email
                 send_mail('WattTime account activated',
-                          account_activated_message(user.userid,
+                          messages.account_activated_message(user.userid,
                                                     user.name,
-                                                    user.phone),
+                                                    user.phone).msg,
                           EMAIL_HOST_USER,
                           [user.email],
                           fail_silently=False)
@@ -165,8 +164,8 @@ def send_verification_code(user):
     for c in user.phone:
         if c in '0123456789':
             phonenumber += str(c)
-    msg = verify_phone_message(verification_code)
-    sent = twilio_utils.send_text(msg, phonenumber)
+    msg = messages.verify_phone_message(verification_code)
+    sent = twilio_utils.send_text(msg, user)
     print sent
 
 def phone_verify(request, userid):
@@ -204,15 +203,15 @@ def phone_verify(request, userid):
 
                 # send email
                 send_mail('WattTime account activated',
-                          account_activated_message(user.userid,
+                          messages.account_activated_message(user.userid,
                                                     user.name,
-                                                    user.phone),
+                                                    user.phone).msg,
                           EMAIL_HOST_USER,
                           [user.email],
                           fail_silently=False)
 
                 # send text
-                msg = intro_message()
+                msg = messages.intro_message()
                 send_text(msg, to=user.phone)
 
                 # redirect
@@ -263,9 +262,9 @@ def unsubscribe(request, phone):
 
                     # send email
                     send_mail('WattTime account inactivated',
-                              account_inactivated_message(user.userid,
-                                                          user.name,
-                                                          user.phone),
+                              messages.account_inactivated_message(user.userid,
+                                                                  user.name,
+                                                                  user.phone).msg,
                               EMAIL_HOST_USER,
                               [user.email],
                               fail_silently=False)
