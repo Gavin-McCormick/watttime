@@ -29,6 +29,14 @@ def shut_down(request):
 
 def profile_create(request):
     last_url = request.get_full_path()[-8:]
+    print (dir(request))
+    print (type(request.user))
+    print (repr(request.user))
+    print (dir(request.user))
+    print (request.user.is_authenticated())
+    print (request.user.is_active)
+    print (request.user.id)
+    print (request.user.__class__)
     print last_url
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:
