@@ -122,6 +122,11 @@ urlpatterns +=  patterns('windfriendly.views',
         'debug_messages', name='debug_messages'),
 )
 
+# twilio
+urlpatterns += patterns('sms_tools.views',
+    url(r'twilio_endpoint', 'twilio_endpoint', name='twilio_endpoint'),
+)
+
 # static
 urlpatterns += patterns('',
                         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT }),

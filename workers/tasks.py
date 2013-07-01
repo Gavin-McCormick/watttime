@@ -29,7 +29,7 @@ from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS,
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from django.utils.timezone import now
-from workers.models import SMSLog
+from sms_tools.models import TwilioSMSEvent
 from workers.utils import is_good_time_to_message
 
 def run_frequent_tasks():
@@ -106,14 +106,8 @@ def send_text_notifications(bas):
         if msg:
             debug('      sending message!')
             # send text
-            send_text(msg, to=user.phone)
+            send_text(msg, to=user)
 
-            # save to log
-            logitem = SMSLog(user=user,
-                             utctime=now(),
-                             localtime=localtime,
-                             message=msg)
-            logitem.save()
             notified_users.append(user.userid)
             
         else:

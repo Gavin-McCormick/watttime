@@ -1,6 +1,5 @@
 #!/bin/bash
 
-pip install south
 python manage.py syncdb
 python manage.py migrate accounts 0001 --fake
 python manage.py migrate windfriendly 0001 --fake

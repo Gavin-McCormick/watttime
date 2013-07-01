@@ -18,7 +18,7 @@
 from windfriendly.models import debug
 from datetime import datetime, timedelta, date
 from accounts.models import SENDTEXT_TIMEDELTAS
-from workers.models import SMSLog
+from sms_tools.models import TwilioSMSEvent
 from random import randint
 
 
@@ -34,8 +34,9 @@ def is_good_time_to_message(timestamp, userid, user_profile,
 
     # has the user been texted recently?
     text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
-    if SMSLog.objects.filter(user=userid).exists():
-        dt = (timestamp - SMSLog.objects.filter(user=userid).latest('utctime').localtime).total_seconds()
+    user_sms_logs = TwilioSMSEvent.objects.filter(user=userid)
+    if user_sms_logs.exists():
+        dt = (timestamp - user_sms_logs.latest('created_at').created_at).total_seconds()
 
         is_recently_notified = dt < text_period_secs / 2
     else:
