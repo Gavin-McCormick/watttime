@@ -5,8 +5,9 @@
 
 {% load staticfiles %}
 {% load url from future %}
-{% load socialaccount %}
-{% providers_media_js %}
+<!-- The following is used for Facebook Connect and was removed by Gavin on Sunday
+{ % load socialaccount % }
+{ % providers_media_js % }  [endif]-->
 
 <head>
 
@@ -125,7 +126,8 @@
 								<a href="{% url 'contact' %}">CONTACT</a>
 
 							</li>
-							
+			
+				
 {% if user.is_authenticated %}
 
 							<li>
@@ -142,18 +144,17 @@
 							</li>
 {% endif %}
 
-<!-- Gavin removed the following more complicated log in / sign up / log out snippet which was put there by Kevin:
-{% if user.is_authenticated %}
+<!-- The following is used with allauth and was removed by Gavin on Sunday
+{ % if user.is_authenticated % }
 							<li>
 								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
 							</li						
-{% else %}						
+{ % else % }						
 							<li>							
 								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>								
 							</li>							
-{% endif %}
-<-->
-						
+{ % endif % }
+end -->						
 						</ul>
 						
 						<div class="header-main">
@@ -225,7 +226,7 @@
 
 				<li class="facebook">
 
-					<a href="https://www.facebook.com/watt.time">Facebook</a>
+					<a href="https://www.facebook.com/wattTimeApp">Facebook</a>
 
 				</li>
 

@@ -180,7 +180,7 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.vimeo',
 #    'allauth.socialaccount.providers.weibo',
     'south',
-    'invitation',
+#    'invitation',
     'registration',
 )
 
