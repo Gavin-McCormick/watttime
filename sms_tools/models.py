@@ -1,7 +1,8 @@
 from django.db import models
 from django_localflavor_us.models import PhoneNumberField, USStateField
 
-from accounts.models import User
+#from accounts.models import User
+from django.contrib.auth.models import User
 from accounts.messages import Message
 
 class TwilioSMSEvent(models.Model):

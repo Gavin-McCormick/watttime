@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+
+<h2>Your phone number is already verified</h2>
+<p>Your phone number, {{ phone_number }}, has already been confirmed by WattTime as belonging to you. <a href = "{% url 'profile_view' %}">Return</a> to your profile page to view and edit your other settings.</p>
+
+{% endblock %}

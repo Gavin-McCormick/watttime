@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+
+<h2>Welcome to WattTime!</h2>
+<p>Welcome to the California beta of WattTime! Give us your email address and we will do stuff with it. Bwahaha.</p>
+<p style="color:#ffff33">WattTime works by sending occasional sms updates about the status of your electricity source directly to your phone.</p>
+<h4>Want to participate? To begin, please enter your email address.</h4>
+
+<form action="{% url 'create_user' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+    <p class="fieldWrapper">
+        {{ form.email.errors }}
+        {{ form.email }}
+    </p>
+    <input type="submit" name="sign_up" value="Join!" />
+</form>
+
+{% endblock %}

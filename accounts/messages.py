@@ -20,9 +20,11 @@ class Message:
     def use_less_message(cls, msg):
         return cls(Message.USE_LESS, msg)
 
+    @classmethod
     def confirmation_message(cls, msg):
         return cls(Message.CONFIRMATION, msg)
 
+    @classmethod
     def information_message(cls, msg):
         return cls(Message.INFORMATION, msg)
 
@@ -118,6 +120,12 @@ def account_inactivated_message(userid, name, phone):
              "the team at WattTime"
              ]
     return Message.information("\n".join(lines))
+
+def invite_message(email, url):
+    lines = ["Hi {email},",
+            "Welcome to WattTime!",
+            "Go to {url} to join us."]
+    return ("\n".join(lines)).format(email = email, url = url)
 
 def alpha_completed(name):
     lines = ["Hi {name},",

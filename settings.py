@@ -40,6 +40,10 @@ EMAIL_HOST_PASSWORD = '233fwef43'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# This allows one to call .get_profile() on a User object to retrieve the
+# corresponding UserProfile object, if it exists.
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -180,7 +184,7 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.vimeo',
 #    'allauth.socialaccount.providers.weibo',
     'south',
-    'invitation',
+    # 'invitation',
     'registration',
 )
 

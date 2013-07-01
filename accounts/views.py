@@ -2,8 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
-from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
+# from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
+from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
+from django_localflavor_us.us_states import STATE_CHOICES
 from windfriendly.models import NE
 from windfriendly.parsers import NEParser
 import random
@@ -12,8 +16,299 @@ from accounts import messages
 from accounts.twilio_utils import send_text
 from django.utils.timezone import now
 from django.core.mail import send_mail
+from django.http import HttpResponse, HttpResponseRedirect
 from settings import EMAIL_HOST_USER
+import accounts.twilio_utils
 #from multi_choice import StringListField
+
+def new_user_name():
+    uid = str(random.randint(10000000, 99999999))
+    try:
+        User.objects.get(username=uid)
+    except:
+        return uid
+    else:
+        return new_user_name()
+
+def new_phone_verification_number():
+    return random.randint(100000, 999999)
+
+def create_new_user(email):
+    if len(email) >= 30:
+        print ("Email address {} too long, aborting user creation.".format(email))
+        return None
+
+    ups = UserProfile.objects.filter(email = email)
+    if len(ups) > 0:
+        print (len(ups))
+        print ("User(s) with email {} already exists, aborting user creation!".
+                format(email))
+        return None
+
+
+    username = new_user_name()
+    user = User.objects.create_user(username, email = email, password = None)
+    user.is_active = True
+    user.is_staff = False
+    user.is_superuser = False
+    # The following fields are fields we store in the UserProfile object instead
+    #   user.first_name
+    #   user.last_name
+    #   user.email
+    user.save()
+
+    up = UserProfile()
+    up.user = user
+    up.magic_login_code = random.randint(100000000, 999999999)
+    # If the user doesn't specify a name, email is used as the default
+    up.name = email
+    up.email = email
+    up.phone = ''
+    up.verification_code = new_phone_verification_number()
+    up.is_verified = False
+    up.state = 'CA'
+    up.message_frequency = 1
+
+    # In the future, we should separate phone-number, etc., into a separate model
+
+    up.save()
+
+    print ("User {} created.".format(email))
+    return user
+
+def create_and_email_user(email):
+    user = create_new_user(email)
+    magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
+            user.get_profile().magic_login_code)
+    if user:
+        send_mail('Welcome to WattTime',
+                messages.invite_message(email, magic_url),
+                EMAIL_HOST_USER,
+                [email])
+
+def http_invite(request, email):
+    create_and_email_user(email)
+    return HttpResponse("Sent email to {}".format(email), "application/json")
+
+def magic_login(request, magic_login_code):
+    magic_login_code = int(magic_login_code)
+
+    # Is there a user with that login code?
+    try:
+        up = UserProfile.objects.get(magic_login_code = magic_login_code)
+    except:
+        # No such user.
+        print ("No user with login code {}".format(magic_login_code))
+    else:
+        # This is necessary because one cannot login without authenticating
+        user = up.user
+        pw = str(random.randint(1000000000, 9999999999))
+        user.set_password(pw)
+        user.save()
+
+        # 'authenticate' attaches a 'backend' object to the returned user,
+        # which is necessary for the login process
+        user = authenticate(username = user.username, password = pw)
+
+        login(request, user)
+        print ("Logged in user {}".format(up.name))
+        url = reverse('profile_view')
+        return HttpResponseRedirect(url)
+
+
+# Returns True if code sent successfully, otherwise False
+def send_verification_code(user):
+    up = user.get_profile()
+    code = new_phone_verification_number()
+    up.verification_code = code
+    up.save()
+    print ("Sending {} verification code {:d}".format(up.name, code))
+    msg = messages.verify_phone_message(code)
+    sent = accounts.twilio_utils.send_text(msg, up)
+    if sent:
+        print ("Send successful.")
+    else:
+        print ("Send unsuccessful.")
+    return sent
+
+def profile_edit(request):
+    user = request.user
+    if user.is_authenticated():
+        up = user.get_profile()
+
+        if request.method == 'POST':
+            form = UserProfileForm(request.POST)
+            if form.is_valid():
+                # User posted changes to profile
+
+                name = form.cleaned_data['name']
+                if name and len(name) < 100 and name != up.name:
+                    print ("Changing name")
+                    up.name = name
+
+                # TODO -- permit changing email addresses
+                # (requires confirmation)
+
+                phone = form.cleaned_data['phone']
+                if phone and (phone != up.phone):
+                    print ("Changing phone")
+                    up.phone = phone
+                    up.is_verified = False
+
+                freq = form.cleaned_data['message_frequency']
+                if freq and (freq != up.message_frequency):
+                    print ("Changing message frequency")
+                    up.message_frequency = freq
+
+                up.save()
+
+                print ("Saved profile information")
+
+                url = reverse('profile_view')
+                return HttpResponseRedirect(url)
+        else:
+            form = UserProfileForm(initial =
+                    {'name' : up.name, 'phone' : up.phone})
+            # User is viewing profile information
+            print ("Display profile information")
+
+        vals = {
+                'name' : up.name,
+                'email' : up.email,
+                'state' : up.state,
+                'form' : form,
+                }
+
+        return render(request, 'accounts/profile_edit.html', vals)
+    else:
+        print ("User not authenticated")
+        # User not authenticated
+
+def profile_view(request):
+    user = request.user
+    if user.is_authenticated():
+        up = user.get_profile()
+
+        if up.phone:
+            if up.is_verified:
+                phone = up.phone + ' (verified)'
+            else:
+                phone = up.phone + ' (not verified)'
+        else:
+            phone = '(none)'
+
+        vals = {
+                'name' : up.name,
+                'email' : up.email,
+                'state' : up.state,
+                'phone_number' : phone,
+                'message_frequency' : up.message_frequency,
+                'phone_verified' : up.is_verified,
+                'phone_blank' : (len(up.phone) == 0),
+                'deactivated' : (not user.is_active)
+                }
+
+        return render(request, 'accounts/profile.html', vals)
+    else:
+        print ("User not authenticated")
+        # User not authenticated
+
+def phone_verify_view(request):
+    user = request.user
+
+    if user.is_authenticated():
+        up = user.get_profile()
+        phone = up.phone
+
+        if up.is_verified:
+            # Phone already verified
+            print ("Already verified")
+            return render(request, 'accounts/phone_already_verified.html',
+                    {'phone_number' : phone})
+
+        elif request.method == 'POST':
+            # User posts a verification code, we confirm or not
+            code = int(request.POST['verification_code'])
+            print ("Comparing verification codes {:d} (true) vs {:d} (claimed)".
+                    format(up.verification_code, code))
+            if code == up.verification_code:
+                up.is_verified = True
+                up.save()
+                # Success
+                print ("Success")
+                url = reverse('profile_view')
+                return HttpResponseRedirect(url)
+            else:
+                # Failure
+                print ("Failure")
+                form = PhoneVerificationForm()
+                return render(request, 'accounts/phone_verification_wrong.html',
+                        {'phone_number' : phone, 'form' : form})
+        else:
+            # Send a verification code
+            # TODO first check if phone number hasn't been set yet.
+            sent = send_verification_code(user)
+            if sent:
+                form = PhoneVerificationForm()
+                print ("Sent verification code")
+                return render(request, 'accounts/phone_verify.html',
+                        {'phone_number' : phone, 'form' : form})
+            else:
+                print ("Unable to send verification code to phone number")
+                return render(request, 'accounts/phone_bad_number.html',
+                        {'phone_number' : phone})
+    else:
+        print ("User not authenticated")
+        # user not authenticated
+
+def user_login(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            create_and_email_user(form.cleaned_data['email'])
+            url = reverse('accounts.views.frontpage')
+            return HttpResponseRedirect(url)
+    else:
+        form = SignupForm()
+    return render(request, 'accounts/login.html', {'form' : form})
+
+def create_user(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            create_and_email_user(form.cleaned_data['email'])
+            url = reverse('signed_up')
+            return HttpResponseRedirect(url)
+    else:
+        form = SignupForm()
+    return render(request, 'accounts/signup.html', {'form' : form})
+
+def frontpage(request):
+    return render(request, 'shut_down.html')
+
+def deactivate(request):
+    user = request.user
+    if user.is_authenticated():
+        print ("Deactivating!")
+        user.is_active = False
+        user.save()
+        url = reverse('accounts.views.frontpage')
+        return HttpResponseRedirect(url)
+    else:
+        pass # TODO
+
+def reactivate(request):
+    user = request.user
+    if user.is_authenticated():
+        print ("Reactivating!")
+        user.is_active = True
+        user.save()
+        url = reverse('profile_view')
+        return HttpResponseRedirect(url)
+    else:
+        pass # TODO
+
+### Old stuff
 
 def choose_new_id():
     userid = random.randint(10000000, 99999999)
@@ -29,13 +324,16 @@ def shut_down(request):
 def profile_create(request):
     last_url = request.get_full_path()[-8:]
     print (dir(request))
-    print (type(request.user))
-    print (repr(request.user))
-    print (dir(request.user))
-    print (request.user.is_authenticated())
-    print (request.user.is_active)
-    print (request.user.id)
-    print (request.user.__class__)
+    print (type(request.session))
+    print (repr(request.session))
+    print (dir(request.session))
+    # if request.user and request.user.is_authenticated():
+        # print ("Saving!", request.user.email)
+        # request.user.save()
+    # print (request.user.is_authenticated())
+    # print (request.user.is_active)
+    # print (request.user.id)
+    # print (request.user.__class__)
     print last_url
     # process submitted form
     if request.method == 'POST' and 'sign_up' in request.POST:
@@ -156,17 +454,6 @@ def profile_alpha(request, userid):
             'form': form,
             'userid': userid,
     })
-
-def send_verification_code(user):
-    verification_code = user.verification_code
-    print ("Sending verification code: {:d}".format(verification_code))
-    phonenumber = '+1'
-    for c in user.phone:
-        if c in '0123456789':
-            phonenumber += str(c)
-    msg = messages.verify_phone_message(verification_code)
-    sent = twilio_utils.send_text(msg, user)
-    print sent
 
 def phone_verify(request, userid):
     user = get_object_or_404(User,pk=userid)

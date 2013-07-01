@@ -4,7 +4,8 @@
 {% block content %}
 
 <h2>Verify your phone number</h2>
-<p>In a few minutes a text message will be sent to your phone number, {{ phone_number }}, with a verification code: please enter the 6 digit verification code below to confirm it is your number. To change your number, return to <a href="{% url 'profile_view' %}">your profile</a>; if you do not receive the text message within a few minutes, reload this page to send another message.</p>
+<p>The verification code was incorrect, enter the correct 6 digit code below or reload this page to resend the verification code to your phone, {{ phone_number }}.</p>
+<p>To change your number, return to <a href="{% url 'profile_view' %}">your profile</a>.</p>
 
 <form action="{% url 'phone_verify_view' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
         {% csrf_token %}
@@ -14,7 +15,5 @@
         <!-- <input type="int" name="code"> -->
        <input type="submit" name="phone_verify" value="Verify   " /></p>
 </form>
-
-<p>After verifying your phone, you will be returned to your profile.</p>
 
 {% endblock %}

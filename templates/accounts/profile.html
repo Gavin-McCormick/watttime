@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+<h2>Profile details</h2><br>
+
+<p>Hi {{ name }}, here are the preferences we have for your account. You may edit them <a href="{% url 'profile_edit' %}">here</a>.</p>
+
+{% if deactivated %}
+<p>Your account is currently deactivated, and you will not receive any emails or text messages from us. You can <a href="{% url 'reactivate' %}">reactivate</a> your account at any time.</p>
+{% endif %}
+
+<br>
+
+<center>
+<table class="well" style="background-color:#666;">
+    <tr>
+        <td>
+            <h4>Name</h4>
+        </td>
+        <td>
+            <h4>{{ name }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Email address</h4>
+        </td>
+        <td>
+            <h4>{{ email }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>State</h4>
+        </td>
+        <td>
+            <h4>{{ state }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Phone number</h4>
+        </td>
+        <td>
+            <h4>{{ phone_number }}</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Message frequency</h4>
+        </td>
+        <td>
+            <h4>{{ message_frequency }}</h4>
+        </td>
+    </tr>
+</table>
+</center>
+
+{% if deactivated %}
+{% else %}
+    {% if phone_verified %}
+    <p> Your phone number has been verified, and you will receive text messages about the eletricity supply for your state with the frequency you specified.</p>
+    {% else %}
+        {% if phone_blank %}
+        <p> If you provide your phone number and then <a href="{% url 'phone_verify_view' %}">verify it</a>, you will receive text messages about the eletricity supply for your state with the frequency you specify.</p>
+        {% else %}
+        <p> Your phone number has not been verified yet. If you <a href="{% url 'phone_verify_view' %}">verify your phone number</a>, you will receive text messages about the electricity supply for your state with the frequency you specified.</p>
+        {% endif %}
+    {% endif %}
+
+    <p> If you wish to stop receiving any emails or text messages from us, you may <a href="{% url 'deactivate' %}">deactivate</a> your account at any time.</p>
+{% endif %}
+
+
+<!--
+<form action="{ % url 'profile_view' %}" method="post" class="watttime-form sign-up-form">{ % csrf_token %}
+    <p class="fieldWrapper">
+        { { form.name.errors }}
+        <label> Name: </label>
+        { { form.name }}
+    </p>
+    <p class="fieldWrapper">
+        { { form.password.errors }}
+        <label> Password: </label>
+        { { form.password }}
+        <small>(leave blank to not change password)</small>
+    </p>
+    <p class="fieldWrapper">
+        { { form.phone.errors }}
+        <label> Phone: </label>
+        { { form.phone }}
+    </p>
+    <ul>
+<input type="submit" value="Save " />
+</form>
+-->
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}WattTime Alpha{% endblock %}
+
+{% block content %}
+
+<h2>Malformed phone number</h2>
+<p>We were unable to send a text message to your phone number, "{{ phone_number }}". Return to <a href="{% url 'profile_view' %}">your profile</a> to change your phone number. Thanks!</p>
+
+{% endblock %}

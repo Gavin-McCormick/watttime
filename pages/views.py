@@ -10,21 +10,24 @@ from windfriendly.models import NE, BPA, CAISO, MARGINAL_FUELS
 from windfriendly.parsers import NEParser, BPAParser, CAISOParser
 from settings import EMAIL_HOST_USER
 
+def signed_up(request):
+    return render(request, 'pages/signed_up.html')
+
 def faq(request):
 #	 return render(request, 'pages/placeholder.html', {'title': 'FAQ'})
-	return render(request, 'pages/faq.html')
+    return render(request, 'pages/faq.html')
 
 def about_us(request):
  #	 return render(request, 'pages/placeholder.html', {'title': 'About WattTime'})
-	return render(request, 'pages/about_us.html')
+    return render(request, 'pages/about_us.html')
 
 def how_it_works(request):
 #	 return render(request, 'pages/placeholder.html', {'title': 'How WattTime works'})
-	return render(request, 'pages/how_it_works.html')
+    return render(request, 'pages/how_it_works.html')
 
 def terms_of_service(request):
 #	 return render(request, 'pages/placeholder.html', {'title': 'Terms of Service'})
-	return render(request, 'pages/terms_of_service.html')
+    return render(request, 'pages/terms_of_service.html')
 
 def BPA_status(request):
 #	 return render(request, 'pages/placeholder.html', {'title': 'New England current status'})

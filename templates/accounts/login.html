@@ -1,3 +1,17 @@
+{% extends "base.html" %}
+{% block title %}WattTime Alpha{% endblock %}
 
-{% load socialaccount %}
-<a href="{% provider_login_url "facebook" method="oauth2" %}">Facebook OAuth2</a>
+{% block content %}
+
+<h2>Welcome to WattTime!</h2>
+<p>To log in, enter your email address below, an you will receive an email from us with a link to log in to your account.</p>
+
+<form action="{% url 'login' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+    <p class="fieldWrapper">
+        {{ form.email.errors }}
+        {{ form.email }}
+    </p>
+    <input type="submit" name="sign_up" value="Join!" />
+</form>
+
+{% endblock %}

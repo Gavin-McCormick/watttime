@@ -6,24 +6,25 @@ from windfriendly.models import debug
 from sms_tools.models import TwilioSMSEvent
 from accounts.messages import Message
 
-def send_text(msg, to):
+def send_text(msg, up):
     """ Send a text message to a phone number.
         Return success status (True or False).
     """
     try:
         client = TwilioRestClient(account=TWILIO_ACCOUNT_SID,
                                   token=TWILIO_AUTH_TOKEN)
-        c = client.sms.messages.create(to=to.phone,
+        c = client.sms.messages.create(to=up.phone,
                                    from_=WATTTIME_PHONE,
                                    body=msg.msg)
-        TwilioSMSEvent(user=to,
+        TwilioSMSEvent(user=up.user,
                        msg_type=msg.msg_type,
-                       to_number=to.phone,
+                       to_number=up.phone,
                        from_number=WATTTIME_PHONE,
                        body=msg.msg).save()
-                       
-        debug("texted '{}' to {}".format(msg, str(to)))
+
+        debug("texted '{}' to {}".format(msg, str(up.name)))
         return True
     except:
-        debug("failed to text '{}' to {}".format(msg, str(to)))
+        print ("Faild message", up.phone, WATTTIME_PHONE, msg.msg)
+        debug("failed to text '{}' to {}".format(msg, str(up.name)))
         return False
