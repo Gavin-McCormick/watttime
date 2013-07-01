@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from twilio import twiml
 
-from accounts.twilio_utils import get_latest_sent_text
 from accounts.models import User
 from sms_tools.models import TwilioSMSEvent
 from settings import WATTTIME_PHONE
