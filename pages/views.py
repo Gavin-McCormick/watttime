@@ -6,8 +6,8 @@ from django import forms
 from django.forms.widgets import *
 from django.core.mail import send_mail, BadHeaderError
 from django.core.urlresolvers import reverse
-from windfriendly.models import NE, MARGINAL_FUELS
-from windfriendly.parsers import NEParser
+from windfriendly.models import NE, BPA, CAISO, MARGINAL_FUELS
+from windfriendly.parsers import NEParser, BPAParser, CAISOParser
 from settings import EMAIL_HOST_USER
 
 def faq(request):
@@ -27,19 +27,53 @@ def terms_of_service(request):
 	return render(request, 'pages/terms_of_service.html')
 
 def BPA_status(request):
-#	 return render(request, 'pages/placeholder.html', {'title': 'Pacific Northwest current status'})
+#	 return render(request, 'pages/placeholder.html', {'title': 'New England current status'})
+	# get current data
+	if BPA.objects.count() == 0:
+		parser = BPAParser()
+		parser.update()
+	datum = BPA.latest_point()	
+	print BPA.latest_point(), BPA.latest_date()
+	percent_green = datum.fraction_green() * 100.0
+	marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
 	
 	 # compose message
-	message = "Hi Anna! This is as far as I got. Couldn't figure out how to pull BPA data after all. :-/ Gavin"
-	
+	greenery = str(int(percent_green + 0.5))
+	if percent_green > 2:
+		message = "GREEN!"
+	elif percent_green > 30:
+		message = "Super GREEN!"
+	else:
+		message = "Nope."
+	#if marginal_fuel in ['Coal', 'Oil']:
+		#message = "Right now in the Pacific Northwest {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a great time to SAVE energy."
+	#elif marginal_fuel in ['Natural Gas', 'Refuse', 'Mixed']:
+		#message = "Right now in the Pacific Northwest {p} percent of all power is coming from renewable energy. Right now any new power that's needed will come from {fuel}. That means this is an AVERAGE time to use energy."
+	#else:
+		#message = "Right now in the Pacific Northwest {p} percent of all power is coming from renewable energy."
+	message = message.format(p = greenery, fuel = marginal_fuel.lower())
 	return render(request, 'pages/BPA_status.html', {'marginal_message' : message})
 		
 def CA_status(request):
-#	 return render(request, 'pages/placeholder.html', {'title': 'California current status'})
+#	 return render(request, 'pages/placeholder.html', {'title': 'New England current status'})
+	# get current data
+	if CAISO.objects.count() == 0:
+		parser = CAISOParser()
+		parser.update()
+	datum = CAISO.latest_point()	
+	print CAISO.latest_point(), CAISO.latest_date()
+	percent_green = datum.fraction_green() * 100.0
+	marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
 	
 	 # compose message
-	message = "Hi Anna! This is as far as I got. Couldn't figure out how to pull CAISO data after all. :-/ Gavin"
-	
+	greenery = str(int(percent_green + 0.5))
+	if marginal_fuel in ['Coal', 'Oil']:
+		message = "Right now in California {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a great time to SAVE energy."
+	elif marginal_fuel in ['Natural Gas', 'Refuse', 'Mixed']:
+		message = "Right now in California {p} percent of all power is coming from renewable energy. Right now any new power that's needed will come from {fuel}. That means this is an AVERAGE time to use energy."
+	else:
+		message = "Right now in California {p} percent of all power is coming from renewable energy."
+	message = message.format(p = greenery, fuel = marginal_fuel.lower())
 	return render(request, 'pages/CA_status.html', {'marginal_message' : message})
 		
 def NE_status(request):
@@ -55,14 +89,12 @@ def NE_status(request):
 	
 	 # compose message
 	greenery = str(int(percent_green + 0.5))
-	if marginal_fuel == 'None':
-		marginal_fuel = 'Mixed'
 	if marginal_fuel in ['Coal', 'Oil']:
 		message = "Right now in New England {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a great time to SAVE energy."
 	elif marginal_fuel in ['Natural Gas', 'Refuse', 'Mixed']:
 		message = "Right now in New England {p} percent of all power is coming from renewable energy. Right now any new power that's needed will come from {fuel}. That means this is an AVERAGE time to use energy."
 	else:
-		message = "Right now in New England {p} percent of all power is coming from renewable energy. You can change this number! Right now any new power that's needed will come from {fuel}. That means this is a fine time to use MORE power."
+		message = "Right now in New England {p} percent of all power is coming from renewable energy."
 	message = message.format(p = greenery, fuel = marginal_fuel.lower())
 	return render(request, 'pages/NE_status.html', {'marginal_message' : message})
 
