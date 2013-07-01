@@ -19,6 +19,7 @@ SENDTEXT_FREQ_CHOICES = (
     (2, 'About once a day'),
     (3, 'About once a week'),
     )
+SENDTEXT_FREQ = dict(SENDTEXT_FREQ_CHOICES)
 
 #     furnace = models.IntegerField('Furnace type',
 #                                   blank=False, default=3,
@@ -59,36 +60,6 @@ class UserProfileForm(forms.Form):
                     # 'phone' :,
                     'message_frequency' : RadioSelect()
                 }
-
-# class UserPhoneForm(ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ('phone',)
-# 
-#     def __init__(self, *args, **kwargs):
-#         super(UserPhoneForm, self).__init__(*args, **kwargs)
-#         self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
-# 
-#     def clean_phone(self):
-#         # this should probably be done using User unique_together
-#         email = self.instance.email
-#         phone = self.cleaned_data['phone']
-#         preexisting_users =  User.objects.filter(phone=phone, email=email)
-#         if preexisting_users.count() > 0:
-#             userid = preexisting_users[0].userid
-#             msg = "User %d already exists with email %s and phone %s.\n" % (userid,
-#                                                                           email,
-#                                                                           phone)
-#             if preexisting_users[0].is_verified:
-#                 if preexisting_users[0].is_active:
-#                     msg += "Edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
-#                 else:
-#                     msg += "Reactivate SMS notifications and edit profile: http://wattTime.herokuapp.com/profile/%s" % userid
-#             else:
-#                 msg += "Verify phone: http://wattTime.herokuapp.com/phone_verify/%s" % userid
-#             raise ValidationError(msg)
-#         else:
-#             return phone
 
 # class OldUser(models.Model):
 #     # name

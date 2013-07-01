@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 # from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
-from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm
+from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
@@ -168,7 +168,8 @@ def profile_edit(request):
                 return HttpResponseRedirect(url)
         else:
             form = UserProfileForm(initial =
-                    {'name' : up.name, 'phone' : up.phone})
+                    {'name' : up.name, 'phone' : up.phone,
+                        'message_frequency' : up.message_frequency})
             # User is viewing profile information
             print ("Display profile information")
 
@@ -197,12 +198,14 @@ def profile_view(request):
         else:
             phone = '(none)'
 
+        freq = SENDTEXT_FREQ[up.message_frequency]
+
         vals = {
                 'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
                 'phone_number' : phone,
-                'message_frequency' : up.message_frequency,
+                'message_frequency' : freq,
                 'phone_verified' : up.is_verified,
                 'phone_blank' : (len(up.phone) == 0),
                 'deactivated' : (not user.is_active)
