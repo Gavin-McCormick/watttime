@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}WattTime Alpha{% endblock %}
+{% block title %}WattTime Beta{% endblock %}
 
 {% block content %}
 
 <h2>Verify your phone number</h2>
-<p>The verification code was incorrect, enter the correct 6 digit code below or reload this page to resend the verification code to your phone, {{ phone_number }}.</p>
+<p>Verification code does not match! You can re-renter the code below, or reload this page and we can resend it to your phone, {{ phone_number }}.</p>
 <p>To change your number, return to <a href="{% url 'profile_view' %}">your profile</a>.</p>
 
 <form action="{% url 'phone_verify_view' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">

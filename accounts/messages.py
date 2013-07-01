@@ -123,8 +123,9 @@ def account_inactivated_message(userid, name, phone):
 
 def invite_message(email, url):
     lines = ["Hi {email},",
-            "Welcome to WattTime!",
-            "Go to {url} to join us."]
+            "Welcome to the WattTime beta test!",
+            "To join us, head to {url} to set up your account.",
+            "We look forward to helping you begin to take control of your own energy choices!"]
     return ("\n".join(lines)).format(email = email, url = url)
 
 def resend_login_message(name, url):

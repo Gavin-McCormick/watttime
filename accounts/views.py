@@ -380,7 +380,8 @@ def create_user(request):
     return render(request, 'accounts/signup.html', {'form' : form})
 
 def frontpage(request):
-    return render(request, 'shut_down.html')
+    return create_user(request)
+    # return render(request, 'shut_down.html')
 
 def deactivate(request):
     user = request.user

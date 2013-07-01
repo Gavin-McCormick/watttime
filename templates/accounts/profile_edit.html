@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}WattTime Alpha{% endblock %}
+{% block title %}WattTime Beta{% endblock %}
 
 {% block content %}
 <h2>Profile details</h2><br>
@@ -97,28 +97,5 @@
 </form>
 
 <p>If you edit your phone number, you will have to verify the new phone number before you will be able to receive text messages from us. </p>
-
-<!--
-<form action="{ % url 'profile_view' %}" method="post" class="watttime-form sign-up-form">{ % csrf_token %}
-    <p class="fieldWrapper">
-        { { form.name.errors }}
-        <label> Name: </label>
-        { { form.name }}
-    </p>
-    <p class="fieldWrapper">
-        { { form.password.errors }}
-        <label> Password: </label>
-        { { form.password }}
-        <small>(leave blank to not change password)</small>
-    </p>
-    <p class="fieldWrapper">
-        { { form.phone.errors }}
-        <label> Phone: </label>
-        { { form.phone }}
-    </p>
-    <ul>
-<input type="submit" value="Save " />
-</form>
--->
 
 {% endblock %}
