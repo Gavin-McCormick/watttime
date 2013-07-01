@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 # from accounts.models import NewUserForm, User, UserProfileForm, UserPhoneForm, UserVerificationForm
-from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ_SHORT, EQUIPMENT_SHORT, LoginForm
+from accounts.models import UserProfile, PhoneVerificationForm, UserProfileForm, SignupForm, SENDTEXT_FREQ_SHORT, EQUIPMENT_SHORT, LoginForm, UserProfileFirstForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
@@ -133,7 +133,7 @@ def magic_login(request, magic_login_code):
 
         login(request, user)
         print ("Logged in user {}".format(up.name))
-        url = reverse('profile_view')
+        url = reverse('profile_first_edit')
         return HttpResponseRedirect(url)
 
 # Returns True if code sent successfully, otherwise False
@@ -233,6 +233,58 @@ def profile_edit(request):
                 }
 
         return render(request, 'accounts/profile_edit.html', vals)
+    else:
+        print ("User not authenticated")
+        url = reverse('user_login')
+        return HttpResponseRedirect(url)
+
+def profile_first_edit(request):
+    user = request.user
+    if user.is_authenticated():
+        up = user.get_profile()
+
+        if request.method == 'POST':
+            form = UserProfileFirstForm(request.POST)
+            if form.is_valid():
+                # User posted changes to profile
+
+                password = form.cleaned_data['password']
+                if password == '' and up.password_is_set:
+                    print ("Removing password")
+                    up.password_is_set = False
+                elif not (password == '(not used)') and (not password == '######'):
+                    print ("Setting password")
+                    up.user.set_password(password)
+                    up.user.save()
+                    up.password_is_set = True
+
+                phone = form.cleaned_data['phone']
+                if phone and (phone != up.phone):
+                    print ("Changing phone")
+                    up.phone = phone
+                    up.is_verified = False
+
+                up.save()
+
+                print ("Saved profile information")
+
+                url = reverse('phone_verify_view')
+                return HttpResponseRedirect(url)
+        else:
+            initial = {}
+            if up.phone:
+                initial['phone'] = up.phone
+
+            form = UserProfileFirstForm()
+            # User is viewing profile information
+            print ("Display profile information")
+
+        vals = {
+                'name' : up.name,
+                'form' : form,
+                }
+
+        return render(request, 'accounts/profile_first_edit.html', vals)
     else:
         print ("User not authenticated")
         url = reverse('user_login')
@@ -383,7 +435,7 @@ def frontpage(request):
     if CAISO.objects.count() == 0:
         parser = CAISOParser()
         parser.update()
-    datum = CAISO.objects.all().latest('date')
+    datum = CAISO.latest_point()
     percent_green = datum.fraction_green() * 100.0
     greenery = str(int(percent_green + 0.5)) + '%'
 

@@ -97,6 +97,15 @@ class LoginForm(forms.Form):
 class PhoneVerificationForm(forms.Form):
     verification_code = forms.IntegerField(label='Verification code')
 
+class UserProfileFirstForm(forms.Form):
+    password = forms.CharField(help_text='Password')
+    phone = forms.CharField(help_text='Phone')
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileFirstForm, self).__init__(*args, **kwargs)
+        self.fields['password'].widget.attrs['placeholder'] = u'Password'
+        self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
+
 class UserProfileForm(forms.Form):
     name = forms.CharField(help_text='Name', required = False)
     password = forms.CharField(help_text='Password', required = False)

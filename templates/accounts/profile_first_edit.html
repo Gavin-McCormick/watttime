@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime Beta{% endblock %}
+
+{% block content %}
+<h2>Welcome to WattTime!</h2><br>
+
+<p>Hi {{ name }}, please choose a password and add a phone number so that we can set up sending you SMS alerts. </p>
+
+<br>
+
+<form action="{% url 'profile_first_edit' %}" method="post" class="watttime-form sign-up-form survey">{% csrf_token %}
+    <p class="fieldWrapper">
+        {{ form.phone.errors }}
+        {{ form.phone }}
+    </p>
+    <p class="fieldWrapper">
+        {{ form.password.errors }}
+        {{ form.password }}
+    </p>
+    <input type="submit" value="Next" />
+</form>
+
+{% endblock %}
