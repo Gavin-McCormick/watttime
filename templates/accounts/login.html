@@ -4,7 +4,7 @@
 {% block content %}
 
 <h2>Welcome to WattTime!</h2>
-<p>Enter your email address and password below to login into your WattTime account. If you have not set a password, or you have forgotten your password, leave the password blank to receive an email with a link to login.</p>
+<p>Enter your email address and password below to login into your existing WattTime account.</p>
 
 <form action="{% url 'user_login' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
     <p class="fieldWrapper">
@@ -17,6 +17,8 @@
     </p>
     <input type="submit" name="login" value="Login" />
 </form>
+
+<p>(Don't have an account yet? You'll need an invitation email. You can actually invite yourself on the <a href="{% url 'home' %}">main page</a>.)</p>
 
 {% endblock %}
 
