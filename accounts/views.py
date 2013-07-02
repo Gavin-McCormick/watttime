@@ -22,18 +22,18 @@ import accounts.twilio_utils
 #from multi_choice import StringListField
 
 def new_user_name():
-    uid = str(random.randint(10000000, 99999999))
-    try:
-        User.objects.get(username=uid)
-    except:
-        return uid
-    else:
-        return new_user_name()
+
+    users = [None]
+    while len(users) > 0:
+        uid = str(random.randint(10000000, 99999999))
+        users = User.objects.filter(username = uid)
+
+    return uid
 
 def new_phone_verification_number():
     return random.randint(100000, 999999)
 
-def create_new_user(email):
+def create_new_user(email, name = None):
     ups = UserProfile.objects.filter(email = email)
     if len(ups) > 0:
         print (len(ups))
@@ -41,9 +41,8 @@ def create_new_user(email):
                 format(email))
         return None
 
-
     username = new_user_name()
-    user = User.objects.create_user(username, email = email, password = None)
+    user = User.objects.create_user(username, email = None, password = None)
     user.is_active = True
     user.is_staff = False
     user.is_superuser = False
@@ -58,17 +57,20 @@ def create_new_user(email):
     up.password_is_set = False
     up.magic_login_code = random.randint(100000000, 999999999)
     # If the user doesn't specify a name, email is used as the default
-    up.name = email
+    if name is None:
+        up.name = email
+    else:
+        up.name = name
     up.email = email
     up.phone = ''
     up.verification_code = new_phone_verification_number()
     up.is_verified = False
     up.state = 'CA'
 
-    up.message_frequency = 1
+    up.message_frequency = 3
     up.forecast_email = False
     up.set_equipment([])
-    up.beta_test = False
+    up.beta_test = True
 
     # In the future, we should separate phone-number, etc., into a separate model
 
@@ -77,13 +79,13 @@ def create_new_user(email):
     print ("User {} created.".format(email))
     return user
 
-def create_and_email_user(email):
-    user = create_new_user(email)
+def create_and_email_user(email, name = None):
+    user = create_new_user(email, name)
     if user:
         magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
                 user.get_profile().magic_login_code)
         send_mail('Welcome to WattTime',
-                messages.invite_message(email, magic_url),
+                messages.invite_message(email, magic_url, name),
                 EMAIL_HOST_USER,
                 [email])
         return True
@@ -93,6 +95,12 @@ def create_and_email_user(email):
 def http_invite(request, email):
     if create_and_email_user(email):
         return HttpResponse("Sent email to {}".format(email), "application/json")
+    else:
+        return HttpResponse("User already exists", "application/json")
+
+def http_invite_with_name(request, email, name):
+    if create_and_email_user(email, name):
+        return HttpResponse("Sent email to {} ({})".format(name, email), "application/json")
     else:
         return HttpResponse("User already exists", "application/json")
 
