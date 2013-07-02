@@ -3,13 +3,24 @@
 {% block title %}WattTime Beta{% endblock %}
 
 {% block content %}
-<h2>Settings</h2><br>
-
-<p>Hi {{ name }}, you have successfully signed up for WattTime SMS alerts. Here are your current account settings. You can edit them <a href="{% url 'profile_edit' %}">here</a> at any time.</p>
+<h2>Settings</h2>
 
 {% if deactivated %}
 <p>Your account is currently deactivated, and you will not receive any further emails or text messages from us. You can <a href="{% url 'reactivate' %}">reactivate</a> your account at any time.</p>
-{% endif %}
+{% else %}
+    {% if phone_verified %}
+    <p>Congratulations {{ name }}, you are signed up to receive WattTime SMS alerts!</p>
+    {% else %}
+        {% if phone_blank %}
+        <p> If you provide your phone number and then <a href="{% url 'phone_verify_view' %}">verify it</a>, you will receive text messages about the electricity supply for your state with the frequency you specify.</p>
+        {% else %}
+        <p> Your phone number has not been verified yet. If you <a href="{% url 'phone_verify_view' %}">verify your phone number</a>, you will receive text messages about the electricity supply for your state with the frequency you specified.</p>
+        {% endif %}
+    {% endif %}
+ 
+<p>You can <a href="{% url 'profile_edit' %}">personalize</a> your account settings for added control and convenience. Here are your current settings:</p>
+
+
 
 <br>
 
@@ -84,19 +95,7 @@
 </table>
 </center>
 
-{% if deactivated %}
-{% else %}
-    {% if phone_verified %}
-    <p> Your phone number has been verified, and you will receive text messages about the eletricity supply for your state with the frequency you specified.</p>
-    {% else %}
-        {% if phone_blank %}
-        <p> If you provide your phone number and then <a href="{% url 'phone_verify_view' %}">verify it</a>, you will receive text messages about the eletricity supply for your state with the frequency you specify.</p>
-        {% else %}
-        <p> Your phone number has not been verified yet. If you <a href="{% url 'phone_verify_view' %}">verify your phone number</a>, you will receive text messages about the electricity supply for your state with the frequency you specified.</p>
-        {% endif %}
-    {% endif %}
-
-    <p> If you wish to stop receiving any emails or text messages from us, you may <a href="{% url 'deactivate' %}">deactivate</a> your account at any time.</p>
+    <p> (And if you wish to stop receiving any emails or text messages from us, you may <a href="{% url 'deactivate' %}">deactivate</a> your account at any time.)</p>
 {% endif %}
 
 
