@@ -88,9 +88,9 @@ def create_and_email_user(email, name = None):
                 messages.invite_message(email, magic_url, name),
                 EMAIL_HOST_USER,
                 [email])
-        return True
+        return user
     else:
-        return False
+        return None
 
 def http_invite(request, email):
     if create_and_email_user(email):
@@ -180,6 +180,11 @@ def profile_edit(request):
                     up.user.save()
                     up.password_is_set = True
 
+                state = form.cleaned_data['state']
+                if state and (state != up.state):
+                    print ("Changing state")
+                    up.state = state
+
                 phone = form.cleaned_data['phone']
                 if phone and (phone != up.phone):
                     print ("Changing phone")
@@ -221,6 +226,7 @@ def profile_edit(request):
             form = UserProfileForm(initial =
                     {'name' : up.name,
                     'password' : password,
+                    'state' : up.state,
                     'phone' : up.phone,
                     'message_frequency' : up.message_frequency,
                     'forecast_email' : up.forecast_email,
@@ -255,6 +261,7 @@ def profile_first_edit(request):
                 password = form.cleaned_data['password']
                 if password == '' and up.password_is_set:
                     print ("Removing password")
+                    up.user.set_unusable_password()
                     up.password_is_set = False
                 elif not (password == '(not used)') and (not password == '######'):
                     print ("Setting password")
@@ -268,6 +275,11 @@ def profile_first_edit(request):
                     up.phone = phone
                     up.is_verified = False
 
+                state = form.cleaned_data['state']
+                if state and (state != up.state):
+                    print ("Changing state")
+                    up.state = state
+
                 up.save()
 
                 print ("Saved profile information")
@@ -278,8 +290,9 @@ def profile_first_edit(request):
             initial = {}
             if up.phone:
                 initial['phone'] = up.phone
+            initial['state'] = up.state
 
-            form = UserProfileFirstForm()
+            form = UserProfileFirstForm(initial = initial)
             # User is viewing profile information
             print ("Display profile information")
 
@@ -428,7 +441,11 @@ def create_user(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            create_and_email_user(form.cleaned_data['email'])
+            user = create_and_email_user(form.cleaned_data['email'])
+            up = user.get_profile()
+            up.state = form.cleaned_data['state']
+            up.save()
+
             url = reverse('signed_up')
             return HttpResponseRedirect(url)
     else:
@@ -443,7 +460,7 @@ def frontpage(request):
     percent_green = datum.fraction_green() * 100.0
     greenery = str(int(percent_green + 0.5)) + '%'
 
-    form = SignupForm()
+    form = SignupForm(initial = {'state' : u'CA'})
     return render(request, 'index.html',
             {'form' : form, 'current_green' : greenery})
 

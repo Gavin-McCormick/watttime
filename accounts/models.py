@@ -77,7 +77,7 @@ class UserProfile(models.Model):
             return list(int(index) for index in self.equipment.split(','))
         else:
             return []
-            
+
     def local_now(self):
          # TO DO make it work for other states
          if self.state in ['MA', 'VT', 'NH', 'ME', 'CT', 'RI']:
@@ -89,6 +89,7 @@ class UserProfile(models.Model):
 
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
+    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
@@ -109,6 +110,7 @@ class PhoneVerificationForm(forms.Form):
 class UserProfileFirstForm(forms.Form):
     password = forms.CharField(help_text='Password')
     phone = forms.CharField(help_text='Phone')
+    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
 
     def __init__(self, *args, **kwargs):
         super(UserProfileFirstForm, self).__init__(*args, **kwargs)
@@ -118,6 +120,7 @@ class UserProfileFirstForm(forms.Form):
 class UserProfileForm(forms.Form):
     name = forms.CharField(help_text='Name', required = False)
     password = forms.CharField(help_text='Password', required = False)
+    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
     phone = forms.CharField(help_text='Phone', required = False)
     message_frequency = forms.ChoiceField(choices = SENDTEXT_FREQ_CHOICES, widget = RadioSelect(), required = False)
     forecast_email = forms.BooleanField(help_text='Forecast emails in morning', widget = CheckboxInput(), required = False)
