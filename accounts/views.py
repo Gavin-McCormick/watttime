@@ -33,7 +33,7 @@ def new_user_name():
 def new_phone_verification_number():
     return random.randint(100000, 999999)
 
-def create_new_user(email):
+def create_new_user(email, name = None):
     if len(email) >= 30:
         print ("Email address {} too long, aborting user creation.".format(email))
         return None
@@ -62,17 +62,20 @@ def create_new_user(email):
     up.password_is_set = False
     up.magic_login_code = random.randint(100000000, 999999999)
     # If the user doesn't specify a name, email is used as the default
-    up.name = email
+    if name is None:
+        up.name = email
+    else:
+        up.name = name
     up.email = email
     up.phone = ''
     up.verification_code = new_phone_verification_number()
     up.is_verified = False
     up.state = 'CA'
 
-    up.message_frequency = 1
+    up.message_frequency = 3
     up.forecast_email = False
     up.set_equipment([])
-    up.beta_test = False
+    up.beta_test = True
 
     # In the future, we should separate phone-number, etc., into a separate model
 
@@ -81,13 +84,13 @@ def create_new_user(email):
     print ("User {} created.".format(email))
     return user
 
-def create_and_email_user(email):
-    user = create_new_user(email)
+def create_and_email_user(email, name = None):
+    user = create_new_user(email, name)
     if user:
         magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
                 user.get_profile().magic_login_code)
         send_mail('Welcome to WattTime',
-                messages.invite_message(email, magic_url),
+                messages.invite_message(email, magic_url, name),
                 EMAIL_HOST_USER,
                 [email])
         return True
@@ -97,6 +100,12 @@ def create_and_email_user(email):
 def http_invite(request, email):
     if create_and_email_user(email):
         return HttpResponse("Sent email to {}".format(email), "application/json")
+    else:
+        return HttpResponse("User already exists", "application/json")
+
+def http_invite_with_name(request, email, name):
+    if create_and_email_user(email, name):
+        return HttpResponse("Sent email to {} ({})".format(name, email), "application/json")
     else:
         return HttpResponse("User already exists", "application/json")
 
