@@ -22,8 +22,8 @@ from sms_tools.models import TwilioSMSEvent
 from random import randint
 
 
-def is_good_time_to_message(timestamp, userid, user_profile,
-                            min_hour=8, max_hour=22, do_rand=True):
+def is_good_time_to_message(timestamp, user_id, user_profile,
+                            min_hour=8, max_hour=22, do_rand=False):
     """ Returns True if hour/day are ok for user,
     and if they haven't received a message too recently,
     and if this time is randomly selected.
@@ -33,8 +33,8 @@ def is_good_time_to_message(timestamp, userid, user_profile,
     is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
 
     # has the user been texted recently?
-    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.text_freq].total_seconds()
-    user_sms_logs = TwilioSMSEvent.objects.filter(user=userid)
+    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.message_frequency].total_seconds()
+    user_sms_logs = TwilioSMSEvent.objects.filter(user=user_id)
     if user_sms_logs.exists():
         dt = (timestamp - user_sms_logs.latest('created_at').created_at).total_seconds()
 
@@ -53,9 +53,10 @@ def is_good_time_to_message(timestamp, userid, user_profile,
         is_randomly_selected = True
 
     debug('    is good hour? {}, {:f} seconds since last message, {:f} seconds desired interval, recently notified? {}, randomly selected? {}'.format(str(is_good_hour), dt, text_period_secs, is_recently_notified, is_randomly_selected))
-    # return bool
-    # if is_good_hour and (not is_recently_notified) and is_randomly_selected:
-    if is_good_hour and (not is_recently_notified):
+    
+    if is_good_hour and (not is_recently_notified) and is_randomly_selected:
+        print 'good'
         return True
     else:
+        print 'bad'
         return False

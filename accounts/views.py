@@ -34,10 +34,6 @@ def new_phone_verification_number():
     return random.randint(100000, 999999)
 
 def create_new_user(email):
-    if len(email) >= 30:
-        print ("Email address {} too long, aborting user creation.".format(email))
-        return None
-
     ups = UserProfile.objects.filter(email = email)
     if len(ups) > 0:
         print (len(ups))
