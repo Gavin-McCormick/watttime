@@ -77,6 +77,15 @@ class UserProfile(models.Model):
             return list(int(index) for index in self.equipment.split(','))
         else:
             return []
+            
+    def local_now(self):
+         # TO DO make it work for other states
+         if self.state in ['MA', 'VT', 'NH', 'ME', 'CT', 'RI']:
+             return localtime(now(), timezone('US/Eastern'))
+         elif self.state in ['CA', 'WA', 'ID', 'OR']:
+             return localtime(now(), timezone('US/Pacific'))
+         else:
+             return now()
 
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
