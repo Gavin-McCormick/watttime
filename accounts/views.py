@@ -22,22 +22,18 @@ import accounts.twilio_utils
 #from multi_choice import StringListField
 
 def new_user_name():
-    uid = str(random.randint(10000000, 99999999))
-    try:
-        User.objects.get(username=uid)
-    except:
-        return uid
-    else:
-        return new_user_name()
+
+    users = [None]
+    while len(users) > 0:
+        uid = str(random.randint(10000000, 99999999))
+        users = User.objects.filter(username = uid)
+
+    return uid
 
 def new_phone_verification_number():
     return random.randint(100000, 999999)
 
 def create_new_user(email, name = None):
-    if len(email) >= 30:
-        print ("Email address {} too long, aborting user creation.".format(email))
-        return None
-
     ups = UserProfile.objects.filter(email = email)
     if len(ups) > 0:
         print (len(ups))
@@ -45,9 +41,8 @@ def create_new_user(email, name = None):
                 format(email))
         return None
 
-
     username = new_user_name()
-    user = User.objects.create_user(username, email = email, password = None)
+    user = User.objects.create_user(username, email = None, password = None)
     user.is_active = True
     user.is_staff = False
     user.is_superuser = False
