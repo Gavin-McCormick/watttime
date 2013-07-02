@@ -3,6 +3,10 @@
 
 <html>
 
+{% if GOOGLE_ANALYTICS_PROPERTY_ID %}
+  {% include "pages/google_analytics.html" %}
+{% endif %}
+
 {% load staticfiles %}
 {% load url from future %}
 <!-- The following is used for Facebook Connect and was removed by Gavin on Sunday
