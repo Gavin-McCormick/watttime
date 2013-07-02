@@ -255,6 +255,7 @@ def profile_first_edit(request):
                 password = form.cleaned_data['password']
                 if password == '' and up.password_is_set:
                     print ("Removing password")
+                    up.user.set_unusable_password()
                     up.password_is_set = False
                 elif not (password == '(not used)') and (not password == '######'):
                     print ("Setting password")
