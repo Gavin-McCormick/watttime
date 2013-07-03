@@ -103,13 +103,6 @@
 							<a href="{% url 'status' %}">STATUS</a>
 							</li>
 
-							<li>
-
-								<a href="{% url 'profile_view' %}">SETTINGS</a>
-
-							</li>
-							
-
 
 							<li>
 
@@ -134,6 +127,12 @@
 				
 {% if user.is_authenticated %}
 
+							<li>
+
+								<a href="{% url 'profile_view' %}">SETTINGS</a>
+
+							</li>
+							
 							<li>
 							
 								<a href="{% url 'account_logout' %}">LOG OUT</a>
