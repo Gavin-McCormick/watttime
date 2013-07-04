@@ -280,6 +280,7 @@ def history(request):
 
 @json_response
 def today(request):
+    """Get best data from today (actual until now, best forecast for future)"""
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
@@ -292,23 +293,60 @@ def today(request):
     endtime = starttime + timedelta(1) - timedelta(0, 1)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
+    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(starttime, endtime)
     if len(ba_rows) == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
     
     # collect sums
-    data = []
-    for row in ba_rows:
-      data.append({
-          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
-          'percent_green': round(row.fraction_green() * 100, 3),
-          'marginal_fuel': row.marginal_fuel,
-          'load_MW': round(row.total_load(), 1),
-          })
+    data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
+    
+@json_response
+def alerts(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+        
+    # get date range (default is today)
+    start = request.GET.get('start', None)
+    if start:
+        starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+    else:
+        utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+        starttime = utc_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    end = request.GET.get('end', None)
+    if end:
+        endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+    else:
+        endtime = starttime + timedelta(1) - timedelta(0, 1)
 
+    # get best guess data
+    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(starttime, endtime)
+    
+    # set up storage
+    if len(ba_rows) > 0:
+        data = {}
+    else:
+        return {}
+
+    # get notable times
+    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green(), reverse=True)
+    data['highest_green'] = sorted_green[0].to_dict()
+    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon(), reverse=True)
+    data['highest_dirty'] = sorted_dirty[0].to_dict()
+    sorted_load = sorted(ba_rows, key=lambda r : r.total_load(), reverse=True)
+    data['highest_load'] = sorted_load[0].to_dict()
+    data['lowest_load'] = sorted_load[-1].to_dict()
+    sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)
+    data['worst_marginal'] = sorted_marginal[0].to_dict()
+   # data['best_marginal'] = sorted_marginal[-1].to_dict() TODO: use best non-None marginal
+    
+    # return
+    return data
 
 @json_response
 def average_usage_for_period(request, userid):

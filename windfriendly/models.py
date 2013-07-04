@@ -23,6 +23,20 @@ def debug(message):
  
 class BaseBalancingAuthority(models.Model):
     """Abstract base class for balancing authority timepoints"""
+    # timepoints are 'extra green' if fraction_green is above this fraction
+    GREEN_THRESHOLD = 0.15
+    # timepoints are 'extra green' if fraction_high_carbon is above this fraction
+    DIRTY_THRESHOLD = 0.95   
+
+    # must define 'date' and 'marginal_fuel' attributes
+    def to_dict(self):
+        return {'percent_green': round(self.fraction_green()*100, 3),
+                'percent_dirty': round(self.fraction_high_carbon()*100, 3),
+                'load_MW': self.total_load(),
+                'marginal_fuel': self.marginal_fuel,
+                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                }
+                
     class Meta:
         abstract = True
     
@@ -43,6 +57,14 @@ class BaseBalancingAuthority(models.Model):
         """Fraction of load that is 'dirty', whatever that means"""
         # implement this in daughter classes
         return 0
+
+    def is_unusually_green(self):
+        """Boolean for whether or not this timepoint is above a 'clean' threshold"""
+        return self.fraction_green() > self.GREEN_THRESHOLD
+
+    def is_unusually_dirty(self):
+        """Boolean for whether or not this timepoint is above a 'dirty' threshold"""
+        return self.fraction_high_carbon() > self.DIRTY_THRESHOLD
 
     @classmethod
     def latest_date(cls, forecast_type=None):
@@ -91,52 +113,148 @@ class BaseBalancingAuthority(models.Model):
             points = forecast_qset.filter(date__range=(starttime, endtime))
             return points
         except:
-            return []     
+            return []   
+
+    @classmethod
+    def greenest_point_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return point with the highest fraction green in time period"""
+        points = cls.points_in_date_range(starttime, endtime, forecast_type)
+        if len(points) > 0:
+            descending_points = sorted(points, reverse=True,
+                                       cmp=lambda p: p.fraction_green())
+            return descending_points[0]
+        else:
+            return None
+            
+    @classmethod
+    def dirtiest_point_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return point with the highest fraction dirty in time period"""
+        points = cls.points_in_date_range(starttime, endtime, forecast_type)
+        if len(points) > 0:
+            descending_points = sorted(points, reverse=True,
+                                       cmp=lambda p: p.fraction_high_carbon())
+            return descending_points[0]
+        else:
+            return None
+
+    @classmethod
+    def best_guess_points_in_date_range(cls, starttime, endtime):
+        """ Return list of data points for all available timestamps in date range
+                using the best available data.
+        """
+        # without forecasting, this is the same as point_in_date_range
+        return cls.points_in_date_range(starttime, endtime)
+        
+    @classmethod
+    def best_guess_point(cls, timestamp):
+        # without forecasting, this is just the data
+        try:
+            return cls.objects.filter(date=timestamp)[0]
+        except:
+            return None
+            
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""
     class Meta:
         abstract = True
+        
+    # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
+    def to_dict(self):
+        return {'percent_green': round(self.fraction_green()*100, 3),
+                'percent_dirty': round(self.fraction_high_carbon()*100, 3),
+                'load_MW': self.total_load(),
+                'marginal_fuel': self.marginal_fuel,
+                'forecast_code': self.forecast_code,
+                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
+                }
+                
+    @classmethod
+    def _qset(cls, forecast_type=None):
+        """ forecast_type options:
+                None defaults to 'actual',
+                'any' uses data from all forecast types,
+                see FORECAST_CODES for others
+        """
+        if forecast_type == 'any':
+            return cls.objects.all()
+        else:
+            if forecast_type is None:
+                forecast_type = 'actual'
+            forecast_code = FORECAST_CODES[forecast_type]
+            return cls.objects.filter(forecast_code=forecast_code)
 
     @classmethod
     def latest_point(cls, forecast_type=None):
-        """Return most recent stored data point for forecast type"""
-        if forecast_type is None:
-            forecast_type = 'actual'
-        forecast_code = FORECAST_CODES[forecast_type]
-        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        """ Return most recent stored data point for forecast type.
+            If multiple with same timestamp, return the most recently extracted.
+        """
         try:
-            earliest = forecast_qset.order_by('-date')[0]
-            return earliest
+            qset = cls._qset(forecast_type)
+            latest_date = qset.order_by('-date')[0].date
+            latest_extracted = qset.filter(date=latest_date).order_by('-date_extracted')[0]
+            return latest_extracted
         except:
             return None
 
     @classmethod
     def earliest_point(cls, forecast_type=None):
-        """Return oldest stored data point for forecast type"""
-        if forecast_type is None:
-            forecast_type = 'actual'
-        forecast_code = FORECAST_CODES[forecast_type]
-        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        """ Return oldest stored data point for forecast type.
+            If multiple with same timestamp, return the most recently extracted.        
+        """
         try:
-            earliest = forecast_qset.order_by('date')[0]
-            return earliest
+            qset = cls._qset(forecast_type)
+            earliest_date = qset.order_by('date')[0].date
+            earliest_extracted = qset.filter(date=earliest_date).order_by('-date_extracted')[0]
+            return earliest_extracted
         except:
             return None
                     
     @classmethod
     def points_in_date_range(cls, starttime, endtime, forecast_type=None):
-        """Return all data ponits in the date range for forecast type"""
-        if forecast_type is None:
-            forecast_type = 'actual'
-        forecast_code = FORECAST_CODES[forecast_type]
-        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        """ Return all data ponits in the date range for forecast type.
+            May include multiple points with same 'date' timestamp.        
+        """
         try:
-            points = forecast_qset.filter(date__range=(starttime, endtime))
+            qset = cls._qset(forecast_type)
+            points = qset.filter(date__range=(starttime, endtime))
             return points
         except:
             return []
-                                                       
+
+    @classmethod
+    def best_guess_points_in_date_range(cls, starttime, endtime):
+        """ Return list of data points for all available timestamps in date range
+                using the best available data.
+        """
+        qset = cls.objects.filter(date__range=(starttime, endtime))
+        timestamps = qset.values_list('date', flat=True).distinct()
+        return [cls.best_guess_point(t) for t in timestamps]
+
+    @classmethod
+    def best_guess_point(cls, timestamp):
+        """ Prioritize 'actual' > 'mn_ahead' > 'hr_ahead' > 'dy_ahead' > etc.
+            And prioritize most recently extracted data for each forecast type.
+        """
+        # get all data with timestamp
+        qset = cls.objects.filter(date=timestamp)
+
+        # if no data, return None
+        if qset.count() == 0:
+            return None
+            
+        # if there is data, get the best forecast
+        preference_list = ['actual', 'mn_ahead', 'hr_ahead', 'dy_ahead']
+        for forecast_type in preference_list:
+
+            # see if there's data for this forecast
+            forecast_qset = qset.filter(forecast_code=FORECAST_CODES[forecast_type])
+            
+            if forecast_qset.count() > 0:
+                # get the most recently extracted for forecast
+                return forecast_qset.order_by('-date_extracted')[0]
+        
 
 class CAISO(BaseForecastedBalancingAuthority):
     class Meta:
@@ -227,17 +345,11 @@ class NE(BaseBalancingAuthority):
     def fraction_high_carbon(self):
         return (self.coal) / self.total_load()
 
-                              
-class Normalized(models.Model):
-  balancing_authority = models.CharField(max_length=100)
-  total_watts = models.IntegerField() # capacity
-  percent_clean = models.FloatField()
-  curtailed = models.BooleanField(default=False)
-  date = models.DateTimeField(db_index=True)
 
 class User(models.Model):
     # name
     name = models.CharField(max_length=100)
+
 
 class MeterReading(models.Model):
   # user id
