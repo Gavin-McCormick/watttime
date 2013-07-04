@@ -4,248 +4,230 @@ from django.utils.timezone import now
 
 # Approximately in order from bad to good
 MARGINAL_FUELS = ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood',
-				  'Nuclear', 'Solar', 'Wind', 'None']
+                  'Nuclear', 'Solar', 'Wind', 'None']
 FORECAST_CODES = {'ACTUAL': 0, 'actual': 0,
-				  'DAM': 1, 'dy_ahead': 1,
-				  'HASP': 2, 'hr_ahead': 2,
-				  'RTM': 3, 'mn_ahead': 3,
-				  }
+                  'DAM': 1, 'dy_ahead': 1,
+                  'HASP': 2, 'hr_ahead': 2,
+                  'RTM': 3, 'mn_ahead': 3,
+                  }
 
 class DebugMessage(models.Model):
-	date = models.DateTimeField(db_index=True)
-	message = models.CharField(max_length=300)
+    date = models.DateTimeField(db_index=True)
+    message = models.CharField(max_length=300)
 
 def debug(message):
-	dm = DebugMessage()
-	dm.date = now()
-	dm.message = message
-	dm.save()
-
-class CAISO(models.Model):
-	# load, wind, solar in MW
-	load = models.FloatField()
-	wind = models.FloatField()
-	solar = models.FloatField()
-	
-	# forecast type is the index in FORECAST_CODES
-	forecast_code = models.IntegerField()
-	
-	# date is local time at which these values will be true (can be in the future)
-	date = models.DateTimeField(db_index=True)
-	# date_extracted is the UTC time at which these values were pulled from CAISO
-	date_extracted = models.DateTimeField(db_index=True)
-
-	def total_load(self):
-		return self.load
-		
-	def fraction_green(self):
-		return (self.wind + self.solar) / self.load
-		
-	def fraction_high_carbon(self):
-		return 1.0 - self.fraction_green()
-
-	@property
-	def marginal_fuel(self):
-		return MARGINAL_FUELS.index('None')
-		
-	@classmethod
-	def latest_date(cls, forecast_type=None):
-		"""Return most recent stored datetime for forecast type"""
-		try:
-			latest = cls.latest_point(forecast_type)
-			return latest.date
-		except:
-			return None
-		
-	@classmethod
-	def latest_point(cls, forecast_type=None):
-		"""Return most recent stored data point for forecast type"""
-		if forecast_type is None:
-			forecast_type = 'actual'
-		forecast_code = FORECAST_CODES[forecast_type]
-		forecast_qset = cls.objects.filter(forecast_code=forecast_code)
-		try:
-			earliest = forecast_qset.order_by('-date')[0]
-			return earliest
-		except:
-			return None
-			
-	@classmethod
-	def earliest_date(cls, forecast_type=None):
-		"""Return oldest stored datetime for forecast type"""
-		try:
-			earliest = cls.earliest_point(forecast_type)
-			return earliest.date
-		except:
-			return None
-
-	@classmethod
-	def earliest_point(cls, forecast_type=None):
-		"""Return oldest stored data point for forecast type"""
-		if forecast_type is None:
-			forecast_type = 'actual'
-		forecast_code = FORECAST_CODES[forecast_type]
-		forecast_qset = cls.objects.filter(forecast_code=forecast_code)
-		try:
-			earliest = forecast_qset.order_by('date')[0]
-			return earliest
-		except:
-			return None
-					
-	@classmethod
-	def points_in_date_range(cls, starttime, endtime, forecast_type=None):
-		"""Return all data ponits in the date range for forecast type"""
-		if forecast_type is None:
-			forecast_type = 'actual'
-		forecast_code = FORECAST_CODES[forecast_type]
-		forecast_qset = cls.objects.filter(forecast_code=forecast_code)
-		try:
-			points = forecast_qset.filter(date__range=(starttime, endtime))
-			return points
-		except:
-			return []
-						
-
-class BPA(models.Model):
-	"""Raw BPA data"""
-	load = models.IntegerField()
-	wind = models.IntegerField()
-	thermal = models.IntegerField()
-	hydro = models.IntegerField()
-	date = models.DateTimeField(db_index=True)
-
-	def get_title(self):
-		return unidecode(self.wind)
-
-	def total_load(self):
-		return float(self.wind + self.hydro + self.thermal)
-
-	def fraction_green(self):
-		return self.wind / self.total_load()
-
-	def fraction_high_carbon(self):
-		return self.thermal / self.total_load()
-
-	@property
-	def marginal_fuel(self):
-		return MARGINAL_FUELS.index('None')
-
-	@classmethod
-	def latest_date(cls, forecast_type=None):
-		"""Return most recent stored datetime for forecast type"""
-		try:
-			latest = cls.latest_point(forecast_type)
-			return latest.date
-		except:
-			return None
-		
-	@classmethod
-	def latest_point(cls, forecast_type=None):
-		"""Return most recent stored data point for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			latest = forecast_qset.order_by('-date')[0]
-			return latest
-		except:
-			return None
-			
-	@classmethod
-	def earliest_date(cls, forecast_type=None):
-		"""Return oldest stored datetime for forecast type"""
-		try:
-			earliest = cls.earliest_point(forecast_type)
-			return earliest.date
-		except:
-			return None
-
-	@classmethod
-	def earliest_point(cls, forecast_type=None):
-		"""Return oldest stored data point for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			earliest = forecast_qset.order_by('date')[0]
-			return earliest
-		except:
-			return None
-
-	@classmethod
-	def points_in_date_range(cls, starttime, endtime, forecast_type=None):
-		"""Return all data ponits in the date range for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			points = forecast_qset.filter(date__range=(starttime, endtime))
-			return points
-		except:
-			return []								
-			
-# All units are megawatts
-class NE(models.Model):
-	gas = models.FloatField()
-	nuclear = models.FloatField()
-	hydro = models.FloatField()
-	coal = models.FloatField()
-	other_renewable = models.FloatField()
-	other_fossil = models.FloatField()
-	marginal_fuel = models.IntegerField()
-	date = models.DateTimeField(db_index=True)
-
-	def total_load(self):
-		return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
-
-	def fraction_green(self):
-		return (self.hydro + self.other_renewable) / self.total_load()
-
-	def fraction_high_carbon(self):
-		return (self.coal) / self.total_load()
-
-	@classmethod
-	def latest_date(cls, forecast_type=None):
-		"""Return most recent stored datetime for forecast type"""
-		try:
-			latest = cls.latest_point(forecast_type)
-			return latest.date
-		except:
-			return None
-		
-	@classmethod
-	def latest_point(cls, forecast_type=None):
-		"""Return most recent stored data point for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			latest = forecast_qset.order_by('-date')[0]
-			return latest
-		except:
-			return None
-			
-	@classmethod
-	def earliest_date(cls, forecast_type=None):
-		"""Return oldest stored datetime for forecast type"""
-		try:
-			earliest = cls.earliest_point(forecast_type)
-			return earliest.date
-		except:
-			return None
-
-	@classmethod
-	def earliest_point(cls, forecast_type=None):
-		"""Return oldest stored data point for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			earliest = forecast_qset.order_by('date')[0]
-			return earliest
-		except:
-			return None
+    dm = DebugMessage()
+    dm.date = now()
+    dm.message = message
+    dm.save()
  
-	@classmethod
-	def points_in_date_range(cls, starttime, endtime, forecast_type=None):
-		"""Return all data ponits in the date range for forecast type"""
-		forecast_qset = cls.objects.all()
-		try:
-			points = forecast_qset.filter(date__range=(starttime, endtime))
-			return points
-		except:
-			return []									
-							  
+class BaseBalancingAuthority(models.Model):
+    """Abstract base class for balancing authority timepoints"""
+    class Meta:
+        abstract = True
+    
+    def get_title(self):
+        return str(self.fraction_green())
+
+    def total_load(self):
+        """Total load on the grid, in MW"""
+        # implement this in daughter classes
+        return 0
+
+    def fraction_green(self):
+        """Fraction of load that is 'green', whatever that means"""
+        # implement this in daughter classes
+        return 0
+
+    def fraction_high_carbon(self):
+        """Fraction of load that is 'dirty', whatever that means"""
+        # implement this in daughter classes
+        return 0
+
+    @classmethod
+    def latest_date(cls, forecast_type=None):
+        """Return most recent stored datetime for forecast type"""
+        # 
+        try:
+            latest = cls.latest_point(forecast_type)
+            return latest.date
+        except:
+            return None
+        
+    @classmethod
+    def latest_point(cls, forecast_type=None):
+        """Return most recent stored data point for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            latest = forecast_qset.order_by('-date')[0]
+            return latest
+        except:
+            return None
+            
+    @classmethod
+    def earliest_date(cls, forecast_type=None):
+        """Return oldest stored datetime for forecast type"""
+        try:
+            earliest = cls.earliest_point(forecast_type)
+            return earliest.date
+        except:
+            return None
+
+    @classmethod
+    def earliest_point(cls, forecast_type=None):
+        """Return oldest stored data point for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            earliest = forecast_qset.order_by('date')[0]
+            return earliest
+        except:
+            return None
+
+    @classmethod
+    def points_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return all data ponits in the date range for forecast type"""
+        forecast_qset = cls.objects.all()
+        try:
+            points = forecast_qset.filter(date__range=(starttime, endtime))
+            return points
+        except:
+            return []     
+
+class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
+    """Abstract base class for balancing authority timepoints with forecasting"""
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def latest_point(cls, forecast_type=None):
+        """Return most recent stored data point for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            earliest = forecast_qset.order_by('-date')[0]
+            return earliest
+        except:
+            return None
+
+    @classmethod
+    def earliest_point(cls, forecast_type=None):
+        """Return oldest stored data point for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            earliest = forecast_qset.order_by('date')[0]
+            return earliest
+        except:
+            return None
+                    
+    @classmethod
+    def points_in_date_range(cls, starttime, endtime, forecast_type=None):
+        """Return all data ponits in the date range for forecast type"""
+        if forecast_type is None:
+            forecast_type = 'actual'
+        forecast_code = FORECAST_CODES[forecast_type]
+        forecast_qset = cls.objects.filter(forecast_code=forecast_code)
+        try:
+            points = forecast_qset.filter(date__range=(starttime, endtime))
+            return points
+        except:
+            return []
+                                                       
+
+class CAISO(BaseForecastedBalancingAuthority):
+    class Meta:
+        abstract = False
+        
+    # load, wind, solar in MW
+    load = models.FloatField()
+    wind = models.FloatField()
+    solar = models.FloatField()
+    
+    # forecast type is the index in FORECAST_CODES
+    forecast_code = models.IntegerField()
+    
+    # date is local time at which these values will be true (can be in the future)
+    date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from CAISO
+    date_extracted = models.DateTimeField(db_index=True)
+
+    @property
+    def marginal_fuel(self):
+        """Integer code for marginal fuel"""
+        # implement this as an actual field for BAs with data
+        return MARGINAL_FUELS.index('None')
+
+    def total_load(self):
+        return self.load
+        
+    def fraction_green(self):
+        return (self.wind + self.solar) / self.load
+        
+    def fraction_high_carbon(self):
+        return 1.0 - self.fraction_green()
+
+
+class BPA(BaseBalancingAuthority):
+    """Raw BPA data"""
+    class Meta:
+        abstract = False
+        
+    # load, etc in MW
+    load = models.IntegerField()
+    wind = models.IntegerField()
+    thermal = models.IntegerField()
+    hydro = models.IntegerField()
+    
+    # date is TODO utc or local?
+    date = models.DateTimeField(db_index=True)
+
+    @property
+    def marginal_fuel(self):
+        """Integer code for marginal fuel"""
+        # implement this as an actual field for BAs with data
+        return MARGINAL_FUELS.index('None')
+
+    def total_load(self):
+        return float(self.wind + self.hydro + self.thermal)
+
+    def fraction_green(self):
+        return self.wind / self.total_load()
+
+    def fraction_high_carbon(self):
+        return self.thermal / self.total_load()
+
+
+# All units are megawatts
+class NE(BaseBalancingAuthority):
+    class Meta:
+        abstract = False
+        
+    # load, etc in MW
+    gas = models.FloatField()
+    nuclear = models.FloatField()
+    hydro = models.FloatField()
+    coal = models.FloatField()
+    other_renewable = models.FloatField()
+    other_fossil = models.FloatField()
+    marginal_fuel = models.IntegerField()
+
+    # date is TODO utc or local?
+    date = models.DateTimeField(db_index=True)
+
+    def total_load(self):
+        return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
+
+    def fraction_green(self):
+        return (self.hydro + self.other_renewable) / self.total_load()
+
+    def fraction_high_carbon(self):
+        return (self.coal) / self.total_load()
+
+                              
 class Normalized(models.Model):
   balancing_authority = models.CharField(max_length=100)
   total_watts = models.IntegerField() # capacity
@@ -254,8 +236,8 @@ class Normalized(models.Model):
   date = models.DateTimeField(db_index=True)
 
 class User(models.Model):
-	# name
-	name = models.CharField(max_length=100)
+    # name
+    name = models.CharField(max_length=100)
 
 class MeterReading(models.Model):
   # user id
@@ -274,7 +256,7 @@ class MeterReading(models.Model):
   cost = models.FloatField()
 
   def total_kwh(self):
-	return self.energy/3600.0 * self.duration
+    return self.energy/3600.0 * self.duration
   
   def total_cost(self):
-	return self.cost * self.duration / 3600.0 / 10000.0
+    return self.cost * self.duration / 3600.0 / 10000.0
