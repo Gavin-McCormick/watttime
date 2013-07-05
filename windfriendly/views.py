@@ -265,15 +265,8 @@ def history(request):
     if len(ba_rows) == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
     
-    # collect sums
-    data = []
-    for row in ba_rows:
-      data.append({
-          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
-          'percent_green': round(row.fraction_green() * 100, 3),
-          'marginal_fuel': row.marginal_fuel,
-          'load_MW': round(row.total_load(), 1),
-          })
+    # collect data
+    data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
@@ -297,7 +290,7 @@ def today(request):
     if len(ba_rows) == 0:
       raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
     
-    # collect sums
+    # collect data
     data = [r.to_dict() for r in ba_rows]
 
     # return
