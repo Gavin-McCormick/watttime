@@ -128,25 +128,8 @@ urlpatterns += patterns('accounts.views',
 )
 
 # windfriendly API patterns
-urlpatterns +=  patterns('windfriendly.views',
-    url(r'^green[/]?$',
-        'green', name='green'),
-    url(r'^forecast[/]?$',
-        'forecast', name='forecast'),
-    url(r'^update/(?P<utility>[a-zA-Z0-9_-]+)[/]?$',
-        'update', name='update'),
-    url(r'^summarystats[/]?$',
-        'summarystats', name='summarystats'),
-    url(r'^history[/]?$',
-        'history', name='history'),
-    url(r'^today[/]?$',
-        'today', name='today'),
-    url(r'^alerts[/]?$',
-        'alerts', name='alerts'),
-    url(r'^average/(?P<userid>[a-zA-Z0-9_-]+)[/]?$',
-        'average_usage_for_period', name='average'),
-    url(r'^debug[/]?$',
-        'debug_messages', name='debug_messages'),
+urlpatterns += patterns('',
+    url(r'',  include('windfriendly.urls')),
 )
 
 # twilio
