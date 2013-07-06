@@ -59,11 +59,16 @@ class UtilityParser():
     
     def today(self, tz):
         now = datetime.datetime.today()
-        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        return tz.localize(today)
+        local_now = tz.localize(now)
+        today = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        return today
 
     def tomorrow(self, tz):
         return self.today(tz) + datetime.timedelta(1)
+
+    def yesterday(self, tz):
+        return self.today(tz) - datetime.timedelta(1)
+
 
 class CAISOParser(UtilityParser):
     def __init__(self):
@@ -76,13 +81,14 @@ class CAISOParser(UtilityParser):
         self.FRCST_CODE = 'DAM'
         self.HRAHEAD_CODE = 'HASP'
         self.DATE_FRMT = '%Y%m%d'
-        self.TZ = pytz.timezone('US/Pacific')
+        self.TZ = self.MODEL.TIMEZONE
         
     def update(self):
         # figure out dates to pull for
-        dates_to_update = {self.ACTUAL_CODE : self.today(self.TZ),
-                           self.FRCST_CODE : self.tomorrow(self.TZ),
-                           self.HRAHEAD_CODE : self.today(self.TZ),
+        dates_to_update = {self.ACTUAL_CODE :
+                                (self.today(self.TZ), self.today(self.TZ)),
+                           self.FRCST_CODE : 
+                                (self.tomorrow(self.TZ), self.tomorrow(self.TZ)),
                           }
                           
         # return data
@@ -92,8 +98,7 @@ class CAISOParser(UtilityParser):
         for forecast_code in [self.ACTUAL_CODE, self.FRCST_CODE]:
             # scrape and parse data
             streams = self.scrape_all(forecast_code,
-                                      dates_to_update[forecast_code],
-                                      dates_to_update[forecast_code])
+                                      *dates_to_update[forecast_code])
             datapoints = self.parse(streams)
             
             # save to db
@@ -115,9 +120,7 @@ class CAISOParser(UtilityParser):
         return to_return
 
     def _date_gen(self, start_date, end_date):
-        if start_date == end_date:
-            yield start_date
-        while start_date < end_date:
+        while start_date <= end_date:
             yield start_date
             start_date = start_date + datetime.timedelta(1)
 
