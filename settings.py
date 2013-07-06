@@ -283,6 +283,6 @@ GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
 GOOGLE_ANALYTICS_DOMAIN = 'herokuapp.com'
 
 # Cross-Origin Resource Sharing
-CORS_ORIGIN_WHITELIST = ('localhost',
-                         'watttime.herokuapp.com',
-                         )
+CORS_ORIGIN_REGEX_WHITELIST = ('localhost',
+                               'watttime.herokuapp.com',
+                               )
