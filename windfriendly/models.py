@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+import pytz
 #from accounts.models import User
 
 # Approximately in order from bad to good
@@ -26,7 +27,9 @@ class BaseBalancingAuthority(models.Model):
     # timepoints are 'extra green' if fraction_green is above this fraction
     GREEN_THRESHOLD = 0.15
     # timepoints are 'extra green' if fraction_high_carbon is above this fraction
-    DIRTY_THRESHOLD = 0.95   
+    DIRTY_THRESHOLD = 0.95 
+    # must set timezone for every derived class
+    TIMEZONE = pytz.utc
 
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
@@ -35,6 +38,7 @@ class BaseBalancingAuthority(models.Model):
                 'load_MW': self.total_load(),
                 'marginal_fuel': self.marginal_fuel,
                 'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
                 }
                 
     class Meta:
@@ -168,6 +172,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
                 'forecast_code': self.forecast_code,
                 'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
                 'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
+                'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
                 }
                 
     @classmethod
@@ -259,6 +264,8 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
 class CAISO(BaseForecastedBalancingAuthority):
     class Meta:
         abstract = False
+
+    TIMEZONE = pytz.timezone('US/Pacific')
         
     # load, wind, solar in MW
     load = models.FloatField()
@@ -269,6 +276,7 @@ class CAISO(BaseForecastedBalancingAuthority):
     forecast_code = models.IntegerField()
     
     # date is local time at which these values will be true (can be in the future)
+    # TODO migrate to be UTC time
     date = models.DateTimeField(db_index=True)
     # date_extracted is the UTC time at which these values were pulled from CAISO
     date_extracted = models.DateTimeField(db_index=True)
@@ -293,6 +301,8 @@ class BPA(BaseBalancingAuthority):
     """Raw BPA data"""
     class Meta:
         abstract = False
+
+    TIMEZONE = pytz.timezone('US/Pacific')
         
     # load, etc in MW
     load = models.IntegerField()
@@ -300,7 +310,7 @@ class BPA(BaseBalancingAuthority):
     thermal = models.IntegerField()
     hydro = models.IntegerField()
     
-    # date is TODO utc or local?
+    # date is utc
     date = models.DateTimeField(db_index=True)
 
     @property
@@ -323,6 +333,8 @@ class BPA(BaseBalancingAuthority):
 class NE(BaseBalancingAuthority):
     class Meta:
         abstract = False
+        
+    TIMEZONE = pytz.timezone('US/Eastern')
         
     # load, etc in MW
     gas = models.FloatField()
