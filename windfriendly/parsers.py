@@ -247,7 +247,7 @@ class CAISOParser(UtilityParser):
             row.wind = dp['wind']
             row.solar = dp['solar']
             row.forecast_code = FORECAST_CODES[dp['forecast_type']]
-            row.date = dp['timestamp']
+            row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
             row.save()
             return True
