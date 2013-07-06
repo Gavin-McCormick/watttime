@@ -315,7 +315,12 @@ def alerts(request):
     if end:
         endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
     else:
-        endtime = starttime + timedelta(1) - timedelta(0, 1)
+        endtime = starttime + timedelta(days = 1) - timedelta(seconds = 1)
+
+    tz_offset = request.GET.get('tz', None)
+    if tz_offset:
+        starttime = starttime + timedelta(hours = int(tz_offset))
+        endtime = endtime + timedelta(hours = int(tz_offset))
 
     # get best guess data
     ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(starttime, endtime)
