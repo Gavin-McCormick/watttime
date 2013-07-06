@@ -17,3 +17,4 @@ pandas==0.11.0
 South==0.8.1
 django-registration==1.0
 django-picklefield==0.3.0
+django-cors-headers==0.11
