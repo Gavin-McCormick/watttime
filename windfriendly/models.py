@@ -37,7 +37,7 @@ class BaseBalancingAuthority(models.Model):
                 'percent_dirty': round(self.fraction_high_carbon()*100, 3),
                 'load_MW': self.total_load(),
                 'marginal_fuel': self.marginal_fuel,
-                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
                 }
                 
@@ -170,7 +170,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
                 'load_MW': self.total_load(),
                 'marginal_fuel': self.marginal_fuel,
                 'forecast_code': self.forecast_code,
-                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
                 'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
                 }
@@ -275,8 +275,7 @@ class CAISO(BaseForecastedBalancingAuthority):
     # forecast type is the index in FORECAST_CODES
     forecast_code = models.IntegerField()
     
-    # date is local time at which these values will be true (can be in the future)
-    # TODO migrate to be UTC time
+    # date is UTC time at which these values will be true (can be in the future)
     date = models.DateTimeField(db_index=True)
     # date_extracted is the UTC time at which these values were pulled from CAISO
     date_extracted = models.DateTimeField(db_index=True)
