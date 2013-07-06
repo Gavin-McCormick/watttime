@@ -184,7 +184,7 @@ def summarystats(request):
       # get rows
       ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
       if len(ba_rows) == 0:
-        raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
+          raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
 
       # collect sums
       fraction_green_kw = sum([row.fraction_green() for row in ba_rows]) / len(ba_rows)
@@ -255,7 +255,8 @@ def history(request):
     # get rows
     ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
-      raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
+        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
+        return []
     
     # collect data
     data = [r.to_dict() for r in ba_rows]
@@ -282,7 +283,8 @@ def today(request):
     # get rows
     ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
-      raise ValueError('no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end)))
+        print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
+        return []
     
     # collect data
     data = [r.to_dict() for r in ba_rows]
