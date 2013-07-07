@@ -4,6 +4,6 @@
 {% block content %}
 
 <h2>Your phone number is already verified</h2>
-<p>Your phone number, {{ phone_number }}, has already been confirmed by WattTime as belonging to you. <a href = "{% url 'profile_view' %}">Return</a> to your profile page to view and edit your other settings.</p>
+<p class="text-success alert alert-block alert-success">Your phone number, {{ phone_number }}, has been confirmed by WattTime as belonging to you. Return to your <a href="{% url 'profile_view' %}" class="btn btn-info">profile page</a> to view and edit your other settings.</p>
 
 {% endblock %}

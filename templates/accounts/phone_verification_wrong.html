@@ -4,16 +4,17 @@
 {% block content %}
 
 <h2>Verify your phone number</h2>
-<p>Verification code does not match! You can re-renter the code below, or reload this page and we can resend it to your phone, {{ phone_number }}.</p>
-<p>To change your number, return to <a href="{% url 'profile_view' %}">your profile</a>.</p>
+</br></br>
+<div class="alert alert-block alert-error"><p class="lead text-alert">Verification code does not match! <p class="text-info">You can re-renter the code below, or reload this page and we can resend it to your phone, {{ phone_number }}.</p>
+<p class="text-info">To change your number, return to <a href="{% url 'profile_view' %}">your profile</a>.</p>
 
-<form action="{% url 'phone_verify_view' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">
+<form action="{% url 'phone_verify_view' %}" method="post">
         {% csrf_token %}
         <p class="fieldWrapper">
         {{ form.verification_code.errors }}
         {{ form.verification_code }}
         <!-- <input type="int" name="code"> -->
-       <input type="submit" name="phone_verify" value="Verify   " /></p>
+       <input type="submit" name="phone_verify" class="btn btn-awesome" value="Verify" /></p>
 </form>
 
 {% endblock %}
