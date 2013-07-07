@@ -1,75 +1,127 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}Current status{% endblock %}
 
 {% block content %}
 
-<h2>Current Status</h2>
-<div class="span10 offset1"><p class="lead alert alert-block alert-info text-info">Select a supported region (in green) to see how clean its electricity is right now. For a detailed list of supported states and data sources, please visit the frequently asked questions page</p>
-
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-  <script type="text/javascript">
+<script src="{% static "js/crossfilter.v1.min.js" %} "></script>
+<script src="{% static "js/d3.v3.min.js" %} "></script>
+
+
+<style>
+#charts .actualline { 
+    stroke: green;
+    stroke-width: 3;
+    fill: none;
+}
+#charts .fcline { 
+    stroke: green;
+    stroke-dasharray: 12,12;
+    stroke-width: 3;
+    fill: none;
+}
+#charts .axis path,
+#charts .axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 2;
+    shape-rendering: crispEdges;
+}
+#charts div {
+    font-size: 80%;
+}
+#charts .points {
+    fill: green;
+}
+</style>
+
+<br><br>
+
+
+<h2>Current Status</h2>
+
+<p class="lead alert alert-block alert-info text-info">Select a supported region (in green) to see how clean its electricity is right now. For a detailed list of supported states and data sources, please visit the frequently asked questions page</p>
+
+<div class="well">
+    <p class="lead text-success">How green is today's energy in different regions?
+    </p>
+
+    <div id="charts" float="left">
+      <div id="green-chart" class="chart"></div>
+    </div>
+
+    <div id="map" align="center" float="left"></div>
+
+</div>
+
+<script type="text/javascript">
+
+    /////////////////////
+    // MAP
+    /////////////////////
     google.load('visualization', '1', {packages: ['geochart']});
 
     function drawVisualization() {
         var data = google.visualization.arrayToDataTable([
-            ['State', 'Site'],
-            ['Alabama', 0],
-            ['Alaska', 0],
-            ['American Samoa', 0],
-            ['Arizona', 0],
-            ['Arkansas', 0],
-            ['California', 1],
-            ['Colorado', 0],
-            ['Connecticut', 3],
-            ['Delaware', 0],
-            ['District of Columbia', 0],
-            ['Florida', 0],
-            ['Georgia', 0],
-            ['Guam', 0],
-            ['Hawaii', 0],
-            ['Idaho', 2],
-            ['Illinois', 0],
-            ['Indiana', 0],
-            ['Iowa', 0],
-            ['Kansas', 0],
-            ['Kentucky', 0],
-            ['Louisiana', 0],
-            ['Maine', 3],
-            ['Maryland', 0],
-            ['Massachusetts', 3],
-            ['Michigan', 0],
-            ['Minnesota', 0],
-            ['Mississippi', 0],
-            ['Missouri', 0],
-            ['Montana', 0],
-            ['Nebraska', 0],
-            ['Nevada', 0],
-            ['New Hampshire', 3],
-            ['New Jersey', 0],
-            ['New Mexico', 0],
-            ['New York', 0],
-            ['North Carolina', 0],
-            ['North Dakota', 0],
-            ['Northern Marianas Islands', 0],
-            ['Ohio', 0],
-            ['Oklahoma', 0],
-            ['Oregon', 2],
-            ['Pennsylvania', 0],
-            ['Puerto Rico', 0],
-            ['Rhode Island', 3],
-            ['South Carolina', 0],
-            ['South Dakota', 0],
-            ['Tennessee', 0],
-            ['Texas', 0],
-            ['Utah', 0],
-            ['Vermont', 3],
-            ['Virginia', 0],
-            ['Virgin Islands', 0],
-            ['Washington', 2],
-            ['West Virginia', 0],
-            ['Wisconsin', 0],
-            ['Wyoming', 0]
+            ['State', 'Site', 'ST'],
+            ['Alabama', 0, 'AL'],
+            ['Alaska', 0, 'AK'],
+            ['American Samoa', 0, 'AS'],
+            ['Arizona', 0, 'AZ'],
+            ['Arkansas', 0, 'AR'],
+            ['California', 1, 'CA'],
+            ['Colorado', 0, 'CO'],
+            ['Connecticut', 3, 'CT'],
+            ['Delaware', 0, 'DE'],
+            ['District of Columbia', 0, 'DC'],
+            ['Florida', 0, 'FL'],
+            ['Georgia', 0, 'GA'],
+            ['Guam', 0, 'GM'],
+            ['Hawaii', 0, 'HI'],
+            ['Idaho', 2, 'ID'],
+            ['Illinois', 0, 'IL'],
+            ['Indiana', 0, 'IN'],
+            ['Iowa', 0, 'IA'],
+            ['Kansas', 0, 'KS'],
+            ['Kentucky', 0, 'KY'],
+            ['Louisiana', 0, 'LA'],
+            ['Maine', 3, 'ME'],
+            ['Maryland', 0, 'MD'],
+            ['Massachusetts', 3, 'MA'],
+            ['Michigan', 0, 'MI'],
+            ['Minnesota', 0, 'MN'],
+            ['Mississippi', 0, 'MS'],
+            ['Missouri', 0, 'MO'],
+            ['Montana', 0, 'MT'],
+            ['Nebraska', 0, 'NE'],
+            ['Nevada', 0, 'NV'],
+            ['New Hampshire', 3, 'NH'],
+            ['New Jersey', 0, 'NJ'],
+            ['New Mexico', 0, 'NM'],
+            ['New York', 0, 'NY'],
+            ['North Carolina', 0, 'NC'],
+            ['North Dakota', 0, 'ND'],
+            ['Northern Marianas Islands', 0, ''],
+            ['Ohio', 0, 'OH'],
+            ['Oklahoma', 0, 'OK'],
+            ['Oregon', 2, 'OR'],
+            ['Pennsylvania', 0, 'PA'],
+            ['Puerto Rico', 0, 'PR'],
+            ['Rhode Island', 3, 'RI'],
+            ['South Carolina', 0, 'SC'],
+            ['South Dakota', 0, 'SD'],
+            ['Tennessee', 0, 'TN'],
+            ['Texas', 0, 'TX'],
+            ['Utah', 0, 'UT'],
+            ['Vermont', 3, 'VT'],
+            ['Virginia', 0, 'VA'],
+            ['Virgin Islands', 0, 'VI'],
+            ['Washington', 2, 'WA'],
+            ['West Virginia', 0, 'WV'],
+            ['Wisconsin', 0, 'WI'],
+            ['Wyoming', 0, 'WY']
         ]);
         
         var view = new google.visualization.DataView(data);
@@ -81,13 +133,13 @@
             }
         }]);
         
-        var geochart = new google.visualization.GeoChart(document.getElementById('visualization'));
+        var geochart = new google.visualization.GeoChart(document.getElementById('map'));
         var options = {};
         options['region'] = 'US';
         options['resolution'] = 'provinces';
-        options['width'] = 620;
-        options['height'] = 430;
-        options['colors'] = ['#DDEEF8', '#33cc99', '#33cc99', '#33cc99'];
+        options['width'] = 450;
+        options['height'] = 300;
+        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     
@@ -95,18 +147,12 @@
             var selectionIdx = geochart.getSelection()[0].row;
             var stateName = data.getValue(selectionIdx, 0);
             var value = data.getValue(selectionIdx, 1);
+            var stateAbbrev = data.getValue(selectionIdx, 2);
+
+            if (value > 0) {
+                update_chart_for_state(stateAbbrev);
+            }
             
-            if (value == '1') {
-                window.open('{% url 'CA_status' %}');
-            }
-          
-          if (value == '2') {
-                window.open('{% url 'BPA_status' %}');
-            }
-          
-          if (value == '3') {
-                window.open('{% url 'NE_status' %}');
-            }
         });
     
         geochart.draw(view, options);
@@ -114,13 +160,176 @@
     
 
     google.setOnLoadCallback(drawVisualization);
-  </script>
-<div id="visualization" align='center'></div>
-<!-- Gabe here are the links: Gavin >
-<li><a href="{% url 'NE_status' %}">Massachusetts, New Hampshire, Vermont, Connecticut, Rhode Island, Maine</a></li>
-<li><a href="{% url 'CA_status' %}">California</a></li>
-<li><a href="{% url 'BPA_status' %}">Washington, Oregon, Idaho</a></li>
-	<end links -->
-</div>
+
+    /////////////////////
+    // CHART
+    /////////////////////
+    var margin = {top: 50, right: 20, bottom: 50, left: 50},
+        width = 400 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+    var all_data = [],
+        actual_data = [],
+        forecast_data = [],
+        average_data = [];
+    
+    var parseDate = d3.time.format("%Y-%m-%d %H:%M").parse;
+    var parseISO = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ");
+    
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]).nice();
+    
+    var xAxis = d3.svg.axis().scale(x)
+        .orient("bottom")        
+        .tickFormat(d3.time.format("%_I %p"));
+    
+    var yAxis = d3.svg.axis().scale(y)
+        .orient("left").ticks(5);
+    
+    var valueline = d3.svg.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.value); });
+    
+    var svg = d3.select("#green-chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    var initial_chart_for_state = function(state) {
+        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+            new_data.forEach(function(d) {
+                d.date = parseDate(d.local_time);
+                d.value = +d.percent_green;
+                all_data.push(d);
+                if (d.forecast_code > 0) {
+                    forecast_data.push(d);
+                } else {
+                    actual_data.push(d);
+                }
+            });
+        
+            // Scale the range of the data
+            min_time = new Date(d3.min(all_data, function(d) { return d.date; }));
+            start_time = new Date(min_time.setHours(0,0,0));
+            end_time = new Date(min_time.setHours(24,0,0));
+            x.domain([start_time, end_time]);
+            y.domain([0, Math.min(100, 10+d3.max(all_data, function(d) { return d.value; }))]);
+            
+            svg.append("path")      // Add the valueline path.
+                .attr("class", "actualline")
+                .attr("d", valueline(actual_data));
+            svg.append("path")      // Add the valueline path.
+                .attr("class", "fcline")
+                .attr("d", valueline(forecast_data));
+
+      //      svg.selectAll("circle")
+      //          .data(data).enter()
+      //          .append("circle")
+       //         .attr("class", "points")
+       //         .attr("r", 4)
+       //         .attr("cx", function(d) { return x(d.date); })
+       //         .attr("cy", function(d) { return y(d.value); })
+
+            svg.append("g")         // Add the X Axis
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+            svg.append("text")
+                .attr("class", "x label")
+                .attr("y", (height+margin.bottom/2))
+                .attr("x", (width / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("local time"); 
+        
+            svg.append("g")         // Add the Y Axis
+                .attr("class", "y axis")
+                .call(yAxis);
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("transform", "rotate(-90)")
+                .attr("y", -margin.left)
+                .attr("x", -height/2)
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("percent of total energy"); 
+    
+            svg.append("text")
+                .attr("class", "chart title")
+                .attr("y", -margin.top/2)
+                .attr("x", (width / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("Today's green energy in "+state); 
+       
+        });
+    }
+
+    var update_chart_for_state = function(state) {
+        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+            all_data = [];
+            actual_data = [];
+            average_data = [];
+            forecast_data = [];
+      //      d3.selectAll("circle")
+      //          .data(data).exit()
+      //          .remove();
+
+            new_data.forEach(function(d) {
+                d.date = parseDate(d.local_time);
+                d.value = +d.percent_green;
+                all_data.push(d);
+                if (d.forecast_code > 0) {
+                    forecast_data.push(d);
+                } else {
+                    actual_data.push(d);
+                }
+            });
+        
+            // Scale the range of the data
+            min_time = new Date(d3.min(all_data, function(d) { return d.date; }));
+            start_time = new Date(min_time.setHours(0,0,0));
+            end_time = new Date(min_time.setHours(24,0,0));
+            x.domain([start_time, end_time]);
+            y.domain([0, Math.min(100, 10+d3.max(all_data, function(d) { return d.value; }))]);
+
+       //     d3.selectAll("circle")
+       //         .data(data).enter()
+       //         .append("circle")
+       //         .attr("class", "points")
+        //        .attr("r", 4)
+        //        .attr("cx", function(d) { return x(d.date); })
+        //        .attr("cy", function(d) { return y(d.value); })
+           
+            var svg = d3.select("#green-chart").transition(); 
+
+            svg.select(".actualline")      // Add the valueline path.
+                .duration(500)
+                .attr("d", valueline(actual_data));        
+            svg.select(".fcline")      // Add the valueline path.
+                .duration(500)
+                .attr("d", valueline(forecast_data));        
+    
+            svg.select(".x.axis")         // Add the X Axis
+                .duration(500)
+                .call(xAxis);
+            svg.select(".y.axis")         // Add the X Axis
+                .duration(500)
+                .call(yAxis);
+        
+            svg.select(".chart.title")
+                .duration(500)
+                .text("Today's green energy in "+state); 
+       
+        });
+    }
+
+    initial_chart_for_state("CA");
+
+
+</script>
+
 
 {% endblock %}
