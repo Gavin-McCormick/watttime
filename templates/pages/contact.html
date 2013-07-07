@@ -4,53 +4,42 @@
 
 {% block content %}
 	<h2>Contact Us</h2>
-	<br>
-	<div class="container contact-form">
+		<div class="container-fluid">
 
-		<div class="row">
-
-			<div class="span12">
-
-				<h3>Comments? Questions? Get in Touch!</h3>
-
-			</div>
+		<div class="row-fluid">
+		
+		<p class="lead" style="text-align:center">Comments? Questions? Get in Touch!</p>
 
 			<form action="" method="post" class="">
 			{% csrf_token %}
 			{{ form.non_field_errors }}
 
-				<div class="span4">
+				<div class="span4 offset2">
 
 					<p class="fieldWrapper">
        			   	{{ form.name.errors }}
         			<!--<label for="id_name">Name:</label>
         			-->
         			{{ form.name }}
-    				</p>
-				</div>	
-
-				<div class="span4">
-
-					<p class="fieldWrapper">
+    				
         			{{ form.email.errors }}
         			<!--<label for="id_email">Email:</label>
         			-->
         			{{ form.email }}
-    				</p>
-				</div>
-
-				<div class="span4">
-				
-					<p class="fieldWrapper">
+    				
         			{{ form.subject.errors }}
        			 	<!--<label for="id_subject">Subject:</label>
        			 	-->
         			{{ form.subject }}
-    				</p>
+        			</p>
+        			
+        			<p><input type="submit" class="btn btn-awesome pull-left" value="Send"></p>
+
+    				
 				</div>
 
 
-				<div class="span12">
+				<div class="span4">
 
 				<p class="fieldWrapper">
         		{{ form.message.errors }}
@@ -61,17 +50,11 @@
 				
 				</div>
 
-				<div class="span4 offset4">
-
-					
-					<input type="submit" value="SAY HELLO!">
-
-				</div>
 
 			</form>
 
 		</div>
+		</div>
 
-	</div>
 	
 {% endblock %}

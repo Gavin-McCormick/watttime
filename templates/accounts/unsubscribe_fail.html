@@ -4,10 +4,8 @@
 {% block content %}
 
 
-<h2>Failed unsubscribe request</h2>
-<p>Sorry, we couldn't find an account associated with phone number {{ phone }}. Please <a href="{% url 'contact' %}">contact us</a> and
-we'll sort this out. While you're at it, please pass along your comments and
-requests so that we can make this early-stage product work better for
-you!</p>
+<h2>Failed Unsubscribe Request</h2>
+<p class="text-error alert alert-error">Sorry, we couldn't find an account associated with phone number {{ phone }}. Please <a href="{% url 'contact' %}">contact us</a> and
+we'll do our best to sort this out. While you're at it, please pass along your comments and requests so that we can make this WattTime work better for you!</p>
 
 {% endblock %}

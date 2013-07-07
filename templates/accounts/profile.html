@@ -1,101 +1,56 @@
 {% extends "base.html" %}
 
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 <h2>Settings</h2>
+<div class="container-fluid">
+<div class="row-fluid">
 
+<div class="span4">
 {% if deactivated %}
-<p>Your account is currently deactivated, and you will not receive any further emails or text messages from us. You can <a href="{% url 'reactivate' %}">reactivate</a> your account at any time.</p>
+<p class="lead alert alert-block text-warning">Your account is currently deactivated.</p><p class="alert-info alert-block text-info">You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-success">reactivate</a> your account at any time.</p>
 {% else %}
     {% if phone_verified %}
-    <p>Congratulations {{ name }}, you are signed up to receive WattTime SMS alerts!</p>
+    <p class="lead text-success alert alert-block alert-success">Success! You are signed up to receive WattTime SMS alerts!</p>
     {% else %}
         {% if phone_blank %}
-        <p> If you provide your phone number and then <a href="{% url 'phone_verify_view' %}">verify it</a>, you will receive text messages about the electricity supply for your state with the frequency you specify.</p>
+        <p class="lead alert alert-block text-warning">If you provide and <a href="{% url 'phone_verify_view' %}" class="btn btn-success">verify </a> your phone number, you will receive WattTime SMS notifications.</p>
         {% else %}
-        <p> Your phone number has not been verified yet. If you <a href="{% url 'phone_verify_view' %}">verify your phone number</a>, you will receive text messages about the electricity supply for your state with the frequency you specified.</p>
+        <p class="lead alert alert-block text-info">Your phone number has not been verified yet. <a href="{% url 'phone_verify_view' %}" class="btn btn-success">Verify your phone number</a> to receive WattTime SMS notifications.</p>
         {% endif %}
     {% endif %}
- 
-<p>You can <a href="{% url 'profile_edit' %}">personalize</a> your account settings for added control and convenience. Here are your current settings:</p>
+<p class="lead text-warning alert alert-block">If you wish to stop receiving WattTime notifications, you may <a href="{% url 'deactivate' %}" class="btn btn-warning">deactivate</a> your account at any time.</p>
+</div>
+
+<div class="span8">
+
+  <p class="lead text-info alert-info alert-block"><a href="{% url 'profile_edit' %}" class="btn btn-info">Personalize</a> your account settings for more timely and relevant notifications. Your current settings:</p>
+
+
+<dl class="dl-horizontal text-info alert-info alert-block">
+  <dt>Name</dt>
+  <dd>{{ name }}</dd>
+   <dt>Email</dt>
+  <dd>{{ email }}</dd>
+   <dt>State</dt>
+  <dd>{{ state }}</dd>
+   <dt>Telephone</dt>
+  <dd>{{ phone_number }}</dd>
+   <dt>Message Frequency</dt>
+  <dd>{{ message_frequency }}</dd>
+   <dt>Morning Forecast</dt>
+  <dd>{{ morning_forecast }}</dd>
+    <dt>Home Appliances</dt>
+  <dd>{{ equipment }}</dd>
+    <dt>Get News Updates</dt>
+  <dd>{{ beta_test }}</dd>
+</dl>
 
 
 
-<br>
-
-<center>
-<table class="well" style="background-color:#666;">
-    <tr>
-        <td>
-            <h4>Name</h4>
-        </td>
-        <td>
-            <h4>{{ name }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Email address</h4>
-        </td>
-        <td>
-            <h4>{{ email }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>State</h4>
-        </td>
-        <td>
-            <h4>{{ state }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Phone number</h4>
-        </td>
-        <td>
-            <h4>{{ phone_number }}</h4>
-        </td>
-    </tr>
-</table>
-<table class="well" style="background-color:#666;">
-    <tr>
-        <td>
-            <h4>Message frequency</h4>
-        </td>
-        <td>
-            <h4>{{ message_frequency }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Receive a morning forecast by email?</h4>
-        </td>
-        <td>
-            <h4>{{ morning_forecast }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Equipment I have access to:</h4>
-        </td>
-        <td>
-            <h4>{{ equipment }}</h4>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Hear about future experimental features?</h4>
-        </td>
-        <td>
-            <h4>{{ beta_test }}</h4>
-        </td>
-    </tr>
-</table>
-</center>
-
-    <p> (And if you wish to stop receiving any emails or text messages from us, you may <a href="{% url 'deactivate' %}">deactivate</a> your account at any time.)</p>
+</div>
+</div>
 {% endif %}
 
 

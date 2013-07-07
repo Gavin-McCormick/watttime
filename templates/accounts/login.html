@@ -3,22 +3,22 @@
 
 {% block content %}
 
-<h2>Welcome to WattTime!</h2>
-<p>Enter your email address and password below to login into your existing WattTime account.</p>
+<h2>Welcome Back!</h2>
+</br></br>
+<div class="alert alert-block alert-success"><p class="lead text-success">Enter your email address and password below to login into your existing WattTime account.</p>
 
-<form action="{% url 'user_login' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+<form action="{% url 'user_login' %}" method="post" class="form-inline">{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.email.errors }}
         {{ form.email }}
-    </p>
-    <p class="fieldWrapper">
+
         {{ form.password.errors }}
         {{ form.password }}
-    </p>
-    <input type="submit" name="login" value="Login" />
+   <input type="submit" class="btn btn-awesome" name="login" value="Login" /></p>
 </form>
+</div>
 
-<p>(Don't have an account yet? You'll need an invitation email. You can actually invite yourself on the <a href="{% url 'home' %}">main page</a>.)</p>
+<p class="lead text-info alert alert-block alert-info">Don't have an account yet? You'll need an invitation email. </br>You're in luck! You can actually invite yourself on the <a href="{% url 'home' %}">main page</a>.</p>
 
 {% endblock %}
 

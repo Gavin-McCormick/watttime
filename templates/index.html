@@ -15,25 +15,41 @@
 
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale = 1.0; maximum-scale=1.0, user-scalable=no" />
+<title>WattTime</title>
 
-<META NAME="Description" CONTENT="WattTime notifies you when your electricity consumption contributes to a cleaner energy economy.">
+<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
+
+<META NAME="Description" CONTENT="WattTime lets you know when your electricity consumption contributes to a cleaner energy economy.">
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-	<title>WattTime</title>
 
-<link rel="stylesheet" type="text/css" href="{% static "css/style2.css" %}" />
 
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
 
-<link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" />
+
+<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
+
+
+<!-- Le fav and touch icons 
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+-->
+<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
+
+
+
+<!-- font links here -->
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" /> -->
 
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
 
 <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 
-<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
 
 <!--[if lt IE 9]>
 
@@ -47,9 +63,16 @@
 
 <![endif]-->
 
-<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
 
-<script src="{% static "js/jquery-1.8.2.min.js" %} "></script>
+<!-- scripts for making things pretty and functional-->
+
+<script src="http://code.jquery.com/jquery.js"></script>
+
+<script src="{% static "js/bootstrap.js" %} "></script>
+
+<script src="{% static "js/bootstrap.min.js" %} "></script>
+
+<!-- <script src="{% static "js/jquery-1.8.2.min.js" %} "></script> -->
 
 <script src="{% static "js/jquery.easing.1.3.js" %} "></script>
 
@@ -68,94 +91,71 @@
 
 <body name="top">
 
+<!-- provides a div for the photo credit -->      
+<div class="photo-wrap">
 
+      
 
+		<!-- Navbar
+    ================================================== -->
+   <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+     <div class="container">
+ 
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+          <a class="brand" href="{% url 'home' %}">
+			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
+			</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav nav-pills pull-right">
+              <li class="">
+				<a href="{% url 'status' %}">CURRENT STATUS</a>
+              </li>
+              <li class="">
+				<a href="{% url 'about-us' %}">ABOUT</a>
+              </li>
+              <li class="">
+				<a href="{% url 'faq' %}">HOW IT WORKS</a>
+              </li>
+              <li class="">
+				<a href="{% url 'contact' %}">CONTACT</a>
+              </li>                  
+              {% if user.is_authenticated %}
 
-<div class="page-wrapper">
+              <!--<li class="dropdown">
+               <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">ACCOUNT
+        		<b class="caret"></b>
+      			</a>
+    		<ul class="dropdown-menu" role="menu">	-->		
+              <li >
+				<a tabindex="-1" href="{% url 'profile_view' %}">SETTINGS</a>
+              </li>
+              <li >
+				<a tabindex="-1" href="{% url 'account_logout' %}">LOG OUT</a>
+              </li>
+              {% else %}
+              <li class="">
+				<a href="{% url 'user_login' %}">LOG IN</a>
+              </li>
+              {% endif %}
+                      <!--       </ul></li>  -->
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+    </div>						
 
-	<div class="agency-wrap">
+			<div class="header-main container">
 
-		<div class="container page-container home-container">
-
-			<div class="row">
-
-				<div class="span12">
-
-					<div class="top-nav">
-
-						<a href="{% url 'home' %}" class="logo-link">
-
-							<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
-
-						</a>
-
-						<ul class="nav nav-home">
-
-
-							<li>
-							<a href="{% url 'status' %}">STATUS</a>
-							</li>
-
-
-							<li>
-
-								<a href="{% url 'about-us' %}">ABOUT US</a>
-
-							</li>
-
-							<li>
-
-								<a href="{% url 'faq' %}">FAQ</a>
-
-							</li>
-							
-							<li>
-
-								<a href="{% url 'contact' %}">CONTACT</a>
-
-							</li>
-
-{% if user.is_authenticated %}
-
-							<li>
-
-								<a href="{% url 'profile_view' %}">SETTINGS</a>
-
-							</li>
-							<li>
-							
-								<a href="{% url 'account_logout' %}">LOG OUT</a>
-								
-							</li>
-{% else %}
-							
-							<li>
-							
-								<a href="{% url 'user_login' %}">LOG IN</a>
-								
-							</li>
-{% endif %}
-
-<!-- Gavin removed the following more complicated log in / sign up / log out snippet which was put there by Kevin:
-{ % if user.is_authenticated % }
-							<li>
-								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
-							</li						
-{ % else % }						
-							<li>							
-								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>								
-							</li>							
-{ % endif % }
-<-->
-
-						</ul>
+				<h1>It's <span style="color:#fff">
 						
-
-					<div class="header-main">
-
-
-						<h1>It's <span style="color:#339999"><!--display user's local time -->
-						
+						<!--this little widget get the browser's local time and displays it -->
 						<script type="text/javascript">
 						<!--
 						var currentTime = new Date()
@@ -178,7 +178,7 @@
 						//-->
 						</script>
 
-                        </span> and <br> the California electricity grid is <span style="color:#ffff33">{{current_green}}</span> green. </h1>
+                </span> and <br> the California electricity grid is <span style="color:#ffff33; text-shadow: 0.05em 0.05em #339999;">{{current_green}}</span> green.</h1>
 
 
                 <!-- Time Zone Localization
@@ -192,66 +192,67 @@
 					  {% endtimezone %} -->
                                                   
                                         
-<!-- Grid localization script: identifies users by IP; prints location field
+				<!-- Grid localization script: identifies users by IP; prints location field
 
-<script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
+				<script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
  
-<br>Country Code:
-<script language="JavaScript">document.write(geoip_country_code());</script>
-<br>Country Name:
-<script language="JavaScript">document.write(geoip_country_name());</script>
-<br>City:
-<script language="JavaScript">document.write(geoip_city());</script>
-<br>Region:
-<script language="JavaScript">document.write(geoip_region());</script>
-<br>Region Name:
-<script language="JavaScript">document.write(geoip_region_name());</script>
-<br>Latitude:
-<script language="JavaScript">document.write(geoip_latitude());</script>
-<br>Longitude:
-<script language="JavaScript">document.write(geoip_longitude());</script>
-<br>Postal Code:
-<script language="JavaScript">document.write(geoip_postal_code());</script> 
+				<br>Country Code:
+				<script language="JavaScript">document.write(geoip_country_code());</script>
+				<br>Country Name:
+				<script language="JavaScript">document.write(geoip_country_name());</script>
+				<br>City:
+				<script language="JavaScript">document.write(geoip_city());</script>
+				<br>Region:
+				<script language="JavaScript">document.write(geoip_region());</script>
+				<br>Region Name:
+				<script language="JavaScript">document.write(geoip_region_name());</script>
+				<br>Latitude:
+				<script language="JavaScript">document.write(geoip_latitude());</script>
+				<br>Longitude:
+				<script language="JavaScript">document.write(geoip_longitude());</script>
+				<br>Postal Code:
+				<script language="JavaScript">document.write(geoip_postal_code());</script> 
 
--->
+				-->
                                         
                                        
 						<h2>We Can Do Better</h2>
 
-						<p>Sometimes your local power grid is running on pretty clean fuels, and sometimes it isn't. WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
+						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px;">
+ 						<div class="span5 offset1"><p class="lead text-info">Sometimes your local power grid is running on pretty clean fuels, and sometimes it isn't. WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
    		
-						<p>Here for the Facebook beta? Sign up here.</p>  
+   						</div>
+  						  <div class="span5 offset1"> 
+  						  <p class="lead text-info">Get started today!</p>
 
-                                                <form action="{% url 'create_user' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
-                                                    <p class="fieldWrapper">
-                                                        {{ form.email.errors }}
-                                                        {{ form.email }}
-                                                        
+  						 <form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
+                                                    <p class="fieldWrapper ">
+                                                        <!--<label>Please send us your email to get you started.</label>
+                                                        <span class="help-block">Example block-level help text here.</span>        
+														<span class="help-inline">{{ form.email.errors }}</span> -->
+
+														{{ form.email.errors }}
+                    									{{ form.email }} 
+                                                      	
                                                         {{ form.state.errors }}
                                                         {{ form.state }}
-                                                    </p>
-                                                    <input type="submit" name="sign_up" value="Join!">
+
+                                                    </p>           
+  													<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
                                                 </form>
-						<!-- took out  
-					    { % include 'accounts/signup_splash.html' % }
-                        this -->					  
-    					
+                                                
+    					</div>
+						</div>						
+		
+                                               
 		 
 	
 					</div>
 
-
-
-
-				</div>
-
-			</div>
-			
-		</div>
-
-		</div><div class="agency-credit">
-			Photo Credit:<a href="http://www.flickr.com/photos/93371523@N00/" target="_blank">
-				j_palmucci</a>
+		
+		
+		<div class="photo-credit pull-right">
+			Photo Credit:<a href="http://www.flickr.com/photos/69125796@N00/7415541920/sizes/o/in/photostream/" target="_blank"> starmanseries</a>
 		</div>
 
 	</div>
@@ -260,7 +261,7 @@
 
 		TELL ME MORE! <i class="arrow arrow-down">&nbsp;</i>
 
-	</a>
+	</a></div>
 
 	<div class="full-width-features feature-1">
 
@@ -270,7 +271,7 @@
 
 				<div class="span12">
 
-					<img src="{% static "images/WattTimeShieldBW.png" %}" class="fly-wheel" width="120">
+					<img src="{% static "images/WattTimeShield_sm.png" %}" class="fly-wheel" width="120">
 
 					<h1>WattTime is Built for You</h1>
 
@@ -284,7 +285,7 @@
 
 				<div class="span12">
 
-					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
 
 				</div>
 
@@ -414,8 +415,8 @@
 		<h1>WE'RE <br class="visible-phone"> FLIPPING THE SWITCH <br class="visible-phone"> SOON</h1>
 
 		<h2>Join WattTime</h2>
-
-		<a href="#top" class="scroll-top">
+</br></br>
+		<a href="#top" class="btn btn-large btn-awesome">
 
 			YES, PLEASE! <i class="arrow arrow-up">&nbsp;</i>
 
@@ -423,7 +424,7 @@
 
 	</div>
 
-	<div class="wheel">
+	<div class="shield">
 
 		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
 
@@ -497,9 +498,8 @@
 
 	</div>
 
-</div>
 
-</div>
+	</div>
 
 
 </body>

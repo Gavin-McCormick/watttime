@@ -15,25 +15,42 @@
 
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale = 1.0; maximum-scale=1.0, user-scalable=no" />
-
-<META NAME="Description" CONTENT="WattTime notifies you when your electricity consumption contributes to a cleaner energy economy.">
-
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <title>{% block title %}WattTime{% endblock %}</title>
 
-<link rel="stylesheet" type="text/css" href="{% static "css/style2.css" %}" />
+<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no" />
 
-<link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" />
+<META NAME="Description" CONTENT="WattTime lets you know when your electricity consumption contributes to a cleaner energy economy.">
 
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
+
+
+<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
+
+
+<!-- Le fav and touch icons 
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+-->
+<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
+
+
+
+<!-- font links here -->
+
+<!-- <link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" /> -->
 
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
 
 <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 
-<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
 
 <!--[if lt IE 9]>
 
@@ -47,13 +64,18 @@
 
 <![endif]-->
 
-<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
 
-<script src="{% static "js/jquery-1.8.2.min.js" %} "></script>
+<!-- scripts for making things pretty and functional-->
+
+<script src="http://code.jquery.com/jquery.js"></script>
+
+<script src="{% static "js/bootstrap.js" %} "></script>
+
+<script src="{% static "js/bootstrap.min.js" %} "></script>
+
+<!-- <script src="{% static "js/jquery-1.8.2.min.js" %} "></script> -->
 
 <script src="{% static "js/jquery.easing.1.3.js" %} "></script>
-
-<script src="{% static "js/jquery.simplemodal.1.4.3.min.js" %} "></script>
 
 <script src="{% static "js/masonry.min.js" %} "></script>
 
@@ -64,103 +86,71 @@
 <script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
 
 <script src="{% static "js/respond.min.js" %} "></script>
-
+<!-- <style> body{
+	background: #336666;
+} </style> -->
 
 </head>
 
 <body name="top">
+      
 
+		<!-- Navbar
+    ================================================== -->
+   <div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+     <div class="container">
+ 
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+          <a class="brand" href="{% url 'home' %}">
+			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
+			</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav nav-pills pull-right">
+              <li class="">
+				<a href="{% url 'status' %}">CURRENT STATUS</a>
+              </li>
+              <li class="">
+				<a href="{% url 'about-us' %}">ABOUT</a>
+              </li>
+              <li class="">
+				<a href="{% url 'faq' %}">HOW IT WORKS</a>
+              </li>
+              <li class="">
+				<a href="{% url 'contact' %}">CONTACT</a>
+              </li>                  
+              {% if user.is_authenticated %}
 
-
-
-<div class="page-wrapper">
-
-	<div class="agency-wrap">
-
-		<div class="container page-container home-container">
-
-			<div class="row">
-
-				<div class="span12">
-
-					<div class="top-nav">
-
-						<a href="{% url 'home' %}" class="logo-link">
-
-							<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
-
-						</a>
-
-						<ul class="nav nav-home">
-
-<!--							<li>
-
-						  		<a href="{% url 'home' %}">HOME</a>
-
-							</li>-->
-							
-							<li>
-							<a href="{% url 'status' %}">STATUS</a>
-							</li>
-
-
-							<li>
-
-
-								<a href="{% url 'about-us' %}">ABOUT US</a>
-
-							</li>
-
-							<li>
-
-
-								<a href="{% url 'faq' %}">FAQ</a>
-
-							</li>
-							
-							<li>
-
-								<a href="{% url 'contact' %}">CONTACT</a>
-
-							</li>
-			
-				
-{% if user.is_authenticated %}
-
-							<li>
-
-								<a href="{% url 'profile_view' %}">SETTINGS</a>
-
-							</li>
-							
-							<li>
-							
-								<a href="{% url 'account_logout' %}">LOG OUT</a>
-								
-							</li>
-{% else %}
-							
-							<li>
-								
-								<a href="{% url 'user_login' %}">LOG IN</a>
-								
-							</li>
-{% endif %}
-
-<!-- The following is used with allauth and was removed by Gavin on Sunday
-{ % if user.is_authenticated % }
-							<li>
-								<img src="{{ user.get_avatar_url }}" /><p>You're logged in with {{ user.get_provider }} as {{ user }}.</p><a href="{% url 'account_logout' %}">LOG OUT</a>
-							</li						
-{ % else % }						
-							<li>							
-								<p><a href="{% url 'account_signup' %}">SIGN UP</a> <a href="{% url 'account_login' %}">LOG IN</a></p>								
-							</li>							
-{ % endif % }
-end -->						
-						</ul>
+              <!--<li class="dropdown">
+               <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">ACCOUNT
+        		<b class="caret"></b>
+      			</a>
+    		<ul class="dropdown-menu" role="menu">	-->		
+              <li >
+				<a tabindex="-1" href="{% url 'profile_view' %}">SETTINGS</a>
+              </li>
+              <li >
+				<a tabindex="-1" href="{% url 'account_logout' %}">LOG OUT</a>
+              </li>
+              {% else %}
+              <li class="">
+				<a href="{% url 'user_login' %}">LOG IN</a>
+              </li>
+              {% endif %}
+                      <!--       </ul></li>  -->
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+    </div>		
 						
-						<div class="header-main">
+						<div class="header-main container">
 						{% block content %}
 		  				{% endblock %}
 		  				</div>
@@ -181,7 +171,7 @@ end -->
 		</div>
 		</div>
 		
-	<div class="wheel">
+	<div class="shield">
 	  
 	  	<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
 

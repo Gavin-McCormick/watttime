@@ -3,16 +3,16 @@
 
 {% block content %}
 
-<h2>Welcome to the WattTime beta test! Thanks for helping us test our service.</h2>
-<p style="color:#ffff33"></p>
-<h4>To begin, please enter your email address.</h4>
+<h2>Welcome!</h2>
 
-<form action="{% url 'create_user' %}" method="post" class="watttime-form sign-up-form" style="margin-bottom:0px!important;">{% csrf_token %}
+<p class="lead">To begin, please enter your email address.</p>
+
+<form action="{% url 'create_user' %}" class="form-inline" method="post">{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.email.errors }}
         {{ form.email }}
-    </p>
-    <input type="submit" name="sign_up" value="Join!" />
+ <input type="submit" name="sign_up" class="btn btn-awesome" value="Join!" /></p>
 </form>
+
 
 {% endblock %}

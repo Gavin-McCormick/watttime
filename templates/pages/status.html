@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<br><br>
-<div class="well"><p>Please select a region to see how clean its electricity is right now. <br>(Currently supported states are in green.)</p>
+<h2>Current Status</h2>
+<div class="span10 offset1"><p class="lead alert alert-block alert-info text-info">Select a supported region (in green) to see how clean its electricity is right now. For a detailed list of supported states and data sources, please visit the frequently asked questions page</p>
 
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
   <script type="text/javascript">
@@ -87,7 +87,7 @@
         options['resolution'] = 'provinces';
         options['width'] = 620;
         options['height'] = 430;
-        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
+        options['colors'] = ['#DDEEF8', '#33cc99', '#33cc99', '#33cc99'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     

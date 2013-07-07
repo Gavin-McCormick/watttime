@@ -9,7 +9,7 @@
 
 <br>
 
-<form action="{% url 'profile_first_edit' %}" method="post" class="watttime-form sign-up-form survey">{% csrf_token %}
+<form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
     <p class="fieldWrapper">
         {{ form.phone.errors }}
         {{ form.phone }}
@@ -21,7 +21,7 @@
         {{ form.state.errors }}
         {{ form.state }}
     </p>
-    <input type="submit" value="Next" />
+    <input type="submit" class="btn btn-info" value="Next" />
 </form>
 
 {% endblock %}
