@@ -24,7 +24,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 
-
+<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
 
@@ -90,11 +90,7 @@
 </head>
 
 <body name="top">
-
-<!-- provides a div for the photo credit -->      
-<div class="photo-wrap">
-
-      
+    
 
 		<!-- Navbar
     ================================================== -->
@@ -120,7 +116,7 @@
 				<a href="{% url 'about-us' %}">ABOUT</a>
               </li>
               <li class="">
-				<a href="{% url 'faq' %}">HOW IT WORKS</a>
+				<a href="{% url 'faq' %}">HELP</a>
               </li>
               <li class="">
 				<a href="{% url 'contact' %}">CONTACT</a>
@@ -149,10 +145,14 @@
           </div>
         </div>
       </div>
-    </div>						
+    </div>				
+    
+		
+
+<!-- Main Splash Header -->
 
 			<div class="header-main container">
-
+				<div class="row-fluid">
 				<h1>It's <span style="color:#fff">
 						
 						<!--this little widget get the browser's local time and displays it -->
@@ -218,14 +218,17 @@
                                        
 						<h2>We Can Do Better</h2>
 
-						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px;">
- 						<div class="span5 offset1"><p class="lead text-info">Sometimes your local power grid is running on pretty clean fuels, and sometimes it isn't. WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
-   		
+				</div> <!--end of Title Splash -->
+
+						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px; padding: 0px 0px 0px 0px;">
+ 						<div class="span5 offset1">
+ 						<p class="lead text-info">Sometimes your local power grid is running on pretty clean fuels, and sometimes it isn't. WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make an impact on your own terms.</p>
    						</div>
+   						
   						  <div class="span5 offset1"> 
   						  <p class="lead text-info">Get started today!</p>
 
-  						 <form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
+  						  <form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
                                                     <p class="fieldWrapper ">
                                                         <!--<label>Please send us your email to get you started.</label>
                                                         <span class="help-block">Example block-level help text here.</span>        
@@ -239,29 +242,26 @@
 
                                                     </p>           
   													<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
-                                                </form>
-                                                
+                                                </form>                                               
     					</div>
-						</div>						
+						</div>	
+						</div>					
 		
-                                               
-		 
+
 	
-					</div>
+		    <!-- provides a div for the photo credit -->      	
 
-		
-		
-		<div class="photo-credit pull-right">
+	<div class="photo-wrap">
+	<div class="photo-credit pull-right">
 			Photo Credit:<a href="http://www.flickr.com/photos/69125796@N00/7415541920/sizes/o/in/photostream/" target="_blank"> starmanseries</a>
-		</div>
-
-	</div>
+		</div></div>
+	</div>  <!--close header-main -->
 
 	<a href="#feature-set" class="down-tab" name="feature-set">
 
 		TELL ME MORE! <i class="arrow arrow-down">&nbsp;</i>
 
-	</a></div>
+	</a>
 
 	<div class="full-width-features feature-1">
 

@@ -25,6 +25,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 
+<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
 
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
@@ -96,6 +97,7 @@
 
 <body name="top">
       
+   
 
 		<!-- Navbar
     ================================================== -->
@@ -121,7 +123,7 @@
 				<a href="{% url 'about-us' %}">ABOUT</a>
               </li>
               <li class="">
-				<a href="{% url 'faq' %}">HOW IT WORKS</a>
+				<a href="{% url 'faq' %}">HELP</a>
               </li>
               <li class="">
 				<a href="{% url 'contact' %}">CONTACT</a>
@@ -150,28 +152,15 @@
           </div>
         </div>
       </div>
-    </div>		
+    </div>				
+    	
 						
 						<div class="header-main container">
 						{% block content %}
 		  				{% endblock %}
 		  				</div>
 		  
-				</div>
-	
-			</div>
-
-		</div>
-
-		<div class="row">
-		<div class="span3">
-		  
-
-		  
-		</div>
-		
-		</div>
-		</div>
+				
 		
 	<div class="shield">
 	  

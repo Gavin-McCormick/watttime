@@ -28,6 +28,7 @@
         <span class="help-block text-info">If you edit your phone number, you will have to verify the new phone number before you will be able to receive WattTime text messages.</span>
 </div></div> 
 
+<!--
 <div class="control-group">
     <label class="control-label text-success" for="inputName">Message Frequency</label>
     <div class="controls text-info">{{ message_frequency }}</div></div>
@@ -40,7 +41,7 @@
 <div class="control-group">
     <label class="control-label text-success" for="inputName">Updates about Future WattTime Features</label>
     <div class="controls text-success">{{ beta_test }}</div></div>
-
+-->
 </div>
 
 
@@ -50,20 +51,20 @@
 {{ form.message_frequency.errors }}
 <label class="radio">{{ form.message_frequency }}</label>
 
-<p class="lead text-success alert alert-info">Email me a morning forecast
-<label class="checkbox">{{ form.forecast_email }}</label>
-            {{ form.forecast_email.errors }}</p>
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast
+            {{ form.forecast_email.errors }}</p></label>
 
 <p class="lead text-success">Energy-intensive equipment</p>
             {{ form.equipment.errors }}
 <label class="checkbox">{{ form.equipment }}</label>
-<p class="lead text-success alert alert-info">Tell me about future experimental features
-<label class="checkbox">{{ form.beta_test }}</label>
-			{{ form.beta_test.errors }}</p>
 
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Tell me about future experimental features
+			{{ form.beta_test.errors }}</p></label>
 
 <input type="submit" class="btn btn-info pull-left" value="Save changes" />
+
+
+</div>
 </form>
 </div>
-
 {% endblock %}

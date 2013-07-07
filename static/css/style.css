@@ -5,6 +5,8 @@ yellow: #ffff33;
 
 */
 
+
+
 /* styles for body text & background*/
 
 body{
@@ -30,8 +32,8 @@ body a:hover{
 	transition: color 200ms linear;
 }
 
-.dl-horizontal {
-}
+
+
 
 
 /*special navbar style*/
@@ -95,6 +97,8 @@ body a:hover{
 
 
 
+
+
 /* a special button style */
 .btn-awesome.active {
   color: rgba(255, 255, 255, 0.75);
@@ -141,6 +145,9 @@ body a:hover{
   border-top-color: #ffffff;
   border-bottom-color: #ffffff;
 }
+
+
+
 
 /* this is the style for selected text*/
 ::selection {
@@ -259,7 +266,6 @@ body a:hover{
 	font-size:40px;
 	color:#fff;
 	margin-top:20px;
-	width:500px;
 	text-align:center;
 	margin:0px auto;
 	width:100%;
@@ -286,6 +292,11 @@ body a:hover{
 .header-main-phone{
 	text-align:center;
 }
+
+
+/* charts */
+
+
 
 /* icons */
 i.icon{
@@ -421,7 +432,8 @@ i.share-facebook{
 
 /* watttime form */
 .errorlist {
-	color:#ffff33;
+	color:#999933;
+	list-style-type:none;
 
 }
 
@@ -456,111 +468,7 @@ label {
 .sign-up-form .watermark{
 	left:10px;
 }
-.watttime-form input[name="name"], .watttime-form input[name="email"], #commentform textarea{
-	background:#fff;
-	border:none;
-	-webkit-border-top-left-radius: 3px;
-	-webkit-border-bottom-left-radius: 3px;
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 3px;
-	border-bottom-left-radius: 3px;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 3px;
-	padding:20px 20px;
-	height:20px;
-	width:290px;
-	color:#7f7f7f;
-	font-size:17px;
-	position:relative;
-	left:0px;
-	margin:0px;
-	font-family:Helvetica, Arial, sans-serif;
-	
-}
 
-.watttime-form input[name="state"] {
-	position:relative;
-	left:0px;
-	margin:0px;
-}
-
-
-
-.watttime-form.sign-up-form input[type="submit"]{
-	background:url(../images/icon-arrow-right.png) no-repeat 78px 23px #339999;
-	border:none;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 3px;
-	-moz-border-radius-top-right:3px;
-	-moz-border-radius-bottom-right: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 3px;
-	position:relative;
-	left:-5px;
-	height:60px;
-	width:105px;
-	font-size:19px;
-	margin:0px;
-	font-family:"Source Sans Pro", sans-serif;
-	font-weight:700;
-	color:#fff;
-}
-
-.watttime-form input[type="submit"]:hover{
-	background:url(../images/icon-arrow-right.png) no-repeat 154px 22px #66cc99;
-	-webkit-transition: background-color 200ms linear;
-	-moz-transition: background-color 200ms linear;
-	-o-transition: background-color 200ms linear;
-	-ms-transition: background-color 200ms linear;
-	transition: background-color 200ms linear;
-	cursor:pointer;
-}
-
-
-.watttime-form.sign-up-form.survey input[type="submit"]{
-	background: #339999;
-	border:none;
-	-webkit-border-top-left-radius: 3px;
-	-webkit-border-bottom-left-radius: 3px;
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 3px;
-	border-bottom-left-radius: 3px;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 3px;
-	position:relative;
-	left:-5px;
-	height:60px;
-	width:150px;
-	font-size:19px;
-	margin:0px;
-	font-family:"Source Sans Pro", sans-serif;
-	font-weight:700;
-	color:#fff;
-}
-
-.watttime-form.sign-up-form.survey input[type="submit"]:hover{
-	background: #66cc99;
-	-webkit-transition: background-color 200ms linear;
-	-moz-transition: background-color 200ms linear;
-	-o-transition: background-color 200ms linear;
-	-ms-transition: background-color 200ms linear;
-	transition: background-color 200ms linear;
-	cursor:pointer;
-}
-
- #commentform textarea{
-	height:80px;
-}
 .watermark_container{
 	display:inline!important;
 }
@@ -685,7 +593,7 @@ h4.icon-line span{
 	margin-bottom:50px;
 }
 
-/* call to action */
+/* call to action at bottom after features*/
 
 .call-to-action{
 	margin:0px auto;
@@ -739,85 +647,6 @@ h4.icon-line span{
 
 
 /* footer */
-.contact-form{
-}
-.switch-page .contact-form{
-	display:block;
-}
-.contact-form input[name="name"], .contact-form input[name="email"], .contact-form input[name="subject"], .contact-form input[name="message"]{
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	width:230px;
-	height:60px;
-	border:none;
-	padding:20px 20px;
-	background: none repeat scroll 0 0 #FAFAFA;
-    padding-bottom: 7px;
-    padding-top: 7px;
-    border: 1px solid #CCCCCC;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-    color: #7F7F7F;
-    font-size: 17px;
-	font-family: Helvetica, Arial, sans-serf;
-}
-.contact-form textarea{
-	width:800px;
-	height:170px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	border:none;
-	padding:10px 20px;
-	color: #7F7F7F;
-    font-size: 17px;
-	font-family: Helvetica, Arial, sans-serf;
-	margin-top:20px;
-	background: none repeat scroll 0 0 #FAFAFA;
-    padding-bottom: 7px;
-    padding-top: 7px;
-    border: 1px solid #CCCCCC;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
-    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-}
-.contact-form input[type="submit"] {
-	background:#339999;
-	border:none;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	position:relative;
-	height:60px;
-	width:240px;
-	font-size:19px;
-	margin:0px;
-	font-family:"Source Sans Pro", sans-serif;
-	font-weight:700;
-	color:#fff;
-	text-align:center;
-	margin:20px auto 50px;
-	display:block;
-}
-.contact-form input[type="submit"]:hover{
-	background:#66cc99;
-	-webkit-transition: background-color 200ms linear;
-	-moz-transition: background-color 200ms linear;
-	-o-transition: background-color 200ms linear;
-	-ms-transition: background-color 200ms linear;
-	transition: background-color 200ms linear;
-	cursor:pointer;
-}
-.contact-form h3{
-	font-family:"Source Sans Pro", sans-serif;
-	font-weight:200;
-	color:#fff;
-	text-align:center;
-	font-size:44px;
-	margin-top:0px;
-	margin-bottom:40px;
-}
-
 
 .shield {
 	width:100%;
@@ -832,9 +661,7 @@ h4.icon-line span{
 	font-size:19px;
 	padding-top:10px;
 }
-.wheel-blog{
-	background:url(../images/bg-tab-wheel-2.png) no-repeat bottom center #fff;
-}
+
 
 /* footer */
 
@@ -1025,7 +852,6 @@ h4.icon-line span{
 	    margin-top: 60px;
 	    padding-bottom: 40px;
 	    text-align: center;
-		width:940px;
 	}
 	.faq-content img{
 		width:612px;
@@ -1047,20 +873,11 @@ h4.icon-line span{
 	 #commentform textarea{
 		width:436px;
 	}
-	.sign-up-form-fixed input[type="email"]{
-		width:155px;
-	}
+
 	.lock-header h4 {
 		font-size:19px;
 	}
-	.sign-up-form-fixed input[type="submit"]{
-		width:48px;
-		font-size:13px;
-		padding: 10px 0 11px;
-	}
-	.sign-up-form-fixed .watermark{
-		 margin-top: 6px;
-	}
+
 	.lock-header h4{
 		font-size:24px;
 	}
@@ -1072,7 +889,6 @@ h4.icon-line span{
 	    margin-top: 60px;
 	    padding-bottom: 40px;
 	    text-align: center;
-		width:724px;
 	}
 	.reasons-wrap h2{
 		font-size:31px;
@@ -1127,24 +943,7 @@ h4.icon-line span{
 		margin-bottom:20px;
 		margin-top:50px;
 	}
-	.sign-up-form{
-		margin-bottom:50px;
-	}
-	.sign-up-form input{
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		border-radius: 5px;
-		width:100%!important;
-		padding:20px 0px!important;
-		position:static!important;
-	}
-	.sign-up-form input[type="submit"]{
-		background-image:none!important;
-	}
-	.sign-up-form input[type="email"]{
-		text-align:center;
-		margin-bottom:20px;
-	}
+	
 	.footer{
 		text-align:center;
 	}
@@ -1161,27 +960,7 @@ h4.icon-line span{
 	.footer .links li a{
 		margin:0px auto;
 	}
-	.contact-form{
-		padding:0px 20px;
-	}
-	.contact-form input[type="text"], .contact-form input[type="email"]{
-		width:100%;
-		padding:10px 0px;
-		margin-top:20px
-	}
-	.contact-form textarea{
-		width:100%;
-		padding:10px 0px;
-	}
 	
-	.agency-wrap .agency-credit{
-		position:absolute;
-		left:50%;
-		bottom:30px;
-		width:120px;
-		text-align:center;
-		margin-left:-60px;
-	}
 	.full-width-blog .more-posts-wrap{
 		-moz-box-shadow: 0 0 0px #ddd;
 		-webkit-box-shadow: 0 0 0px#ddd;
@@ -1310,111 +1089,3 @@ h4.icon-line span{
 }
 
 
-/*
-.announce{
-	width:100%;
-	text-align:center;
-	background:#40b6cb;
-	padding:10px 10px;
-	color:#fff;
-	display:block;
-	line-height:20px;
-	font-size:13px;
-}
-.announce:hover{
-	color:#fff;
-}
-
-
-
-
-select {
-	background:#fff;
-	border:none;
-	-webkit-border-top-left-radius: 3px;
-	-webkit-border-bottom-left-radius: 3px;
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 3px;
-	border-bottom-left-radius: 3px;
-	padding:20px 20px;
-	height:20px;
-	width:230px;
-	color:#7f7f7f;
-	font-size:17px;
-}
-
-
-.watttime-form input[name="phone"], .watttime-form input[name="code"], .watttime-form input[name="verification_code"] {
-	background:#fff;
-	border:none;
-	-webkit-border-top-left-radius: 3px;
-	-webkit-border-bottom-left-radius: 3px;
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 3px;
-	border-bottom-left-radius: 3px;
-	padding:20px 20px;
-	height:20px;
-	width:230px;
-	color:#7f7f7f;
-	font-size:17px;
-	vertical-align: bottom;
-
-}
-
-
-
-select {
-    display: inline-block;
-    height: 60px;
-    padding: 20px 20px;
-    margin: 0px;
-    line-height: 20px;
-    vertical-align: bottom;
-
-	}
-
-input, button, select, textarea {
-    font-family:Helvetica, Arial, sans-serif;
-
-}
-
-label, select, button, input[type="button"], input[type="reset"], input[type="submit"], input[type="radio"], input[type="checkbox"] {
-    cursor: pointer;
-}
-
-
-input[name="text_freq"], 
-input[type="channel"], 
-input[type="ac"], 
-input[type="furnace"], 
-input[type="water_heater"], 
-input[type="goal"] {
-  cursor: pointer;
-  margin: 4px 0 0;
-  line-height: normal;
-  width: auto;
-
-}
-
-select:focus,
-input[type="radio"]:focus,
-input[type="checkbox"]:focus {
-  outline: thin dotted #333;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-
-
-
-
-input[type="radio"][disabled],
-input[type="checkbox"][disabled],
-input[type="radio"][readonly],
-input[type="checkbox"][readonly] {
-  background-color: transparent;
-}
-
-*/

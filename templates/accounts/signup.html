@@ -1,18 +1,16 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
 <h2>Welcome!</h2>
 
 <p class="lead">To begin, please enter your email address.</p>
-
 <form action="{% url 'create_user' %}" class="form-inline" method="post">{% csrf_token %}
-    <p class="fieldWrapper">
-        {{ form.email.errors }}
-        {{ form.email }}
- <input type="submit" name="sign_up" class="btn btn-awesome" value="Join!" /></p>
-</form>
+    <p class="fieldWrapper">{{ form.email }}
+    <input type="submit" name="sign_up" class="btn btn-awesome " value="Join!" />
+    {{ form.email.errors }}</p>
+ </form>
 
 
 {% endblock %}
