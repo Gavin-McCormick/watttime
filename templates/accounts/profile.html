@@ -7,10 +7,11 @@
 <div class="container-fluid">
 <div class="row-fluid">
 
-<div class="span4">
+
 {% if deactivated %}
 <p class="lead alert alert-block text-warning">Your account is currently deactivated.</p><p class="alert-info alert-block text-info">You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-success">reactivate</a> your account at any time.</p>
 {% else %}
+<div class="span4">
     {% if phone_verified %}
     <p class="lead text-success alert alert-block alert-success">Success! You are signed up to receive WattTime SMS alerts!</p>
     {% else %}
@@ -47,10 +48,11 @@
   <dd>{{ beta_test }}</dd>
 </dl>
 
+</div>
 
 
+
+
+{% endif %}</div>
 </div>
-</div>
-</div>
-{% endif %}
 {% endblock %}
