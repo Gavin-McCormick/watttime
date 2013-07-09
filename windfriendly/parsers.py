@@ -166,14 +166,15 @@ class CAISOParser(UtilityParser):
                         
     def _is_energy_header(self, key):
         # energy columns have header HEXX
+        # TODO this doesn't handle the extra hour during daylight savings switch
         if key[:2] == 'HE':
-            if self._header_to_hour(key) < 24:
+            if self._header_to_hour(key) <= 24:
                 return True
         return False
         
     def _header_to_hour(self, key):
-        # 0 to 24
-        return int(key[2:])-1
+        # 1 means hour leading up to 1am
+        return int(key[2:]) % 24
         
     def _extract_values(self, energy_type, forecast_type, vals, total_index=None):
         # set up storage
