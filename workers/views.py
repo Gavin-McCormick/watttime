@@ -102,30 +102,43 @@ def recurring_events(request):
 #           a function taking one argument (an instance of the model class) and
 #               returning attribute value, or None
 model_formats = {
-    'User' : (accounts.models.User, [
+    'UserProfile' : (accounts.models.UserProfile, [
+            ('active', (lambda up : up.user.is_active)),
+            'password_is_set',
             'name',
             'email',
             'phone',
-            'verification_code',
             'is_verified',
-            'is_active',
-            'userid',
-            'state']),
-    'UserProfile' : (accounts.models.UserProfile, [
-            ('userid', (lambda up : up.userid.userid)),
-            'goal',
-            'text_freq',
-            'channel',
-            'ac',
-            'furnace',
-            'water_heater']),
+            'state',
+            'message_frequency',
+            'forecast_email',
+            ('equipment', (lambda up : up.get_equipment())),
+            'beta_test'
+            ]),
+    #'User' : (accounts.models.User, [
+            #'name',
+            #'email',
+            #'phone',
+            #'verification_code',
+            #'is_verified',
+            #'is_active',
+            #'userid',
+            #'state']),
+    #'UserProfile' : (accounts.models.UserProfile, [
+            #('userid', (lambda up : up.userid.userid)),
+            ##'goal',
+            #'text_freq',
+            #'channel',
+            #'ac',
+            #'furnace',
+            #'water_heater']),
     'Debug' : (windfriendly.models.DebugMessage, [
             'date',
             'message']),
-    'SMSLog' : (workers.models.SMSLog, [
-            ('user', (lambda sms : sms.user.userid)),
-            'utctime',
-            'message']),
+    #'SMSLog' : (workers.models.SMSLog, [
+            #('user', (lambda sms : sms.user.userid)),
+            #'utctime',
+            #'message']),
     'BPA'   : (windfriendly.models.BPA, [
             'load',
             'wind',
