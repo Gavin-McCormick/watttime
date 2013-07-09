@@ -69,6 +69,11 @@ class UtilityParser():
     def yesterday(self, tz):
         return self.today(tz) - datetime.timedelta(1)
 
+    def _date_gen(self, start_date, end_date):
+        while start_date <= end_date:
+            yield start_date
+            start_date = start_date + datetime.timedelta(1)
+
 
 class CAISOParser(UtilityParser):
     def __init__(self):
@@ -118,11 +123,6 @@ class CAISOParser(UtilityParser):
         
         # return
         return to_return
-
-    def _date_gen(self, start_date, end_date):
-        while start_date <= end_date:
-            yield start_date
-            start_date = start_date + datetime.timedelta(1)
 
     def scrape_all(self, forecast_type, start_date, end_date):
         """ Gets all data for this forecast type
@@ -299,6 +299,8 @@ class BPAParser(UtilityParser):
         self.BPA_OVERSUPPLY_URL = 'http://transmission.bpa.gov/business/operations/wind/twndbspt.txt'
         self.BPA_OVERSUPPLY_NCOLS = 4
         self.BPA_OVERSUPPLY_SKIP_LINES = 11
+        self.DATE_FRMT = '%m/%d/%Y %H:%M'
+        self.TZ = self.MODEL.TIMEZONE
 
     def getData(self, url):
         # Make request for data
@@ -310,15 +312,14 @@ class BPAParser(UtilityParser):
         return data
 
     def parseDate(self, datestring):
-        tzd = {
-            'PST': -28800,
-            'PDT': -25200,
-        }
-        tz = pytz.timezone('US/Pacific')
-        dt = dateutil.parser.parse(datestring, tzinfos=tzd)
+        """Take datestring in local time, convert to date object in UTC"""
+        dt = datetime.datetime.strptime(datestring, self.DATE_FRMT)
         if dt.tzinfo == None:
-            dt = dt.replace(tzinfo = tz)
+            print "replacing"
+            dt = self.TZ.normalize(dt.replace(tzinfo = self.TZ))
+        print "before tz", datestring, dt
         dt = dt.astimezone(pytz.UTC)
+        print "after tz", datestring, dt
         return dt
 
     def parseLoadRow(self, row):
