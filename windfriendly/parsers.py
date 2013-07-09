@@ -91,9 +91,9 @@ class CAISOParser(UtilityParser):
     def update(self):
         # figure out dates to pull for
         dates_to_update = {self.ACTUAL_CODE :
-                                (self.today(self.TZ), self.today(self.TZ)),
+                                (self.yesterday(self.TZ), self.today(self.TZ)),
                            self.FRCST_CODE : 
-                                (self.tomorrow(self.TZ), self.tomorrow(self.TZ)),
+                                (self.today(self.TZ), self.tomorrow(self.TZ)),
                           }
                           
         # return data
@@ -286,17 +286,7 @@ class CAISOParser(UtilityParser):
                 return False
             else:
                 return True
-                
-            # only store past data for actual
-#            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
-#            if latest:
-#                if dp['timestamp'] > latest:
-#                    return True # this is new data
-#                else:
-#                    return False # this is old data
-#            else:
-#                return True # no existing data
-                
+                                
         else:
             # any time is ok for forecasts
             return True
