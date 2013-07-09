@@ -285,7 +285,7 @@ class CAISOParser(UtilityParser):
             if qset.count() > 0:
                 return False
             else:
-                return False
+                return True
                 
             # only store past data for actual
 #            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
