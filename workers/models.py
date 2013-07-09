@@ -13,15 +13,3 @@
 # limitations under the License.
 #
 # Authors: Anna Schneider
-
-from django.db import models
-from accounts.models import User
-
-class SMSLog(models.Model):
-    user = models.ForeignKey(User)
-    localtime = models.DateTimeField()
-    utctime = models.DateTimeField(db_index=True)
-    message = models.CharField(max_length=150)
-
-    def __unicode__(self):
-        print u'%s : %s' % (self.user, self.message)

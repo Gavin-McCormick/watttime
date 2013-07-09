@@ -1,77 +1,95 @@
 from django.db import models
-#from django.contrib.auth.models import User
-from django.forms import ModelForm, CheckboxSelectMultiple, RadioSelect, ValidationError, CheckboxInput, PasswordInput
 from django_localflavor_us.models import PhoneNumberField, USStateField
 from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
-from django.forms.widgets import HiddenInput
-from django import forms
-from accounts import messages
 from multi_choice import *
 from pytz import timezone
-from datetime import datetime, timedelta
 from django.utils.timezone import now, localtime
-from windfriendly.models import debug
 from django.contrib.auth.models import User
+import accounts.regions
 
-SENDTEXT_FREQ_CHOICES = (
+# Several models are defined dynamically in regions.py, so this import is
+# critical
+import accounts.regions
+
+CA_SENDTEXT_FREQ_CHOICES = (
         (1, 'Text me the dirtiest hour of the day so I can try to use less energy then'),
         (2, 'Text me the cleanest hour of the evening so I can try to time some appliances that way'),
         (3, 'Text me whenever something unusual happens, less than once per day'),
         (4, 'Only text me during dirty energy emergencies, at most once a week')
     )
-SENDTEXT_FREQ_LONG = dict(SENDTEXT_FREQ_CHOICES)
-SENDTEXT_FREQ_SHORT = {
+CA_SENDTEXT_FREQ_LONG = dict(CA_SENDTEXT_FREQ_CHOICES)
+CA_SENDTEXT_FREQ_SHORT = {
         1 : 'Dirtiest hour each day',
         2 : 'Cleanest hour each evening',
         3 : 'Less than once a day',
         4 : 'Only in extremes (once a week)'
     }
 
-EQUIPMENT_CHOICES = (
-        (1, 'I have A/C at home (biggest single use of power in the summer)'),
-        (2, 'I have A/C at work (and can control the thermostat)'),
-        (3, 'I have a dishwasher (one of the easiest major appliances to time better)'),
-        (4, 'I have a pool pump (these use a LOT of energy and are easy to time better)'),
-        (5, 'My water heater is electric (gas heaters don\'t help with electricity timing)')
+NE_SENDTEXT_FREQ_CHOICES = (
+        (1, 'Text me about once per day'),
+        (2, 'Text me about once per week')
     )
-
-EQUIPMENT_LONG = dict(EQUIPMENT_CHOICES)
-EQUIPMENT_SHORT = {
-        1 : 'A/C at home',
-        2 : 'A/C at work',
-        3 : 'dishwasher',
-        4 : 'pool pump',
-        5 : 'electric water heater'
+NE_SENDTEXT_FREQ_LONG = dict(NE_SENDTEXT_FREQ_CHOICES)
+NE_SENDTEXT_FREQ_SHORT = {
+        1 : 'About daily',
+        2 : 'About weekly'
     }
 
-#     furnace = models.IntegerField('Furnace type',
-#                                   blank=False, default=3,
-#                                   choices=HEATER_CHOICES,
-#                                   )
+ca_model = accounts.regions.california.user_prefs_model
+ne_model = accounts.regions.newengland.user_prefs_model
+null_model = accounts.regions.null_region.user_prefs_model
+
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user                = models.OneToOneField(User)
 
-    password_is_set = models.BooleanField()
+    password_is_set     = models.BooleanField()
 
-    magic_login_code = models.IntegerField(db_index = True)
-    name = models.CharField(max_length=100, help_text='Name', blank=True)
-    email = models.EmailField(help_text='Email')
-    phone = PhoneNumberField()
-    verification_code = models.IntegerField()
-    is_verified = models.BooleanField()
-    state = USStateField(default='CA')
+    magic_login_code    = models.IntegerField(db_index = True)
+    name                = models.CharField(max_length=100, help_text='Name', blank=True)
+    email               = models.EmailField(help_text='Email')
+    phone               = PhoneNumberField()
+    verification_code   = models.IntegerField()
+    is_verified         = models.BooleanField()
+    state               = USStateField(default='CA')
 
+    ca_settings         = models.ForeignKey(ca_model, blank = True, null = True)
+    ne_settings         = models.ForeignKey(ne_model, blank = True, null = True)
+    null_settings       = models.ForeignKey(null_model, blank = True, null = True)
 
-    message_frequency = models.IntegerField(default = 1,
-            choices = SENDTEXT_FREQ_CHOICES)
     forecast_email = models.BooleanField(default = False)
     equipment = models.CommaSeparatedIntegerField(default = '', max_length=100, blank=True)
     beta_test = models.BooleanField(default = False)
 
+    def region(self):
+        return accounts.regions.state_to_region(self.state)
+
+    def get_region_settings(self):
+        region = self.region()
+        label = region.settings_name
+        s = getattr(self, label)
+        if s is None:
+            s = region.user_prefs_model()
+            s.save()
+            setattr(self, label, s)
+            return s
+        else:
+            return s
+
+    def save_from_form(self, vals):
+        self.region().save_from_form(self, vals)
+
+    def form_initial_values(self, vals):
+        self.region().form_initial_values(self, vals)
+
+    def display_values(self, vals):
+        self.region().display_values(self, vals)
+
+    # Takes a list of integers
     def set_equipment(self, indices):
         self.equipment = ','.join(str(index) for index in indices)
 
+    # Returns a list of integers
     def get_equipment(self):
         if len(self.equipment) > 0:
             return list(int(index) for index in self.equipment.split(','))
@@ -87,46 +105,35 @@ class UserProfile(models.Model):
          else:
              return now()
 
-class SignupForm(forms.Form):
-    email = forms.CharField(help_text='Email')
-    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
+    def set_password(self, password):
+        if password:
+            self.user.set_password(password)
+            self.user.save()
+            self.password_is_set = True
+        else:
+            self.user.set_unusable_password()
+            self.user.save()
+            self.password_is_set = False
 
-    def __init__(self, *args, **kwargs):
-        super(SignupForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['placeholder'] = u'Email'
+    def set_phone(self, phone):
+        if phone != self.phone:
+            self.phone = phone
+            self.is_verified = False
 
-class LoginForm(forms.Form):
-    email = forms.CharField(help_text='Email')
-    password = forms.CharField(help_text='Password', widget=PasswordInput(), required = False)
+    def __unicode__(self):
+        res = u'{self.name} ({self.state}, {self.email}, {self.phone}{pv}){e1}{e2}'
+        pv = e1 = e2 = u''
 
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['placeholder'] = u'Email'
-        self.fields['password'].widget.attrs['placeholder'] = u'Password'
+        if not self.is_verified:
+            pv = u' (not verified)'
+        if not self.user.is_active:
+            e1 = u', inactive'
+        if not self.password_is_set:
+            e2 = u', no password'
 
-class PhoneVerificationForm(forms.Form):
-    verification_code = forms.IntegerField(label='Verification code')
+        res = res.format(self = self, pv = pv, e1 = e1, e2 = e2)
 
-class UserProfileFirstForm(forms.Form):
-    password = forms.CharField(help_text='Password')
-    phone = forms.CharField(help_text='Phone')
-    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
-
-    def __init__(self, *args, **kwargs):
-        super(UserProfileFirstForm, self).__init__(*args, **kwargs)
-        self.fields['password'].widget.attrs['placeholder'] = u'Password'
-        self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
-
-class UserProfileForm(forms.Form):
-    name = forms.CharField(help_text='Name', required = False)
-    password = forms.CharField(help_text='Password', required = False)
-    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
-    phone = forms.CharField(help_text='Phone', required = False)
-    message_frequency = forms.ChoiceField(choices = SENDTEXT_FREQ_CHOICES, widget = RadioSelect(), required = False)
-    forecast_email = forms.BooleanField(help_text='Forecast emails in morning', widget = CheckboxInput(), required = False)
-    equipment = forms.MultipleChoiceField(help_text='Equipment', choices = EQUIPMENT_CHOICES, widget = CheckboxSelectMultiple(), required = False)
-    beta_test = forms.BooleanField(help_text='Beta test', widget = CheckboxInput(), required = False)
-
+        return res
 
 # class OldUser(models.Model):
 #     # name
@@ -184,46 +191,46 @@ class UserProfileForm(forms.Form):
     # (2, 'About once a day'),
     # (3, 'About once a week'),
     # )
-SENDTEXT_TIMEDELTAS = {
-    1: timedelta(hours=3),
-    2: timedelta(days=1),
-    3: timedelta(days=7),
-    }
-SENDTEXT_FREQWORDS = {
-    1: 'several-times-daily',
-    2: 'daily',
-    3: 'weekly',
-    }
-AC_CHOICES = (
-    (0, "None"),
-    (1, "Central A/C"),
-    (2, "Window unit"),
-    (3, "Other or don't know"),
-    )
-HEATER_CHOICES = (
-    (0, 'None'),
-    (1, 'Electric'),
-    (2, 'Gas'),
-    (3, "Other or don't know"),
-    )
-GOALS_CHOICES = (
-    (0, "I'm up for anything"),
-    (1, 'Help me use less coal'),
-    (2, 'Help me use more renewables'),
-    (3, 'More renewables & nuclear, less coal & oil'),
-    )
-GOAL_WORDS = {
-    0: 'everything',
-    1: 'using less coal',
-    2: 'using more renewables',
-    3: 'lowering my carbon footprint',
-}
-CHANNEL_CHOICES = (
-    (0, "Sierra Club"),
-    (1, "Internet"),
-    (2, "Word of mouth"),
-    (3, "Other"),
-    )
+# SENDTEXT_TIMEDELTAS = {
+    # 1: timedelta(hours=3),
+    # 2: timedelta(days=1),
+    # 3: timedelta(days=7),
+    # }
+# SENDTEXT_FREQWORDS = {
+    # 1: 'several-times-daily',
+    # 2: 'daily',
+    # 3: 'weekly',
+    # }
+# AC_CHOICES = (
+    # (0, "None"),
+    # (1, "Central A/C"),
+    # (2, "Window unit"),
+    # (3, "Other or don't know"),
+    # )
+# HEATER_CHOICES = (
+    # (0, 'None'),
+    # (1, 'Electric'),
+    # (2, 'Gas'),
+    # (3, "Other or don't know"),
+    # )
+# GOALS_CHOICES = (
+    # (0, "I'm up for anything"),
+    # (1, 'Help me use less coal'),
+    # (2, 'Help me use more renewables'),
+    # (3, 'More renewables & nuclear, less coal & oil'),
+    # )
+# GOAL_WORDS = {
+    # 0: 'everything',
+    # 1: 'using less coal',
+    # 2: 'using more renewables',
+    # 3: 'lowering my carbon footprint',
+# }
+# CHANNEL_CHOICES = (
+    # (0, "Sierra Club"),
+    # (1, "Internet"),
+    # (2, "Word of mouth"),
+    # (3, "Other"),
+    # )
 # 
 # class OldUserProfile(models.Model):
 # 

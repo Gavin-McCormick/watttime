@@ -27,4 +27,5 @@ def send_text(msg, up):
     except:
         print ("Faild message", up.phone, WATTTIME_PHONE, msg.msg)
         debug("failed to text '{}' to {}".format(msg, str(up.name)))
+        raise
         return False

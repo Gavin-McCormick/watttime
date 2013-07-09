@@ -27,12 +27,10 @@ from accounts.models import UserProfile
 from django.http import HttpResponse
 from django.utils.timezone import now
 from workers.tasks import run_frequent_tasks, run_hourly_tasks
-from accounts.models import User, UserProfile, SENDTEXT_TIMEDELTAS
 from accounts.messages import alpha_completed
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
-from workers.models import SMSLog
 from django.core.mail import send_mail
 from settings import EMAIL_HOST_USER
 from random import randint
@@ -41,7 +39,7 @@ import accounts.models
 import windfriendly.models
 import workers.models
 
-def demo(request):
+def old_demo(request):
     message = []
 
     update(request, 'ne')
@@ -102,30 +100,30 @@ def recurring_events(request):
 #           a function taking one argument (an instance of the model class) and
 #               returning attribute value, or None
 model_formats = {
-    'User' : (accounts.models.User, [
-            'name',
-            'email',
-            'phone',
-            'verification_code',
-            'is_verified',
-            'is_active',
-            'userid',
-            'state']),
-    'UserProfile' : (accounts.models.UserProfile, [
-            ('userid', (lambda up : up.userid.userid)),
-            'goal',
-            'text_freq',
-            'channel',
-            'ac',
-            'furnace',
-            'water_heater']),
+    # 'User' : (accounts.models.User, [
+            # 'name',
+            # 'email',
+            # 'phone',
+            # 'verification_code',
+            # 'is_verified',
+            # 'is_active',
+            # 'userid',
+            # 'state']),
+    # 'UserProfile' : (accounts.models.UserProfile, [
+            # ('userid', (lambda up : up.userid.userid)),
+            # 'goal',
+            # 'text_freq',
+            # 'channel',
+            # 'ac',
+            # 'furnace',
+            # 'water_heater']),
     'Debug' : (windfriendly.models.DebugMessage, [
             'date',
             'message']),
-    'SMSLog' : (workers.models.SMSLog, [
-            ('user', (lambda sms : sms.user.userid)),
-            'utctime',
-            'message']),
+    # 'SMSLog' : (workers.models.SMSLog, [
+            # ('user', (lambda sms : sms.user.userid)),
+            # 'utctime',
+            # 'message']),
     'BPA'   : (windfriendly.models.BPA, [
             'load',
             'wind',
