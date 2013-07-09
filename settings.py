@@ -132,6 +132,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -186,6 +187,7 @@ INSTALLED_APPS = (
     'south',
 #    'invitation',
     'registration',
+    'corsheaders',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -243,6 +245,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",
     #"invitation.context_processors.remaining_invitations",
+    'pages.context_processors.google_analytics',
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
@@ -275,3 +278,9 @@ FACEBOOK_API_SECRET='e1760826fbb9d58e2ab39d21c80293b3'
 GOOGLE_OAUTH2_CLIENT_ID = '838963675754'
 GOOGLE_OAUTH2_CLIENT_SECRET = 'jRGCatPXaMDUROQVJ8hy6FZc'
 
+# google analytics 
+GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
+GOOGLE_ANALYTICS_DOMAIN = 'herokuapp.com'
+
+# Cross-Origin Resource Sharing
+CORS_ORIGIN_ALLOW_ALL = True

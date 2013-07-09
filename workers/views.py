@@ -124,6 +124,19 @@ model_formats = {
             # ('user', (lambda sms : sms.user.userid)),
             # 'utctime',
             # 'message']),
+    'UserProfile' : (accounts.models.UserProfile, [
+            ('active', (lambda up : up.user.is_active)),
+            'password_is_set',
+            'name',
+            'email',
+            'phone',
+            'is_verified',
+            'state',
+            'message_frequency',
+            'forecast_email',
+            ('equipment', (lambda up : up.get_equipment())),
+            'beta_test'
+            ]),
     'BPA'   : (windfriendly.models.BPA, [
             'load',
             'wind',

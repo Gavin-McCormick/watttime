@@ -139,26 +139,15 @@ def update(request, utility):
     return parser.update()
 
 @json_response
-def green(request):
+def current(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
 
     # get most recent row from model
     row = BA_MODELS[ba_name].latest_point()
 
-    # get data from row
-    percent_green = row.fraction_green() * 100.0
-    time = row.date.strftime('%Y-%m-%d %H:%M %z')
-    load = row.total_load()
-
-    # package and return data
-    data = {
-      'balancing_authority': ba_name,
-      'local_time': time,
-      'percent_green': round(percent_green,3),
-      'load_MW': round(load, 1),
-    }
-    return data
+    # return
+    return row.to_dict()
 
 @json_response
 def summarystats(request):
@@ -171,71 +160,69 @@ def summarystats(request):
     # get userid
     userid = request.GET.get('id', None)
 
-    # get date range
+    # get requested date range, if any
     start = request.GET.get('start', None)
-    if start:
-      starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-    else:
-      starttime = datetime.min.replace(tzinfo=pytz.utc)
     end = request.GET.get('end', None)
-    if end:
-      endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-    else:
-      endtime = datetime.utcnow().replace(tzinfo=pytz.utc)
+    tz_offset = request.GET.get('tz', 0)
 
+    # set up actual start and end times (default is -Inf to now)
+    if start:
+        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_start += timedelta(hours = int(tz_offset))
+    else:
+        utc_start = datetime.min.replace(tzinfo=pytz.utc)
+    if end:
+        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_end += timedelta(hours = int(tz_offset))
+    else:
+        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+        
     # raise error if no BA
 
     # get numbers for BA only
     if userid is None:
-      # get dates
-      if starttime < BA_MODELS[ba_name].earliest_date():
-        starttime = BA_MODELS[ba_name].earliest_date()
-      if endtime > BA_MODELS[ba_name].latest_date():
-        endtime = BA_MODELS[ba_name].latest_date()
-     # print starttime, endtime
-
       # get rows
-      ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
+      ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
       if len(ba_rows) == 0:
-        raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+          raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
 
       # collect sums
       fraction_green_kw = sum([row.fraction_green() for row in ba_rows]) / len(ba_rows)
       percent_green = fraction_green_kw * 100.0
 
     # get numbers for user and BA data
-    else:
-        # TODO broken!!!! need to fix date handling
-        userid = int(userid)
-
-        # get user meter objects
-        meter_qset = MeterReading.objects.filter(userid__exact=userid)
-
-        # get matching dates
-        min = windutils.min_date(meter_qset, ba_qset)
-        max = windutils.max_date(meter_qset, ba_qset)
-        if starttime < min:
-          starttime = min
-        if endtime > max:
-          endtime = max
-    
-        # get user data in range
-        meter_rows = meter_qset.filter(start__gte=starttime,
-                                       start__lt=endtime)
-        if len(meter_rows) == 0:
-          raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
-
-        # collect sums
-        total_green_kwh = sum([windutils.used_green_kwh(row, ba_qset) for row in meter_rows])
-        total_kwhs = sum([windutils.total_kwh(row, ba_qset) for row in meter_rows])
-        percent_green = total_green_kwh / total_kwhs * 100.0
+#    else:
+#        # TODO broken!!!! need to fix date handling
+#        userid = int(userid)
+#
+#        # get user meter objects
+#        meter_qset = MeterReading.objects.filter(userid__exact=userid)
+#
+#        # get matching dates
+#        min = windutils.min_date(meter_qset, ba_qset)
+#        max = windutils.max_date(meter_qset, ba_qset)
+#        if starttime < min:
+#          starttime = min
+#        if endtime > max:
+#          endtime = max
+#    
+#        # get user data in range
+#        meter_rows = meter_qset.filter(start__gte=starttime,
+#                                       start__lt=endtime)
+#        if len(meter_rows) == 0:
+#          raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+#
+#        # collect sums
+#        total_green_kwh = sum([windutils.used_green_kwh(row, ba_qset) for row in meter_rows])
+#        total_kwhs = sum([windutils.total_kwh(row, ba_qset) for row in meter_rows])
+#        percent_green = total_green_kwh / total_kwhs * 100.0
 
     # collect data
     data = {
       'balancing_authority': ba_name,
       'userid': userid,
-      'start': starttime.isoformat(),
-      'end': endtime.isoformat(),
+      'utc_start': utc_start.isoformat(),
+      'utc_end': utc_end.isoformat(),
       'percent_green': round(percent_green,3)
       }
     return data
@@ -248,38 +235,38 @@ def history(request):
     if ba_name is None:
         raise ValueError("No balancing authority found, check location arguments.")
 
-    # get date range
+    # get requested date range, if any
     start = request.GET.get('start', None)
-    if start:
-      starttime = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-    else:
-      starttime = datetime.min.replace(tzinfo=pytz.utc)
     end = request.GET.get('end', None)
-    if end:
-      endtime = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+    tz_offset = request.GET.get('tz', 0)
+
+    # set up actual start and end times (default is -Inf to now)
+    if start:
+        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_start += timedelta(hours = int(tz_offset))
     else:
-      endtime = datetime.utcnow().replace(tzinfo=pytz.utc)
+        utc_start = datetime.min.replace(tzinfo=pytz.utc)
+    if end:
+        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_end += timedelta(hours = int(tz_offset))
+    else:
+        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
+    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
-      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
+        return []
     
-    # collect sums
-    data = []
-    for row in ba_rows:
-      data.append({
-          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
-          'percent_green': round(row.fraction_green() * 100, 3),
-          'marginal_fuel': row.marginal_fuel,
-          'load_MW': round(row.total_load(), 1),
-          })
+    # collect data
+    data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
 
 @json_response
 def today(request):
+    """Get best data from today (actual until now, best forecast for future)"""
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
@@ -287,28 +274,77 @@ def today(request):
         raise ValueError("No balancing authority found, check location arguments.")
 
     # get date range
-    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
-    starttime = utc_now.replace(hour=0, minute=0, second=0, microsecond=0)
-    endtime = starttime + timedelta(1) - timedelta(0, 1)
+    ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
+    ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
+    utc_start = ba_local_start.astimezone(pytz.utc)
+    utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(starttime, endtime)
+    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
-      raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
+        print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
+        return []
     
-    # collect sums
-    data = []
-    for row in ba_rows:
-      data.append({
-          'utc_time': row.date.strftime('%Y-%m-%d %H:%M'),
-          'percent_green': round(row.fraction_green() * 100, 3),
-          'marginal_fuel': row.marginal_fuel,
-          'load_MW': round(row.total_load(), 1),
-          })
+    # collect data
+    data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
+    
+@json_response
+def alerts(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+        
+    # get requested date range, if any
+    start = request.GET.get('start', None)
+    end = request.GET.get('end', None)
+    tz_offset = request.GET.get('tz', 0)
 
+    # set up actual start and end times (default is today in BA local time)
+    if start:
+        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_start += timedelta(hours = int(tz_offset))
+    else:
+        ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
+        ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        utc_start = ba_local_start.astimezone(pytz.utc)
+    if end:
+        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_end += timedelta(hours = int(tz_offset))
+    else:
+        ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
+        ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
+        utc_end = ba_local_end.astimezone(pytz.utc)
+
+    # get best guess data
+    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
+    
+    # set up storage
+    if len(ba_rows) > 0:
+        data = {}
+    else:
+        return {}
+
+    # get notable times
+    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green(), reverse=True)
+    data['highest_green'] = sorted_green[0].to_dict()
+    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon(), reverse=True)
+    data['highest_dirty'] = sorted_dirty[0].to_dict()
+    sorted_load = sorted(ba_rows, key=lambda r : r.total_load(), reverse=True)
+    data['highest_load'] = sorted_load[0].to_dict()
+    data['lowest_load'] = sorted_load[-1].to_dict()
+    sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)
+    data['worst_marginal'] = sorted_marginal[0].to_dict()
+   # data['best_marginal'] = sorted_marginal[-1].to_dict() TODO: use best non-None marginal
+    
+    # return
+    return data
 
 @json_response
 def average_usage_for_period(request, userid):
