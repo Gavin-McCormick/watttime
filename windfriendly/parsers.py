@@ -225,9 +225,13 @@ class CAISOParser(UtilityParser):
             for header, vals in df.iteritems():
                 if self._is_energy_header(header):
                     
-                    # set up storage for hourly energy data
+                    # set up timestamp
                     hour = self._header_to_hour(header)
                     timestamp = date.replace(hour=hour)
+                    if hour == 0:
+                        timestamp += datetime.timedelta(1)
+                    
+                    # set up storage for new data
                     if timestamp not in datapoints:
                         datapoints[timestamp] = {'timestamp' : timestamp}
                         
