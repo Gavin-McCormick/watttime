@@ -315,11 +315,8 @@ class BPAParser(UtilityParser):
         """Take datestring in local time, convert to date object in UTC"""
         dt = datetime.datetime.strptime(datestring, self.DATE_FRMT)
         if dt.tzinfo == None:
-            print "replacing"
             dt = self.TZ.normalize(dt.replace(tzinfo = self.TZ))
-        print "before tz", datestring, dt
         dt = dt.astimezone(pytz.UTC)
-        print "after tz", datestring, dt
         return dt
 
     def parseLoadRow(self, row):
