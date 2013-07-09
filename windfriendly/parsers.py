@@ -164,18 +164,31 @@ class CAISOParser(UtilityParser):
         stream = StringIO.StringIO(f)
         return stream
                         
-    def _is_energy_header(self, key):
+    def _is_energy_header(self, key, date):
         # energy columns have header HEXX
-        # TODO this doesn't handle the extra hour during daylight savings switch
         if key[:2] == 'HE':
-            if self._header_to_hour(key) <= 24:
+            if self._header_to_timestamp(key, date) is not None:
                 return True
         return False
         
-    def _header_to_hour(self, key):
-        # 1 means hour leading up to 1am
-        return int(key[2:]) % 24
+    def _header_to_timestamp(self, key, date):
+        hour = int(key[2:])
+        # TODO this doesn't handle the extra hour during daylight savings switch
+        if hour == 25:
+            return None
+            
+        # 24 ~ 0 means hour ending at midnight tomorrow
+        elif hour == 24:
+            timestamp = date.replace(hour=0)
+            timestamp += datetime.timedelta(1)       
+
+        # 1 means hour ending at 1am
+        else:
+            timestamp = date.replace(hour=hour)
         
+        # return
+        return timestamp       
+       
     def _extract_values(self, energy_type, forecast_type, vals, total_index=None):
         # set up storage
         data_dict = {}
@@ -223,13 +236,10 @@ class CAISOParser(UtilityParser):
             
             # parse dataframe columns
             for header, vals in df.iteritems():
-                if self._is_energy_header(header):
+                if self._is_energy_header(header, date):
                     
                     # set up timestamp
-                    hour = self._header_to_hour(header)
-                    timestamp = date.replace(hour=hour)
-                    if hour == 0:
-                        timestamp += datetime.timedelta(1)
+                    timestamp = self._header_to_timestamp(header, date)
                     
                     # set up storage for new data
                     if timestamp not in datapoints:
@@ -269,15 +279,23 @@ class CAISOParser(UtilityParser):
             return False
             
         if dp['forecast_type'] == self.ACTUAL_CODE:
-            # only store past data for actual
-            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
-            if latest:
-                if dp['timestamp'] > latest:
-                    return True # this is new data
-                else:
-                    return False # this is old data
+            # store actual data only if it's not there already
+            qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                             forecast_code=FORECAST_CODES[dp['forecast_type']])
+            if qset.count() > 0:
+                return False
             else:
-                return True # no existing data
+                return False
+                
+            # only store past data for actual
+#            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
+#            if latest:
+#                if dp['timestamp'] > latest:
+#                    return True # this is new data
+#                else:
+#                    return False # this is old data
+#            else:
+#                return True # no existing data
                 
         else:
             # any time is ok for forecasts
