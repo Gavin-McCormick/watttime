@@ -16,7 +16,7 @@ if environ.has_key('DATABASE_URL'):
 ###############################
 # local development settings 
 ###############################
-else: 
+else:
     DEBUG = True
 
     DATABASES = {
@@ -148,7 +148,7 @@ WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(DEPLOY_PATH, 'templates'),    
+    os.path.join(DEPLOY_PATH, 'templates'),
 )
 
 INSTALLED_APPS = (

@@ -30,6 +30,6 @@ def twilio_endpoint(request):
                    body=body,
                    msg_type=TwilioSMSEvent.INCOMING,
                    response_to=last_text).save()
-    
+
     resp = twiml.Response()
     return HttpResponse(unicode(resp).encode('utf-8'), content_type='application/xml')

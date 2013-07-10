@@ -55,6 +55,7 @@
 </table>
 <br>
 <table class="well" style="background-color:#666;">
+    {% if region == "California" %}
     <tr>
         <td>
             <h4>Message frequency</h4>
@@ -73,6 +74,18 @@
             <h4>{{ form.forecast_email }}</h4>
         </td>
     </tr>
+    {% endif %}
+    {% if region == "NewEngland" %}
+    <tr>
+        <td>
+            <h4>Message frequency</h4>
+        </td>
+        <td>
+            {{ form.message_frequency.errors }}
+            <h4>{{ form.message_frequency }}</h4>
+        </td>
+    </tr>
+    {% endif %}
     <tr>
         <td>
             <h4>Energy-intensive equipment</h4>

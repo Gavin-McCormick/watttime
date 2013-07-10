@@ -234,7 +234,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
                 using the best available data.
         """
         qset = cls.objects.filter(date__range=(starttime, endtime))
-        timestamps = qset.values_list('date', flat=True).distinct()
+        timestamps = sorted(qset.values_list('date', flat=True).distinct())
         return [cls.best_guess_point(t) for t in timestamps]
 
     @classmethod

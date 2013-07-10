@@ -468,3 +468,29 @@ def alpha_completed(name):
         "Gavin",
         "and rest of the WattTime team"]
     return ("\n".join(lines)).format(name = name)
+
+def morning_forecast_email(name, best_hour, worst_hour):
+    lines = ["Good morning {name},",
+        "",
+        "Today in California the cleanest time to use power will be {best} and the dirtiest time will be {worst}. ",
+        "",
+        "(More info always available at https://watttime.herokuapp.com/status .)",
+        "",
+        "Cheers,",
+        "",
+        "The WattTime team"]
+    return ("\n".join(lines)).format(name = name, best = best_hour, worst=worst_hour)
+
+def morning_forecast_email_first(name, best_hour, worst_hour):
+    lines = ["Hi {name},",
+        "",
+        "Welcome to your first WattTime morning forecast! Today in California electricity will be cleanest at {best} and dirtiest at {worst}. Can you find a way to shift any energy consumption towards the cleanest time or away from the dirtiest?",
+        "",
+        # "In addition, you can now always see the full day's clean energy outlook for California or other regions at https://watttime.herokuapp.com/status. (It's updated hourly throughout the day.)",
+        # "",
+        "We hope you find this forecast helpful! Questions? Feedback? You can write us at this address at any time.",
+        "",
+        "Cheers,",
+        "",
+        "The WattTime team"]
+    return ("\n".join(lines)).format(name = name, best = best_hour, worst = worst_hour)

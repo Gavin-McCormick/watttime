@@ -15,11 +15,16 @@
 # Authors: Anna Schneider
 
 # regular imports
-from windfriendly.models import debug, MARGINAL_FUELS
+from django.core.mail import send_mail
+from windfriendly.models import debug, MARGINAL_FUELS, CAISO
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
+from accounts.messages import morning_forecast_email, morning_forecast_email_first
 from workers.utils import is_good_time_to_message
+import datetime
+import pytz
+import settings
 
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
@@ -40,6 +45,57 @@ def run_hourly_tasks():
     # send notifications to users in updated regions
    # notified_users = send_text_notifications(['CAISO'])
    # print notified_users
+
+def round_to_hour(dt):
+    hour = dt.hour
+    if dt.minute >= 30:
+        hour += 1
+    return (hour % 24)
+
+def display_hour(dt):
+    hour = round_to_hour(dt)
+    if hour < 12:
+        return '{:d}am'.format(hour)
+    elif hour == 12:
+        return 'noon'
+    else:
+        return '{:d}pm'.format(hour - 12)
+
+# Run at 14.00 UTC every day
+def run_daily_tasks_1400():
+    send_mail ("Running...", "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+    # Send morning forecasts to california users.
+    now = datetime.datetime.now(pytz.utc).replace(minute = 0, second = 0, microsecond = 0)
+    start = now.replace(hour = 14) # This is 7am PST
+    end = start + datetime.timedelta(hours = 16) # This is midnight PST
+
+    rows = CAISO.best_guess_points_in_date_range(start, end)
+    best_time = max(rows, key = (lambda r : r.fraction_green())).date
+    worst_time = min(rows, key = (lambda r : r.fraction_green())).date
+
+    best_hour = display_hour(best_time)
+    worst_hour = display_hour(worst_time)
+
+    # subj = 'WattTime {} forecast: {} cleanest, {} dirtiest'
+    # subj = subj.format(start.strftime('%m/%d'), best_hour, worst_hour)
+    subj = 'WattTime forecast #1'
+
+    send_mail ("Preparing to send", "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+
+    for up in UserProfile.objects.all():
+        if up.user.is_active and up.state == 'CA':
+            settings = up.get_region_settings()
+            if settings.forecast_email:
+                send_mail ("Sending to {}".format(str(up)), "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+                # Send email to that user.
+                # msg = morning_forecast_email(up.name, best_hour, worst_hour)
+                msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
+                send_mail(subj,
+                        msg,
+                        settings.EMAIL_HOST_USER,
+                        [up.email])
+    send_mail ("Done...", "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+
 
 def update_bas(bas):
     # update and query BAs

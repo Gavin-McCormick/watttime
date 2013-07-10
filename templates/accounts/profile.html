@@ -20,8 +20,6 @@
  
 <p>You can <a href="{% url 'profile_edit' %}">personalize</a> your account settings for added control and convenience. Here are your current settings:</p>
 
-
-
 <br>
 
 <center>
@@ -60,6 +58,7 @@
     </tr>
 </table>
 <table class="well" style="background-color:#666;">
+    {% if region == "California" %}
     <tr>
         <td>
             <h4>Message frequency</h4>
@@ -73,9 +72,20 @@
             <h4>Receive a morning forecast by email?</h4>
         </td>
         <td>
-            <h4>{{ morning_forecast }}</h4>
+            <h4>{{ forecast_email }}</h4>
         </td>
     </tr>
+    {% endif %}
+    {% if region == "NewEngland" %}
+    <tr>
+        <td>
+            <h4>Message frequency</h4>
+        </td>
+        <td>
+            <h4>{{ message_frequency }}</h4>
+        </td>
+    </tr>
+    {% endif %}
     <tr>
         <td>
             <h4>Equipment I have access to:</h4>

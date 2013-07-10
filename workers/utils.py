@@ -17,7 +17,7 @@
 
 from windfriendly.models import debug
 from datetime import datetime, timedelta, date
-from accounts.models import SENDTEXT_TIMEDELTAS
+# from accounts.models import SENDTEXT_TIMEDELTAS
 from sms_tools.models import TwilioSMSEvent
 from random import randint
 
@@ -53,7 +53,7 @@ def is_good_time_to_message(timestamp, user_id, user_profile,
         is_randomly_selected = True
 
     debug('    is good hour? {}, {:f} seconds since last message, {:f} seconds desired interval, recently notified? {}, randomly selected? {}'.format(str(is_good_hour), dt, text_period_secs, is_recently_notified, is_randomly_selected))
-    
+
     if is_good_hour and (not is_recently_notified) and is_randomly_selected:
         print 'good'
         return True
