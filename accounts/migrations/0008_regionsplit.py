@@ -23,6 +23,7 @@ class Migration(DataMigration):
 
             if regions.newengland.has_state(up.state):
                 ne = orm.NewEnglandUserProfile()
+                ne.message_frequency = 0
                 ne.save()
                 up.ne_settings = ne
             elif not regions.california.has_state(up.state):
