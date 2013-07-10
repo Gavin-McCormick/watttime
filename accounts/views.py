@@ -30,7 +30,7 @@ class FormView:
     def html_params(self, user):
         return {}
 
-    def form_submitted(self, user, vals):
+    def form_submitted(self, request, vals):
         raise NotImplementedError()
 
     def render(self, request, html, vals):
@@ -42,7 +42,7 @@ class FormView:
             if request.method == 'POST':
                 form = self.form(user)(request.POST)
                 if form.is_valid():
-                    return self.form_submitted(user, form.cleaned_data)
+                    return self.form_submitted(request, form.cleaned_data)
             else:
                 form = self.form(user)(initial = self.form_initial(user))
 
@@ -85,8 +85,8 @@ class ProfileEdit(FormView):
                 'state' : up.state,
                 'region' : up.region().name}
 
-    def form_submitted(self, user, vals):
-        up = user.get_profile()
+    def form_submitted(self, request, vals):
+        up = request.user.get_profile()
         up.name = vals['name']
 
         password = vals['password']
@@ -118,8 +118,8 @@ class ProfileFirstEdit(FormView):
     def html_params(self, user):
         return {'name' : user.get_profile().name}
 
-    def form_submitted(self, user, vals):
-        up = user.get_profile()
+    def form_submitted(self, request, vals):
+        up = request.user.get_profile()
 
         password = vals['password']
         if not password in ['(not used)', '######']:
@@ -136,8 +136,8 @@ class PhoneVerifyView(FormView):
     def __init__(self):
         FormView.__init__(self, '', forms.PhoneVerificationForm)
 
-    def form_submitted(self, user, vals):
-        up = user.get_profile()
+    def form_submitted(self, request, vals):
+        up = request.user.get_profile()
         code = int(vals['verification_code'])
         if code == up.verification_code:
             up.is_verified = True
@@ -165,7 +165,7 @@ class LoginView(FormView):
         FormView.__init__(self, 'login', forms.LoginForm)
         self.require_authentication = False
 
-    def form_submitted(self, user, vals):
+    def form_submitted(self, request, vals):
         email       = vals['email']
         password    = vals['password']
         try:
@@ -195,7 +195,7 @@ class CreateUserView(FormView):
         FormView.__init__(self, 'signup', forms.SignupForm)
         self.require_authentication = False
 
-    def form_submitted(self, user, vals):
+    def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'])
         if user:
             up = user.get_profile()
