@@ -16,7 +16,7 @@ class Migration(DataMigration):
             # We only migrate California options to keep things sane
             # if regions.california.has_state(up.state):
             ca = orm.CaliforniaUserProfile()
-            ca.message_frequency = up.message_frequency
+            ca.message_frequency = up.message_frequency - 1
             ca.forecast_email = up.forecast_email
             ca.save()
             up.ca_settings = ca
