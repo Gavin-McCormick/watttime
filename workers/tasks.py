@@ -84,8 +84,6 @@ def run_daily_tasks_1400():
 
     for up in UserProfile.objects.all():
         if up.user.is_active and up.state == 'CA' and up.ca_settings.forecast_email:
-            if up.name != 'Eric':
-                continue
             send_mail ("Sending to {}".format(str(up)), "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
             # Send email to that user.
             # msg = morning_forecast_email(up.name, best_hour, worst_hour)
