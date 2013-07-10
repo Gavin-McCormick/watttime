@@ -158,7 +158,7 @@ class PhoneVerifyView(FormView):
             if sent:
                 return render(request, 'accounts/phone_verify.html', vals)
             else:
-                return render(request, 'accounts/phone_bad_number.htm', vals)
+                return render(request, 'accounts/phone_bad_number.html', vals)
 
 class LoginView(FormView):
     def __init__(self):
@@ -179,7 +179,7 @@ class LoginView(FormView):
                     login(request, user)
                     return redirect('profile_view')
                 else:
-                    return render(request, 'accounts/wrong_password', {'email' : email})
+                    return render(request, 'accounts/wrong_password.html', {'email' : email})
             else:
                 email_login_user(up.user)
                 return redirect('accounts.views.frontpage')
@@ -203,7 +203,8 @@ class CreateUserView(FormView):
             up.save()
             return redirect('signed_up')
         else:
-            pass # TODO what if user already exists?
+            return render(request, 'accounts/user_already_exists.html',
+                    {'email' : vals['email']})
 
 profile_edit = ProfileEdit()
 
