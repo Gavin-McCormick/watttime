@@ -115,7 +115,7 @@ class BaseBalancingAuthority(models.Model):
         forecast_qset = cls.objects.all()
         try:
             points = forecast_qset.filter(date__range=(starttime, endtime))
-            return points
+            return points.order_by('date')
         except:
             return []   
 
