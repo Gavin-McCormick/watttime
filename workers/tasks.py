@@ -68,7 +68,6 @@ def display_hour(dt):
 
 # Run at 14.00 UTC every day
 def run_daily_tasks_1400():
-    send_mail ("Running...", "msg", EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
     # Send morning forecasts to california users.
     now = datetime.datetime.now(pytz.utc).replace(minute = 0, second = 0, microsecond = 0)
     start = now.replace(hour = 14) # This is 7am PST
@@ -81,26 +80,21 @@ def run_daily_tasks_1400():
     best_hour = display_hour(best_time)
     worst_hour = display_hour(worst_time)
 
-    # subj = 'WattTime {} forecast: {} cleanest, {} dirtiest'
-    # subj = subj.format(start.strftime('%m/%d'), best_hour, worst_hour)
-    subj = 'WattTime forecast #1'
-
-    send_mail ("Preparing to send", "msg", EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+    subj = 'WattTime {} forecast: {} cleanest, {} dirtiest'
+    subj = subj.format(start.strftime('%m/%d'), best_hour, worst_hour)
+    # subj = 'WattTime forecast #1'
 
     for up in UserProfile.objects.all():
         if up.user.is_active and up.state == 'CA':
             ca = up.get_region_settings()
             if ca.forecast_email:
-                send_mail ("Sending to {}".format(str(up)), "msg", EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
                 # Send email to that user.
-                # msg = morning_forecast_email(up.name, best_hour, worst_hour)
-                msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
+                msg = morning_forecast_email(up.name, best_hour, worst_hour)
+                # msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
                 send_mail(subj,
                         msg,
                         EMAIL_HOST_USER,
                         [up.email])
-    send_mail ("Done...", "msg", EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
-
 
 def update_bas(bas):
     # update and query BAs
