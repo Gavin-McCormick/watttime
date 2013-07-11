@@ -14,3 +14,10 @@ msg_more = accounts.messages.Message.use_more_message
 
 def valid(up):
     return up.user.is_active and up.is_verified and up.state == 'CA'
+
+def users_mf(mf):
+    l = []
+    for up in users_():
+        if valid(up) and up.get_region_settings().message_frequency == mf:
+            l.append(up)
+    return l

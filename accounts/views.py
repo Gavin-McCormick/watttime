@@ -154,6 +154,7 @@ class PhoneVerifyView(FormView):
         if up.is_verified:
             return render(request, 'accounts/phone_already_verified.html', vals)
         else:
+            # TODO specialized error message for blank phone number
             sent = send_verification_code(user)
             if sent:
                 return render(request, 'accounts/phone_verify.html', vals)

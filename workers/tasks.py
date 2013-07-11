@@ -67,7 +67,7 @@ def run_daily_tasks_1400():
     # Send morning forecasts to california users.
     now = datetime.datetime.now(pytz.utc).replace(minute = 0, second = 0, microsecond = 0)
     start = now.replace(hour = 14) # This is 7am PST
-    end = start + datetime.timedelta(hours = 16) # This is midnight PST
+    end = start + datetime.timedelta(hours = 16) # This is 11pm PST
 
     rows = CAISO.best_guess_points_in_date_range(start, end)
     best_time = max(rows, key = (lambda r : r.fraction_green())).date

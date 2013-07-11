@@ -28,315 +28,137 @@ class Message:
     def information_message(cls, msg):
         return cls(Message.INFORMATION, msg)
 
-def dirtiesthour_criteria(percent_green, marginal_fuel, state):
-    randsituation = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:
-        situation_msg = "This is probably going to be the dirtiest power %s sees today."
-    else:
-        situation_msg = "This hour is the least clean your electricity will get today."
-    return Message.dirtiesthour_criteria(situation_msg)
+def rand(options):
+    index = random.randint(0, len(options) - 1)
+    return options[index]
 
-def unusuallydirtyhour_criteria(percent_green, marginal_fuel, state):
-    randsituation = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:
-        situation_msg = "Power is unusually dirty right now in %s!" % state
-    else:
-        situation_msg = "Not much renewable power right now."
-    return Message.use_less_message(situation_msg)
+criterion_dirtiest = [
+    "This is probably going to be the dirtiest power {state} sees today.",
+    "This hour is the least clean your electricity will get today."]
 
-def cleanesthour_criteria(percent_green, marginal_fuel, state):
-    randsituation = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:
-        situation_msg = "This is the cleanest time today to use power."
-    else:
-        situation_msg = "Lots of renewable power on the grid right now!"
-    return Message.use_more_message(situation_msg)
+criterion_unusually_dirty = [
+    "Power is unusually dirty right now in {state}!",
+    "Not much renewable power right now."]
 
-def unusuallycleanhour_criteria(percent_green, marginal_fuel, state):
-    randsituation = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:
-        situation_msg = "%s electricity is unusually clean right now." % state
-    else:
-        situation_msg = "Your power is unusually full of renewables atm."
-    return Message.use_more_message(situation_msg)
+criterion_cleanest = [
+    "This is the cleanest time today to use power.",
+    "Lots of renewable power on the grid right now!"]
 
-def dirtyemergency_criteria(percent_green, marginal_fuel, state):
-    randsituation = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:
-        situation_msg = "Electricity's about as dirty as it ever gets in %s right now." % state
-    else:
-        situation_msg = "This is about as dirty as power ever gets in %s!" % state
-    return Message.use_less_message(situation_msg)
+criterion_unusually_clean = [
+    "{state} electricity is unusually clean right now.",
+    "Your power is unusually full of renewables atm."]
 
-def dirtiesthour_homegeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Look around. Can you find one thing on that doesn't need to be?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around - see a light on that's not needed?"
-    return Message.use_less_message(action_msg)
+criterion_dirty_emergency = [
+    "Electricity's about as dirty as it ever gets in {state} right now.",
+    "This is about as dirty as power ever gets in {state}!"]
 
-def dirtiesthour_homeac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Biggest power draw is A/C - think you could dial back the thermostat?"
-    elif randsituation == 1:
-        action_msg = "If your A/C is on, think you could switch it off for just a bit?"
-    else:
-        action_msg = "Look around - see a light on that's not needed?"
-    return Message.use_less_message(action_msg)
+action_dirtiest_home_generic = [
+    "Look around. Can you find one thing on that doesn't need to be?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light on that's not needed?"]
 
-def dirtiesthour_workgeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Try a treasure hunt break! Can you find 1 thing on that isn't needed?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around - see a light or monitor on that's not needed?"
-    return Message.use_less_message(action_msg)
+action_dirtiest_home_ac = [
+    "Biggest power draw is A/C - think you could dial back the thermostat?",
+    "If your A/C is on, think you could switch it off for just a bit?",
+    "Look around - see a light on that's not needed?"]
 
-def dirtiesthour_workac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Biggest power draw is A/C - think you could dial back the thermostat?"
-    elif randsituation == 1:
-        action_msg = "If the A/C is on, any chance you could dial it back for a bit?"
-    else:
-        action_msg = "Look around. Can you find one thing on that doesn't need to be?"
-    return Message.use_less_message(action_msg)
+action_dirtiest_work_generic = [
+    "Try a treasure hunt break! Can you find 1 thing on that isn't needed?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light or monitor on that's not needed?"]
 
-def unusuallydirtyhour_workac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Biggest user for power is A/C - think you could dial back the thermostat?"
-    elif randsituation == 1:
-        action_msg = "Is the A/C on? Think anyone would mind you dialing it back for a bit?"
-    else:
-        action_msg = "Look around. Can you find one thing that doesn't need to be on?"
-    return Message.use_less_message(action_msg)
+action_dirtiest_work_ac = [
+    "Biggest power draw is A/C - think you could dial back the thermostat?",
+    "If the A/C is on, any chance you could dial it back for a bit?",
+    "Look around. Can you find one thing on that doesn't need to be?"]
 
-def unusuallydirtyhour_workgeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Any appliances you aren't using that you could turn off?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around - what's one thing that doesn't need to be on? A light?"
-    return Message.use_less_message(action_msg)
+action_unusually_dirty_work_ac = [
+    "Biggest user for power is A/C - think you could dial back the thermostat?",
+    "Is the A/C on? Think anyone would mind you dialing it back for a bit?",
+    "Look around. Can you find one thing that doesn't need to be on?"]
 
-def unusuallydirtyhour_homeac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Biggest draw for power is A/C - think you could dial back the thermostat?"
-    elif randsituation == 1:
-        action_msg = "If your A/C is on, think you could switch it off for just a bit?"
-    else:
-        action_msg = "Any appliances you aren't using that you could turn off?"
-    return Message.use_less_message(action_msg)
+action_unusually_dirty_work_generic = [
+    "Any appliances you aren't using that you could turn off?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - what's one thing that doesn't need to be on? A light?"]
 
-def unusuallydirtyhour_homegeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Any appliances you aren't using that you could turn off?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around - see a light on that's not needed?"
-    return Message.use_less_message(action_msg)
+action_unusually_dirty_home_ac = [
+    "Biggest draw for power is A/C - think you could dial back the thermostat?",
+    "If your A/C is on, think you could switch it off for just a bit?",
+    "Any appliances you aren't using that you could turn off?"]
 
-def dirtyemergency_workac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "If the A/C is on, think anyone would mind you dialing it back for a bit?"
-    elif randsituation == 1:
-        action_msg = "Up to 40% of power in CA goes to A/C. Can you dial yours back 2 degrees?"
-    else:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    return Message.use_less_message(action_msg)
+action_unusually_dirty_home_generic = [
+    "Any appliances you aren't using that you could turn off?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light on that's not needed?"]
 
-def dirtyemergency_workgeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    elif randsituation == 1:
-        action_msg = "Look around. Can you find one thing on that doesn't need to be?"
-    else:
-        action_msg = "Can you turn off one thing? See a light or monitor on that's not needed?"
-    return Message.use_less_message(action_msg)
+action_dirty_emergency_work_ac = [
+    "If the A/C is on, think anyone would mind you dialing it back for a bit?",
+    "Up to 40% of power in CA goes to A/C. Can you dial yours back 2 degrees?",
+    "Think you could turn off one thing? What do you need least?"]
 
-def dirtyemergency_pool_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Pool pump use a LOT of power. Could you turn yours off for the day?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around. Anything you could stand to turn off? Lights? Pool pump?"
-    return Message.use_less_message(action_msg)
+action_dirty_emergency_work_generic = [
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Can you find one thing on that doesn't need to be?",
+    "Can you turn off one thing? See a light or monitor on that's not needed?"]
 
-def dirtyemergency_homeac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Up to 40% of power in CA goes to A/C. Is yours on? Can you turn off for now?"
-    elif randsituation == 1:
-        action_msg = "If the A/C is on, any chance you could turn it off at least for a bit?"
-    else:
-        action_msg = "Look around. Anything you could stand to turn off for now?"
-    return Message.use_less_message(action_msg)
+action_dirty_emergency_pool = [
+    "Pool pump use a LOT of power. Could you turn yours off for the day?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Anything you could stand to turn off? Lights? Pool pump?"]
 
-def dirtyemergency_waterheater_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Your water heater is a huge power draw. Can you shut it off for an hour?"
-    elif randsituation == 1:
-        action_msg = "Hot water requires lots of power. Can you avoid using any for a few hours?"
-    else:
-        action_msg = "Look around. Anything you could stand to turn off for now?"
-    return Message.use_less_message(action_msg)
+action_dirty_emergency_home_ac = [
+    "Up to 40% of power in CA goes to A/C. Is yours on? Can you turn off for now?",
+    "If the A/C is on, any chance you could turn it off at least for a bit?",
+    "Look around. Anything you could stand to turn off for now?"]
 
-def dirtyemergency_homegeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "What's one thing that doesn't need to be on? A light? TV?"
-    elif randsituation == 1:
-        action_msg = "Think you could turn off one thing? What do you need least?"
-    else:
-        action_msg = "Look around. Anything you could stand to turn off for now?"
-    return Message.use_less_message(action_msg)
+action_dirty_emergency_waterheater = [
+    "Your water heater is a huge power draw. Can you shut it off for an hour?",
+    "Hot water requires lots of power. Can you avoid using any for a few hours?",
+    "Look around. Anything you could stand to turn off for now?"]
 
-def unusuallycleanhour_workgeneric_actions(marginal_fuel):
-    randaction = random.randint(0,1)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Is there anything you could turn on now rather than later?"
-    else:
-        action_msg = "Great time to, say, recharge any electronics."
-    return Message.use_more_message(action_msg)
+action_dirty_emergency_home_generic = [
+    "What's one thing that doesn't need to be on? A light? TV?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Anything you could stand to turn off for now?"]
 
-def unusuallycleanhour_homeac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Good time to, say, recharge electronics or turn up the A/C if hot."
-    elif randsituation == 1:
-        action_msg = "Anything you could run now instead of later? Laundry? Oven?"
-    else:
-        action_msg = "Hot? Maybe you could turn up A/C, precool while you're on clean power? "
-    return Message.use_more_message(action_msg)
+action_unusually_clean_work_generic = [
+    "Is there anything you could turn on now rather than later?",
+    "Great time to, say, recharge any electronics."]
 
-def unusuallycleanhour_precool_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Think it'll be hot today? Why not turn up A/C now while it's clean?"
-    else:
-        action_msg = "Expecting a hot day? Why not pre-cool your house before work?"
-    return Message.use_more_message(action_msg)
+action_unusually_clean_home_ac = [
+    "Good time to, say, recharge electronics or turn up the A/C if hot.",
+    "Anything you could run now instead of later? Laundry? Oven?",
+    "Hot? Maybe you could turn up A/C, precool while you're on clean power?"]
 
-def unusuallycleanhour_dishwasher_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "No chance your dishwasher's full? Could you run it now while power's clean?"
-    elif randsituation == 1:
-        action_msg = "Anything you could run now instead of later? Laundry? Oven? Dishwasher?"
-    else:
-        action_msg = "Can you think of anything you could turn on now rather than later?"
-    return Message.use_more_message(action_msg)
+action_unusually_clean_precool = [
+    "Think it'll be hot today? Why not turn up A/C now while it's clean?",
+    "Expecting a hot day? Why not pre-cool your house before work?"]
 
-def unusuallycleanhour_homegeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Can you think of anything you could turn on now rather than later?"
-    elif randsituation == 1:
-        action_msg = "Great time to recharge any electronics."
-    else:
-        action_msg = "Anything you could run now instead of later? Laundry? Oven?"
-    return Message.use_more_message(action_msg)
+action_unusually_clean_dishwasher = [
+    "No chance your dishwasher's full? Could you run it now while power's clean?",
+    "Anything you could run now instead of later? Laundry? Oven? Dishwasher?",
+    "Can you think of anything you could turn on now rather than later?"]
 
-def cleanesthour_dishwasher_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Can you think of anything you could turn on now rather than later?"
-    elif randsituation == 1:
-        action_msg = "Dishwasher loaded? Now would be a great time to run it."
-    else:
-        action_msg = "Anything you could run now instead of later? Laundry? Dishwasher?"
-    return Message.use_more_message(action_msg)
+action_unusually_clean_home_generic = [
+    "Can you think of anything you could turn on now rather than later?",
+    "Great time to recharge any electronics.",
+    "Anything you could run now instead of later? Laundry? Oven?"]
 
-def cleanesthour_homeac_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Anything you could run now instead of later? Laundry? Oven?"
-    elif randsituation == 1:
-        action_msg = "Good time to, say, recharge electronics or turn up the A/C if you're hot."
-    else:
-        action_msg = "Can you think of anything you could turn on now rather than later?"
-    return Message.use_more_message(action_msg)
+action_cleanest_dishwasher = [
+    "Can you think of anything you could turn on now rather than later?",
+    "Dishwasher loaded? Now would be a great time to run it.",
+    "Anything you could run now instead of later? Laundry? Dishwasher?"]
 
-def cleanesthour_homegeneric_actions(marginal_fuel):
-    randaction = random.randint(0,2)
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-    if randaction == 0:    
-        action_msg = "Can you think of anything you could turn on now rather than later?"
-    elif randsituation == 1:
-        action_msg = "Great time to recharge any electronics."
-    else:
-        action_msg = "Anything you could run now instead of later? Laundry? Oven?"
-    return Message.use_more_message(action_msg)
+action_cleanest_home_ac = [
+    "Anything you could run now instead of later? Laundry? Oven?",
+    "Good time to, say, recharge electronics or turn up the A/C if you're hot.",
+    "Can you think of anything you could turn on now rather than later?"]
+
+action_cleanest_home_generic = [
+    "Can you think of anything you could turn on now rather than later?",
+    "Great time to recharge any electronics.",
+    "Anything you could run now instead of later? Laundry? Oven?"]
 
 def use_central_ac_message(marginal_fuel):
     randint = random.randint(0,2)
