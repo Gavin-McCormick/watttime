@@ -13,3 +13,16 @@
 # limitations under the License.
 #
 # Authors: Anna Schneider
+
+# set up script to be run from command line
+import os
+import sys
+path = os.path.normpath(os.path.join(os.getcwd(), '..'))
+sys.path.append(path)
+from django.core.management import setup_environ
+import settings
+setup_environ(settings)
+
+from workers.tasks import run_daily_tasks_1400
+
+run_daily_tasks_1400()

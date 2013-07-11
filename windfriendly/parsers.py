@@ -59,11 +59,21 @@ class UtilityParser():
     
     def today(self, tz):
         now = datetime.datetime.today()
-        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        return tz.localize(today)
+        local_now = tz.localize(now)
+        today = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        return today
 
     def tomorrow(self, tz):
         return self.today(tz) + datetime.timedelta(1)
+
+    def yesterday(self, tz):
+        return self.today(tz) - datetime.timedelta(1)
+
+    def _date_gen(self, start_date, end_date):
+        while start_date <= end_date:
+            yield start_date
+            start_date = start_date + datetime.timedelta(1)
+
 
 class CAISOParser(UtilityParser):
     def __init__(self):
@@ -76,13 +86,14 @@ class CAISOParser(UtilityParser):
         self.FRCST_CODE = 'DAM'
         self.HRAHEAD_CODE = 'HASP'
         self.DATE_FRMT = '%Y%m%d'
-        self.TZ = pytz.timezone('US/Pacific')
+        self.TZ = self.MODEL.TIMEZONE
         
     def update(self):
         # figure out dates to pull for
-        dates_to_update = {self.ACTUAL_CODE : self.today(self.TZ),
-                           self.FRCST_CODE : self.tomorrow(self.TZ),
-                           self.HRAHEAD_CODE : self.today(self.TZ),
+        dates_to_update = {self.ACTUAL_CODE :
+                                (self.yesterday(self.TZ), self.today(self.TZ)),
+                           self.FRCST_CODE : 
+                                (self.today(self.TZ), self.tomorrow(self.TZ)),
                           }
                           
         # return data
@@ -92,8 +103,7 @@ class CAISOParser(UtilityParser):
         for forecast_code in [self.ACTUAL_CODE, self.FRCST_CODE]:
             # scrape and parse data
             streams = self.scrape_all(forecast_code,
-                                      dates_to_update[forecast_code],
-                                      dates_to_update[forecast_code])
+                                      *dates_to_update[forecast_code])
             datapoints = self.parse(streams)
             
             # save to db
@@ -113,13 +123,6 @@ class CAISOParser(UtilityParser):
         
         # return
         return to_return
-
-    def _date_gen(self, start_date, end_date):
-        if start_date == end_date:
-            yield start_date
-        while start_date < end_date:
-            yield start_date
-            start_date = start_date + datetime.timedelta(1)
 
     def scrape_all(self, forecast_type, start_date, end_date):
         """ Gets all data for this forecast type
@@ -161,17 +164,31 @@ class CAISOParser(UtilityParser):
         stream = StringIO.StringIO(f)
         return stream
                         
-    def _is_energy_header(self, key):
+    def _is_energy_header(self, key, date):
         # energy columns have header HEXX
         if key[:2] == 'HE':
-            if self._header_to_hour(key) < 24:
+            if self._header_to_timestamp(key, date) is not None:
                 return True
         return False
         
-    def _header_to_hour(self, key):
-        # 0 to 24
-        return int(key[2:])-1
+    def _header_to_timestamp(self, key, date):
+        hour = int(key[2:])
+        # TODO this doesn't handle the extra hour during daylight savings switch
+        if hour == 25:
+            return None
+            
+        # 24 ~ 0 means hour ending at midnight tomorrow
+        elif hour == 24:
+            timestamp = date.replace(hour=0)
+            timestamp += datetime.timedelta(1)       
+
+        # 1 means hour ending at 1am
+        else:
+            timestamp = date.replace(hour=hour)
         
+        # return
+        return timestamp       
+       
     def _extract_values(self, energy_type, forecast_type, vals, total_index=None):
         # set up storage
         data_dict = {}
@@ -219,11 +236,12 @@ class CAISOParser(UtilityParser):
             
             # parse dataframe columns
             for header, vals in df.iteritems():
-                if self._is_energy_header(header):
+                if self._is_energy_header(header, date):
                     
-                    # set up storage for hourly energy data
-                    hour = self._header_to_hour(header)
-                    timestamp = date.replace(hour=hour)
+                    # set up timestamp
+                    timestamp = self._header_to_timestamp(header, date)
+                    
+                    # set up storage for new data
                     if timestamp not in datapoints:
                         datapoints[timestamp] = {'timestamp' : timestamp}
                         
@@ -247,7 +265,7 @@ class CAISOParser(UtilityParser):
             row.wind = dp['wind']
             row.solar = dp['solar']
             row.forecast_code = FORECAST_CODES[dp['forecast_type']]
-            row.date = dp['timestamp']
+            row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
             row.save()
             return True
@@ -261,16 +279,14 @@ class CAISOParser(UtilityParser):
             return False
             
         if dp['forecast_type'] == self.ACTUAL_CODE:
-            # only store past data for actual
-            latest = self.MODEL.latest_date(self.ACTUAL_CODE)
-            if latest:
-                if dp['timestamp'] > latest:
-                    return True # this is new data
-                else:
-                    return False # this is old data
+            # store actual data only if it's not there already
+            qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                             forecast_code=FORECAST_CODES[dp['forecast_type']])
+            if qset.count() > 0:
+                return False
             else:
-                return True # no existing data
-                
+                return True
+                                
         else:
             # any time is ok for forecasts
             return True
@@ -291,6 +307,8 @@ class BPAParser(UtilityParser):
         self.BPA_OVERSUPPLY_URL = 'http://transmission.bpa.gov/business/operations/wind/twndbspt.txt'
         self.BPA_OVERSUPPLY_NCOLS = 4
         self.BPA_OVERSUPPLY_SKIP_LINES = 11
+        self.DATE_FRMT = '%m/%d/%Y %H:%M'
+        self.TZ = self.MODEL.TIMEZONE
 
     def getData(self, url):
         # Make request for data
@@ -302,14 +320,10 @@ class BPAParser(UtilityParser):
         return data
 
     def parseDate(self, datestring):
-        tzd = {
-            'PST': -28800,
-            'PDT': -25200,
-        }
-        tz = pytz.timezone('US/Pacific')
-        dt = dateutil.parser.parse(datestring, tzinfos=tzd)
+        """Take datestring in local time, convert to date object in UTC"""
+        dt = datetime.datetime.strptime(datestring, self.DATE_FRMT)
         if dt.tzinfo == None:
-            dt = dt.replace(tzinfo = tz)
+            dt = self.TZ.localize(dt)
         dt = dt.astimezone(pytz.UTC)
         return dt
 

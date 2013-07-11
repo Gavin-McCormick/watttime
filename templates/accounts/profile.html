@@ -28,30 +28,32 @@
 
   <p class="lead text-info alert-info alert-block"><a href="{% url 'profile_edit' %}" class="btn btn-info">Personalize</a> your account settings for more timely and relevant notifications. Your current settings:</p>
 
-
 <dl class="dl-horizontal text-info alert-info alert-block">
   <dt>Name</dt>
-  <dd>{{ name }}</dd>
-   <dt>Email</dt>
-  <dd>{{ email }}</dd>
-   <dt>State</dt>
-  <dd>{{ state }}</dd>
-   <dt>Telephone</dt>
-  <dd>{{ phone_number }}</dd>
-   <dt>Message Frequency</dt>
-  <dd>{{ message_frequency }}</dd>
-   <dt>Morning Forecast</dt>
-  <dd>{{ morning_forecast }}</dd>
-    <dt>Home Appliances</dt>
-  <dd>{{ equipment }}</dd>
-    <dt>Get News Updates</dt>
-  <dd>{{ beta_test }}</dd>
+    <dd>{{ name }}</dd>
+  <dt>Email</dt>
+    <dd>{{ email }}</dd>
+  <dt>State</dt>
+    <dd>{{ state }}</dd>
+  <dt>Telephone</dt>
+    <dd>{{ phone_number }}</dd>
+  {% if region == "California" %}
+    <dt>Message Frequency</dt>
+      <dd>{{ message_frequency }}</dd>
+    <dt>Morning Forecast</dt>
+      <dd>{{ morning_forecast }}</dd>
+  {% endif %}
+  {% if region == "California" %}
+    <dt>Message Frequency</dt>
+      <dd>{{ message_frequency }}</dd>
+  {% endif %}
+  <dt>Home Appliances</dt>
+    <dd>{{ equipment }}</dd>
+  <dt>Get News Updates</dt>
+    <dd>{{ beta_test }}</dd>
 </dl>
 
 </div>
-
-
-
 
 {% endif %}</div>
 </div>

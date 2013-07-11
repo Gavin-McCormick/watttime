@@ -47,12 +47,19 @@
 
 <div class="span6 alert alert-block alert-success">
 
+{% if region == "California" %}
+<p class="lead text-success">Message frequency</p>
+{{ form.message_frequency.errors }}
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast
+            {{ form.forecast_email.errors }}</p></label>
+<label class="radio">{{ form.message_frequency }}</label>
+{% endif %}
+
+{% if region == "NewEngland" %}
 <p class="lead text-success">Message frequency</p>
 {{ form.message_frequency.errors }}
 <label class="radio">{{ form.message_frequency }}</label>
-
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast
-            {{ form.forecast_email.errors }}</p></label>
+{% endif %}
 
 <p class="lead text-success">Energy-intensive equipment</p>
             {{ form.equipment.errors }}

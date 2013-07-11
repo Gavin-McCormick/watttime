@@ -16,7 +16,7 @@ if environ.has_key('DATABASE_URL'):
 ###############################
 # local development settings 
 ###############################
-else: 
+else:
     DEBUG = True
 
     DATABASES = {
@@ -132,6 +132,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -147,7 +148,7 @@ WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(DEPLOY_PATH, 'templates'),    
+    os.path.join(DEPLOY_PATH, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -186,6 +187,7 @@ INSTALLED_APPS = (
     'south',
 #    'invitation',
     'registration',
+    'corsheaders',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -279,3 +281,6 @@ GOOGLE_OAUTH2_CLIENT_SECRET = 'jRGCatPXaMDUROQVJ8hy6FZc'
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
 GOOGLE_ANALYTICS_DOMAIN = 'herokuapp.com'
+
+# Cross-Origin Resource Sharing
+CORS_ORIGIN_ALLOW_ALL = True
