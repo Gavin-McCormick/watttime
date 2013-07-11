@@ -6,19 +6,16 @@ How green is your energy, right now?
 
 Install
 -------
-* Get code:
+* Clone this repo.
+* Install the [Heroku toolbelt](https://toolbelt.heroku.com/), then:
     ````
-    mkdir watttime
     cd watttime
-    git init
     heroku login
     heroku git:remote -a watttime
-    git pull heroku master
     ````
 
 * Install dependencies: Install pip from http://www.pip-installer.org/en/latest/installing.html (bottom of page under "Installing from source"), then
     ````
-    cd watttime
     sudo pip install -r requirements.txt
     ````    
 
@@ -27,7 +24,7 @@ Install
     python manage.py syncdb
     ./south_startup.sh
     python manage.py migrate
-    # say 'no' if migrate asks you to delete anything, then rerun the command
+    # if migrate asks you to delete anything, say no then rerun the command
     ````
 
 Upgrade
@@ -37,7 +34,7 @@ sudo pip install -r requirements.txt
 python manage.py syncdb
 python manage.py migrate
 ````
-Say 'no' if migrate asks you to delete anything, then rerun the command.
+If migrate asks you to delete anything, say 'no' then rerun the command.
 
 Usage
 -------
