@@ -16,7 +16,6 @@ Install
 
 * Install dependencies: Install pip from http://www.pip-installer.org/en/latest/installing.html (bottom of page under "Installing from source"), then
     ````
-    cd watttime
     sudo pip install -r requirements.txt
     ````    
 
