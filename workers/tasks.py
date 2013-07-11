@@ -25,6 +25,7 @@ from workers.utils import is_good_time_to_message
 import datetime
 import pytz
 import settings
+from settings import EMAIL_HOST_USER
 
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
