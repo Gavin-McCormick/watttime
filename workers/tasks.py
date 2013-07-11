@@ -64,7 +64,7 @@ def display_hour(dt):
 
 # Run at 14.00 UTC every day
 def run_daily_tasks_1400():
-    send_mail ("Running...", "msg", settings.EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+    send_mail ("Running...", "msg", EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
     # Send morning forecasts to california users.
     now = datetime.datetime.now(pytz.utc).replace(minute = 0, second = 0, microsecond = 0)
     start = now.replace(hour = 14) # This is 7am PST
