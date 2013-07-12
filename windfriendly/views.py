@@ -20,10 +20,11 @@ from dateutil import tz
 import pytz
 import json
 import logging
+import numpy
 
 from django.http import HttpResponse
 
-from windfriendly.models import DebugMessage, User, MeterReading
+from windfriendly.models import DebugMessage, User, MeterReading, group_by_hour
 from windfriendly.parsers import GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
@@ -263,6 +264,71 @@ def history(request):
 
     # return
     return data
+    
+@json_response
+def averageday(request):
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+
+    # get requested date range, if any
+    start = request.GET.get('start', None)
+    end = request.GET.get('end', None)
+    tz_offset = request.GET.get('tz', 0)
+
+    # set up actual start and end times (default is -Inf to now)
+    if start:
+        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_start += timedelta(hours = int(tz_offset))
+    else:
+        utc_start = datetime.min.replace(tzinfo=pytz.utc)
+    if end:
+        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_end += timedelta(hours = int(tz_offset))
+    else:
+        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+
+    # get rows
+    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
+    if len(ba_rows) == 0:
+        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
+        return []
+    
+    # collect data
+    hour_groups = group_by_hour(ba_rows)
+    data = []
+    for hour, group in enumerate(hour_groups):
+        if len(group) > 0:
+            # get average data
+            average_green = round(numpy.mean([r.fraction_green() for r in group])*100, 3)
+            average_dirty = round(numpy.mean([r.fraction_high_carbon() for r in group])*100, 3)
+            average_load = numpy.mean([r.total_load() for r in group])
+            representative_date = group.latest('date').date.replace(minute=0)
+        else:
+            # get null data
+            average_green = None
+            average_dirty = None
+            average_load = None
+            representative_date = BA_MODELS[ba_name].latest_date().replace(hour=hour, minute=0)
+        
+        # complicated date wrangling to get all local_time values in local today
+        latest_day = BA_MODELS[ba_name].latest_date().astimezone(BA_MODELS[ba_name].TIMEZONE).day
+        utc_time = representative_date.astimezone(pytz.utc)
+        local_time = representative_date.astimezone(BA_MODELS[ba_name].TIMEZONE).replace(day=latest_day)
+        
+        # add to list
+        data.append({'percent_green': average_green,
+                     'percent_dirty': average_dirty,
+                     'load_MW': average_load,
+                     'utc_time': utc_time.strftime('%Y-%m-%d %H:%M'),
+                     'local_time': local_time.strftime('%Y-%m-%d %H:%M'),
+                     'hour': local_time.hour,
+                    })
+
+    # return
+    return sorted(data, key=lambda r: r['local_time'])
 
 @json_response
 def today(request):

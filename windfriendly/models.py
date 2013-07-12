@@ -21,6 +21,15 @@ def debug(message):
     dm.date = now()
     dm.message = message
     dm.save()
+    
+def group_by_hour(qset):
+    """Returns a list of 24 querysets, one for each hour of the day, grouped by date.hour"""
+    hour_qsets = []
+    hours = ['%02d' % i for i in range(24)]
+    for hour in hours:
+        hour_qset = qset.filter(date__regex = ' %s:' % hour).order_by('date')
+        hour_qsets.append(hour_qset)
+    return hour_qsets
  
 class BaseBalancingAuthority(models.Model):
     """Abstract base class for balancing authority timepoints"""
@@ -344,7 +353,7 @@ class NE(BaseBalancingAuthority):
     other_fossil = models.FloatField()
     marginal_fuel = models.IntegerField()
 
-    # date is TODO utc or local?
+    # date is utc
     date = models.DateTimeField(db_index=True)
 
     def total_load(self):

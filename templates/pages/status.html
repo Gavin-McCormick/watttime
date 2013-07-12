@@ -11,6 +11,11 @@
 
 
 <style>
+#charts .avline { 
+    stroke: #AAAAAA;
+    stroke-width: 3;
+    fill: none;
+}
 #charts .actualline { 
     stroke: #339999;
     stroke-width: 3;
@@ -166,8 +171,8 @@
     /////////////////////
     // CHART
     /////////////////////
-    var margin = {top: 50, right: 20, bottom: 50, left: 50},
-        width = 400 - margin.left - margin.right,
+    var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        width = 480 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom;
     var all_data = [],
         actual_data = [],
@@ -198,8 +203,35 @@
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // get date 2 weeks ago
+    var avstart = new Date();
+    avstart.setDate(new Date().getDate() - 14);
+    console.log(avstart);
+    var avstart_month = avstart.getMonth() + 1;
+    var avstart_day = avstart.getDate();
+    var avstart_str = avstart.getFullYear().toString();
+    if (avstart_month < 10) {
+        avstart_str += "0"+avstart_month.toString();
+    } else if (avstart_month == 13) {
+        avstart_str += "01";
+    } else {
+        avstart_str += avstart_month.toString();        
+    }
+    if (avstart_day < 10) {
+        avstart_str += "0"+avstart_day.toString();
+    } else {
+        avstart_str += avstart_day.toString();        
+    }
+    avstart_str += "0000";
+
     // Get the data
     var initial_chart_for_state = function(state) {
+        d3.json("http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+            av_data.forEach(function(d) {
+                d.date = parseDate(d.local_time);
+                d.value = +d.percent_green;
+                average_data.push(d);
+            });
         d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
@@ -217,8 +249,11 @@
             start_time = new Date(min_time.setHours(0,0,0));
             end_time = new Date(min_time.setHours(24,0,0));
             x.domain([start_time, end_time]);
-            y.domain([0, Math.min(100, 10+d3.max(all_data, function(d) { return d.value; }))]);
-            
+            y.domain([0, Math.min(100, 10+d3.max(all_data, function(d) { return d.value; }))]);        
+
+            svg.append("path")      // Add the valueline path.
+                .attr("class", "avline")
+                .attr("d", valueline(average_data));
             svg.append("path")      // Add the valueline path.
                 .attr("class", "actualline")
                 .attr("d", valueline(actual_data));
@@ -267,18 +302,24 @@
                 .text("Today's green energy in "+state); 
        
         });
+        });
     }
 
     var update_chart_for_state = function(state) {
-        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
-            all_data = [];
-            actual_data = [];
-            average_data = [];
-            forecast_data = [];
+        all_data = [];
+        actual_data = [];   
+        average_data = [];
+        forecast_data = [];
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-
+        d3.json("http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+            av_data.forEach(function(d) {
+                d.date = parseDate(d.local_time);
+                d.value = +d.percent_green;
+                average_data.push(d);
+            });
+        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -307,6 +348,9 @@
            
             var svg = d3.select("#green-chart").transition(); 
 
+            svg.select(".avline")      // Add the valueline path.
+                .duration(500)
+                .attr("d", valueline(average_data));        
             svg.select(".actualline")      // Add the valueline path.
                 .duration(500)
                 .attr("d", valueline(actual_data));        
@@ -325,6 +369,7 @@
                 .duration(500)
                 .text("Today's green energy in "+state); 
        
+        });
         });
     }
 
