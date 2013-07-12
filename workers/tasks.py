@@ -57,8 +57,8 @@ def round_to_hour(dt):
         hour += 1
     return (hour % 24)
 
-def display_hour(dt):
-    hour = round_to_hour(dt)
+def display_hour_pst(dt):
+    hour = (round_to_hour(dt) + 17) % 24
     if hour < 12:
         return '{:d}am'.format(hour)
     elif hour == 12:
@@ -77,8 +77,8 @@ def run_daily_tasks_1400():
     best_time = max(rows, key = (lambda r : r.fraction_green())).date
     worst_time = min(rows, key = (lambda r : r.fraction_green())).date
 
-    best_hour = display_hour(best_time)
-    worst_hour = display_hour(worst_time)
+    best_hour = display_hour_pst(best_time)
+    worst_hour = display_hour_pst(worst_time)
 
     subj = 'WattTime {} forecast: {} cleanest, {} dirtiest'
     subj = subj.format(start.strftime('%m/%d'), best_hour, worst_hour)
@@ -91,10 +91,9 @@ def run_daily_tasks_1400():
                 # Send email to that user.
                 msg = morning_forecast_email(up.name, best_hour, worst_hour)
                 # msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
-                send_mail(subj,
-                        msg,
-                        EMAIL_HOST_USER,
-                        [up.email])
+                # send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
+
+    send_mail(subj, msg, EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
 
 def update_bas(bas):
     # update and query BAs

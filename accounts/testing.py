@@ -21,3 +21,5 @@ def users_mf(mf):
         if valid(up) and up.get_region_settings().message_frequency == mf:
             l.append(up)
     return l
+
+send_text = accounts.twilio_utils.send_text
