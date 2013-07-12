@@ -226,7 +226,7 @@
 
     // Get the data
     var initial_chart_for_state = function(state) {
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -300,31 +300,27 @@
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .text("Today's green energy in "+state); 
-            svg.append("text")
-                .attr("class", "actual title")
+
+            var legend = svg.append("text")
+                .attr("class", "legend")
+                .attr("dy", "1em")
                 .attr("y", 0)
                 .attr("x", (width / 2))
-                .attr("dy", "1em")
-                .attr("dx", "-4em")
+                .style("text-anchor", "middle");
+
+            legend.append("tspan")
+                .attr("class", "actual")
+                .attr("dx", "-0em")
                 .attr("fill", "#339999")
-                .style("text-anchor", "middle")
                 .text("actual"); 
-            svg.append("text")
-                .attr("class", "average title")
-                .attr("y", 0)
-                .attr("x", (width / 2))
-                .attr("dy", "1em")
-                .attr("dx", "0em")
-                .style("text-anchor", "middle")
+            legend.append("tspan")
+                .attr("class", "average")
+                .attr("dx", "3em")
                 .attr("fill", "#AAAAAA")
                 .text("average");
-            svg.append("text")
-                .attr("class", "forecast title")
-                .attr("y", 0)
-                .attr("x", (width / 2))
-                .attr("dy", "1em")
-                .attr("dx", "4em")
-                .style("text-anchor", "middle")
+            legend.append("tspan")
+                .attr("class", "forecast")
+                .attr("dx", "3em")
                 .attr("fill", "#33cc99")
                 .text("forecast");        
         });
@@ -339,7 +335,7 @@
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
