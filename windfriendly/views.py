@@ -314,9 +314,10 @@ def averageday(request):
             representative_date = BA_MODELS[ba_name].latest_date().replace(hour=hour, minute=0)
         
         # complicated date wrangling to get all local_time values in local today
-        latest_day = BA_MODELS[ba_name].latest_date().astimezone(BA_MODELS[ba_name].TIMEZONE).day
-        utc_time = representative_date.astimezone(pytz.utc)
+        utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
+        latest_day = utcnow.astimezone(BA_MODELS[ba_name].TIMEZONE).day
         local_time = representative_date.astimezone(BA_MODELS[ba_name].TIMEZONE).replace(day=latest_day)
+        utc_time = local_time.astimezone(pytz.utc)
         
         # add to list
         data.append({'percent_green': average_green,

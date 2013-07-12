@@ -35,7 +35,7 @@
     shape-rendering: crispEdges;
 }
 #charts div {
-    font-size: 120%;
+    font-size: 100%;
 }
 #charts .points {
     fill: #339999;
@@ -172,7 +172,7 @@
     // CHART
     /////////////////////
     var margin = {top: 50, right: 50, bottom: 50, left: 50},
-        width = 480 - margin.left - margin.right,
+        width = 450 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom;
     var all_data = [],
         actual_data = [],
@@ -300,7 +300,33 @@
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .text("Today's green energy in "+state); 
-       
+            svg.append("text")
+                .attr("class", "actual title")
+                .attr("y", 0)
+                .attr("x", (width / 2))
+                .attr("dy", "1em")
+                .attr("dx", "-4em")
+                .attr("fill", "#339999")
+                .style("text-anchor", "middle")
+                .text("actual"); 
+            svg.append("text")
+                .attr("class", "average title")
+                .attr("y", 0)
+                .attr("x", (width / 2))
+                .attr("dy", "1em")
+                .attr("dx", "0em")
+                .style("text-anchor", "middle")
+                .attr("fill", "#AAAAAA")
+                .text("average");
+            svg.append("text")
+                .attr("class", "forecast title")
+                .attr("y", 0)
+                .attr("x", (width / 2))
+                .attr("dy", "1em")
+                .attr("dx", "4em")
+                .style("text-anchor", "middle")
+                .attr("fill", "#33cc99")
+                .text("forecast");        
         });
         });
     }
