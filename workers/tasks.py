@@ -91,7 +91,7 @@ def run_daily_tasks_1400():
                 # Send email to that user.
                 msg = morning_forecast_email(up.name, best_hour, worst_hour)
                 # msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
-                # send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
+                send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
 
     send_mail(subj, msg, EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
 
