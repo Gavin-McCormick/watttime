@@ -15,6 +15,7 @@ body{
 	color:#7f7f7f;
 	background-attachment:fixed;
 }
+
 body a{
 	color:#66cc99;
 	text-decoration:none;
@@ -34,9 +35,10 @@ body a:hover{
 
 /*removes bullets on radio and checkboxes; may have unintended effects on other ul styles*/
 
+/*
 ul {
 	list-style-type:none
-}
+}*/
 
 
 /*special navbar style*/
