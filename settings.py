@@ -1,5 +1,6 @@
 import os.path
 from os import environ
+import sys
 
 ###############################
 # production settings on heroku
@@ -209,7 +210,12 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'filters': ['require_debug_false'],
             'include_html': True,
-        }
+        },
+        'console': {
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
     },
     'loggers': {
         'django.request': {
