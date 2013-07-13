@@ -32,6 +32,8 @@ urlpatterns = patterns('',
         'accounts.views.frontpage', name='home'),
     url(r'^ping5[/]?$',
         'workers.views.recurring_events', name='ping5'),
+    url(r'^debug[/]?$',
+        'workers.views.debug_messages', name='debug_messages'),
     url(r'^data_dump/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
         'workers.views.data_dump', name='data_dump'),
     # Uncomment the next line to enable the admin:

@@ -16,12 +16,12 @@
 
 # regular imports
 from django.core.mail import send_mail
-from windfriendly.models import debug, MARGINAL_FUELS, CAISO
+from windfriendly.models import MARGINAL_FUELS, CAISO
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from accounts.messages import morning_forecast_email, morning_forecast_email_first
-from workers.utils import is_good_time_to_message
+from workers.utils import is_good_time_to_message, debug
 import datetime
 import pytz
 

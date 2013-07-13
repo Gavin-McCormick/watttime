@@ -238,7 +238,7 @@ def create_new_user(email, name = None):
 
     username = new_user_name()
     user = User.objects.create_user(username, email = None, password = None)
-    user.is_active = True
+    user.is_active = False
     user.is_staff = False
     user.is_superuser = False
     # The following fields are fields we store in the UserProfile object instead
@@ -325,6 +325,7 @@ def magic_login(request, magic_login_code):
         user = up.user
         pw = str(random.randint(1000000000, 9999999999))
         user.set_password(pw)
+        user.is_active = True
         user.save()
 
         # 'authenticate' attaches a 'backend' object to the returned user,
@@ -343,7 +344,7 @@ def send_verification_code(user):
     up.save()
     print ("Sending {} verification code {:d}".format(up.name, code))
     msg = messages.verify_phone_message(code)
-    sent = twilio_utils.send_text(msg, up)
+    sent = twilio_utils.send_text(msg, up, force = True)
     if sent:
         print ("Send successful.")
     else:

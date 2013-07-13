@@ -24,7 +24,7 @@ import numpy
 
 from django.http import HttpResponse
 
-from windfriendly.models import DebugMessage, User, MeterReading, group_by_hour
+from windfriendly.models import User, MeterReading, group_by_hour
 from windfriendly.parsers import GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
@@ -74,17 +74,6 @@ def ba_from_request(request):
     # got nothing
     logging.debug('returning null BA')
     return None, None
-      
-def debug_messages(request):
-    dms = DebugMessage.objects.all()
-    xs = []
-    for dm in dms:
-        xs.append((dm.date, dm.message))
-    xs.sort()
-    result = []
-    for x, y in xs:
-        result.append('{}: {}'.format(str(x), y))
-    return HttpResponse('\n'.join(result), "application/json")
 
 @json_response
 def forecast(request):
