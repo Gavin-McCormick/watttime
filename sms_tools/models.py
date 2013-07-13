@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from accounts.messages import Message
 
 class TwilioSMSEvent(models.Model):
-    
     user = models.ForeignKey(User)
     response_to = models.ForeignKey('self', null=True)
     to_number = PhoneNumberField()
@@ -23,8 +22,8 @@ class TwilioSMSEvent(models.Model):
             (USE_LESS, USE_LESS),
             (USE_MORE, USE_MORE),
             (CONFIRMATION, CONFIRMATION),
-            (INFORMATION, INFORMATION), 
-            (INCOMING, INCOMING), 
+            (INFORMATION, INFORMATION),
+            (INCOMING, INCOMING),
         )
 
     msg_type = models.CharField(max_length=20, choices = msg_type_choices)

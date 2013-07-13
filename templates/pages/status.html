@@ -226,7 +226,7 @@
 
     // Get the data
     var initial_chart_for_state = function(state) {
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -335,7 +335,7 @@
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("http://http://localhost:8000/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;

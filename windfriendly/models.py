@@ -12,16 +12,6 @@ FORECAST_CODES = {'ACTUAL': 0, 'actual': 0,
                   'RTM': 3, 'mn_ahead': 3,
                   }
 
-class DebugMessage(models.Model):
-    date = models.DateTimeField(db_index=True)
-    message = models.CharField(max_length=300)
-
-def debug(message):
-    dm = DebugMessage()
-    dm.date = now()
-    dm.message = message
-    dm.save()
-    
 def group_by_hour(qset):
     """Returns a list of 24 querysets, one for each hour of the day, grouped by date.hour"""
     hour_qsets = []
@@ -33,13 +23,13 @@ def group_by_hour(qset):
         else:
             hour_qsets.append(None)
     return hour_qsets
- 
+
 class BaseBalancingAuthority(models.Model):
     """Abstract base class for balancing authority timepoints"""
     # timepoints are 'extra green' if fraction_green is above this fraction
     GREEN_THRESHOLD = 0.15
     # timepoints are 'extra green' if fraction_high_carbon is above this fraction
-    DIRTY_THRESHOLD = 0.95 
+    DIRTY_THRESHOLD = 0.95
     # must set timezone for every derived class
     TIMEZONE = pytz.utc
 
@@ -52,10 +42,10 @@ class BaseBalancingAuthority(models.Model):
                 'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
                 }
-                
+
     class Meta:
         abstract = True
-    
+
     def get_title(self):
         return str(self.fraction_green())
 

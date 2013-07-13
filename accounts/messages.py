@@ -13,20 +13,23 @@ class Message:
         self.msg = msg
 
     @classmethod
-    def use_more_message(cls, msg):
+    def use_more(cls, msg):
         return cls(Message.USE_MORE, msg)
 
     @classmethod
-    def use_less_message(cls, msg):
+    def use_less(cls, msg):
         return cls(Message.USE_LESS, msg)
 
     @classmethod
-    def confirmation_message(cls, msg):
+    def confirmation(cls, msg):
         return cls(Message.CONFIRMATION, msg)
 
     @classmethod
-    def information_message(cls, msg):
+    def information(cls, msg):
         return cls(Message.INFORMATION, msg)
+
+def msg(criterion, action):
+    return 'WattTime alert: {} {}'.format(criterion, action)
 
 def rand(options):
     index = random.randint(0, len(options) - 1)
@@ -35,22 +38,6 @@ def rand(options):
 criterion_dirtiest = [
     "This is probably going to be the dirtiest power {state} sees today.",
     "This hour is the least clean your electricity will get today."]
-
-criterion_unusually_dirty = [
-    "Power is unusually dirty right now in {state}!",
-    "Not much renewable power right now."]
-
-criterion_cleanest = [
-    "This is the cleanest time today to use power.",
-    "Lots of renewable power on the grid right now!"]
-
-criterion_unusually_clean = [
-    "{state} electricity is unusually clean right now.",
-    "Your power is unusually full of renewables atm."]
-
-criterion_dirty_emergency = [
-    "Electricity's about as dirty as it ever gets in {state} right now.",
-    "This is about as dirty as power ever gets in {state}!"]
 
 action_dirtiest_home_generic = [
     "Look around. Can you find one thing on that doesn't need to be?",
@@ -71,6 +58,49 @@ action_dirtiest_work_ac = [
     "Biggest power draw is A/C - think you could dial back the thermostat?",
     "If the A/C is on, any chance you could dial it back for a bit?",
     "Look around. Can you find one thing on that doesn't need to be?"]
+
+def ca_message_dirty(up):
+    # TODO choose between home vs. work appropriately.
+    c = rand(criterion_dirtiest)
+    a = rand(action_dirtiest_home_generic)
+    return Message.use_less(msg(c, a))
+
+criterion_cleanest = [
+    "This is the cleanest time today to use power.",
+    "Lots of renewable power on the grid right now!"]
+
+action_cleanest_dishwasher = [
+    "Can you think of anything you could turn on now rather than later?",
+    "Dishwasher loaded? Now would be a great time to run it.",
+    "Anything you could run now instead of later? Laundry? Dishwasher?"]
+
+action_cleanest_home_ac = [
+    "Anything you could run now instead of later? Laundry? Oven?",
+    "Good time to, say, recharge electronics or turn up the A/C if you're hot.",
+    "Can you think of anything you could turn on now rather than later?"]
+
+action_cleanest_home_generic = [
+    "Can you think of anything you could turn on now rather than later?",
+    "Great time to recharge any electronics.",
+    "Anything you could run now instead of later? Laundry? Oven?"]
+
+def ca_message_clean(up):
+    # TODO choose actions appropriately
+    c = rand(criterion_cleanest)
+    a = rand(action_cleanest_home_generic)
+    return Message.use_more(msg(c, a))
+
+criterion_unusually_dirty = [
+    "Power is unusually dirty right now in {state}!",
+    "Not much renewable power right now."]
+
+criterion_unusually_clean = [
+    "{state} electricity is unusually clean right now.",
+    "Your power is unusually full of renewables atm."]
+
+criterion_dirty_emergency = [
+    "Electricity's about as dirty as it ever gets in {state} right now.",
+    "This is about as dirty as power ever gets in {state}!"]
 
 action_unusually_dirty_work_ac = [
     "Biggest user for power is A/C - think you could dial back the thermostat?",
@@ -141,21 +171,6 @@ action_unusually_clean_dishwasher = [
     "Can you think of anything you could turn on now rather than later?"]
 
 action_unusually_clean_home_generic = [
-    "Can you think of anything you could turn on now rather than later?",
-    "Great time to recharge any electronics.",
-    "Anything you could run now instead of later? Laundry? Oven?"]
-
-action_cleanest_dishwasher = [
-    "Can you think of anything you could turn on now rather than later?",
-    "Dishwasher loaded? Now would be a great time to run it.",
-    "Anything you could run now instead of later? Laundry? Dishwasher?"]
-
-action_cleanest_home_ac = [
-    "Anything you could run now instead of later? Laundry? Oven?",
-    "Good time to, say, recharge electronics or turn up the A/C if you're hot.",
-    "Can you think of anything you could turn on now rather than later?"]
-
-action_cleanest_home_generic = [
     "Can you think of anything you could turn on now rather than later?",
     "Great time to recharge any electronics.",
     "Anything you could run now instead of later? Laundry? Oven?"]

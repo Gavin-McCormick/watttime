@@ -51,7 +51,7 @@
 
 <p class="lead text-success">Message frequency</p>
 {{ form.message_frequency.errors }}
-<label class="radio">{{ form.message_frequency }}</label>
+<div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
 
 <p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast {{ form.forecast_email.errors }}</label></p>
 
@@ -61,13 +61,13 @@
 
 <p class="lead text-success">Message frequency</p>
 {{ form.message_frequency.errors }}
-<label class="radio">{{ form.message_frequency }}</label>
+<div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
 
 {% endif %}
 
 <p class="lead text-success">Energy-intensive equipment</p>
-            {{ form.equipment.errors }}
-<label class="checkbox">{{ form.equipment }}</label>
+{{ form.equipment.errors }}
+<div class="profile-edit"><label class="checkbox">{{ form.equipment }}</label></div>
 
 <p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Tell me about future experimental features {{ form.beta_test.errors }}</label></p>
 

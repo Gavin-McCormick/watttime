@@ -37,6 +37,4 @@ urlpatterns =  patterns('',
         views.average_usage_for_period, name='average'),
     url(r'^averageday[/]?$',
         views.averageday, name='averageday'),
-    url(r'^debug[/]?$',
-        views.debug_messages, name='debug_messages'),
 )

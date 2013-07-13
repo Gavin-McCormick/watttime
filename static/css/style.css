@@ -15,7 +15,7 @@ body{
 	color:#7f7f7f;
 	background-attachment:fixed;
 }
-}
+
 body a{
 	color:#66cc99;
 	text-decoration:none;
@@ -33,7 +33,14 @@ body a:hover{
 }
 
 
+/*removes bullets on radio and checkboxes; may have unintended effects on other ul styles*/
 
+/* For some reason, using bare "ul { ... }" here caused heroku to stop serving any static
+ * files, so I have changed this to only apply to lists with the class 'profile-edit'. -ems */
+
+.profile-edit ul {
+	list-style-type:none
+}
 
 
 /*special navbar style*/

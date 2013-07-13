@@ -13,3 +13,17 @@
 # limitations under the License.
 #
 # Authors: Anna Schneider
+
+from django.db import models
+
+class ScheduledTasks(models.Model):
+    date = models.DateTimeField()
+    command = models.CharField(max_length=300)
+
+class DailyReport(models.Model):
+    date = models.DateTimeField()
+    message = models.CharField(max_length=300)
+
+class DebugMessage(models.Model):
+    date = models.DateTimeField()
+    message = models.CharField(max_length=300)

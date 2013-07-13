@@ -15,22 +15,21 @@
 # Authors: Anna Schneider, Eric Stansifer
 
 
-from windfriendly.models import MARGINAL_FUELS, debug
+from windfriendly.models import MARGINAL_FUELS
 from windfriendly.views import update
 import json
 import pytz
 import traceback
-from windfriendly.models import debug
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from django.http import HttpResponse
 from django.utils.timezone import now
 from workers.tasks import run_frequent_tasks, run_hourly_tasks
+from workers.utils import debug
 from accounts.messages import alpha_completed
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
-from django.utils.timezone import now
 from django.core.mail import send_mail
 from settings import EMAIL_HOST_USER
 from random import randint
@@ -117,7 +116,7 @@ model_formats = {
             # 'ac',
             # 'furnace',
             # 'water_heater']),
-    'Debug' : (windfriendly.models.DebugMessage, [
+    'Debug' : (workers.models.DebugMessage, [
             'date',
             'message']),
     # 'SMSLog' : (workers.models.SMSLog, [
@@ -197,3 +196,15 @@ def end_of_alpha_email():
                     alpha_completed(user.name),
                     EMAIL_HOST_USER,
                     [user.email])
+
+def debug_messages(request):
+    dms = DebugMessage.objects.all()
+    xs = []
+    for dm in dms:
+        xs.append((dm.date, dm.message))
+    xs.sort()
+    result = []
+    for x, y in xs:
+        result.append('{!s}: {}'.format(x, y))
+    return HttpResponse('\n'.join(result), "application/json")
+
