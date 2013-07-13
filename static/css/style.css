@@ -33,7 +33,11 @@ body a:hover{
 }
 
 
+/*removes bullets on radio and checkboxes; may have unintended effects on other ul styles*/
 
+ul {
+	list-style-type:none
+}
 
 
 /*special navbar style*/
