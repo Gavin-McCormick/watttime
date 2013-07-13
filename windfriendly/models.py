@@ -28,7 +28,10 @@ def group_by_hour(qset):
     hours = ['%02d' % i for i in range(24)]
     for hour in hours:
         hour_qset = qset.filter(date__regex = ' %s:' % hour).order_by('date')
-        hour_qsets.append(hour_qset)
+        if hour_qset.count() > 0:
+            hour_qsets.append(hour_qset)
+        else:
+            hour_qsets.append(None)
     return hour_qsets
  
 class BaseBalancingAuthority(models.Model):

@@ -300,7 +300,7 @@ def averageday(request):
     hour_groups = group_by_hour(ba_rows)
     data = []
     for hour, group in enumerate(hour_groups):
-        if len(group) > 0:
+        if group is not None:
             # get average data
             average_green = round(numpy.mean([r.fraction_green() for r in group])*100, 3)
             average_dirty = round(numpy.mean([r.fraction_high_carbon() for r in group])*100, 3)
