@@ -1,11 +1,12 @@
 import os.path
 from os import environ
+import sys
 
 ###############################
 # production settings on heroku
 ###############################
 if environ.has_key('DATABASE_URL'):
-    DEBUG = False
+    DEBUG = True
 
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
@@ -209,7 +210,12 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'filters': ['require_debug_false'],
             'include_html': True,
-        }
+        },
+        'console': {
+            'level':'INFO',
+            'class':'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
     },
     'loggers': {
         'django.request': {
