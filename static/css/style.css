@@ -39,7 +39,7 @@ body a:hover{
  * files, so I have changed this to only apply to lists with the class 'profile-edit'. -ems */
 
 .profile-edit ul {
-	list-style-type:none;
+	list-style-type:none
 }
 
 
