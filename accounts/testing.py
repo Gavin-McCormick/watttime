@@ -4,6 +4,14 @@ import accounts.messages
 import accounts.forms
 import accounts.models
 import accounts.views
+import workers.utils
+import workers.tasks
+
+import datetime
+import pytz
+
+now_ = (lambda : datetime.datetime.now(pytz.utc))
+timedelta = datetime.timedelta
 
 UP = accounts.models.UserProfile
 

@@ -21,7 +21,7 @@ from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS,
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
 from accounts.messages import morning_forecast_email, morning_forecast_email_first
-from workers.utils import is_good_time_to_message, debug
+from workers.utils import debug, send_daily_report, perform_scheduled_tasks, schedule_task, send_ca_texts, add_to_report
 import datetime
 import pytz
 
@@ -35,6 +35,7 @@ def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
     # scrape new info from utilities
     updated_bas = update_bas(['BPA', 'ISONE'])
+    perform_scheduled_tasks()
     print updated_bas
 
     # send notifications to users in updated regions
@@ -50,6 +51,10 @@ def run_hourly_tasks():
     # send notifications to users in updated regions
    # notified_users = send_text_notifications(['CAISO'])
    # print notified_users
+
+def this_hour():
+    now = datetime.datetime.now(pytz.utc)
+    return now.replace(minute = 0, second = 0, microsecond = 0)
 
 def round_to_hour(dt):
     hour = dt.hour
@@ -68,8 +73,13 @@ def display_hour_pst(dt):
 
 # Run at 14.00 UTC every day
 def run_daily_tasks_1400():
+    send_ca_forecast_emails()
+    prepare_to_send_ca_texts()
+    send_daily_report()
+
+def send_ca_forecast_emails():
     # Send morning forecasts to california users.
-    now = datetime.datetime.now(pytz.utc).replace(minute = 0, second = 0, microsecond = 0)
+    now = this_hour()
     start = now.replace(hour = 14) # This is 7am PST
     end = start + datetime.timedelta(hours = 16) # This is 11pm PST
 
@@ -94,6 +104,31 @@ def run_daily_tasks_1400():
                 send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
 
     send_mail(subj, msg, EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
+
+def prepare_to_send_ca_texts():
+    now = this_hour()
+
+    # Dirty texts
+    start = now.replace(hour = 15) # This is 8am PST
+    end = start + datetime.timedelta(hours = 14) # This is 10pm PST
+
+    rows = CAISO.best_guess_points_in_date_range(start, end)
+    worst_time = min(rows, key = (lambda r : r.fraction_green())).date
+
+    schedule_task(worst_time, "workers.utils.send_ca_texts(0)")
+
+    add_to_report('Scheduled "dirty" texts to go out at {}'.format(worst_time))
+
+    # Clean texts
+    start = now.replace(hour = 0) + datetime.timedelta(days = 1) # This is 5pm PST
+    end = start + datetime.timedelta(hours = 5) # This is 10pm PST
+
+    rows = CAISO.best_guess_points_in_date_range(start, end)
+    best_time = max(rows, key = (lambda r : r.fraction_green())).date
+
+    schedule_task(best_time, "workers.utils.send_ca_texts(1)")
+
+    add_to_report('Scheduled "clean" texts to go out at {}'.format(best_time))
 
 def update_bas(bas):
     # update and query BAs
