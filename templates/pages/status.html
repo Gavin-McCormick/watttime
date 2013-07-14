@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="//www.google.com/jsapi"></script>
 <script src="{% static "js/crossfilter.v1.min.js" %} "></script>
 <script src="{% static "js/d3.v3.min.js" %} "></script>
 
@@ -226,13 +226,13 @@
 
     // Get the data
     var initial_chart_for_state = function(state) {
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 average_data.push(d);
             });
-        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+        d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -335,13 +335,13 @@
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-        d3.json("http://watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 average_data.push(d);
             });
-        d3.json("http://watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+        d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;

@@ -23,47 +23,10 @@ from datetime import datetime, timedelta, date
 from sms_tools.models import TwilioSMSEvent
 from random import randint
 from settings import EMAIL_HOST_USER
+import accounts.messages
 import datetime
 import pytz
-
-def is_good_time_to_message(timestamp, user_id, user_profile,
-                            min_hour=8, max_hour=22, do_rand=False):
-    """ Returns True if hour/day are ok for user,
-    and if they haven't received a message too recently,
-    and if this time is randomly selected.
-    Returns False if not ok.
-    """
-    # is it a good time of day to text?
-    is_good_hour = timestamp.hour >= min_hour and timestamp.hour < max_hour
-
-    # has the user been texted recently?
-    text_period_secs = SENDTEXT_TIMEDELTAS[user_profile.message_frequency].total_seconds()
-    user_sms_logs = TwilioSMSEvent.objects.filter(user=user_id)
-    if user_sms_logs.exists():
-        dt = (timestamp - user_sms_logs.latest('created_at').created_at).total_seconds()
-
-        is_recently_notified = dt < text_period_secs / 2
-    else:
-        is_recently_notified = False
-        dt = -1
-
-    # add some noise
-    if do_rand:
-        n_5min_intervals = (text_period_secs / 60 / 5) / 3
-        if n_5min_intervals < 1:
-            n_5min_intervals = 1
-        is_randomly_selected = randint(1, n_5min_intervals) == 1
-    else:
-        is_randomly_selected = True
-
-    debug('    is good hour? {}, {:f} seconds since last message, {:f} seconds desired interval, recently notified? {}, randomly selected? {}'.format(str(is_good_hour), dt, text_period_secs, is_recently_notified, is_randomly_selected))
-
-    if is_good_hour and (not is_recently_notified) and is_randomly_selected:
-        print 'good'
-        return True
-    else:
-        print 'bad'
-        return False
+import traceback
 
 def send_ca_texts(group):
     # group == 0: daily, dirty
@@ -82,13 +45,18 @@ def send_ca_texts(group):
                     message = ca_message_dirty(up)
                 else: # group == 1
                     message = ca_message_clean(up)
-                send_text(message, up)
+                res = accounts.twilio_utils.send_text(message, up)
+
+                msg = 'Sent text "{}" to {}'.format(message.msg, up)
+                if not res:
+                    msg = "FAILED: " + msg
+                add_to_report(msg)
 
 def schedule_task(time, command):
     if len(command) >= 300:
         raise RuntimeError("Command string '{}' is too long.".format(command))
 
-    t = ScheduledTask()
+    t = ScheduledTasks()
     t.date = time
     t.command = command
     t.save()
@@ -101,10 +69,17 @@ def perform_scheduled_tasks():
     import workers.models
 
     now = datetime.datetime.now(pytz.utc)
-    for task in ScheduledTask.objects.all():
-        if task.date < now:
+    for task in ScheduledTasks.objects.all():
+        if task.date <= now:
             command = task.command
-            exec (command) # Fixed in Python 3
+            try:
+                exec (command) # Fixed in Python 3
+            except Exception as e:
+                msg = 'Scheduled task "{}" threw exception:\n{}'.format(
+                        command, traceback.format_exc(e))
+                print (msg)
+                add_to_report(msg)
+            task.delete()
 
 def same_day(t1, t2):
     return t1.year == t2.year and t1.month == t2.month and t1.day == t2.day
@@ -119,7 +94,7 @@ def send_daily_report():
 
     events = []
     for dr in DailyReport.objects.all():
-        event.append((dr.date, dr.message))
+        events.append((dr.date, dr.message))
         dr.delete()
     events.sort()
 
@@ -140,7 +115,7 @@ def send_daily_report():
                     message.append(cur_date.strftime('%Y.%m.%d:'))
             prev_date = cur_date
 
-            message.append('[{}]:  {}'.format(cur_date.strftime('%H.%M'), event[1]))
+            message.append('[{}]: {}'.format(cur_date.strftime('%H.%M'), event[1]))
 
     message = '\n'.join(message)
 
