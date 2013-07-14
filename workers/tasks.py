@@ -103,8 +103,6 @@ def send_ca_forecast_emails():
                 # msg = morning_forecast_email_first(up.name, best_hour, worst_hour)
                 send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
 
-    send_mail(subj, msg, EMAIL_HOST_USER, ['eric.stansifer@gmail.com'])
-
 def prepare_to_send_ca_texts():
     now = this_hour()
 

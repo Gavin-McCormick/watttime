@@ -28,8 +28,9 @@ class Message:
     def information(cls, msg):
         return cls(Message.INFORMATION, msg)
 
-def msg(criterion, action):
-    return 'WattTime alert: {} {}'.format(criterion, action)
+def msg(criterion, action, state):
+    a = 'WattTime alert: {} {}'.format(criterion, action)
+    return a.format(state = state)
 
 def rand(options):
     index = random.randint(0, len(options) - 1)
@@ -63,7 +64,7 @@ def ca_message_dirty(up):
     # TODO choose between home vs. work appropriately.
     c = rand(criterion_dirtiest)
     a = rand(action_dirtiest_home_generic)
-    return Message.use_less(msg(c, a))
+    return Message.use_less(msg(c, a, 'CA'))
 
 criterion_cleanest = [
     "This is the cleanest time today to use power.",
