@@ -63,9 +63,9 @@ def schedule_task(time, command):
 
 def perform_scheduled_tasks():
     # These might be needed by some commands
-    import workers.tasks
+    # import workers.tasks
     import workers.utils
-    import workers.views
+    # import workers.views
     import workers.models
 
     now = datetime.datetime.now(pytz.utc)
