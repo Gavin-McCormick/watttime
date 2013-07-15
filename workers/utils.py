@@ -72,6 +72,7 @@ def perform_scheduled_tasks():
     for task in ScheduledTasks.objects.all():
         if task.date <= now:
             command = task.command
+            task.delete()
             try:
                 exec (command) # Fixed in Python 3
             except Exception as e:
@@ -79,7 +80,6 @@ def perform_scheduled_tasks():
                         command, traceback.format_exc(e))
                 print (msg)
                 add_to_report(msg)
-            task.delete()
 
 def same_day(t1, t2):
     return t1.year == t2.year and t1.month == t2.month and t1.day == t2.day
