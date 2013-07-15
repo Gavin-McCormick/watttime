@@ -89,7 +89,7 @@ def ca_message_clean(up):
     # TODO choose actions appropriately
     c = rand(criterion_cleanest)
     a = rand(action_cleanest_home_generic)
-    return Message.use_more(msg(c, a))
+    return Message.use_more(msg(c, a, 'CA'))
 
 criterion_unusually_dirty = [
     "Power is unusually dirty right now in {state}!",
