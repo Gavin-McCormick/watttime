@@ -10,6 +10,12 @@ from windfriendly.models import NE, BPA, CAISO, MARGINAL_FUELS
 from windfriendly.parsers import NEParser, BPAParser, CAISOParser
 from settings import EMAIL_HOST_USER
 
+def server_error(request):
+    return render(request, 'pages/500.html')
+
+def notfound_error(request):
+    return render(request, 'pages/404.html')
+
 def signed_up(request):
     return render(request, 'pages/signed_up.html')
 
