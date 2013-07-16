@@ -6,7 +6,7 @@ import sys
 # production settings on heroku
 ###############################
 if environ.has_key('DATABASE_URL'):
-    DEBUG = True
+    DEBUG = False
 
     # Parse database configuration from $DATABASE_URL
     import dj_database_url
@@ -49,9 +49,11 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Gavin McCormik', 'gavin.mccormick+watttimeadmin@gmail.com'),
+    ('Anna Schneider', 'annarschneider+watttimeadmin@gmail.com'),
+    ('Eric Stansifer', 'eric.stansifer+watttimeadmin@gmail.com'),
 )
-
+SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS
 
 DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__)) #.replace('\\','/'),
