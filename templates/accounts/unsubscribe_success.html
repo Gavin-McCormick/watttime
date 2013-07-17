@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
 
 <h2>Unsubscribed</h2>
-<p class="text-warning alert alert-warning">User {{ name }} with phone number {{ phone }} has been unsubscribed from SMS notifications from WattTime. You can resubscribe by updating your preferences <a href="{% url 'profile_alpha' userid %}">here</a>.</p>
+<p class="text-warning alert alert-success">User {{ name }} with phone number {{ phone }} has been unsubscribed from SMS notifications from WattTime. You can resubscribe by updating your preferences <a href="{% url 'profile_alpha' userid %}">here</a>.</p>
 
 <p class="text-warning alert alert-warning">We're sorry to see you go! To help us make WattTime work better for you, please <a href="{% url 'contact' %}">send us your
 comments and requests</a>.</p>

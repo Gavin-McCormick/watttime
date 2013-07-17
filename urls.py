@@ -18,7 +18,7 @@ import allauth
 import registration
 from django.views.generic.base import TemplateView
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url, include
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
@@ -83,6 +83,8 @@ urlpatterns += patterns('pages.views',
     url(r'^sierra_pilot[/]?$',
         'sierra_pilot', name='sierra_pilot'),
 )
+handler500 = 'pages.views.server_error'
+handler404 = 'pages.views.notfound_error'
 
 # accounts patterns
 urlpatterns += patterns('accounts.views',

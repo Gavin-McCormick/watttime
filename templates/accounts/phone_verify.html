@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Verify Your Phone</h2>
-<p class="lead alert alert-block alert-success text-success">Let's confirm your phone number. You should have just received a 6-digit verification code as a text message to {{ phone_number }}. Enter it below to complete the sign-up process.</p>
+<h2>Verify Your Device</h2>
+<p class="lead alert alert-block alert-success text-success">Let's confirm your phone number. You should have just received a 6-digit verification code as a text message to {{ phone_number }}. Please enter it below to complete the sign-up process.</p>
 
 <form action="{% url 'phone_verify_view' %}" class="form-inline" method="post">
         {% csrf_token %}

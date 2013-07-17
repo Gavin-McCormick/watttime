@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Your phone number is already verified</h2>
-<p class="text-success alert alert-block alert-success">Your phone number, {{ phone_number }}, has been confirmed by WattTime as belonging to you. Return to your <a href="{% url 'profile_view' %}" class="btn btn-info">profile page</a> to view and edit your other settings.</p>
+<h2>Already Verified!</h2>
+<p class="text-success alert alert-block alert-success">Well Done! The phone number {{ phone_number }} has been confirmed by WattTime as belonging to you. You can return to your <a href="{% url 'profile_view' %}" class="btn btn-info">profile page</a> to view and edit your other settings. Or why not check out the <a href="{% url 'status' %}" class="btn btn-info">current status</a></p>
 
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Malformed phone number</h2>
+<h2></h2>
 </br></br>
 <div class="alert alert-block alert-error">
-<p class="lead text-error">Sorry, we were unable to send a text message to your phone number, "{{ phone_number }}".</p> 
-<p class="text-error">Looks like it's probably a formatting problem. You can return to <a href="{% url 'profile_view' %}" class="btn btn-info">your profile</a> to change your phone number. Thanks!</p>
+<p class="lead text-error">Sorry, we were unable to send a text message to: {{ phone_number }}.</p> 
+<p class="text-error">It might be a formatting problem. You can return to <a href="{% url 'profile_view' %}" class="btn btn-info">your profile</a> to update your phone number.</p>
 </div>
 {% endblock %}

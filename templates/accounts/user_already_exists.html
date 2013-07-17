@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
 <h2>User already exists</h2>
-<p>There is already a user with the email address {{ email }}. If you have forgotten your password and would like to have your password reset, go to the <a href="{% url 'user_login' %}">login page</a> and log in with a blank password.</p>
+<p class="lead text-error alert alert-error">There is already a user with the email address <span class="muted">{{ email }}</span>. If you have forgotten and would like to reset your password, go to the <a class="btn btn-success" href="{% url 'user_login' %}">login page</a> and leave the password field blank. Instructions to reset your password will be sent to your email address.</p>
 
 {% endblock %}
 
