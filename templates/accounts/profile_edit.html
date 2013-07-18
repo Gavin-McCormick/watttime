@@ -25,8 +25,7 @@
   <div class="control-group">
     <label class="control-label text-success" for="inputName">Mobile Phone</label>
     <div class="controls">{{ form.phone }} 
-        <span class="help-block text-info">If you edit your phone number, you will have to verify the new phone number before you will be able to receive WattTime text messages.</span>
-</div></div> 
+ </div></div> 
 
 <!--
 <div class="control-group">
@@ -49,17 +48,17 @@
 
 {% if region == "California" %}
 
-<p class="lead text-success">Message frequency</p>
+<p class="lead text-success">Message type</p>
 {{ form.message_frequency.errors }}
 <div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
 
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast {{ form.forecast_email.errors }}</label></p>
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast too{{ form.forecast_email.errors }}</label></p>
 
 {% endif %}
 
 {% if region == "NewEngland" %}
 
-<p class="lead text-success">Message frequency</p>
+<p class="lead text-success">Message type</p>
 {{ form.message_frequency.errors }}
 <div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
 

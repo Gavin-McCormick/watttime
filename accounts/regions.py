@@ -186,11 +186,11 @@ newengland = Region(
 
 ca_freq_choices = [
     ('Dirtiest hour each day',
-        'Text me the dirtiest hour of the day so I can try to use less energy then'),
+        'Text me at the dirtiest hour of each day, so I can try to use less energy then'),
     ('Cleanest hour each evening',
-        'Text me the cleanest hour of the evening so I can try to time some appliances that way'),
+        'Text me at the cleanest hour of each evening, to help me time my power use better'),
     ('Less than once a day',
-        'Text me whenever something unusual happens, less than once a day'),
+        'Text me whenever power is unusually clean or dirty, at most once a day'),
     ('Only in extremes (once a week)',
         'Only text me during dirty energy emergencies, at most once a week')]
 california = Region(
