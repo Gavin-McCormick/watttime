@@ -54,6 +54,12 @@ urlpatterns += patterns('',
 #    url(r'accounts[/]',  include('invitation.urls')),
 #)
 
+# features patterns
+urlpatterns += patterns('',
+    url(r'^shift[/]$',
+        'watttime_shift.views.shift', name='shift'),
+)
+
 # pages patterns
 urlpatterns += patterns('pages.views',
     url(r'^faq[/]?$',

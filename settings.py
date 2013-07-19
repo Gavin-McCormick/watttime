@@ -166,6 +166,7 @@ INSTALLED_APPS = (
     'pages',
     'workers',
     'sms_tools',
+    'watttime_shift',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
