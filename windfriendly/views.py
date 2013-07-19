@@ -74,6 +74,26 @@ def ba_from_request(request):
     # got nothing
     logging.debug('returning null BA')
     return None, None
+    
+def utctimes_from_request(request):
+    # get requested date range, if any
+    start = request.GET.get('start', None)
+    end = request.GET.get('end', None)
+    tz_offset = request.GET.get('tz', 0)
+
+    # set up actual start and end times (default is -Inf to now)
+    if start:
+        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_start += timedelta(hours = int(tz_offset))
+    else:
+        utc_start = datetime.min.replace(tzinfo=pytz.utc)
+    if end:
+        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
+        utc_end += timedelta(hours = int(tz_offset))
+    else:
+        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+        
+    return utc_start, utc_end
 
 @json_response
 def forecast(request):
@@ -150,22 +170,8 @@ def summarystats(request):
     # get userid
     userid = request.GET.get('id', None)
 
-    # get requested date range, if any
-    start = request.GET.get('start', None)
-    end = request.GET.get('end', None)
-    tz_offset = request.GET.get('tz', 0)
-
-    # set up actual start and end times (default is -Inf to now)
-    if start:
-        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_start += timedelta(hours = int(tz_offset))
-    else:
-        utc_start = datetime.min.replace(tzinfo=pytz.utc)
-    if end:
-        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_end += timedelta(hours = int(tz_offset))
-    else:
-        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+    # get requested date range
+    utc_start, utc_end = utctimes_from_request(request)
         
     # raise error if no BA
 
@@ -225,22 +231,8 @@ def history(request):
     if ba_name is None:
         raise ValueError("No balancing authority found, check location arguments.")
 
-    # get requested date range, if any
-    start = request.GET.get('start', None)
-    end = request.GET.get('end', None)
-    tz_offset = request.GET.get('tz', 0)
-
-    # set up actual start and end times (default is -Inf to now)
-    if start:
-        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_start += timedelta(hours = int(tz_offset))
-    else:
-        utc_start = datetime.min.replace(tzinfo=pytz.utc)
-    if end:
-        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_end += timedelta(hours = int(tz_offset))
-    else:
-        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+    # get requested date range
+    utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
     ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
@@ -262,22 +254,8 @@ def averageday(request):
     if ba_name is None:
         raise ValueError("No balancing authority found, check location arguments.")
 
-    # get requested date range, if any
-    start = request.GET.get('start', None)
-    end = request.GET.get('end', None)
-    tz_offset = request.GET.get('tz', 0)
-
-    # set up actual start and end times (default is -Inf to now)
-    if start:
-        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_start += timedelta(hours = int(tz_offset))
-    else:
-        utc_start = datetime.min.replace(tzinfo=pytz.utc)
-    if end:
-        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_end += timedelta(hours = int(tz_offset))
-    else:
-        utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
+    # get requested date range
+    utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
     ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
@@ -349,30 +327,53 @@ def today(request):
     return data
     
 @json_response
+def greenest_subrange(request):
+    """Get best beginning, end, and percent green for a sub-timeperiod"""
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+
+    # get requested date range
+    utc_start, utc_end = utctimes_from_request(request)
+    nhours = int(request.GET.get('nhours', 1))
+
+    # get greenest subrange
+    best_rows, best_timepair, best_green = BA_MODELS[ba_name].greenest_subrange(utc_start,
+                                                                                utc_end,
+                                                                                timedelta(hours=nhours))
+    # if no data, return nulls
+    if best_timepair is None:
+        raise ValueError("no data found for start %s, end %s, nhours %d" % (utc_start, utc_end, nhours))
+    
+    # collect data
+    data = {
+            'percent_green' : round(best_green*100, 3),
+            'utc_start' : best_timepair[0],
+            'utc_end' : best_timepair[1],
+            'local_start' : best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE),
+            'local_end' : best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE),
+            }
+
+    # return
+    return data
+      
+@json_response
 def alerts(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
     if ba_name is None:
         raise ValueError("No balancing authority found, check location arguments.")
-        
-    # get requested date range, if any
-    start = request.GET.get('start', None)
-    end = request.GET.get('end', None)
-    tz_offset = request.GET.get('tz', 0)
 
     # set up actual start and end times (default is today in BA local time)
-    if start:
-        utc_start = datetime.strptime(start, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_start += timedelta(hours = int(tz_offset))
-    else:
+    utc_start, utc_end = utctimes_from_request(request)
+    if not utc_start:
         ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
         ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
         utc_start = ba_local_start.astimezone(pytz.utc)
-    if end:
-        utc_end = datetime.strptime(end, '%Y%m%d%H%M').replace(tzinfo=pytz.utc)
-        utc_end += timedelta(hours = int(tz_offset))
-    else:
+    if not utc_end:
         ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
         ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
         ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
