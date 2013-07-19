@@ -29,7 +29,7 @@ def shift(request):
             sr = form.save(commit=False)
             sr.date_created = pytz.utc.localize(datetime.utcnow())
             if request.user.is_authenticated():
-                sr.requested_by = request.user
+                sr.requested_by = request.user.id
             
             # get start and end times for requested range
             requested_timedelta = timedelta(hours=sr.usage_hours)

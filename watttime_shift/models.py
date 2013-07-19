@@ -16,7 +16,6 @@
 
 from django.db import models
 from django.forms import ModelForm
-from django.contrib.auth.models import User
 
 
 class ShiftRequest(models.Model):
@@ -26,7 +25,8 @@ class ShiftRequest(models.Model):
     date_created = models.DateTimeField(db_index=True)
     
     # foreign key of user making request, if one can be gleaned
-    requested_by = models.ForeignKey(User, blank=True)
+    # can't use actual ForeignKey because User.id may not be NULL
+    requested_by = models.IntegerField(blank=True, null=True)
     
     # number of hours that user wants to use energy
     USAGE_CHOICES = (
