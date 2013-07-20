@@ -248,9 +248,10 @@ def email_signup_message(userid, name):
              ]
     return Message.information_message("\n".join(lines))
 
+# I believe this message refers to the alpha test and is no longer needed. - Gavin
 def account_activated_message(userid, name, phone):
     lines = ["Welcome to Wattime %s," % name,
-             "We are pretty excited that you launched the WattTime clean energy flux notification capacitor! You are now subscribed to SMS notifications that track the clean energy status of your electricity. We'll send notifications to:",
+             "We're excited that you've launched WattTime clean energy notifications! You are now subscribed to SMS notifications that track the clean energy status of your electricity. We'll send notifications to:",
              "%s" % phone,
              "If you answer a few quick questions at http://wattTime.herokuapp.com/profile/%s, we'll send you more relevant messages. You can return to this link to update your preferences at any time." % userid,
              "To unsubscribe from SMS notifications, click on http://wattTime.herokuapp.com/unsubscribe/%s." % phone.replace('-',''),
@@ -264,10 +265,10 @@ def account_inactivated_message(userid, name, phone):
              "You are now unsubscribed from WattTime SMS notifications to this phone number:",
              "%s" % phone,
              "We are super sorry to see you go! You can turn SMS notifications on at any time by updating your preferences at http://wattTime.herokuapp.com/profile/%s." % userid,
-             "Whatever your destination, we hope you keep an eye out for shifting the clean energy economy.",
+             "Whatever your destination, we hope you keep an eye out for ways to help build tomorrow's clean energy economy today.",
              "",
              "Message Received,",
-             "Your Friends at the WattTime Central Switchboard"
+             "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
 
@@ -276,12 +277,12 @@ def invite_message(email, url, name = None):
             "",
             "Welcome to WattTime!",
             "",
-            "We're super excited that you took the first steps, and we want you to join us in building a cleaner energy economy.",
+            "We're excited that you're joining us in building a cleaner energy economy.",
             "",
-            "It's simple, relevant, and it makes a difference. To begin, visit {url} to set up your notifications."
+            "Using WattTime is free and easy, yet it makes a real difference. To begin, visit {url} to set up your notifications."
             "",
             "Cheers,",
-            "The WattTime Peeps"
+            "The WattTime Team"
             ]
     if name is None:
         name = email
@@ -291,9 +292,10 @@ def resend_login_message(name, url):
     lines = ["Hi {name}!",
             "You can log in to your account at {url}.",
             "Yours Truly,",
-            "WattTime Team Alpha"]
+            "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, url = url)
 
+# I believe this message refers to the alpha test and is no longer needed. - Gavin
 def alpha_completed(name):
     lines = ["Hi {name},",
         "",
@@ -305,29 +307,29 @@ def alpha_completed(name):
         "",
         "Thanks again for helping us out,",
         "",
-        "Gavin and the WattTimers"]
+        "The WattTime Team"]
     return ("\n".join(lines)).format(name = name)
 
 def morning_forecast_email(name, best_hour, worst_hour):
-    lines = ["Good Morning California! Yep. It's the beginning of another great day.",
+    lines = ["Good Morning {name}",
         "",
-        "Your clean energy forecast indicates a clean power peak at {best}, while the dirtiest energy arrives at {worst}.",
+        "Today between 8am and 10pm, there will be a clean power peak at {best}, while the dirtiest energy will come at {worst}.",
         "",
         "Whatever you do today, make it amazing. More info always available at https://watttime.herokuapp.com/status",
         "",
         "",
         "Because everything you do matters,",
-        "WattTime4U4Eva"]
+        "Your Friends at WattTime"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst=worst_hour)
 
 def morning_forecast_email_first(name, best_hour, worst_hour):
-    lines = ["Hi {name}! We like you.",
+    lines = ["Good morning {name}!",
         "",
-        "Welcome to your first WattTime morning forecast! Today, California's electricity will be cleanest at {best} and dirtiest at {worst}. Can you find a way to save your energy around {worst}?",
+        "Welcome to your first WattTime morning forecast! Today from 8am-10pm, California's electricity will be cleanest at {best} and dirtiest at {worst}. Can you find a way to save your energy around {worst}?",
         "",
-        # "You can always see the daily clean energy outlook for California or other regions at https://watttime.herokuapp.com/status (updated hourly)",
-        # "",
-        "Questions? Feedback? Awesomeness? You can write us at this address at any time.",
+        "You can always see the daily clean energy outlook for California or other regions at https://watttime.herokuapp.com/status (updated hourly)",
+        "",
+        "Questions? Feedback? You can write us at this address at any time.",
         "",
         "We're all in this together,",
         "The WattTime Team"]
