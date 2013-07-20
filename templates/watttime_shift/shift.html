@@ -3,12 +3,12 @@
 {% block title %}WattTime Shift{% endblock %}
 
 {% block content %}
-<h2>Shift Your Energy</h2>
+<h2>WattTime Shift</h2>
 
 <p class="lead">
-    When is the cleanest time tonight to charge your electric car?
-    How about when to run your dishwasher or clothes dryer?
-    If you're in California, we can tell you!
+    When is the cleanest time tonight to charge your electric car?<br>
+    How about when to run your dishwasher or clothes dryer?<br>
+    If you're in California, WattTime can help you shift your energy timing!
 </p>
 
 
@@ -23,8 +23,9 @@
 
 {% if best_green %}
     <p class="lead text-info">
-        You should use energy between {{ best_start }} and {{ best_end }}.
-        The California grid will be {{ best_green }}% clean then!
+        You should use energy between {{ best_start }} and {{ best_end }},
+        when the California grid will be {{ best_green }}% clean.<br>
+        This shift will make your electricity {{ percent_improved }} percent cleaner!
     </p>
 {% endif %}
 
