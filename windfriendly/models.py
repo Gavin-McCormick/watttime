@@ -199,7 +199,7 @@ class BaseBalancingAuthority(models.Model):
                 best_rows = rows[slice_start:slice_end]
                     
         # return
-        return best_rows, best_timepair, best_green
+        return best_rows, best_timepair, best_green, np.mean(greens)
 
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
