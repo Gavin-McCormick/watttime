@@ -63,7 +63,10 @@ class ShiftRequest(models.Model):
     recommended_start = models.DateTimeField()
     
     # average fraction green during recommended usage time
-    fraction_green = models.FloatField()
+    recommended_fraction_green = models.FloatField()
+    
+    # average fraction green during full time period
+    baseline_fraction_green = models.FloatField()
     
     # id of balancing authority in which data was requested
     BA_CHOICES = (
