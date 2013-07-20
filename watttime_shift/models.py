@@ -16,6 +16,7 @@
 
 from django.db import models
 from django.forms import ModelForm
+from django.core.exceptions import ValidationError
 
 
 class ShiftRequest(models.Model):
@@ -74,6 +75,11 @@ class ShiftRequest(models.Model):
     )
     ba = models.IntegerField(choices=BA_CHOICES, default=0)
     
+    def clean(self):
+        # Don't allow draft entries to have a pub_date.
+        if not self.usage_hours < self.time_range_hours:
+            raise ValidationError("usage hours %d >= total hours %d" % (self.usage_hours, self.time_range_hours))
+            
 
 class ShiftRequestForm(ModelForm):
     class Meta:

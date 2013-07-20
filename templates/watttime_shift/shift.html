@@ -27,6 +27,12 @@
         when the California grid will be {{ best_green }}% clean.<br>
         This shift will make your electricity {{ percent_improved }} percent cleaner!
     </p>
+{% elif error %}
+    <p class="lead text-info">
+        Sorry, WattTime is powerful but we don't offer time machines yet!<br>
+        The first number of hours should be smaller than the second.<br>
+        Try again?
+    </p>
 {% endif %}
 
 {% endblock %}

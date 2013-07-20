@@ -56,6 +56,7 @@ def shift(request):
                         "best_end" : best_end_str,
                         "best_green" : round(best_green*100, 1),
                         "percent_improved" : int((best_green - baseline_green) / baseline_green*100),
+                        "error" : False,
             }
             
         else: # error
@@ -64,6 +65,7 @@ def shift(request):
                         "best_end" : None,
                         "best_green" : None,
                         "percent_improved" : None,
+                        "error" : True,
                         }
             
             
@@ -74,6 +76,7 @@ def shift(request):
                     "best_end" : None,
                     "best_green" : None,
                     "percent_improved" : None,
+                    "error" : False,
         }
 
     # render
