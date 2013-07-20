@@ -23,9 +23,9 @@
 
 {% if best_green %}
     <p class="lead text-info">
-        You should use energy between {{ best_start }} and {{ best_end }},
-        when the California grid will be {{ best_green }}% clean.<br>
-        This shift will make your electricity {{ percent_improved }} percent cleaner!
+        If you use energy between {{ best_start }} and {{ best_end }},
+        the California grid will be {{ best_green }}% clean.<br>
+        You could make your electricity {{ percent_improved }} percent cleaner just by waiting!
     </p>
 {% elif error %}
     <p class="lead text-info">
