@@ -41,19 +41,22 @@ def shift(request):
             ba_name = ba_pair[0][1]
             result = BA_MODELS[ba_name].greenest_subrange(requested_start, requested_end,
                                                           requested_timedelta)
-            best_rows, best_timepair, best_green = result
+            best_rows, best_timepair, best_green, baseline_green = result
             best_start_str = best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime("%I %p").strip('0')
             best_end_str = best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime("%I %p").strip('0')
             
             # actually save
             sr.recommended_start = best_timepair[0]
-            sr.fraction_green = best_green
+            sr.recommended_fraction_green = best_green
+            sr.baseline_fraction_green = baseline_green
             sr.save()
             
             payload = {
                         "best_start" : best_start_str,
                         "best_end" : best_end_str,
                         "best_green" : round(best_green*100, 1),
+                        "percent_improved" : int((best_green - baseline_green) / baseline_green*100),
+                        "error" : False,
             }
             
         else: # error
@@ -61,6 +64,8 @@ def shift(request):
                         "best_start" : None,
                         "best_end" : None,
                         "best_green" : None,
+                        "percent_improved" : None,
+                        "error" : True,
                         }
             
             
@@ -70,6 +75,8 @@ def shift(request):
                     "best_start" : None,
                     "best_end" : None,
                     "best_green" : None,
+                    "percent_improved" : None,
+                    "error" : False,
         }
 
     # render

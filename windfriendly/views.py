@@ -340,9 +340,9 @@ def greenest_subrange(request):
     nhours = int(request.GET.get('nhours', 1))
 
     # get greenest subrange
-    best_rows, best_timepair, best_green = BA_MODELS[ba_name].greenest_subrange(utc_start,
-                                                                                utc_end,
-                                                                                timedelta(hours=nhours))
+    result = BA_MODELS[ba_name].greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
+    best_rows, best_timepair, best_green, baseline_green = result
+    
     # if no data, return nulls
     if best_timepair is None:
         raise ValueError("no data found for start %s, end %s, nhours %d" % (utc_start, utc_end, nhours))
@@ -350,6 +350,7 @@ def greenest_subrange(request):
     # collect data
     data = {
             'percent_green' : round(best_green*100, 3),
+            'baseline_percent_green' : round(baseline_green*100, 3),
             'utc_start' : best_timepair[0],
             'utc_end' : best_timepair[1],
             'local_start' : best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE),
