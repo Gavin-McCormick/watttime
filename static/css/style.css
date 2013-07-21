@@ -91,10 +91,14 @@ body a:hover{
   background-color: #33cc99 \9;
 }
 
-.navbar-inverse .nav-collapse .nav > li > a,
-  .navbar-inverse .nav-collapse .dropdown-menu a {
+.navbar-inverse .nav-collapse .nav > li > a {
     color: #fff;
   }
+  
+  .navbar-inverse .nav-collapse .dropdown-menu a {
+    color: #33cc99;
+  }
+  
   .navbar-inverse .nav-collapse .nav > li > a:hover,
   .navbar-inverse .nav-collapse .nav > li > a:focus,
   .navbar-inverse .nav-collapse .dropdown-menu a:hover,
@@ -103,7 +107,23 @@ body a:hover{
   }
 
 
+.navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
+.navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
+.navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
+  color: #ffffff;
+  background-color: #33cc99;
+}
 
+.navbar-inverse .nav li.dropdown > a:hover .caret,
+.navbar-inverse .nav li.dropdown > a:focus .caret {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.navbar-inverse .nav li.dropdown > .dropdown-toggle .caret {
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+}
 
 
 /* a special button style */

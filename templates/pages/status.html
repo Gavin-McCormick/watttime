@@ -50,6 +50,7 @@
     <div class="well" style="padding: 0px 0px 0px 0px;">
 <p class="lead text-success" style="text-align: center;"><strong class="text-info">How clean is your regional electricity supply?</strong></p>
 
+<!-- energy status bar (so you know when you are having fun)
 <div class="well" style="margin:0px 100px 0px 100px">
 <div class="progress progress-striped active" style="margin:0px 100px 0px 100px">
   <div class="bar bar-success" style="width: 30%;"></div>
@@ -62,125 +63,31 @@
 <p class="badge badge-important">% dirty</p></div>
 
 </div></br>
-<div class="well" style="margin:0px 100px 0px 100px">
-<p class="lead text-success" style="text-align: center;">Click on a region to see how clean its electricity supply is right now.</p>
-    <div class="" id="charts">
-      <div id="green-chart" align="center" class=""></div>
-    
+-->
+<div class="row-fluid" id="charts" >
 
-    <div id="map" align="center" class=""></div>
-    </div>
-<p class="lead text-success" style="text-align: center;">For a detailed list of supported states and data sources, visit the <a href="{% url 'faq' %}" class="text-warning">Help</a> page.</p>
-</div></br>
+<div class="span4 offset1">
+<p class="lead text-success" style="text-align: left;">Click on a shaded region to see how clean its electricity supply is right now. </p>
+<div id="map" align="left" class=""></div>
+<p class="alert alert-success text-success" style="text-align: left;">Supported States: California, Washington, Idaho, Oregon, New Hampshire, Massachusetts, Vermont, Maine, Rhode Island, Connecticut.</p>
+</div>   
+
+<div class="span5 offset1">
+<p class="lead text-success" style="text-align: left;">Graphs show live data and may take a second to load.</p>
+<div id="green-chart" align="left" class=""></div>
+<p class="alert alert-success text-success" style="text-align: left;">The graph above shows today's actual clean electricity supply for each region along with the average. For California, the dotted green line is the projected forecast.</p>
+
+</div>
+
+</div>
+
+<p class="lead text-success alert alert-info" style="text-align: center;">For a detailed list of supported states and data sources, visit the <a href="{% url 'faq' %}" class="btn btn-small btn-info">Help</a> page.</p>
 </div>
 
 
 <script type="text/javascript">
 
-    /////////////////////
-    // MAP
-    /////////////////////
-    google.load('visualization', '1', {packages: ['geochart']});
-
-    function drawVisualization() {
-        var data = google.visualization.arrayToDataTable([
-            ['State', 'Site', 'ST'],
-            ['Alabama', 0, 'AL'],
-            ['Alaska', 0, 'AK'],
-            ['American Samoa', 0, 'AS'],
-            ['Arizona', 0, 'AZ'],
-            ['Arkansas', 0, 'AR'],
-            ['California', 1, 'CA'],
-            ['Colorado', 0, 'CO'],
-            ['Connecticut', 3, 'CT'],
-            ['Delaware', 0, 'DE'],
-            ['District of Columbia', 0, 'DC'],
-            ['Florida', 0, 'FL'],
-            ['Georgia', 0, 'GA'],
-            ['Guam', 0, 'GM'],
-            ['Hawaii', 0, 'HI'],
-            ['Idaho', 2, 'ID'],
-            ['Illinois', 0, 'IL'],
-            ['Indiana', 0, 'IN'],
-            ['Iowa', 0, 'IA'],
-            ['Kansas', 0, 'KS'],
-            ['Kentucky', 0, 'KY'],
-            ['Louisiana', 0, 'LA'],
-            ['Maine', 3, 'ME'],
-            ['Maryland', 0, 'MD'],
-            ['Massachusetts', 3, 'MA'],
-            ['Michigan', 0, 'MI'],
-            ['Minnesota', 0, 'MN'],
-            ['Mississippi', 0, 'MS'],
-            ['Missouri', 0, 'MO'],
-            ['Montana', 0, 'MT'],
-            ['Nebraska', 0, 'NE'],
-            ['Nevada', 0, 'NV'],
-            ['New Hampshire', 3, 'NH'],
-            ['New Jersey', 0, 'NJ'],
-            ['New Mexico', 0, 'NM'],
-            ['New York', 0, 'NY'],
-            ['North Carolina', 0, 'NC'],
-            ['North Dakota', 0, 'ND'],
-            ['Northern Marianas Islands', 0, ''],
-            ['Ohio', 0, 'OH'],
-            ['Oklahoma', 0, 'OK'],
-            ['Oregon', 2, 'OR'],
-            ['Pennsylvania', 0, 'PA'],
-            ['Puerto Rico', 0, 'PR'],
-            ['Rhode Island', 3, 'RI'],
-            ['South Carolina', 0, 'SC'],
-            ['South Dakota', 0, 'SD'],
-            ['Tennessee', 0, 'TN'],
-            ['Texas', 0, 'TX'],
-            ['Utah', 0, 'UT'],
-            ['Vermont', 3, 'VT'],
-            ['Virginia', 0, 'VA'],
-            ['Virgin Islands', 0, 'VI'],
-            ['Washington', 2, 'WA'],
-            ['West Virginia', 0, 'WV'],
-            ['Wisconsin', 0, 'WI'],
-            ['Wyoming', 0, 'WY']
-        ]);
-        
-        var view = new google.visualization.DataView(data);
-        view.setColumns([0, 1, {
-            type: 'string',
-            role: 'tooltip',
-            calc: function () {
-                return '';
-            }
-        }]);
-        
-        var geochart = new google.visualization.GeoChart(document.getElementById('map'));
-        var options = {};
-        options['region'] = 'US';
-        options['resolution'] = 'provinces';
-        options['width'] = 450;
-        options['height'] = 300;
-        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
-        options['legend'] = 'none';
-        options['backgroundColor'] = 'none';
-    
-        google.visualization.events.addListener(geochart, 'select', function() {
-            var selectionIdx = geochart.getSelection()[0].row;
-            var stateName = data.getValue(selectionIdx, 0);
-            var value = data.getValue(selectionIdx, 1);
-            var stateAbbrev = data.getValue(selectionIdx, 2);
-
-            if (value > 0) {
-                update_chart_for_state(stateAbbrev);
-            }
-            
-        });
-    
-        geochart.draw(view, options);
-    }
-    
-
-    google.setOnLoadCallback(drawVisualization);
-
-    /////////////////////
+ /////////////////////
     // CHART
     /////////////////////
     var margin = {top: 50, right: 50, bottom: 50, left: 50},
@@ -291,6 +198,7 @@
                 .attr("x", (width / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
+                .style("font-size","14px")
                 .text("local time"); 
         
             svg.append("g")         // Add the Y Axis
@@ -303,14 +211,16 @@
                 .attr("x", -height/2)
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
+                .style("font-size","14px")
                 .text("percent of total energy"); 
     
             svg.append("text")
                 .attr("class", "chart title")
                 .attr("y", -margin.top/2)
                 .attr("x", (width / 2))
-                .attr("dy", "1em")
+                .attr("dy", "0em")
                 .style("text-anchor", "middle")
+                .style("font-size","20px")
                 .text("Today's green energy in "+state); 
 
             var legend = svg.append("text")
@@ -324,16 +234,19 @@
                 .attr("class", "actual")
                 .attr("dx", "-0em")
                 .attr("fill", "#339999")
+                .style("font-size","14px")
                 .text("actual"); 
             legend.append("tspan")
                 .attr("class", "average")
                 .attr("dx", "3em")
                 .attr("fill", "#AAAAAA")
+                .style("font-size","14px")
                 .text("average");
             legend.append("tspan")
                 .attr("class", "forecast")
                 .attr("dx", "3em")
                 .attr("fill", "#33cc99")
+                .style("font-size","14px")
                 .text("forecast");        
         });
         });
@@ -402,12 +315,120 @@
             svg.select(".chart.title")
                 .duration(500)
                 .text("Today's clean energy in "+state); 
+
        
         });
         });
     }
 
     initial_chart_for_state("CA");
+    
+    
+
+    /////////////////////
+    // MAP
+    /////////////////////
+    google.load('visualization', '1', {packages: ['geochart']});
+
+    function drawVisualization() {
+        var data = google.visualization.arrayToDataTable([
+            ['State', 'Site', 'ST'],
+            ['Alabama', 0, 'AL'],
+            ['Alaska', 0, 'AK'],
+            ['American Samoa', 0, 'AS'],
+            ['Arizona', 0, 'AZ'],
+            ['Arkansas', 0, 'AR'],
+            ['California', 1, 'CA'],
+            ['Colorado', 0, 'CO'],
+            ['Connecticut', 3, 'CT'],
+            ['Delaware', 0, 'DE'],
+            ['District of Columbia', 0, 'DC'],
+            ['Florida', 0, 'FL'],
+            ['Georgia', 0, 'GA'],
+            ['Guam', 0, 'GM'],
+            ['Hawaii', 0, 'HI'],
+            ['Idaho', 2, 'ID'],
+            ['Illinois', 0, 'IL'],
+            ['Indiana', 0, 'IN'],
+            ['Iowa', 0, 'IA'],
+            ['Kansas', 0, 'KS'],
+            ['Kentucky', 0, 'KY'],
+            ['Louisiana', 0, 'LA'],
+            ['Maine', 3, 'ME'],
+            ['Maryland', 0, 'MD'],
+            ['Massachusetts', 3, 'MA'],
+            ['Michigan', 0, 'MI'],
+            ['Minnesota', 0, 'MN'],
+            ['Mississippi', 0, 'MS'],
+            ['Missouri', 0, 'MO'],
+            ['Montana', 0, 'MT'],
+            ['Nebraska', 0, 'NE'],
+            ['Nevada', 0, 'NV'],
+            ['New Hampshire', 3, 'NH'],
+            ['New Jersey', 0, 'NJ'],
+            ['New Mexico', 0, 'NM'],
+            ['New York', 0, 'NY'],
+            ['North Carolina', 0, 'NC'],
+            ['North Dakota', 0, 'ND'],
+            ['Northern Marianas Islands', 0, ''],
+            ['Ohio', 0, 'OH'],
+            ['Oklahoma', 0, 'OK'],
+            ['Oregon', 2, 'OR'],
+            ['Pennsylvania', 0, 'PA'],
+            ['Puerto Rico', 0, 'PR'],
+            ['Rhode Island', 3, 'RI'],
+            ['South Carolina', 0, 'SC'],
+            ['South Dakota', 0, 'SD'],
+            ['Tennessee', 0, 'TN'],
+            ['Texas', 0, 'TX'],
+            ['Utah', 0, 'UT'],
+            ['Vermont', 3, 'VT'],
+            ['Virginia', 0, 'VA'],
+            ['Virgin Islands', 0, 'VI'],
+            ['Washington', 2, 'WA'],
+            ['West Virginia', 0, 'WV'],
+            ['Wisconsin', 0, 'WI'],
+            ['Wyoming', 0, 'WY']
+        ]);
+        
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1, {
+            type: 'string',
+            role: 'tooltip',
+            calc: function () {
+                return '';
+            }
+        }]);
+        
+        var geochart = new google.visualization.GeoChart(document.getElementById('map'));
+        var options = {};
+        options['region'] = 'US';
+        options['resolution'] = 'provinces';
+        options['width'] = 420;
+        //options['height'] = 200;
+        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
+        options['legend'] = 'none';
+        options['backgroundColor'] = 'none';
+    
+        google.visualization.events.addListener(geochart, 'select', function() {
+            var selectionIdx = geochart.getSelection()[0].row;
+            var stateName = data.getValue(selectionIdx, 0);
+            var value = data.getValue(selectionIdx, 1);
+            var stateAbbrev = data.getValue(selectionIdx, 2);
+
+            if (value > 0) {
+                update_chart_for_state(stateAbbrev);
+            }
+            
+        });
+    
+        geochart.draw(view, options);
+    }
+    
+
+    google.setOnLoadCallback(drawVisualization);
+
+   
 
 
 </script>

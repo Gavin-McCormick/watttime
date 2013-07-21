@@ -70,7 +70,7 @@
 
 <script src="{% static "js/bootstrap.js" %} "></script>
 
-<script src="{% static "js/bootstrap.min.js" %} "></script>
+<!-- <script src="{% static "js/bootstrap.min.js" %} "></script> -->
 
 <!-- <script src="{% static "js/jquery-1.8.2.min.js" %} "></script> -->
 
@@ -109,36 +109,40 @@
 			</a>
           <div class="nav-collapse collapse">
             <ul class="nav nav-pills pull-right">
-              <li class="">
-				<a href="{% url 'status' %}">CURRENT STATUS</a>
+            
+            <li class="dropdown">
+                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="icon-signal"></i> STATUS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><i class="icon-time"></i> SHIFT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-bell"></i> ALERTS</a></li>
+				</ul>
               </li>
-              <li class="">
-				<a href="{% url 'about-us' %}">ABOUT</a>
+              
+              <li class="dropdown">
+                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">ABOUT <i class="icon-bullhorn icon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> WattTime</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="icon-envelope"></i> CONTACT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'faq' %}"><i class="icon-book"></i> RESOURCES</a></li>
+				</ul>
               </li>
+              
               <li class="">
-				<a href="{% url 'faq' %}">HELP</a>
-              </li>
-              <li class="">
-				<a href="{% url 'contact' %}">CONTACT</a>
-              </li>                  
+				<a href="{% url 'faq' %}">HELP <i class="icon-question-sign icon-white"></i></a>
+              </li>    
+                     
+              <li class="dropdown">
               {% if user.is_authenticated %}
-
-              <!--<li class="dropdown">
-               <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">ACCOUNT
-        		<b class="caret"></b>
-      			</a>
-    		<ul class="dropdown-menu" role="menu">	-->		
-              <li >
-				<a tabindex="-1" href="{% url 'profile_view' %}">SETTINGS</a>
-              </li>
-              <li >
-				<a tabindex="-1" href="{% url 'account_logout' %}">LOG OUT</a>
-              </li>
+               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="icon-cog icon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
+      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-user"></i> SETTINGS</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="icon-off"></i> LOG OUT</a></li>
+                </ul>
               {% else %}
-              <li class="">
-				<a href="{% url 'user_login' %}">LOG IN</a>
-              </li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'user_login' %}">LOG IN</a></li>
               {% endif %}
+              
                       <!--       </ul></li>  -->
             </ul>
             
@@ -222,7 +226,7 @@
 
 						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px; padding: 0px 0px 0px 0px;">
  						<div class="span5 offset1">
- 						<p class="lead text-info">Sometimes your electricity comes from clean energy sources, and sometimes it doesn't. WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make a positive impact on your own terms.</p>
+ 						<p class="lead text-info">WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make a positive impact on your own terms.</p>
    						</div>
    						
   						  <div class="span5 offset1"> 
@@ -242,7 +246,7 @@
 
                                                     </p>           
   													<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
-                                                </form>                                               
+                                                </form>    </br></br></br></br>                                         
     					</div>
 						</div>	
 						</div>					
