@@ -22,8 +22,30 @@ class ScheduledTasks(models.Model):
 
 class DailyReport(models.Model):
     date = models.DateTimeField()
-    message = models.CharField(max_length=300)
+    # message = models.CharField(max_length=300)
+    message = models.TextField()
 
 class DebugMessage(models.Model):
     date = models.DateTimeField()
-    message = models.CharField(max_length=300)
+    # message = models.CharField(max_length=300)
+    message = models.TextField()
+
+class LastMessageSent(models.Model):
+    NE_dirty_daytime = 0
+    NE_dirty_evening = 1
+    NE_clean = 2
+
+    message_choices = [
+            (NE_dirty_daytime, 'ne_dirty_daytime'),
+            (NE_dirty_evening, 'ne_dirty_evening'),
+            (NE_clean, 'ne_clean')]
+
+    category = models.IntegerField(default = 0, choices = message_choices)
+    date = models.DateTimeField()
+
+def latest_by_category(c):
+    last = None
+    for x in LastMessageSent.objects.filter(category = c):
+        if last is None or x.date > last.date:
+            last = x
+    return last

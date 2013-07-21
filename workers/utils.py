@@ -128,6 +128,7 @@ def add_to_report(message):
     event.save()
 
 def debug(message):
+    print (message)
     dm = DebugMessage()
     dm.date = datetime.datetime.now(pytz.utc)
     dm.message = message

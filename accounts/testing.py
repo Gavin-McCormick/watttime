@@ -4,6 +4,7 @@ import accounts.messages
 import accounts.forms
 import accounts.models
 import accounts.views
+import workers.models
 import workers.utils
 import workers.tasks
 
@@ -31,3 +32,9 @@ def users_mf(mf):
     return l
 
 send_text = accounts.twilio_utils.send_text
+
+
+ST = workers.models.ScheduledTasks
+DR = workers.models.DailyReport
+DM = workers.models.DebugMessage
+LMS = workers.models.LastMessageSent
