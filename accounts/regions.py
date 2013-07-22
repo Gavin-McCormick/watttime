@@ -31,6 +31,7 @@ class UserProfileForm(forms.Form):
     phone           = forms.CharField(help_text='Phone', required = False)
     equipment       = forms.MultipleChoiceField(help_text='Equipment', choices = EQUIPMENT_CHOICES, widget = forms.CheckboxSelectMultiple(), required = False)
     beta_test       = forms.BooleanField(help_text='Beta test', widget = forms.CheckboxInput(), required = False)
+    ask_feedback    = forms.BooleanField(help_text='Ask feedbac', widget = forms.CheckboxInput(), required = False)
 
 
 # Instances of ConfigType cannot (I think) be reused across multiple

@@ -59,6 +59,7 @@ class UserProfile(models.Model):
 
     forecast_email = models.BooleanField(default = False)
     equipment = models.CommaSeparatedIntegerField(default = '', max_length=100, blank=True)
+    ask_feedback = models.BooleanField(default = False)
     beta_test = models.BooleanField(default = False)
 
     def region(self):

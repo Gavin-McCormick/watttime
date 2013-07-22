@@ -72,7 +72,8 @@ class ProfileEdit(FormView):
                 'state'             : up.state,
                 'phone'             : up.phone,
                 'equipment'         : up.get_equipment(),
-                'beta_test'         : up.beta_test}
+                'beta_test'         : up.beta_test,
+                'ask_feedback'      : up.ask_feedback}
 
         up.form_initial_values(vals)
 
@@ -96,6 +97,7 @@ class ProfileEdit(FormView):
         up.set_phone(vals['phone'])
         up.set_equipment(list(int(i) for i in vals['equipment']))
         up.beta_test = vals['beta_test']
+        up.ask_feedback = vals['ask_feedback']
         up.save_from_form(vals)
 
         # This MUST go after save_from_form because the UserProfile object
@@ -268,6 +270,7 @@ def create_new_user(email, name = None):
 
     up.set_equipment([])
     up.beta_test = True
+    up.ask_feedback = False
 
     # In the future, we should separate phone-number, etc., into a separate model
 
@@ -375,6 +378,11 @@ def profile_view(request):
         else:
             beta_test = 'No'
 
+        if up.ask_feedback:
+            ask_feedback = 'Yes'
+        else:
+            ask_feedback = 'No'
+
         vals = {
                 'name' : up.name,
                 'email' : up.email,
@@ -383,6 +391,7 @@ def profile_view(request):
                 'phone_number' : phone,
                 'equipment' : equipment,
                 'beta_test' : beta_test,
+                'ask_feedback' : ask_feedback,
                 'phone_verified' : up.is_verified,
                 'phone_blank' : (len(up.phone) == 0),
                 'deactivated' : (not user.is_active)
