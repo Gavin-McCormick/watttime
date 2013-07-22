@@ -38,3 +38,7 @@ ST = workers.models.ScheduledTasks
 DR = workers.models.DailyReport
 DM = workers.models.DebugMessage
 LMS = workers.models.LastMessageSent
+
+def dump_model(m):
+    for x in m.objects.all():
+        print (x)

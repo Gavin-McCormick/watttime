@@ -20,15 +20,27 @@ class ScheduledTasks(models.Model):
     date = models.DateTimeField()
     command = models.CharField(max_length=300)
 
+    def __unicode__(self):
+        res = u'{self.date}: {self.command}'
+        return res.format(self = self)
+
 class DailyReport(models.Model):
     date = models.DateTimeField()
     # message = models.CharField(max_length=300)
     message = models.TextField()
 
+    def __unicode__(self):
+        res = u'{self.date}: {self.message}'
+        return res.format(self = self)
+
 class DebugMessage(models.Model):
     date = models.DateTimeField()
     # message = models.CharField(max_length=300)
     message = models.TextField()
+
+    def __unicode__(self):
+        res = u'{self.date}: {self.message}'
+        return res.format(self = self)
 
 class LastMessageSent(models.Model):
     NE_dirty_daytime = 0
@@ -42,6 +54,10 @@ class LastMessageSent(models.Model):
 
     category = models.IntegerField(default = 0, choices = message_choices)
     date = models.DateTimeField()
+
+    def __unicode__(self):
+        res = u'{self.category}:    {self.date}'
+        return res.format(self = self)
 
 def latest_by_category(c):
     last = None
