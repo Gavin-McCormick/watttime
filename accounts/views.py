@@ -406,6 +406,7 @@ def profile_view(request):
                 'equipment' : equipment,
                 'beta_test' : beta_test,
                 'ask_feedback' : ask_feedback,
+                'supported_region' : up.supported_location(),
                 'phone_verified' : up.is_verified,
                 'phone_blank' : (len(up.phone) == 0),
                 'deactivated' : (not user.is_active)
