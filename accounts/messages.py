@@ -28,9 +28,9 @@ class Message:
     def information(cls, msg):
         return cls(Message.INFORMATION, msg)
 
-def msg(criterion, action, state):
+def make_msg(criterion, action, state = "{state}", fuel = "{fuel}"):
     a = 'WattTime alert: {} {}'.format(criterion, action)
-    return a.format(state = state)
+    return a.format(state = state, fuel = fuel)
 
 def rand(options):
     index = random.randint(0, len(options) - 1)
@@ -64,7 +64,7 @@ def ca_message_dirty(up):
     # TODO choose between home vs. work appropriately.
     c = rand(criterion_dirtiest)
     a = rand(action_dirtiest_home_generic)
-    return Message.use_less(msg(c, a, 'CA'))
+    return Message.use_less(make_msg(c, a, state = 'CA'))
 
 criterion_cleanest = [
     "This is the cleanest time today to use power.",
@@ -89,7 +89,7 @@ def ca_message_clean(up):
     # TODO choose actions appropriately
     c = rand(criterion_cleanest)
     a = rand(action_cleanest_home_generic)
-    return Message.use_more(msg(c, a, 'CA'))
+    return Message.use_more(make_msg(c, a, state = 'CA'))
 
 criterion_unusually_dirty = [
     "Power is unusually dirty right now in {state}!",
@@ -176,53 +176,52 @@ action_unusually_clean_home_generic = [
     "Great time to recharge any electronics.",
     "Anything you could run now instead of later? Laundry? Oven?"]
 
-def use_central_ac_message(marginal_fuel):
-    randint = random.randint(0,2)
-    if randint == 0:
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-        msg = "WattTime Alert! Your power is now clean %s. Hot out? You can precool your house on clean power! Turn down temp a bit for 30 mins." % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?" % marginal_fuel
-    return Message.use_more_message(msg)
+ne_criterion_dirty = [
+    "You're running on dirty {fuel} power. Generally lasts less than an hour."]
+ne_criterion_clean = [
+    "You're running on clean renewable {fuel}. Typically lasts less than one hour."]
 
-def use_message(marginal_fuel):
-    randint = random.randint(0,2)
-    if randint == 0:
-        msg = "WattTime Alert! Your power is unusually clean now - %s. Can you avoid wasting that clean power? Great time to do laundry or dishes!" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?" % marginal_fuel
-    return Message.use_more_message(msg)
+ne_action_dirty_daytime = [
+    "Anything you can turn off that you don't need right now?"]
+ne_action_dirty_evening = [
+    "Any way you can use a less power for a bit?"]
+ne_action_clean = [
+    "Great time to start laundry, dishes, etc."]
 
-def dont_use_central_ac_message(marginal_fuel):
-    randint = random.randint(0,3)
-    if randint == 0:
-        msg = "WattTime Alert! You're now getting dirty %s power. Help us shut them down, save some power now! Can you turn off your AC for 20 mins?" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on %s. Help us shut them down! Think you could dial back the temperature 2 degrees for an hour?" % marginal_fuel
-    elif randint == 2:
-        msg  ="WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!" % marginal_fuel
-    return Message.use_less_message(msg)
+def ne_message_dirty_daytime(up, fuel):
+    c = rand(ne_criterion_dirty)
+    a = rand(ne_action_dirty_daytime)
+    return Message.use_less(make_msg(c, a, state = up.state, fuel = fuel))
+
+def ne_message_dirty_evening(up, fuel):
+    c = rand(ne_criterion_dirty)
+    a = rand(ne_action_dirty_evening)
+    return Message.use_less(make_msg(c, a, state = up.state, fuel = fuel))
+
+def ne_message_clean(up, fuel):
+    c = rand(ne_criterion_clean)
+    a = rand(ne_action_clean)
+    return Message.use_more(make_msg(c, a, state = up.state, fuel = fuel))
+
+old_msgs = [
+    ["WattTime Alert! Your power is now clean %s. Hot out? You can precool your house on clean power! Turn down temp a bit for 30 mins.",
+    "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?",
+    "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?"],
+
+    ["WattTime Alert! Your power is unusually clean now - %s. Can you avoid wasting that clean power? Great time to do laundry or dishes!",
+    "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?",
+    "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?"],
+
+    ["WattTime Alert! You're now getting dirty %s power. Help us shut them down, save some power now! Can you turn off your AC for 20 mins?",
+    "WattTime Alert! You're now running on %s. Help us shut them down! Think you could dial back the temperature 2 degrees for an hour?",
+    "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?",
+    "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!"],
 
 
-def dont_use_message(marginal_fuel):
-    randint = random.randint(0,3)
-    if randint == 0:
-        msg = "The marginal fuel is %s, so avoid using electricity if you can!" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!" % marginal_fuel
-    elif randint == 2:
-        msg = "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your electricity is dirty dirty %s. That means it's an excellent time to save energy! What could you do differently to avoid using excess electricity in the next two hours?" % marginal_fuel
-    return Message.use_less_message(msg)
-
+    ["The marginal fuel is %s, so avoid using electricity if you can!",
+    "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!",
+    "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?",
+    "WattTime Alert! Your electricity is dirty dirty %s. That means it's an excellent time to save energy! What could you do differently to avoid using excess electricity in the next two hours?"]]
 
 def verify_phone_message(code):
     return Message.confirmation("Hello from WattTime! Enter [%s] on the sign up page to verify your device. This is a 1-time message." % code)
