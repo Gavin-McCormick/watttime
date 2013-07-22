@@ -118,7 +118,8 @@ class ProfileFirstEdit(FormView):
         return {'phone' : up.phone, 'state' : up.state}
 
     def html_params(self, user):
-        return {'name' : user.get_profile().name}
+        up = user.get_profile()
+        return {'name' : up.name, 'region_supported' : up.supported_location()}
 
     def form_submitted(self, request, vals):
         up = request.user.get_profile()
@@ -199,12 +200,12 @@ class CreateUserView(FormView):
         self.require_authentication = False
 
     def form_submitted(self, request, vals):
-        user = create_and_email_user(vals['email'])
+        user = create_and_email_user(vals['email'], state = vals['state'])
         if user:
-            up = user.get_profile()
-            up.state = vals['state']
-            up.save()
-            return redirect('signed_up')
+            if user.get_profile().supported_location():
+                return redirect('signed_up')
+            else:
+                return redirect('signed_up_future')
         else:
             return render(request, 'accounts/user_already_exists.html',
                     {'email' : vals['email']})
@@ -230,7 +231,7 @@ def new_user_name():
 def new_phone_verification_number():
     return random.randint(100000, 999999)
 
-def create_new_user(email, name = None):
+def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email = email)
     if len(ups) > 0:
         print (len(ups))
@@ -262,11 +263,17 @@ def create_new_user(email, name = None):
     up.phone = ''
     up.verification_code = new_phone_verification_number()
     up.is_verified = False
-    up.state = 'CA'
+
+    if state is None:
+        up.state = 'CA'
+    else:
+        up.state = state
 
     up.ca_settings = None
     up.ne_settings = None
     up.null_settings = None
+
+    up.get_region_settings() # so that the region settings are not None
 
     up.set_equipment([])
     up.beta_test = True
@@ -279,13 +286,19 @@ def create_new_user(email, name = None):
     print ("User {} created.".format(email))
     return user
 
-def create_and_email_user(email, name = None):
-    user = create_new_user(email, name)
+def create_and_email_user(email, name = None, state = None):
+    user = create_new_user(email, name, state)
     if user:
+        up = user.get_profile()
         magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
-                user.get_profile().magic_login_code)
+                up.magic_login_code)
+        if up.supported_location():
+            msg = messages.invite_message(email, magic_url, name)
+        else:
+            msg = messages.invite_message_unsupported(email, magic_url, name)
+
         send_mail('Welcome to WattTime',
-                messages.invite_message(email, magic_url, name),
+                msg,
                 settings.EMAIL_HOST_USER,
                 [email])
         return user
@@ -387,6 +400,7 @@ def profile_view(request):
                 'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
+                'long_state' : up.long_state_name(),
                 'region' : up.region().name,
                 'phone_number' : phone,
                 'equipment' : equipment,

@@ -62,6 +62,9 @@ class UserProfile(models.Model):
     ask_feedback = models.BooleanField(default = False)
     beta_test = models.BooleanField(default = False)
 
+    def supported_location(self):
+        return self.region() in [accounts.regions.newengland, accounts.regions.california]
+
     def region(self):
         return accounts.regions.state_to_region(self.state)
 
@@ -120,6 +123,12 @@ class UserProfile(models.Model):
         if phone != self.phone:
             self.phone = phone
             self.is_verified = False
+
+    def long_state_name(self):
+        try:
+            return dict(STATE_CHOICES)[self.state]
+        except KeyError:
+            return self.state
 
     def __unicode__(self):
         res = u'{self.name} ({self.state}, {self.email}, {self.phone}{pv}){e1}{e2}'

@@ -19,6 +19,9 @@ def notfound_error(request):
 def signed_up(request):
     return render(request, 'pages/signed_up.html')
 
+def signed_up_future(request):
+    return render(request, 'pages/signed_up_future.html')
+
 def faq(request):
 #    return render(request, 'pages/placeholder.html', {'title': 'FAQ'})
     return render(request, 'pages/faq.html')

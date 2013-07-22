@@ -282,7 +282,23 @@ def invite_message(email, url, name = None):
             "",
             "Cheers,",
             "The WattTime Team"
-            ]
+        ]
+    if name is None:
+        name = email
+    return ("\n".join(lines)).format(name = name, url = url)
+
+def invite_message_unsupported(email, url, name = None):
+    lines = ["Hi {name}, welcome to WattTime!",
+            "",
+            "We're excited that you're thinking about joining us in building a cleaner energy economy.",
+            "",
+            "Right now, our service is only available in California and New England. But we're growing fast! As soon as we're available in your area, we'll send you a note so you can set up an account if you like."
+            "",
+            "Can't wait that long? You could set up your account now if you like! Just visit {url} to get started."
+            "",
+            "Have a great day,",
+            "The WattTime Team"
+        ]
     if name is None:
         name = email
     return ("\n".join(lines)).format(name = name, url = url)
