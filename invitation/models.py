@@ -228,7 +228,7 @@ def user_post_save(sender, instance, created, **kwargs):
         invitation_user.invitations_remaining = settings.INVITATIONS_PER_USER
         invitation_user.save()
 
-models.signals.post_save.connect(user_post_save, sender=User)
+# models.signals.post_save.connect(user_post_save, sender=User)
 
 def invitation_key_post_save(sender, instance, created, **kwargs):
     """Decrement invitations_remaining when InvitationKey is created."""
@@ -238,7 +238,7 @@ def invitation_key_post_save(sender, instance, created, **kwargs):
         invitation_user.invitations_remaining = remaining-1
         invitation_user.save()
 
-models.signals.post_save.connect(invitation_key_post_save, sender=InvitationKey)
+# models.signals.post_save.connect(invitation_key_post_save, sender=InvitationKey)
 
 def invitation_key_pre_delete(sender, instance, **kwargs):
     """Delete token image."""
@@ -247,4 +247,4 @@ def invitation_key_pre_delete(sender, instance, **kwargs):
     except:
         pass
 
-models.signals.post_delete.connect(invitation_key_pre_delete, sender=InvitationKey)
+# models.signals.post_delete.connect(invitation_key_pre_delete, sender=InvitationKey)

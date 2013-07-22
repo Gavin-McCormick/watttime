@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}WattTime Beta{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Email address not found</h2>
-<p class="lead text-error alert alert-error">We could not find a user with the email address {{ email }}.</p>
+<h2>Email Address Not Found</h2>
+<p class="lead text-error alert alert-error">We could not find a user with the email address <span class="muted">{{ email }}</span>. You could <a href="{% url 'home' %}" class="btn btn-success">create an account</a>. Or why not check out the <a href="{% url 'status' %}" class="btn btn-info">current status</a> ?</p>
 
 {% endblock %}
 

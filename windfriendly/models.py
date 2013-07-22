@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 import pytz
+import numpy as np
 #from accounts.models import User
 
 # Approximately in order from bad to good
@@ -113,7 +114,7 @@ class BaseBalancingAuthority(models.Model):
 
     @classmethod
     def points_in_date_range(cls, starttime, endtime, forecast_type=None):
-        """Return all data ponits in the date range for forecast type"""
+        """Return all data ponits in the date range for forecast type, ordered by date"""
         forecast_qset = cls.objects.all()
         try:
             points = forecast_qset.filter(date__range=(starttime, endtime))
@@ -159,6 +160,47 @@ class BaseBalancingAuthority(models.Model):
         except:
             return None
             
+    @classmethod
+    def greenest_subrange(cls, starttime, endtime, timedelta, forecast_type=None):
+        """ Return a queryset covering time period of length timedelta that is the
+            greenest between starttime and endtime (inclusive).
+        """
+        # get full range
+        if forecast_type is None:
+            rows = cls.best_guess_points_in_date_range(starttime, endtime)
+        else:
+            rows = cls.points_in_date_range(starttime, endtime, forecast_type)
+               
+        # find best subrange
+        green_points = {r.date: r.fraction_green() for r in rows}
+        times = sorted(green_points.keys())
+        greens = [green_points[d] for d in times]
+        time_pairs = [(d, d + timedelta) for d in times
+                                         if d + timedelta <= times[-1]]
+        
+        # get best data
+        best_green = 0
+        best_timepair = None
+        best_rows = None
+        for slice_start, time_pair in enumerate(time_pairs):
+            try:
+                # get exact match
+                slice_end = times.index(time_pair[1])
+            except ValueError:
+                # get close match
+                for slice_end in range(slice_start, len(time_pairs)):
+                    if times[slice_end] > time_pair[1]:
+                        break
+                
+            avg_green = np.mean(greens[slice_start:slice_end])
+            if avg_green > best_green:
+                best_green = avg_green
+                best_timepair = time_pair
+                best_rows = rows[slice_start:slice_end]
+                    
+        # return
+        return best_rows, best_timepair, best_green, np.mean(greens)
+
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""

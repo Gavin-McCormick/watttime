@@ -50,8 +50,15 @@ The main points of the added complexity are to keep the <code>master</code> bran
 to share in-progress feature branches early and often,
 and to have the <code>develop</code> branch be a staging ground for merging finished features.
 
+* If you're in <code>master</code> and don't have <code>develop</code> yet:
+    ````
+    git checkout -b develop
+    git pull origin develop
+    ````
+
 * To start a new feature (change <code>myfeature</code> to something appropriate):
     ````
+    git checkout develop
     git pull origin develop
     git checkout -b myfeature develop
     # edit some things
@@ -61,8 +68,8 @@ and to have the <code>develop</code> branch be a staging ground for merging fini
 
 * To merge a feature branch into the main development/staging branch:
     ````
-    git pull origin develop
     git checkout develop
+    git pull origin develop
     git merge --no-ff myfeature
     git push origin develop
     ````

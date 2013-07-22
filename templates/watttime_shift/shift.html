@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime Shift{% endblock %}
+
+{% block content %}
+
+
+<h2>WattTime Shift</h2>
+<br>
+<div class="alert alert-info lead"><strong>When is the cleanest time to charge your electric car? How about when to run your A/C or do your laundry?</strong>
+    <em class="text-info">  If you are in California, WattTime Shift can help you target the best times for clean energy!</em>
+ </div>
+ 
+<div class="alert alert-success lead text-success" >
+ <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
+ <div class="controls">I need to do something that uses electricity for {{ form.usage_hours }} hours out of the next 
+  {{ form.time_range_hours }} hours.  <input type="submit" class="btn btn-success" value="Go!">
+</div></form>
+  </div>
+
+{% if best_green %}
+    <div class="lead text-info alert alert-warning"><strong class="text-info">If you shift your most energy-intense tasks to between {{ best_start }} and {{ best_end }},</strong>
+        the California grid will be <span class="text-error">{{ best_green }}% </span>clean. You could make your electricity <span class="text-error">{{ percent_improved }} percent</span> cleaner just by waiting!
+    </div>
+    
+{% elif error %}
+    <div class="lead text-info alert alert-warning">
+        Sorry, WattTime is powerful but we don't offer time machines yet. Please let us know how you do it! Usually the first number of hours should be smaller than the second. <em>Try again?</em>
+    </div>
+    
+
+    
+{% endif %}
+{% endblock %}

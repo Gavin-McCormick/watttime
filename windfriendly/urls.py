@@ -37,4 +37,6 @@ urlpatterns =  patterns('',
         views.average_usage_for_period, name='average'),
     url(r'^averageday[/]?$',
         views.averageday, name='averageday'),
+    url(r'^greenest_subrange[/]?$',
+        views.greenest_subrange, name='greenest_subrange'),
 )
