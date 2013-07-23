@@ -58,7 +58,6 @@ else:
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'watttime.app@gmail.com'
-# EMAIL_HOST_PASSWORD = 'if4m&56h'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -253,11 +252,6 @@ LOGGING = {
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# twilio account info
-# TWILIO_ACCOUNT_SID = 'AC47b7cc2bf4f9d4bddf4b9d8ceaec8ab2'
-# TWILIO_AUTH_TOKEN = 'aeb4e02df008a4e4e1cf31828fb43c84'
-# WATTTIME_PHONE = '+16175534837'
-
 # for django-allauth
 AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -299,14 +293,6 @@ INVITATIONS_PER_USER = 20
 SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
 ACCOUNT_ADAPTER ="allauth.accountadapter.AccountAdapter"
 ALLOW_NEW_REGISTRATIONS = True
-
-# for facebook login
-# FACEBOOK_APP_ID='411609345605022'
-# FACEBOOK_API_SECRET='e1760826fbb9d58e2ab39d21c80293b3'
-
-# for google login
-# GOOGLE_OAUTH2_CLIENT_ID = '838963675754'
-# GOOGLE_OAUTH2_CLIENT_SECRET = 'jRGCatPXaMDUROQVJ8hy6FZc'
 
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
