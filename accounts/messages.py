@@ -305,7 +305,9 @@ def invite_message_unsupported(email, url, name = None):
 
 def resend_login_message(name, url):
     lines = ["Hi {name}!",
+            "",
             "You can log in to your account at {url}.",
+            "",
             "Cheers,",
             "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, url = url)
