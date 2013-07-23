@@ -44,13 +44,15 @@
 </div>
 
 
+<!-- Wrapping <label></label> around multiple radio buttons breaks the interface in Firefox -->
+
 <div class="span6 alert alert-block alert-success">
 
 {% if region == "California" %}
 
 <p class="lead text-success">Message type</p>
 {{ form.message_frequency.errors }}
-<div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
+<div class="profile-edit">{{ form.message_frequency }}</div>
 
 <p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast too{{ form.forecast_email.errors }}</label></p>
 
@@ -60,13 +62,13 @@
 
 <p class="lead text-success">Message type</p>
 {{ form.message_frequency.errors }}
-<div class="profile-edit"><label class="radio">{{ form.message_frequency }}</label></div>
+<div class="profile-edit">{{ form.message_frequency }}</div>
 
 {% endif %}
 
 <p class="lead text-success">Energy-intensive equipment</p>
 {{ form.equipment.errors }}
-<div class="profile-edit"><label class="checkbox">{{ form.equipment }}</label></div>
+<div class="profile-edit">{{ form.equipment }}</div>
 
 <p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Tell me about future experimental features {{ form.beta_test.errors }}</label></p>
 
