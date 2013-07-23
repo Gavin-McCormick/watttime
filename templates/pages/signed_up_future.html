@@ -1,12 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Thank you for signing up!{% endblock %}
+{% block title %}Hello!{% endblock %}
 
 {% block content %}
 
-<h2>Thank you for signing up!</h2>
+<h2>Hello!</h2>
 
-<p class="lead text-info alert alert-info">Thank you for signing up to hear about WattTime when it's ready in your area! We'll be in touch. In the meantime, why not <a href="{% url 'faq' %}">learn more</a> about how it works?</p>
-
-</ul></div>
+<p class="lead text-info alert alert-info">Welcome to WattTime! We are working to add new regions as soon as we can. We'll let you know when WattTime is available for your region. You can always <a href="{% url 'faq' %}">learn more here</a> or <a href="{% url 'faq' %}">send us a note</a> and tell us how you would use WattTime.</p>
+</div>
 {% endblock %}
