@@ -27,6 +27,8 @@ Install
     # if migrate asks you to delete anything, say no then rerun the command
     ````
 
+* Set up environment variables in your environment (for example in your .bashrc file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
+
 Upgrade
 ---------
 ````

@@ -2,10 +2,6 @@ import os.path
 import os
 import sys
 
-def copy_from_environ(keys):
-    for key in keys:
-        globals()[key] = os.environ[key]
-
 environ_settings = [
         'EMAIL_HOST_PASSWORD',
         'TWILIO_ACCOUNT_SID',
@@ -16,6 +12,15 @@ environ_settings = [
         'GOOGLE_OAUTH2_CLIENT_ID',
         'GOOGLE_OAUTH2_CLIENT_SECRET'
     ]
+
+def copy_from_environ(keys):
+    for key in keys:
+        value = os.environ.get(key, None)
+        if value is None:
+            print ("Cannot find environment variable {}!".format(key))
+        else:
+            globals()[key] = value
+
 copy_from_environ(environ_settings)
 
 ###############################
