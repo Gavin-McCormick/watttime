@@ -108,7 +108,13 @@ def NE_status(request):
 
 
 def status_offline(request):
-    return render(request, 'pages/status.html', {'marginal_message' : 'Status is offline until July 1.'})
+    user_agent = request.META['HTTP_USER_AGENT']
+    print ("User agent: {}".format(user_agent))
+    # TODO
+    is_internet_explorer = False
+    return render(request, 'pages/status.html',
+            {'marginal_message' : 'Status is offline until July 1.',
+             'internet_explorer' : is_internet_explorer})
 
 def status(request):
 

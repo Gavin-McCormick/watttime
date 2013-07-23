@@ -48,6 +48,9 @@
 <h2>Current Status</h2>
 </br>
     <div class="well" style="padding: 0px 0px 0px 0px;">
+{% if internet_explorer %}
+    <p class="lead text-warning" style="text-align: center;">We're sorry, some of our graphs may not display correctly in Internet Explorer!</p>
+{% endif %}
 <p class="lead text-success" style="text-align: center;"><strong class="text-info">How clean is your regional electricity supply?</strong></p>
 
 <!-- energy status bar (so you know when you are having fun)
