@@ -18,6 +18,7 @@
 from django.core.mail import send_mail
 from windfriendly.models import MARGINAL_FUELS, CAISO, NE
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
+import accounts.models
 from accounts.regions import california, newengland
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
