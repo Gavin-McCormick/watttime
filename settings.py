@@ -37,7 +37,7 @@ else:
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'watttime.app@gmail.com'
-EMAIL_HOST_PASSWORD = '233fwef43'
+EMAIL_HOST_PASSWORD = 'if4m&56h'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 

@@ -122,7 +122,7 @@
               <li class="dropdown">
                 <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">ABOUT <i class="icon-bullhorn icon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> WattTime</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> THE TEAM</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="icon-envelope"></i> CONTACT</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'faq' %}"><i class="icon-book"></i> RESOURCES</a></li>
 				</ul>
@@ -227,29 +227,34 @@
 						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px; padding: 0px 0px 0px 0px;">
  						<div class="span5 offset1">
  						<p class="lead text-info">WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make a positive impact on your own terms.</p>
-   						</div>
+   						<p class="lead text-success">Get Started Today!</p> <!-- Just sign up below.</p> -->
+
+						</div>
    						
-  						  <div class="span5 offset1"> 
-                                                      <p class="lead text-info">Now available in California and New England!</p> <!-- Just sign up below.</p> -->
+  						<div class="span5"> 
 
-  						  <form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
-                                                    <p class="fieldWrapper ">
-                                                        <!--<label>Please send us your email to get you started.</label>
-                                                        <span class="help-block">Example block-level help text here.</span>        
-														<span class="help-inline">{{ form.email.errors }}</span> -->
+  						<form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
+                        
+                    	<p class="fieldWrapper ">
+                        <!--<label>Please send us your email to get you started.</label>
+                        <span class="help-block">Example block-level help text here.</span>        
+						<span class="help-inline">{{ form.email.errors }}</span> -->
 
-														{{ form.email.errors }}
-                    									{{ form.email }} 
+						{{ form.email.errors }}
+                    	{{ form.email }} 
                                                       	
-                                                        {{ form.state.errors }}
-                                                        {{ form.state }}
+                        {{ form.state.errors }}
+                        {{ form.state }}
 
-                                                    </p>           
-  													<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
-                                                                                                    </form> </br>
+                    	</p>           
+  						<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
+                        </form> 
+                        </br>
                                                                                                     
-                                                                                                    <p class="lead text-info"><small>If you live elsewhere, you can still sign up, and we'll drop you a line when we're available in your area.</small></p>
-    					</div>
+                    	<p class="lead text-info"><small>WattTime is currently available for California and New England. You can still sign up if you live elsewhere. We'll update you when we become available in your region.</small></p>
+						</div>
+
+						
 						</div>	
 						</div>					
 		
@@ -281,7 +286,7 @@
 
 					<h1>WattTime is Built for You</h1>
 
-					<h2>WattTime is designed to support and enhance your livelihood <br class="hidden-phone"> while fostering smart energy use. It’s more than just a message. It's a movement.</h2>
+					<h2>WattTime is designed to support and enhance your lifestyle <br class="hidden-phone"> while fostering a cleaner energy economy. It’s more than a message. It's a movement.</h2>
 
 				</div>
 
@@ -301,7 +306,7 @@
 
 					<h3>Empowering</h3>
 
-					<p>WattTime creates freedom for you to exert more control over your clean energy choices. Find out what works for you.</p>
+					<p>WattTime creates options for you to exert more control over your clean energy choices. Find out what works for you.</p>
 
 				</div>
 

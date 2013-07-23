@@ -7,7 +7,7 @@
 
 <div class="row-fluid">
 <div class="span6 alert alert-block alert-success">
-<p class="lead text-success">Welcome {{ name }}! Here are the preferences we have for your account.</p>
+<p class="lead text-success">Welcome {{ name }}!<br> These are your account settings.</p>
 
 <form action="{% url 'profile_edit' %}" class="form-horizontal" method="post">{% csrf_token %}
   <div class="control-group">
@@ -50,29 +50,29 @@
 
 {% if region == "California" %}
 
-<p class="lead text-success">Message type</p>
+<p class="lead text-success">Message Timing and Type</p>
 {{ form.message_frequency.errors }}
 <div class="profile-edit">{{ form.message_frequency }}</div>
 
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}Email me a morning forecast too{{ form.forecast_email.errors }}</label></p>
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}I want to receive the WattTime daily forecast each morning via email.{{ form.forecast_email.errors }}</label></p>
 
 {% endif %}
 
 {% if region == "NewEngland" %}
 
-<p class="lead text-success">Message type</p>
+<p class="lead text-success">Message Timing and Type</p>
 {{ form.message_frequency.errors }}
 <div class="profile-edit">{{ form.message_frequency }}</div>
 
 {% endif %}
 
-<p class="lead text-success">Energy-intensive equipment</p>
+<p class="lead text-success">Appliances and Energy-Intensive Practices</p>
 {{ form.equipment.errors }}
 <div class="profile-edit">{{ form.equipment }}</div>
 
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Tell me about future experimental features {{ form.beta_test.errors }}</label></p>
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
 
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.ask_feedback }} It is okay to contact me to ask for feedback on the service {{ form.ask_feedback.errors }}</label></p>
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
 
 <input type="submit" class="btn btn-info pull-left" value="Save changes" />
 
