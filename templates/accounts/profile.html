@@ -21,6 +21,10 @@
         <p class="lead alert alert-block text-info">Did you change your phone number? We need to verify it. <a href="{% url 'phone_verify_view' %}" class="btn btn-success">Verify your number</a> to receive WattTime SMS notifications.</p>
         {% endif %}
     {% endif %}
+    {% if supported_region %}
+    {% else %}
+    <p class="lead alert alert-block text-warning">Please note alerts are not yet available in {{ long_state }}. We'll let you know as soon as they are.</p>
+    {% endif %}
 <p class="lead text-warning alert alert-block">If you wish to stop receiving WattTime notifications, you may <a href="{% url 'deactivate' %}" class="btn btn-warning">deactivate</a> your account at any time.</p>
 </div>
 
@@ -34,7 +38,7 @@
   <dt>Email</dt>
     <dd>{{ email }}</dd>
   <dt>State</dt>
-    <dd>{{ state }}</dd>
+    <dd>{{ long_state }}</dd>
   <dt>Telephone</dt>
     <dd>{{ phone_number }}</dd>
   {% if region == "California" %}
@@ -51,6 +55,8 @@
     <dd>{{ equipment }}</dd>
   <dt>Experimental Features</dt>
     <dd>{{ beta_test }}</dd>
+  <dt>Can we contact you to <br> ask for feedback?</dt>
+    <dd><br>{{ ask_feedback }}</dd>
 </dl>
 
 </div>

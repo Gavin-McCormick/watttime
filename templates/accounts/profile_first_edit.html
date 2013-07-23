@@ -5,7 +5,17 @@
 {% block content %}
 <h2>Welcome to WattTime!</h2><br>
 
-<p class="lead alert alert-info text-info">Welcome {{ name }}! Please design a password to create your profile. When you add a mobile phone number, you'll get a message to verify your device. Once you complete the verification step on the next page, you'll be signed up to receive SMS alerts.</p><p class="alert alert-warning text-warning"><span class="badge badge-warning"><i class="icon-hand-right icon-white"></i></span> WattTime alert frequency varies, but you can adjust how often you receive them in your settings. Please keep in mind that your mobile service provider may charge you for receiving and sending text messages</p>
+{% if supported_region %}
+
+<p class="lead alert alert-info text-info">Welcome {{ name }}! Please design a password to create your profile. When you add a mobile phone number, you'll get a message to verify your device. Once you complete the verification step on the next page, you'll be signed up to receive SMS alerts.</p>
+
+{% else %}
+
+<p class="lead alert alert-info text-info">Welcome {{ name }}! Please design a password to create your profile. When you add a mobile phone number, you'll get a message to verify your device. This is so you can receive SMS alerts when they are available in your area.</p>
+
+{% endif %}
+
+<p class="alert alert-warning text-warning"><span class="badge badge-warning"><i class="icon-hand-right icon-white"></i></span> WattTime alert frequency varies, but you can adjust how often you receive them in your settings. Please keep in mind that your mobile service provider may charge you for receiving and sending text messages</p>
 
 <br>
 <div class="alert alert-success">

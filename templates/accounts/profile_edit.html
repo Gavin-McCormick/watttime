@@ -44,6 +44,8 @@
 </div>
 
 
+<!-- Wrapping <label></label> around multiple radio buttons breaks the interface in Firefox -->
+
 <div class="span6 alert alert-block alert-success">
 
 {% if region == "California" %}
@@ -69,6 +71,8 @@
 <div class="profile-edit">{{ form.equipment }}</div>
 
 <p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}I would like to help WattTime improve its service by participating in a survey. {{ form.beta_test.errors }}</label></p>
+
+<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.ask_feedback }} It is okay to contact me to ask for feedback on the service {{ form.ask_feedback.errors }}</label></p>
 
 <input type="submit" class="btn btn-info pull-left" value="Save changes" />
 

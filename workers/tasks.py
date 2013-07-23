@@ -16,12 +16,14 @@
 
 # regular imports
 from django.core.mail import send_mail
-from windfriendly.models import MARGINAL_FUELS, CAISO
+from windfriendly.models import MARGINAL_FUELS, CAISO, NE
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
+from accounts.regions import california, newengland
 from accounts.twilio_utils import send_text
 from accounts.models import UserProfile
-from accounts.messages import morning_forecast_email, morning_forecast_email_first
+from accounts.messages import morning_forecast_email, morning_forecast_email_first, ne_message_dirty_daytime, ne_message_dirty_evening, ne_message_clean
 from workers.utils import debug, send_daily_report, perform_scheduled_tasks, schedule_task, send_ca_texts, add_to_report
+from workers.models import latest_by_category, LastMessageSent
 import datetime
 import pytz
 
@@ -36,6 +38,7 @@ def run_frequent_tasks():
     # scrape new info from utilities
     updated_bas = update_bas(['BPA', 'ISONE'])
     perform_scheduled_tasks()
+    send_ne_texts_if_necessary()
     print updated_bas
 
     # send notifications to users in updated regions
@@ -127,6 +130,110 @@ def prepare_to_send_ca_texts():
     schedule_task(best_time, "workers.utils.send_ca_texts(1)")
 
     add_to_report('Scheduled "clean" texts to go out at {}'.format(best_time))
+
+def send_ne_texts_if_necessary():
+    now = datetime.datetime.now(pytz.utc)
+    ne_tz = pytz.timezone('America/New_York')
+    now_ne = ne_tz.normalize(now.astimezone(ne_tz))
+
+    is_weekday = (now_ne.isoweekday() <= 5)
+    is_daytime = (9 <= now_ne.hour < 17)
+    is_evening = (17 <= now_ne.hour < 22)
+
+    fuel = NE.latest_point().marginal_fuel
+    fuel_name = MARGINAL_FUELS[fuel]
+    # 0 = coal
+    # 1 = oil
+    # 2 = natural gas
+    # 3 = refuse
+    # 4 = hydro
+    # 5 = wood
+    # 6 = nuclear
+    # 7 = solar
+    # 8 = wind
+    # 9 = none
+    dirty_fuel = [0, 1]
+    clean_fuel = [8, 7, 6, 5, 4]
+
+    is_dirty = fuel in dirty_fuel
+    is_clean = fuel in clean_fuel
+
+    # No more than one message in each 12 hour period
+    last_okay_time = now - datetime.timedelta(hours = 20)
+
+    ups = UserProfile.objects.all()
+
+    # Dirty texts, working hours
+    if is_weekday and is_daytime and is_dirty:
+        last_msg = latest_by_category(LastMessageSent.NE_dirty_daytime)
+        if last_msg is None or last_msg.date < last_okay_time:
+            if last_msg is None:
+                last_msg = LastMessageSent()
+                last_msg.category = LastMessageSent.NE_dirty_daytime
+            last_msg.date = now
+            last_msg.save()
+
+            debug("Sending NE texts for dirty, working hours {}".format(last_msg.date))
+
+            for up in ups:
+                if up.user.is_active and up.is_verified and up.region() == newengland:
+                    if up.get_region_settings().message_frequency == 0:
+                        message = ne_message_dirty_daytime(up, fuel_name)
+                        res = send_text(message, up)
+
+                        msg = 'Sent text "{}" to {}'.format(message.msg, up)
+                        if not res:
+                            msg = "FAILED: " + msg
+                        debug(msg)
+                        add_to_report(msg)
+
+    # Dirty texts, after hours
+    if is_dirty and (is_evening or (is_daytime and (not is_weekday))):
+        last_msg = latest_by_category(LastMessageSent.NE_dirty_evening)
+        if last_msg is None or last_msg.date < last_okay_time:
+            if last_msg is None:
+                last_msg = LastMessageSent()
+                last_msg.category = LastMessageSent.NE_dirty_evening
+            last_msg.date = now
+            last_msg.save()
+
+            debug("Sending NE texts for dirty, after hours {}".format(last_msg.date))
+
+            for up in ups:
+                if up.user.is_active and up.is_verified and up.region() == newengland:
+                    if up.get_region_settings().message_frequency == 1:
+                        message = ne_message_dirty_evening(up, fuel_name)
+                        res = send_text(message, up)
+
+                        msg = 'Sent text "{}" to {}'.format(message.msg, up)
+                        if not res:
+                            msg = "FAILED: " + msg
+                        debug(msg)
+                        add_to_report(msg)
+
+    # Clean texts, after hours
+    if is_clean and (is_evening or (is_daytime and (not is_weekday))):
+        last_msg = latest_by_category(LastMessageSent.NE_clean)
+        if last_msg is None or last_msg.date < last_okay_time:
+            if last_msg is None:
+                last_msg = LastMessageSent()
+                last_msg.category = LastMessageSent.NE_clean
+            last_msg.date = now
+            last_msg.save()
+
+            debug("Sending NE texts for clean {}".format(last_msg.date))
+
+            for up in ups:
+                if up.user.is_active and up.is_verified and up.region() == newengland:
+                    if up.get_region_settings().message_frequency == 2:
+                        message = ne_message_clean(up, fuel_name)
+                        res = send_text(message, up)
+
+                        msg = 'Sent text "{}" to {}'.format(message.msg, up)
+                        if not res:
+                            msg = "FAILED: " + msg
+                        debug(msg)
+                        add_to_report(msg)
 
 def update_bas(bas):
     # update and query BAs

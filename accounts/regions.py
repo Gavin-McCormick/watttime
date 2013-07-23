@@ -31,6 +31,7 @@ class UserProfileForm(forms.Form):
     phone           = forms.CharField(help_text='Phone', required = False)
     equipment       = forms.MultipleChoiceField(help_text='Equipment', choices = EQUIPMENT_CHOICES, widget = forms.CheckboxSelectMultiple(), required = False)
     beta_test       = forms.BooleanField(help_text='Beta test', widget = forms.CheckboxInput(), required = False)
+    ask_feedback    = forms.BooleanField(help_text='Ask feedbac', widget = forms.CheckboxInput(), required = False)
 
 
 # Instances of ConfigType cannot (I think) be reused across multiple
@@ -176,13 +177,20 @@ class Region:
             vals[param.name] = param.model_to_display(getattr(s, param.name))
 
 
+ne_freq_choices = [
+    ('About daily, working hours, when dirty',
+        'Up to once a day 9-5, Monday-Friday, when fuel is particularly dirty'),
+    ('About daily, after hours, when dirty',
+        'Up to once a day evenings or weekends, when fuel is particularly dirty'),
+    ('About daily, after hours, when clean',
+        'Up to once a day evenings or weekends, when fuel is particularly clean'),
+    ('Never',
+        'Never')]
 newengland = Region(
         name = 'NewEngland',
         settings_name = 'ne_settings',
         states = ['MA', 'VT', 'NH', 'ME', 'CT', 'RI'],
-        params = [ConfigChoice('message_frequency', [
-            ('About daily', 'Text me about once per day'),
-            ('About weekly', 'Text me about once per week')])])
+        params = [ConfigChoice('message_frequency', ne_freq_choices)])
 
 ca_freq_choices = [
     ('Dirtiest hour each day',
@@ -192,7 +200,9 @@ ca_freq_choices = [
     ('Less than once a day',
         'Text me whenever power is unusually clean or dirty, at most once a day'),
     ('Only in extremes (once a week)',
-        'Only text me during dirty energy emergencies, at most once a week')]
+        'Only text me during dirty energy emergencies, at most once a week'),
+    ('Never',
+        'Never')]
 california = Region(
         name = 'California',
         settings_name = 'ca_settings',

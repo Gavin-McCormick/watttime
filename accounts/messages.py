@@ -28,9 +28,9 @@ class Message:
     def information(cls, msg):
         return cls(Message.INFORMATION, msg)
 
-def msg(criterion, action, state):
+def make_msg(criterion, action, state = "{state}", fuel = "{fuel}"):
     a = 'WattTime alert: {} {}'.format(criterion, action)
-    return a.format(state = state)
+    return a.format(state = state, fuel = fuel)
 
 def rand(options):
     index = random.randint(0, len(options) - 1)
@@ -64,7 +64,7 @@ def ca_message_dirty(up):
     # TODO choose between home vs. work appropriately.
     c = rand(criterion_dirtiest)
     a = rand(action_dirtiest_home_generic)
-    return Message.use_less(msg(c, a, 'CA'))
+    return Message.use_less(make_msg(c, a, state = 'CA'))
 
 criterion_cleanest = [
     "This is the cleanest time today to use power.",
@@ -89,7 +89,7 @@ def ca_message_clean(up):
     # TODO choose actions appropriately
     c = rand(criterion_cleanest)
     a = rand(action_cleanest_home_generic)
-    return Message.use_more(msg(c, a, 'CA'))
+    return Message.use_more(make_msg(c, a, state = 'CA'))
 
 criterion_unusually_dirty = [
     "Power is unusually dirty right now in {state}!",
@@ -176,53 +176,52 @@ action_unusually_clean_home_generic = [
     "Great time to recharge any electronics.",
     "Anything you could run now instead of later? Laundry? Oven?"]
 
-def use_central_ac_message(marginal_fuel):
-    randint = random.randint(0,2)
-    if randint == 0:
-# characters counts:
-#              0         1         2         3         4         5         6         7         8         9         0         1         2         3
-        msg = "WattTime Alert! Your power is now clean %s. Hot out? You can precool your house on clean power! Turn down temp a bit for 30 mins." % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?" % marginal_fuel
-    return Message.use_more_message(msg)
+ne_criterion_dirty = [
+    "You're running on dirty {fuel} power. Generally lasts less than an hour."]
+ne_criterion_clean = [
+    "You're running on clean renewable {fuel}. Typically lasts less than one hour."]
 
-def use_message(marginal_fuel):
-    randint = random.randint(0,2)
-    if randint == 0:
-        msg = "WattTime Alert! Your power is unusually clean now - %s. Can you avoid wasting that clean power? Great time to do laundry or dishes!" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?" % marginal_fuel
-    return Message.use_more_message(msg)
+ne_action_dirty_daytime = [
+    "Anything you can turn off that you don't need right now?"]
+ne_action_dirty_evening = [
+    "Any way you can use a less power for a bit?"]
+ne_action_clean = [
+    "Great time to start laundry, dishes, etc."]
 
-def dont_use_central_ac_message(marginal_fuel):
-    randint = random.randint(0,3)
-    if randint == 0:
-        msg = "WattTime Alert! You're now getting dirty %s power. Help us shut them down, save some power now! Can you turn off your AC for 20 mins?" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on %s. Help us shut them down! Think you could dial back the temperature 2 degrees for an hour?" % marginal_fuel
-    elif randint == 2:
-        msg  ="WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!" % marginal_fuel
-    return Message.use_less_message(msg)
+def ne_message_dirty_daytime(up, fuel):
+    c = rand(ne_criterion_dirty)
+    a = rand(ne_action_dirty_daytime)
+    return Message.use_less(make_msg(c, a, state = up.state, fuel = fuel))
+
+def ne_message_dirty_evening(up, fuel):
+    c = rand(ne_criterion_dirty)
+    a = rand(ne_action_dirty_evening)
+    return Message.use_less(make_msg(c, a, state = up.state, fuel = fuel))
+
+def ne_message_clean(up, fuel):
+    c = rand(ne_criterion_clean)
+    a = rand(ne_action_clean)
+    return Message.use_more(make_msg(c, a, state = up.state, fuel = fuel))
+
+old_msgs = [
+    ["WattTime Alert! Your power is now clean %s. Hot out? You can precool your house on clean power! Turn down temp a bit for 30 mins.",
+    "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?",
+    "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?"],
+
+    ["WattTime Alert! Your power is unusually clean now - %s. Can you avoid wasting that clean power? Great time to do laundry or dishes!",
+    "WattTime Alert! You're now running on clean %s power. Won't last long! Can you use that clean power now instead of later?",
+    "WattTime Alert! Your power is really clean %s right now. Anything you can recharge now to use all that clean energy? Laptop?"],
+
+    ["WattTime Alert! You're now getting dirty %s power. Help us shut them down, save some power now! Can you turn off your AC for 20 mins?",
+    "WattTime Alert! You're now running on %s. Help us shut them down! Think you could dial back the temperature 2 degrees for an hour?",
+    "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?",
+    "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!"],
 
 
-def dont_use_message(marginal_fuel):
-    randint = random.randint(0,3)
-    if randint == 0:
-        msg = "The marginal fuel is %s, so avoid using electricity if you can!" % marginal_fuel
-    elif randint == 1:
-        msg = "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!" % marginal_fuel
-    elif randint == 2:
-        msg = "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?" % marginal_fuel
-    else:
-        msg = "WattTime Alert! Your electricity is dirty dirty %s. That means it's an excellent time to save energy! What could you do differently to avoid using excess electricity in the next two hours?" % marginal_fuel
-    return Message.use_less_message(msg)
-
+    ["The marginal fuel is %s, so avoid using electricity if you can!",
+    "WattTime Alert! You're now running on %s. Are you doing anything that uses power right now? Maybe you could take a 15 min break!",
+    "WattTime Alert! Your power is from %s right now. Help us use less of that dirty energy source! Can you turn out an extra light?",
+    "WattTime Alert! Your electricity is dirty dirty %s. That means it's an excellent time to save energy! What could you do differently to avoid using excess electricity in the next two hours?"]]
 
 def verify_phone_message(code):
     return Message.confirmation("Hello from WattTime! Enter [%s] on the sign up page to verify your device. This is a 1-time message." % code)
@@ -255,7 +254,7 @@ def account_activated_message(userid, name, phone):
              "%s" % phone,
              "If you answer a few quick questions at http://wattTime.herokuapp.com/profile/%s, we'll send you more relevant messages. You can return to this link to update your preferences at any time." % userid,
              "To unsubscribe from SMS notifications, click on http://wattTime.herokuapp.com/unsubscribe/%s." % phone.replace('-',''),
-             ":-)",
+             "Cheers",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -267,7 +266,7 @@ def account_inactivated_message(userid, name, phone):
              "We are super sorry to see you go! You can turn SMS notifications on at any time by updating your preferences at http://wattTime.herokuapp.com/profile/%s." % userid,
              "Whatever your destination, we hope you keep an eye out for ways to help build tomorrow's clean energy economy today.",
              "",
-             "Message Received,",
+             "Take care,",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -283,15 +282,33 @@ def invite_message(email, url, name = None):
             "",
             "Cheers,",
             "The WattTime Team"
-            ]
+        ]
+    if name is None:
+        name = email
+    return ("\n".join(lines)).format(name = name, url = url)
+
+def invite_message_unsupported(email, url, name = None):
+    lines = ["Hi {name}, welcome to WattTime!",
+            "",
+            "We're excited that you're thinking about joining us in building a cleaner energy economy.",
+            "",
+            "Right now, our service is only available in California and New England. But we're growing fast! As soon as we're available in your area, we'll send you a note so you can set up an account if you like.",
+            "",
+            "Can't wait that long? You could set up your account now if you like! Just visit {url} to get started.",
+            "",
+            "Have a great day,",
+            "The WattTime Team"
+        ]
     if name is None:
         name = email
     return ("\n".join(lines)).format(name = name, url = url)
 
 def resend_login_message(name, url):
     lines = ["Hi {name}!",
+            "",
             "You can log in to your account at {url}.",
-            "Yours Truly,",
+            "",
+            "Cheers,",
             "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, url = url)
 
@@ -331,6 +348,6 @@ def morning_forecast_email_first(name, best_hour, worst_hour):
         "",
         "Questions? Feedback? You can write us at this address at any time.",
         "",
-        "We're all in this together,",
+        "Because everything you do matters,",
         "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst = worst_hour)
