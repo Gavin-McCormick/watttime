@@ -254,7 +254,7 @@ def account_activated_message(userid, name, phone):
              "%s" % phone,
              "If you answer a few quick questions at http://wattTime.herokuapp.com/profile/%s, we'll send you more relevant messages. You can return to this link to update your preferences at any time." % userid,
              "To unsubscribe from SMS notifications, click on http://wattTime.herokuapp.com/unsubscribe/%s." % phone.replace('-',''),
-             ":-)",
+             "Cheers",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -266,7 +266,7 @@ def account_inactivated_message(userid, name, phone):
              "We are super sorry to see you go! You can turn SMS notifications on at any time by updating your preferences at http://wattTime.herokuapp.com/profile/%s." % userid,
              "Whatever your destination, we hope you keep an eye out for ways to help build tomorrow's clean energy economy today.",
              "",
-             "Message Received,",
+             "Take care,",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -306,7 +306,7 @@ def invite_message_unsupported(email, url, name = None):
 def resend_login_message(name, url):
     lines = ["Hi {name}!",
             "You can log in to your account at {url}.",
-            "Yours Truly,",
+            "Cheers,",
             "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, url = url)
 
@@ -346,6 +346,6 @@ def morning_forecast_email_first(name, best_hour, worst_hour):
         "",
         "Questions? Feedback? You can write us at this address at any time.",
         "",
-        "We're all in this together,",
+        "Because everything you do matters,",
         "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst = worst_hour)
