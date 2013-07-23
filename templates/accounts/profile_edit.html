@@ -7,7 +7,7 @@
 
 <div class="row-fluid">
 <div class="span6 alert alert-block alert-success">
-<p class="lead text-success">Welcome {{ name }}! These are your account settings.</p>
+<p class="lead text-success">Welcome {{ name }}!<br> These are your account settings.</p>
 
 <form action="{% url 'profile_edit' %}" class="form-horizontal" method="post">{% csrf_token %}
   <div class="control-group">
