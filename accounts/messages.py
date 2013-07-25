@@ -67,7 +67,7 @@ def ca_message_dirty(up):
     return Message.use_less(make_msg(c, a, state = 'CA'))
 
 criterion_cleanest = [
-    "This is the cleanest time today to use power.",
+    "This is the cleanest time this evening to use power.",
     "Lots of renewable power on the grid right now!"]
 
 action_cleanest_dishwasher = [
