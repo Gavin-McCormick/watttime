@@ -84,8 +84,8 @@ def run_daily_tasks_1400():
 def send_ca_forecast_emails():
     # Send morning forecasts to california users.
     now = this_hour()
-    start = now.replace(hour = 14) # This is 7am PST
-    end = start + datetime.timedelta(hours = 16) # This is 11pm PST
+    start = now.replace(hour = 15) # This is 8am PST
+    end = start + datetime.timedelta(hours = 14) # This is 10pm PST
 
     rows = CAISO.best_guess_points_in_date_range(start, end)
     best_time = max(rows, key = (lambda r : r.fraction_green())).date
