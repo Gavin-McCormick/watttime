@@ -330,7 +330,7 @@ def alpha_completed(name):
 def morning_forecast_email(name, best_hour, worst_hour):
     lines = ["Good Morning {name}",
         "",
-        "Today between 8am and 10pm, there will be a clean power peak at {best}, while the dirtiest energy will come at {worst}.",
+        "Today between 7am and 11pm, there will be a clean power peak at {best}, while the dirtiest energy will come at {worst}.",
         "",
         "Whatever you do today, make it amazing. More info always available at https://watttime.herokuapp.com/status",
         "",
