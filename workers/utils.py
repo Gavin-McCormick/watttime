@@ -86,8 +86,8 @@ def same_day(t1, t2):
 
 def send_daily_report():
     now = datetime.datetime.now(pytz.utc)
-    # targets = ['eric.stansifer@gmail.com', 'gavin.mccormick@gmail.com', 'annarschneider@gmail.com']
-    targets = ['eric.stansifer@gmail.com']
+    targets = ['eric.stansifer@gmail.com', 'gavin.mccormick@gmail.com', 'annarschneider@gmail.com']
+    # targets = ['eric.stansifer@gmail.com']
     subj = 'WattTime daily report {}'.format(now.strftime('%Y.%m.%d'))
     message = []
     message.append('Report generated {} UTC'.format(now.strftime('%Y.%m.%d %H.%M')))
