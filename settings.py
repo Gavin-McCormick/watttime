@@ -84,6 +84,9 @@ ALLOWED_HOSTS = [ 'watttime.herokuapp.com',
                   'watttime.com',
                   'watttime.org',
                   'watttime.net',
+                  'www.watttime.com',
+                  'www.watttime.org',
+                  'www.watttime.net',
                   'localhost' ]
 
 # Local time zone for this installation. Choices can be found here:
