@@ -108,11 +108,20 @@ def NE_status(request):
 
 
 def status(request):
+    user = request.user
+
     user_agent = request.META['HTTP_USER_AGENT']
     print ("User agent: {}".format(user_agent))
     is_internet_explorer = ('MSIE' in user_agent)
+
+    if user.is_authenticated():
+        initial_state = user.get_profile().state
+    else:
+        initial_state = 'CA'
+
     return render(request, 'pages/status.html',
-            {'internet_explorer' : is_internet_explorer})
+            {'internet_explorer' : is_internet_explorer,
+            'initial_state' : initial_state})
 
 def contact(request):
     if request.method == 'POST':
