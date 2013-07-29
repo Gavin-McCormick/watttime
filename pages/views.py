@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from models import ContactForm
 from django.template import RequestContext
@@ -107,50 +107,40 @@ def NE_status(request):
     return render(request, 'pages/NE_status.html', {'marginal_message' : message})
 
 
-def status_offline(request):
+def status(request):
     user_agent = request.META['HTTP_USER_AGENT']
     print ("User agent: {}".format(user_agent))
-    # TODO
-    is_internet_explorer = False
+    is_internet_explorer = ('MSIE' in user_agent)
     return render(request, 'pages/status.html',
-            {'marginal_message' : 'Status is offline until July 1.',
-             'internet_explorer' : is_internet_explorer})
+            {'internet_explorer' : is_internet_explorer})
 
-def status(request):
-
-        return render(request, 'pages/status.html', {'marginal_message' : message})
-    
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
 
-            if cd['subject'] and cd['message'] and cd['email']:
-                try:
-                    send_mail(
-                        cd['subject'],
-            cd['email'] + '\n' + cd['message'],
-            cd['email'],
-            [EMAIL_HOST_USER],
-            fail_silently=False,
-                        )
-                    url = reverse('contact_thank_you')
-                    return HttpResponseRedirect(url)
-                except BadHeaderError:
-                    return HttpResponse('Invalid header found.')
-            else:
-                return HttpResponse('Make sure all fields are entered.')
+            try:
+                send_mail(
+                    cd['subject'],
+                    cd['email'] + '\n' + cd['message'],
+                    EMAIL_HOST_USER,
+                    [EMAIL_HOST_USER]
+                    )
+                url = reverse('contact_thank_you')
+                return HttpResponseRedirect(url)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
     else:
         form = ContactForm()
 
-    return render_to_response('pages/contact.html', {'form':form}, RequestContext(request))
+    return render(request, 'pages/contact.html', {'form':form})
 
 def thankyou(request):
-    return render_to_response('pages/contact_thank_you.html')
-    
+    return render(request, 'pages/contact_thank_you.html')
+
 def facebook_pilot(request):
     return render(request, 'pages/facebook_pilot.html')
-    
+
 def sierra_pilot(request):
     return render(request, 'pages/sierra_pilot.html')
