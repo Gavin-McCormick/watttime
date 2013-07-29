@@ -83,7 +83,7 @@ class AccountsTest(TestCase):
             self.assertIsInstance(up.local_now(), datetime.datetime)
 
         self.assertEqual(len(mail.outbox), 0)
-        views.create_and_email_user(email(5))
+        user5 = views.create_and_email_user(email(5))
         self.assertEqual(len(mail.outbox), 1)
         views.create_and_email_user(email(2))
         self.assertEqual(len(mail.outbox), 1)
@@ -91,4 +91,10 @@ class AccountsTest(TestCase):
         m = mail.outbox[0]
         self.assertEqual(m.to, [email(5)])
         self.assertEqual(m.from_email, settings.EMAIL_HOST_USER)
+
+        up = user5.get_profile()
+        response = self.client.get('/profile/{:d}'.format(up.magic_login_code))
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/profile/')
+        self.assertEqual(response.status_code, 200)
 
