@@ -22,6 +22,7 @@ from datetime import datetime, timedelta, date
 # from accounts.models import SENDTEXT_TIMEDELTAS
 from sms_tools.models import TwilioSMSEvent
 from random import randint
+import settings
 from settings import EMAIL_HOST_USER
 import accounts.messages
 import datetime
@@ -86,8 +87,10 @@ def same_day(t1, t2):
 
 def send_daily_report():
     now = datetime.datetime.now(pytz.utc)
+    # Get list of emails to send daily report to
+    targets = map((lambda admin: admin[1]), settings.ADMINS)
     # targets = ['eric.stansifer@gmail.com', 'gavin.mccormick@gmail.com', 'annarschneider@gmail.com']
-    targets = ['eric.stansifer@gmail.com']
+    # targets = ['eric.stansifer@gmail.com']
     subj = 'WattTime daily report {}'.format(now.strftime('%Y.%m.%d'))
     message = []
     message.append('Report generated {} UTC'.format(now.strftime('%Y.%m.%d %H.%M')))

@@ -56,19 +56,38 @@ def run_hourly_tasks():
    # notified_users = send_text_notifications(['CAISO'])
    # print notified_users
 
-def this_hour():
-    now = datetime.datetime.now(pytz.utc)
-    return now.replace(minute = 0, second = 0, microsecond = 0)
+utc = pytz.utc
+def _now(tz = None):
+    now = datetime.datetime.now(utc)
+    if tz is None:
+        return now
+    else:
+        return convert_tz(now, tz)
 
-def round_to_hour(dt):
+def convert_tz(dt, tz):
+    if isinstance(tz, str):
+        tz = pytz.timezone(tz)
+    return tz.normalize(dt.astimezone(tz))
+
+def this_hour(tz = None):
+    now = _now(tz)
+    dt_ = now.replace(minute = 0, second = 0, microsecond = 0)
+    if now.minute < 30:
+        return dt_
+    else:
+        return dt_ + datetime.timedelta(hours = 1)
+
+def display_hour(dt, tz = None):
+    if tz is not None:
+        dt = convert_tz(dt, tz)
+
     hour = dt.hour
     if dt.minute >= 30:
-        hour += 1
-    return (hour % 24)
+        hour = (hour + 1) % 24
 
-def display_hour_pst(dt):
-    hour = (round_to_hour(dt) + 17) % 24
-    if hour < 12:
+    if hour == 0:
+        return 'midnight'
+    elif hour < 12:
         return '{:d}am'.format(hour)
     elif hour == 12:
         return 'noon'
@@ -83,16 +102,17 @@ def run_daily_tasks_1400():
 
 def send_ca_forecast_emails():
     # Send morning forecasts to california users.
-    now = this_hour()
-    start = now.replace(hour = 15) # This is 8am PST
-    end = start + datetime.timedelta(hours = 14) # This is 10pm PST
+    tz = 'America/Los_Angeles'
+    now_ca = this_hour(tz)
+    start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
+    end = start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.best_guess_points_in_date_range(start, end)
     best_time = max(rows, key = (lambda r : r.fraction_green())).date
     worst_time = min(rows, key = (lambda r : r.fraction_green())).date
 
-    best_hour = display_hour_pst(best_time)
-    worst_hour = display_hour_pst(worst_time)
+    best_hour = display_hour(best_time, tz)
+    worst_hour = display_hour(worst_time, tz)
 
     subj = 'WattTime {} forecast: {} cleanest, {} dirtiest'
     subj = subj.format(start.strftime('%m/%d'), best_hour, worst_hour)
@@ -108,11 +128,11 @@ def send_ca_forecast_emails():
                 send_mail(subj, msg, EMAIL_HOST_USER, [up.email])
 
 def prepare_to_send_ca_texts():
-    now = this_hour()
+    now_ca = this_hour('America/Los_Angeles')
 
     # Dirty texts
-    start = now.replace(hour = 15) # This is 8am PST
-    end = start + datetime.timedelta(hours = 14) # This is 10pm PST
+    start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
+    end = start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.best_guess_points_in_date_range(start, end)
     worst_time = min(rows, key = (lambda r : r.fraction_green())).date
@@ -122,8 +142,8 @@ def prepare_to_send_ca_texts():
     add_to_report('Scheduled "dirty" texts to go out at {}'.format(worst_time))
 
     # Clean texts
-    start = now.replace(hour = 0) + datetime.timedelta(days = 1) # This is 5pm PST
-    end = start + datetime.timedelta(hours = 5) # This is 10pm PST
+    start = convert_tz(now_ca.replace(hour = 17), utc) # 5pm PST
+    end = start + datetime.timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.best_guess_points_in_date_range(start, end)
     best_time = max(rows, key = (lambda r : r.fraction_green())).date
@@ -133,9 +153,8 @@ def prepare_to_send_ca_texts():
     add_to_report('Scheduled "clean" texts to go out at {}'.format(best_time))
 
 def send_ne_texts_if_necessary():
-    now = datetime.datetime.now(pytz.utc)
-    ne_tz = pytz.timezone('America/New_York')
-    now_ne = ne_tz.normalize(now.astimezone(ne_tz))
+    now = _now()
+    now_ne = _now('America/New_York')
 
     is_weekday = (now_ne.isoweekday() <= 5)
     is_daytime = (9 <= now_ne.hour < 17)
@@ -159,7 +178,7 @@ def send_ne_texts_if_necessary():
     is_dirty = fuel in dirty_fuel
     is_clean = fuel in clean_fuel
 
-    # No more than one message in each 12 hour period
+    # No more than one message in each 20 hour period
     last_okay_time = now - datetime.timedelta(hours = 20)
 
     ups = UserProfile.objects.all()

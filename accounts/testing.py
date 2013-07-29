@@ -34,6 +34,7 @@ def users_mf(mf):
 send_text = accounts.twilio_utils.send_text
 
 
+KV = workers.models.KeyValue
 ST = workers.models.ScheduledTasks
 DR = workers.models.DailyReport
 DM = workers.models.DebugMessage
