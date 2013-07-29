@@ -102,7 +102,7 @@ class ConfigMultichoice(ConfigType):
     # like in ConfigChoice
     def __init__(self, name, choices):
         assert (len(choices) < 36)
-        ConfigType.__init__(self, name, choices)
+        ConfigType.__init__(self, name)
         self.choices = choices[:]
         int_xs = [(i, choices[i][1]) for i in range(len(choices))]
         str_xs = [(str(i), choices[i][1]) for i in range(len(choices))]
@@ -129,6 +129,7 @@ class ConfigMultichoice(ConfigType):
             return '(none)'
 
 
+regions = []
 class Region:
     # settings_name -- identifier for the field of UserProfile which refers
     #   to the settings for this region
@@ -140,6 +141,8 @@ class Region:
         self.params = params[:]
 
         self._setup_fields()
+
+        regions.append(self)
 
     def _setup_fields(self):
         model_fields = {}
@@ -175,6 +178,12 @@ class Region:
         s = up.get_region_settings()
         for param in self.params:
             vals[param.name] = param.model_to_display(getattr(s, param.name))
+
+def state_to_region(state):
+    for region in regions:
+        if region.has_state(state):
+            return region
+    return null_region
 
 
 ne_freq_choices = [
@@ -215,11 +224,3 @@ null_region = Region(
         settings_name = 'null_settings',
         states = [],
         params = [])
-
-regions = [newengland, california, null_region]
-
-def state_to_region(state):
-    for region in regions:
-        if region.has_state(state):
-            return region
-    return null_region
