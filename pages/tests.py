@@ -14,6 +14,5 @@ class ContactTest(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         m = mail.outbox[0]
-        self.assertEqual(len(m.to), 1)
-        self.assertEqual(m.to[0], settings.EMAIL_HOST_USER)
+        self.assertEqual(m.to, [settings.EMAIL_HOST_USER])
         self.assertEqual(m.from_email, settings.EMAIL_HOST_USER)
