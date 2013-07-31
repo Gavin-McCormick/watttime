@@ -196,12 +196,12 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+#    'allauth',
+#    'allauth.account',
+#    'allauth.socialaccount',
 #    'allauth.socialaccount.providers.bitly',
 #    'allauth.socialaccount.providers.dropbox',
-    'allauth.socialaccount.providers.facebook',
+#    'allauth.socialaccount.providers.facebook',
 #    'allauth.socialaccount.providers.github',
 #    'allauth.socialaccount.providers.google',
 #    'allauth.socialaccount.providers.linkedin',
@@ -215,7 +215,7 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.weibo',
     'south',
 #    'invitation',
-    'registration',
+#    'registration',
     'corsheaders',
 )
 
