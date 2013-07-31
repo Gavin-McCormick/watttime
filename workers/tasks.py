@@ -62,7 +62,7 @@ def _now(tz = None):
     if tz is None:
         return now
     else:
-        return convert(now, tz)
+        return convert_tz(now, tz)
 
 def convert_tz(dt, tz):
     if isinstance(tz, str):
@@ -71,7 +71,7 @@ def convert_tz(dt, tz):
 
 def this_hour(tz = None):
     now = _now(tz)
-    dt_ = now.replace(minutes = 0, second = 0, microsecond = 0)
+    dt_ = now.replace(minute = 0, second = 0, microsecond = 0)
     if now.minute < 30:
         return dt_
     else:
@@ -85,7 +85,9 @@ def display_hour(dt, tz = None):
     if dt.minute >= 30:
         hour = (hour + 1) % 24
 
-    if hour < 12:
+    if hour == 0:
+        return 'midnight'
+    elif hour < 12:
         return '{:d}am'.format(hour)
     elif hour == 12:
         return 'noon'

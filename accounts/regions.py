@@ -102,7 +102,7 @@ class ConfigMultichoice(ConfigType):
     # like in ConfigChoice
     def __init__(self, name, choices):
         assert (len(choices) < 36)
-        ConfigType.__init__(self, name, choices)
+        ConfigType.__init__(self, name)
         self.choices = choices[:]
         int_xs = [(i, choices[i][1]) for i in range(len(choices))]
         str_xs = [(str(i), choices[i][1]) for i in range(len(choices))]
@@ -129,6 +129,7 @@ class ConfigMultichoice(ConfigType):
             return '(none)'
 
 
+regions = []
 class Region:
     # settings_name -- identifier for the field of UserProfile which refers
     #   to the settings for this region
@@ -140,6 +141,8 @@ class Region:
         self.params = params[:]
 
         self._setup_fields()
+
+        regions.append(self)
 
     def _setup_fields(self):
         model_fields = {}
@@ -176,6 +179,19 @@ class Region:
         for param in self.params:
             vals[param.name] = param.model_to_display(getattr(s, param.name))
 
+def state_to_region(state):
+    for region in regions:
+        if region.has_state(state):
+            return region
+    return null_region
+
+
+# TODO wrap all this in a lambda and execute it in accounts.models instead so
+# that all the module-scope computation is being performed in one file. Then add
+# a circular "import accounts.models" at the top of this file. This will eliminate
+# certain sources of bugs.
+#
+# Actually, I think even then I can't make it circularly importing... must be sure.
 
 ne_freq_choices = [
     ('About daily, working hours, when dirty',
@@ -215,11 +231,3 @@ null_region = Region(
         settings_name = 'null_settings',
         states = [],
         params = [])
-
-regions = [newengland, california, null_region]
-
-def state_to_region(state):
-    for region in regions:
-        if region.has_state(state):
-            return region
-    return null_region

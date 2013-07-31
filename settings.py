@@ -69,7 +69,7 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Gavin McCormik', 'gavin.mccormick+watttimeadmin@gmail.com'),
+    ('Gavin "typo" McCormick', 'gavin.mccormick+watttimeadmin@gmail.com'),
     ('Anna Schneider', 'annarschneider+watttimeadmin@gmail.com'),
     ('Eric Stansifer', 'eric.stansifer+watttimeadmin@gmail.com'),
 )
@@ -82,6 +82,11 @@ DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__)) #.replace('\\','/'),
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [ 'watttime.herokuapp.com',
                   'watttime.com',
+                  'watttime.org',
+                  'watttime.net',
+                  'www.watttime.com',
+                  'www.watttime.org',
+                  'www.watttime.net',
                   'localhost' ]
 
 # Local time zone for this installation. Choices can be found here:

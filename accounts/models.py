@@ -1,12 +1,9 @@
 from django.db import models
 from django_localflavor_us.models import PhoneNumberField, USStateField
-from choice_others import ChoiceWithOtherField
 from django_localflavor_us.us_states import STATE_CHOICES
-from multi_choice import *
-from pytz import timezone
+import pytz
 from django.utils.timezone import now, localtime
 from django.contrib.auth.models import User
-import accounts.regions
 
 # Several models are defined dynamically in regions.py, so this import is
 # critical
@@ -76,6 +73,7 @@ class UserProfile(models.Model):
             s = region.user_prefs_model()
             s.save()
             setattr(self, label, s)
+            self.save()
             return s
         else:
             return s
@@ -103,9 +101,9 @@ class UserProfile(models.Model):
     def local_now(self):
          # TO DO make it work for other states
          if self.state in ['MA', 'VT', 'NH', 'ME', 'CT', 'RI']:
-             return localtime(now(), timezone('US/Eastern'))
+             return localtime(now(), pytz.timezone('America/New_York'))
          elif self.state in ['CA', 'WA', 'ID', 'OR']:
-             return localtime(now(), timezone('US/Pacific'))
+             return localtime(now(), pytz.timezone('America/Los_Angeles'))
          else:
              return now()
 
