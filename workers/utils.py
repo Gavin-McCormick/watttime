@@ -53,14 +53,22 @@ def send_ca_texts(group):
                     msg = "FAILED: " + msg
                 add_to_report(msg)
 
-def schedule_task(time, command):
-    if len(command) >= 300:
-        raise RuntimeError("Command string '{}' is too long.".format(command))
+def schedule_task(date, command):
+    t = ScheduledTasks()
+    t.date = date
+    t.command = command
+    t.repeat = False
+    t.save()
+
+def repeat_task(date, command, interval):
+    if interval < 30:
+        raise ValueError('No repeats shorter than 30 seconds')
 
     t = ScheduledTasks()
-    t.date = time
+    t.date = date
     t.command = command
-    t.save()
+    t.repeat = True
+    t.repeat_interval = interval
 
 def perform_scheduled_tasks():
     # These might be needed by some commands
@@ -73,13 +81,18 @@ def perform_scheduled_tasks():
     for task in ScheduledTasks.objects.all():
         if task.date <= now:
             command = task.command
-            task.delete()
+            if task.repeat:
+                while task.date <= now:
+                    task.date += datetime.timedelta(seconds = task.repeat_interval)
+                task.save()
+            else:
+                task.delete()
             try:
                 exec (command) # Fixed in Python 3
             except Exception as e:
                 msg = 'Scheduled task "{}" threw exception:\n{}'.format(
                         command, traceback.format_exc(e))
-                print (msg)
+                debug (msg)
                 add_to_report(msg)
 
 def same_day(t1, t2):

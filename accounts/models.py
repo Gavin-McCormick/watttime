@@ -73,6 +73,7 @@ class UserProfile(models.Model):
             s = region.user_prefs_model()
             s.save()
             setattr(self, label, s)
+            self.save()
             return s
         else:
             return s
