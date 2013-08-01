@@ -80,13 +80,15 @@ DEPLOY_PATH = os.path.dirname(os.path.realpath(__file__)) #.replace('\\','/'),
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
+# ".watttime.com" means all subdomains of watttime.com are okay. Alternatively
+# we could permit only www.watttime.com, for example.
 ALLOWED_HOSTS = [ 'watttime.herokuapp.com',
                   'watttime.com',
                   'watttime.org',
                   'watttime.net',
-                  'www.watttime.com',
-                  'www.watttime.org',
-                  'www.watttime.net',
+                  '.watttime.com',
+                  '.watttime.org',
+                  '.watttime.net',
                   'localhost' ]
 
 # Local time zone for this installation. Choices can be found here:
@@ -198,10 +200,10 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
+#    'allauth.socialaccount',
 #    'allauth.socialaccount.providers.bitly',
 #    'allauth.socialaccount.providers.dropbox',
-    'allauth.socialaccount.providers.facebook',
+#    'allauth.socialaccount.providers.facebook',
 #    'allauth.socialaccount.providers.github',
 #    'allauth.socialaccount.providers.google',
 #    'allauth.socialaccount.providers.linkedin',
@@ -215,7 +217,7 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.weibo',
     'south',
 #    'invitation',
-    'registration',
+#    'registration',
     'corsheaders',
 )
 

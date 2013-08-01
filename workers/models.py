@@ -117,13 +117,49 @@ def keys():
         ks.append(kv.key)
     return ks
 
+# Given an interval in seconds, print it nicely.
+def format_time_interval(interval):
+    i = interval
+
+    days = i // (24 * 60 * 60)
+    i -= days * 24 * 60 * 60
+    hours = i // (60 * 60)
+    i -= hours * 60 * 60
+    minutes = i // 60
+    i -= minutes * 60
+    seconds = i
+
+    if days != 0:
+        if hours == 0:
+            return '{:d} days'.format(days)
+        else:
+            return '{:d} days {:d} hours'.format(days, hours)
+    elif hours != 0:
+        if minutes == 0:
+            return '{:d} hours'.format(hours)
+        else:
+            return '{:d} hours {:d} minutes'.format(hours, minutes)
+    elif minutes != 0:
+        if seconds == 0:
+            return '{:d} minutes'.format(minutes)
+        else:
+            return '{:d} minutes {:d} seconds'.format(minutes, seconds)
+    else:
+        return '{:d} seconds'.format(seconds)
+
 class ScheduledTasks(models.Model):
     date = models.DateTimeField()
     command = models.TextField()
+    repeat = models.BooleanField(default = False)
+    repeat_interval = models.IntegerField(default = 60 * 60 * 24)
 
     def __unicode__(self):
-        res = u'{self.date}: {self.command}'
-        return res.format(self = self)
+        if self.repeat:
+            res = u'{self.dat}: {self.command} (repeats every {itv})'
+        else:
+            res = u'{self.date}: {self.command}'
+        itv = format_time_interval(self.repeat_interval)
+        return res.format(self = self, itv = itv)
 
 class DailyReport(models.Model):
     date = models.DateTimeField()

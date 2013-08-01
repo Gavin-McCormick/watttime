@@ -186,6 +186,13 @@ def state_to_region(state):
     return null_region
 
 
+# TODO wrap all this in a lambda and execute it in accounts.models instead so
+# that all the module-scope computation is being performed in one file. Then add
+# a circular "import accounts.models" at the top of this file. This will eliminate
+# certain sources of bugs.
+#
+# Actually, I think even then I can't make it circularly importing... must be sure.
+
 ne_freq_choices = [
     ('About daily, working hours, when dirty',
         'Up to once a day 9-5, Monday-Friday, when fuel is particularly dirty'),

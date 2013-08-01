@@ -120,7 +120,7 @@ class BaseBalancingAuthority(models.Model):
             points = forecast_qset.filter(date__range=(starttime, endtime))
             return points.order_by('date')
         except:
-            return []   
+            return cls.objects.none()   
 
     @classmethod
     def greenest_point_in_date_range(cls, starttime, endtime, forecast_type=None):

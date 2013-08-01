@@ -290,7 +290,7 @@ def create_and_email_user(email, name = None, state = None):
     user = create_new_user(email, name, state)
     if user:
         up = user.get_profile()
-        magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
+        magic_url = "http://watttime.com/profile/{:d}".format(
                 up.magic_login_code)
         if up.supported_location():
             msg = messages.invite_message(email, magic_url, name)
@@ -318,7 +318,7 @@ def http_invite_with_name(request, email, name):
         return HttpResponse("User already exists", "application/json")
 
 def email_login_user(user):
-    magic_url = "http://watttime.herokuapp.com/profile/{:d}".format(
+    magic_url = "http://watttime.com/profile/{:d}".format(
             user.get_profile().magic_login_code)
     send_mail('Account recovery for WattTime',
             messages.resend_login_message(user.get_profile().name, magic_url),

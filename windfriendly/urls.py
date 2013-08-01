@@ -39,4 +39,6 @@ urlpatterns =  patterns('',
         views.averageday, name='averageday'),
     url(r'^greenest_subrange[/]?$',
         views.greenest_subrange, name='greenest_subrange'),
+    url(r'^feed/toggle[/]?$',
+        views.ToggleFeed(), name='toggle_feed'),
 )
