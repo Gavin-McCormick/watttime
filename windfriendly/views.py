@@ -22,6 +22,7 @@ import json
 import logging
 import numpy
 
+from django.contrib.syndication.views import Feed
 from django.http import HttpResponse
 
 from windfriendly.models import User, MeterReading, group_by_hour
@@ -74,7 +75,7 @@ def ba_from_request(request):
     # got nothing
     logging.debug('returning null BA')
     return None, None
-    
+
 def utctimes_from_request(request):
     # get requested date range, if any
     start = request.GET.get('start', None)
@@ -92,7 +93,7 @@ def utctimes_from_request(request):
         utc_end += timedelta(hours = int(tz_offset))
     else:
         utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
-        
+
     return utc_start, utc_end
 
 @json_response
@@ -172,7 +173,7 @@ def summarystats(request):
 
     # get requested date range
     utc_start, utc_end = utctimes_from_request(request)
-        
+
     # raise error if no BA
 
     # get numbers for BA only
@@ -239,13 +240,13 @@ def history(request):
     if len(ba_rows) == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
-    
+
     # collect data
     data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
-    
+
 @json_response
 def averageday(request):
     # get name and queryset for BA
@@ -262,7 +263,7 @@ def averageday(request):
     if len(ba_rows) == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
-    
+
     # collect data
     hour_groups = group_by_hour(ba_rows)
     data = []
@@ -279,13 +280,13 @@ def averageday(request):
             average_dirty = None
             average_load = None
             representative_date = BA_MODELS[ba_name].latest_date().replace(hour=hour, minute=0)
-        
+
         # complicated date wrangling to get all local_time values in local today
         utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
         latest_day = utcnow.astimezone(BA_MODELS[ba_name].TIMEZONE).day
         local_time = representative_date.astimezone(BA_MODELS[ba_name].TIMEZONE).replace(day=latest_day)
         utc_time = local_time.astimezone(pytz.utc)
-        
+
         # add to list
         data.append({'percent_green': average_green,
                      'percent_dirty': average_dirty,
@@ -319,13 +320,13 @@ def today(request):
     if len(ba_rows) == 0:
         print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
         return []
-    
+
     # collect data
     data = [r.to_dict() for r in ba_rows]
 
     # return
     return data
-    
+
 @json_response
 def greenest_subrange(request):
     """Get best beginning, end, and percent green for a sub-timeperiod"""
@@ -342,11 +343,11 @@ def greenest_subrange(request):
     # get greenest subrange
     result = BA_MODELS[ba_name].greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
     best_rows, best_timepair, best_green, baseline_green = result
-    
+
     # if no data, return nulls
     if best_timepair is None:
         raise ValueError("no data found for start %s, end %s, nhours %d" % (utc_start, utc_end, nhours))
-    
+
     # collect data
     data = {
             'percent_green' : round(best_green*100, 3),
@@ -359,7 +360,7 @@ def greenest_subrange(request):
 
     # return
     return data
-      
+
 @json_response
 def alerts(request):
     # get name and queryset for BA
@@ -382,7 +383,7 @@ def alerts(request):
 
     # get best guess data
     ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
-    
+
     # set up storage
     if len(ba_rows) > 0:
         data = {}
@@ -400,7 +401,7 @@ def alerts(request):
     sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)
     data['worst_marginal'] = sorted_marginal[0].to_dict()
    # data['best_marginal'] = sorted_marginal[-1].to_dict() TODO: use best non-None marginal
-    
+
     # return
     return data
 
@@ -486,7 +487,7 @@ def average_usage_for_period(request, userid):
 
     # get overall percent green
     percent_green = total_green_kwh / total_kwhs * 100.0
-    
+
     # return data
     data = {
       'userid': userid,
@@ -496,5 +497,43 @@ def average_usage_for_period(request, userid):
       'buckets': results
       }
     return data
-  
 
+_epoch = datetime(2000, 1, 1, tzinfo = pytz.utc)
+class ToggleFeed(Feed):
+    title = "Toggle every hour feed"
+    link = "/"
+    description = "Alternatively yields O N or O F F every hour."
+
+    def items(self):
+        now = datetime.now(pytz.utc)
+        last = now.replace(minute = 0, second = 0, microsecond = 0)
+        on = (last.hour % 2 == 0)
+
+        xs = []
+        for i in range(5):
+            xs.append((last, on))
+            on = not on
+            last = last - timedelta(hours = 1)
+
+        return xs
+
+    def item_title(self, item):
+        if item[1]:
+            return "turn on"
+        else:
+            return "turn off"
+
+    def item_description(self, item):
+        if item[1]:
+            return "turn thing on"
+        else:
+            return "turn thing off"
+
+    def item_guid(self, item):
+        return int((item[0] - _epoch).total_seconds())
+
+    def item_pubdate(self, item):
+        return item[0]
+
+    def item_link(self, item):
+        return '/'
