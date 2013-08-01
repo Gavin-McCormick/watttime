@@ -15,7 +15,6 @@
 # Authors: Anna Schneider
 
 from django.test import TestCase
-import unittest
 import pytz
 from datetime import datetime, timedelta
 
@@ -45,11 +44,11 @@ class BaseBATestCase(object):
         self.assertGreater(row.fraction_high_carbon, 0)
                                         
     def test_latest(self):
-        self.assertEqual(self.model.latest_date(), self.model.latest_point().date)
-        self.assertEqual(self.model.earliest_date(), self.model.earliest_point().date)
+        self.assertEqual(self.model.objects.latest_date(), self.model.objects.latest_point().date)
+        self.assertEqual(self.model.objects.earliest_date(), self.model.objects.earliest_point().date)
         
     def test_points_in_date_range(self):
-        rows = self.model.points_in_date_range(self.start, self.end)
+        rows = self.model.objects.points_in_date_range(self.start, self.end)
         self.assertGreater(rows.count(), 0)
         for ir, r in enumerate(rows):
             # test in range
@@ -62,25 +61,25 @@ class BaseBATestCase(object):
                 self.assertGreaterEqual(r.date, rows[ir-1].date)
         
     def test_points_in_date_range_empty(self):
-        rows = self.model.points_in_date_range(self.bad_start, self.bad_end)
+        rows = self.model.objects.points_in_date_range(self.bad_start, self.bad_end)
         
         # should be empty queryset
         self.assertEqual(rows.count(), 0)
         
     def test_points_in_date_range_bad_dates(self):
-        rows = self.model.points_in_date_range(self.end, self.start)
+        rows = self.model.objects.points_in_date_range(self.end, self.start)
         
         # should be empty queryset
         self.assertEqual(rows.count(), 0)
         
     def test_best_guess(self):
         r_by_pk = self.model.objects.get(pk=1)
-        r_by_date = self.model.best_guess_point(r_by_pk.date)
+        r_by_date = self.model.objects.best_guess_point(r_by_pk.date)
         self.assertEqual(r_by_date, r_by_pk)
 
     def test_greenest_subrange(self):
         td = timedelta(0, 2)
-        result = self.model.greenest_subrange(self.start, self.end, td)
+        result = self.model.objects.greenest_subrange(self.start, self.end, td)
         rows, timepair, best_green, baseline_green = result
         self.assertEqual(timepair[1] - timepair[0], td)
         self.assertGreater(best_green, baseline_green)
@@ -88,7 +87,7 @@ class BaseBATestCase(object):
 
     def test_greenest_subrange_error(self):
         td = self.end - self.start + timedelta(0, 1)
-        result = self.model.greenest_subrange(self.start, self.end, td)
+        result = self.model.objects.greenest_subrange(self.start, self.end, td)
         rows, timepair, best_green, baseline_green = result
         self.assertIsNone(rows)
         self.assertIsNone(timepair)

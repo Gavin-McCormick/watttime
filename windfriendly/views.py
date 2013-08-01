@@ -62,14 +62,14 @@ def ba_from_request(request):
     ba = request.GET.get('ba', None)
     if ba:
       ba = ba.upper()
-      return ba, BA_MODELS[ba].objects.all()
+      return ba, BA_MODELS[ba].objects
 
     # try state
     state = request.GET.get('st', None)
     if state:
       state = state.upper()
       ba = BALANCING_AUTHORITIES[state]
-      return ba, BA_MODELS[ba].objects.all()
+      return ba, BA_MODELS[ba].objects
 
     # got nothing
     logging.debug('returning null BA')
@@ -154,7 +154,7 @@ def current(request):
     ba_name, ba_qset = ba_from_request(request)
 
     # get most recent row from model
-    row = BA_MODELS[ba_name].latest_point()
+    row = ba_qset.latest_point()
 
     # return
     return row.to_dict()
@@ -178,7 +178,7 @@ def summarystats(request):
     # get numbers for BA only
     if userid is None:
       # get rows
-      ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
+      ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
       if len(ba_rows) == 0:
           raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
 
@@ -235,7 +235,7 @@ def history(request):
     utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
@@ -258,7 +258,7 @@ def averageday(request):
     utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
@@ -278,7 +278,7 @@ def averageday(request):
             average_green = None
             average_dirty = None
             average_load = None
-            representative_date = BA_MODELS[ba_name].latest_date().replace(hour=hour, minute=0)
+            representative_date = ba_qset.latest_date().replace(hour=hour, minute=0)
         
         # complicated date wrangling to get all local_time values in local today
         utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
@@ -315,7 +315,7 @@ def today(request):
     utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.best_guess_points_in_date_range(utc_start, utc_end)
     if len(ba_rows) == 0:
         print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
         return []
@@ -340,7 +340,7 @@ def greenest_subrange(request):
     nhours = int(request.GET.get('nhours', 1))
 
     # get greenest subrange
-    result = BA_MODELS[ba_name].greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
+    result = ba_qset.greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
     best_rows, best_timepair, best_green, baseline_green = result
     
     # if no data, return nulls
@@ -381,7 +381,7 @@ def alerts(request):
         utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get best guess data
-    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.best_guess_points_in_date_range(utc_start, utc_end)
     
     # set up storage
     if len(ba_rows) > 0:
