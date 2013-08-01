@@ -57,8 +57,9 @@ class BaseBATestCase(object):
             self.assertLessEqual(r.date, self.end)
             
             # test sorted
+            # requires monotonically increasing dates, but tolerates non-unique dates
             if ir > 0:
-                self.assertGreater(r.date, rows[ir-1].date)
+                self.assertGreaterEqual(r.date, rows[ir-1].date)
         
     def test_points_in_date_range_empty(self):
         rows = self.model.points_in_date_range(self.bad_start, self.bad_end)
