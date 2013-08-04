@@ -14,29 +14,27 @@
 #
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
+from tastypie.api import Api
 from . import views
+from .api import BA_RESOURCES
+
+
+v1_api = Api(api_name='v1')
+for bar in BA_RESOURCES:
+    v1_api.register(bar())
+
+# tastypie resource urls
+urlpatterns = patterns('',
+    (r'^api/', include(v1_api.urls)),
+)
 
 # windfriendly API patterns
-urlpatterns =  patterns('',
-    url(r'^current[/]?$',
-        views.current, name='current'),
-    url(r'^forecast[/]?$',
-        views.forecast, name='forecast'),
+urlpatterns += patterns('',
     url(r'^update/(?P<utility>[a-zA-Z0-9_-]+)[/]?$',
         views.update, name='update'),
-    url(r'^summarystats[/]?$',
-        views.summarystats, name='summarystats'),
-    url(r'^history[/]?$',
-        views.history, name='history'),
-    url(r'^today[/]?$',
-        views.today, name='today'),
     url(r'^alerts[/]?$',
         views.alerts, name='alerts'),
-    url(r'^average/(?P<userid>[a-zA-Z0-9_-]+)[/]?$',
-        views.average_usage_for_period, name='average'),
-    url(r'^averageday[/]?$',
-        views.averageday, name='averageday'),
     url(r'^greenest_subrange[/]?$',
         views.greenest_subrange, name='greenest_subrange'),
 )
