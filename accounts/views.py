@@ -172,21 +172,22 @@ class LoginView(FormView):
     def form_submitted(self, request, vals):
         email       = vals['email']
         password    = vals['password']
-        try:
-            up = models.UserProfile.objects.get(email = email)
-        except:
+        ups = list(models.UserProfile.objects.filter(email__iexact = email))
+
+        if len(ups) == 0:
             return render(request, 'accounts/no_such_user.html', {'email' : email})
-        else:
-            if password:
-                user = authenticate(username = up.user.username, password = password)
-                if user and up.password_is_set:
-                    login(request, user)
-                    return redirect('profile_view')
-                else:
-                    return render(request, 'accounts/wrong_password.html', {'email' : email})
+        up = ups[0]
+
+        if password:
+            user = authenticate(username = up.user.username, password = password)
+            if user and up.password_is_set:
+                login(request, user)
+                return redirect('profile_view')
             else:
-                email_login_user(up.user)
-                return redirect('accounts.views.frontpage')
+                return render(request, 'accounts/wrong_password.html', {'email' : email})
+        else:
+            email_login_user(up.user)
+            return redirect('accounts.views.frontpage')
 
     def __call__(self, request):
         if request.user.is_authenticated():
@@ -207,8 +208,13 @@ class CreateUserView(FormView):
             else:
                 return redirect('signed_up_future')
         else:
+            ups = models.UserProfile.objects.filter(email__iexact = vals['email'])
+            if len(ups) > 0:
+                email = ups[0].email
+            else:
+                email = vals['email']
             return render(request, 'accounts/user_already_exists.html',
-                    {'email' : vals['email']})
+                    {'email' : email})
 
 profile_edit = ProfileEdit()
 
@@ -232,7 +238,7 @@ def new_phone_verification_number():
     return random.randint(100000, 999999)
 
 def create_new_user(email, name = None, state = None):
-    ups = models.UserProfile.objects.filter(email = email)
+    ups = models.UserProfile.objects.filter(email__iexact = email)
     if len(ups) > 0:
         print (len(ups))
         print ("User(s) with email {} already exists, aborting user creation!".
