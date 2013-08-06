@@ -107,9 +107,9 @@ def send_ca_forecast_emails():
     start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
     end = start + datetime.timedelta(hours = 14) # 10pm PST
 
-    rows = CAISO.best_guess_points_in_date_range(start, end)
-    best_time = max(rows, key = (lambda r : r.fraction_green())).date
-    worst_time = min(rows, key = (lambda r : r.fraction_green())).date
+    rows = CAISO.objects.all().filter(date__range=(start, end)).best_guess_points()
+    best_time = max(rows, key = (lambda r : r.fraction_green)).date
+    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
 
     best_hour = display_hour(best_time, tz)
     worst_hour = display_hour(worst_time, tz)
@@ -131,22 +131,22 @@ def prepare_to_send_ca_texts():
     now_ca = this_hour('America/Los_Angeles')
 
     # Dirty texts
-    start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
-    end = start + datetime.timedelta(hours = 14) # 10pm PST
+    dirty_start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
+    dirty_end = start + datetime.timedelta(hours = 14) # 10pm PST
 
-    rows = CAISO.best_guess_points_in_date_range(start, end)
-    worst_time = min(rows, key = (lambda r : r.fraction_green())).date
+    rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
+    worst_time = min(rows, key = (lambda r : r.fraction_green).date
 
     schedule_task(worst_time, "workers.utils.send_ca_texts(0)")
 
     add_to_report('Scheduled "dirty" texts to go out at {}'.format(worst_time))
 
     # Clean texts
-    start = convert_tz(now_ca.replace(hour = 17), utc) # 5pm PST
-    end = start + datetime.timedelta(hours = 5) # 10pm PST
+    clean_start = convert_tz(now_ca.replace(hour = 17), utc) # 5pm PST
+    clean_end = start + datetime.timedelta(hours = 5) # 10pm PST
 
-    rows = CAISO.best_guess_points_in_date_range(start, end)
-    best_time = max(rows, key = (lambda r : r.fraction_green())).date
+    rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
+    best_time = max(rows, key = (lambda r : r.fraction_green).date
 
     schedule_task(best_time, "workers.utils.send_ca_texts(1)")
 
@@ -160,7 +160,7 @@ def send_ne_texts_if_necessary():
     is_daytime = (9 <= now_ne.hour < 17)
     is_evening = (17 <= now_ne.hour < 22)
 
-    fuel = NE.latest_point().marginal_fuel
+    fuel = NE.obejcts.all().latest().marginal_fuel
     fuel_name = MARGINAL_FUELS[fuel]
     # 0 = coal
     # 1 = oil
@@ -260,7 +260,7 @@ def update_bas(bas):
     updates = [BA_PARSERS[ba]().update() for ba in bas]
 
     # log
-    newest_timepoints = [BA_MODELS[ba].latest_point() for ba in bas]
+    newest_timepoints = [BA_MODELS[ba].objects.all().latest() for ba in bas]
     marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
     debug("ping called (marginal fuel {})".format(marginal_fuels[0]))
 
@@ -270,9 +270,9 @@ def update_bas(bas):
 def send_text_notifications(bas):
     """ Should be run every 5-10 min, after updating BAs """
     # get newest info
-    newest_timepoints = [BA_MODELS[ba].latest_point() for ba in bas]
-    percent_greens = [point.fraction_green() * 100.0 for point in newest_timepoints]
-    percent_coals = [point.fraction_high_carbon() * 100.0 for point in newest_timepoints]
+    newest_timepoints = [BA_MODELS[ba].objects.all().latest() for ba in bas]
+    percent_greens = [point.fraction_green * 100.0 for point in newest_timepoints]
+    percent_coals = [point.fraction_high_carbon * 100.0 for point in newest_timepoints]
     marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
     print [tp.date for tp in newest_timepoints]
 
