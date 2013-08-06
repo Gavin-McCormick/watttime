@@ -52,10 +52,6 @@ class BPAResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
     resource_name = 'bpa'
     limit = 12*24
     model = BA_MODELS['BPA']
-    start = datetime(2013, 06, 25, tzinfo=pytz.utc)
-    end = datetime(2013, 06, 26, tzinfo=pytz.utc)
-    bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
-    bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
  
     def test_get_list_json_correct(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
@@ -77,10 +73,6 @@ class CAISOResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
     resource_name = 'caiso'
     limit = 24
     model = BA_MODELS['CAISO']
-    start = datetime(2013, 06, 30, tzinfo=pytz.utc)
-    end = datetime(2013, 07, 01, tzinfo=pytz.utc)
-    bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
-    bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
     
     def test_get_list_json_correct(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
@@ -102,10 +94,6 @@ class NEResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
     resource_name = 'isone'
     limit = 12*24
     model = BA_MODELS['NE']
-    start = datetime(2013, 07, 13, tzinfo=pytz.utc)
-    end = datetime(2013, 07, 14, tzinfo=pytz.utc)
-    bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
-    bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
     
     def test_get_list_json_correct(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
