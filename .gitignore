@@ -2,7 +2,6 @@
 *.db
 *.dbbk
 *~
-*.json
 
 # C extensions
 *.so
