@@ -116,7 +116,7 @@ Or to get 4 hours of day-ahead-forecast data from CAISO on July 1 (note that the
 
 Usage: API calls in views
 ------------------------
-In addition, there are a few other URIs that return JSON data in response to a GET call. These are implemented as Django views for now because they're a bit trickier to fold into the tastypie framework, but they should be incorporated eventually. Be prepared to change code that depends on these.
+In addition, there are a few other URIs that return JSON data in response to a GET request. These are implemented as Django views for now because they're a bit trickier to fold into the tastypie framework, but they should be incorporated eventually. Be prepared to change code that depends on these.
 
 Here are the cheat sheet versions:
 * scrape new data and a get a summary of what changed: <code>/update/[BA_NAME]</code>
@@ -154,5 +154,5 @@ An unordered list.
 * Build equivalents to "today" and "averageday" views into standard API
 * Refactor BPAParser to make its interface more like other parsers
 * Add <code>date_extracted</code> field to CAISO and NE models
-* Change "update" view and parsers to take date arguments to allow easier backfilling of data (maybe using POST calls)
+* Change "update" view and parsers to take date arguments to allow easier backfilling of data (maybe using POST requests)
 * Make qs.best_guess_points() return QuerySet not list
