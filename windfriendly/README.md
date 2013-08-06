@@ -59,9 +59,9 @@ For example, to get the most recent data point in BPA:
 
 Or to get 4 hours of day-ahead-forecast data from CAISO on July 1 (note that the date range is inclusive and times are in UTC):
 
-   /api/v1/caiso/?format=json&order_by=date&date__range=2013-07-01T00:00,2013-07-01T03:00&forecast_code=1
+    /api/v1/caiso/?format=json&order_by=date&date__range=2013-07-01T00:00,2013-07-01T03:00&forecast_code=1
 
-   {
+    {
 	"meta": {
     	"limit": 24, 
     	"next": null, 
