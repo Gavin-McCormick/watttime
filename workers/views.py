@@ -22,6 +22,7 @@ import accounts.models
 import accounts.regions
 import windfriendly.models
 import workers.models
+import watttime_shift.models
 
 # A dictionary
 #   keys: strings (database name)
@@ -50,6 +51,15 @@ model_formats = {
     'NewEnglandUserProfile' : (accounts.regions.newengland.user_prefs_model, [
             'message_frequency']),
     'NowhereUserProfile' : (accounts.regions.null_region.user_prefs_model, []),
+    'ShiftRequest' : (watttime_shift.models.ShiftRequest, [
+            'date_created',
+            'requested_by',
+            'usage_hours',
+            'time_range_hours',
+            'recommended_start',
+            'recommended_fraction_green',
+            'baseline_fraction_green',
+            'ba']),
     'KeyValue' : (workers.models.KeyValue, [
             'key',
             'value'
