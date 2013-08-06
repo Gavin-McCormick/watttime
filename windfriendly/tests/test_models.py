@@ -18,7 +18,7 @@ from django.test import TestCase
 import pytz
 from datetime import datetime, timedelta
 
-from .balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
+from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 
 class BAInfoTestCase(TestCase):
     """Test contents of balancing_authorities.py"""
@@ -34,7 +34,7 @@ class BAInfoTestCase(TestCase):
             
          
 class BaseBATestCase(object):
-    """Test BPA model"""
+    """Test generic model"""
         
     def test_fractions(self):
         row = self.model.objects.get(pk=1)
@@ -123,9 +123,37 @@ class BPATestCase(BaseBATestCase, TestCase):
                               'percent_green': 0.909, 'local_time': '2013-06-23 01:00', 
                               'utc_time': '2013-06-23 08:00'})
 
+
+class CAISOTestCase(BaseBATestCase, TestCase):
+    """Test CAISO model"""
+    # inheritance cf http://stackoverflow.com/questions/1323455/python-unit-test-with-base-and-sub-class
+    
+    fixtures = ['caiso.json']
+    model = BA_MODELS['CAISO']
+    start = datetime(2013, 06, 30, tzinfo=pytz.utc)
+    end = datetime(2013, 07, 01, tzinfo=pytz.utc)
+    bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
+    bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
+    
+    def test_data_available(self):
+        self.assertGreater(self.model.objects.all().count(), 0)
+        
+    def test_attributes(self):
+        self.assertEqual(self.model.TIMEZONE, pytz.timezone('US/Pacific'))
+        self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
+        self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
+        
+    def test_to_dict(self):
+        row = self.model.objects.get(pk=1)
+        self.assertDictEqual(row.to_dict(),
+                             {'percent_green': 8.297, 'marginal_fuel': 9,
+                             'date_extracted': '2013-06-29 23:48', 'forecast_code': 0,
+                             'percent_dirty': 91.703, 'load_MW': 30374.0,
+                             'utc_time': '2013-06-29 07:00', 'local_time': '2013-06-29 00:00'})
+
            
 class NETestCase(BaseBATestCase, TestCase):
-    """Test BPA model"""
+    """Test NE model"""
     # inheritance cf http://stackoverflow.com/questions/1323455/python-unit-test-with-base-and-sub-class
     
     fixtures = ['ne.json']
