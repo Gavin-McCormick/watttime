@@ -4,18 +4,6 @@ from .managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorit
 from .settings import MARGINAL_FUELS
 #from accounts.models import User
 
-def group_by_hour(qset):
-    """Returns a list of 24 querysets, one for each hour of the day, grouped by date.hour"""
-    hour_qsets = []
-    hours = ['%02d' % i for i in range(24)]
-    for hour in hours:
-        hour_qset = qset.filter(date__contains = ' %s:' % hour).order_by('date')
-        if hour_qset.count() > 0:
-            hour_qsets.append(hour_qset)
-        else:
-            hour_qsets.append(None)
-    return hour_qsets
-
 class BaseBalancingAuthority(models.Model):
     """Abstract base class for balancing authority timepoints"""
     # timepoints are 'extra green' if fraction_green is above this fraction
@@ -27,30 +15,38 @@ class BaseBalancingAuthority(models.Model):
 
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
-        return {'percent_green': round(self.fraction_green()*100, 3),
-                'percent_dirty': round(self.fraction_high_carbon()*100, 3),
-                'load_MW': self.total_load(),
+        return {'percent_green': round(self.fraction_green*100, 3),
+                'percent_dirty': round(self.fraction_high_carbon*100, 3),
+                'load_MW': self.total_load,
                 'marginal_fuel': self.marginal_fuel,
-                'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
-                'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
+                'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
                 }
 
     class Meta:
         abstract = True
 
     def get_title(self):
-        return str(self.fraction_green())
+        return str(self.fraction_green)
 
+    @property
+    def local_date(self):
+        """ Time in local timezone """
+        return self.date.astimezone(self.TIMEZONE)
+
+    @property
     def total_load(self):
         """Total load on the grid, in MW"""
         # implement this in daughter classes
-        return 0
+        return 0.0
 
+    @property
     def fraction_green(self):
         """Fraction of load that is 'green', whatever that means"""
         # implement this in daughter classes
         return 0
 
+    @property
     def fraction_high_carbon(self):
         """Fraction of load that is 'dirty', whatever that means"""
         # implement this in daughter classes
@@ -58,11 +54,11 @@ class BaseBalancingAuthority(models.Model):
 
     def is_unusually_green(self):
         """Boolean for whether or not this timepoint is above a 'clean' threshold"""
-        return self.fraction_green() > self.GREEN_THRESHOLD
+        return self.fraction_green > self.GREEN_THRESHOLD
 
     def is_unusually_dirty(self):
         """Boolean for whether or not this timepoint is above a 'dirty' threshold"""
-        return self.fraction_high_carbon() > self.DIRTY_THRESHOLD
+        return self.fraction_high_carbon > self.DIRTY_THRESHOLD
 
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
@@ -72,14 +68,14 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
         
     # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
     def to_dict(self):
-        return {'percent_green': round(self.fraction_green()*100, 3),
-                'percent_dirty': round(self.fraction_high_carbon()*100, 3),
-                'load_MW': self.total_load(),
+        return {'percent_green': round(self.fraction_green*100, 3),
+                'percent_dirty': round(self.fraction_high_carbon*100, 3),
+                'load_MW': self.total_load,
                 'marginal_fuel': self.marginal_fuel,
                 'forecast_code': self.forecast_code,
                 'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
                 'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
-                'local_time': self.date.astimezone(self.TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
                 }
         
 
@@ -109,14 +105,17 @@ class CAISO(BaseForecastedBalancingAuthority):
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
 
+    @property
     def total_load(self):
-        return self.load
+        return float(self.load)
         
+    @property
     def fraction_green(self):
         return (self.wind + self.solar) / self.load
         
+    @property
     def fraction_high_carbon(self):
-        return 1.0 - self.fraction_green()
+        return 1.0 - self.fraction_green
 
 
 class BPA(BaseBalancingAuthority):
@@ -142,14 +141,17 @@ class BPA(BaseBalancingAuthority):
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
 
+    @property
     def total_load(self):
         return float(self.wind + self.hydro + self.thermal)
 
+    @property
     def fraction_green(self):
-        return self.wind / self.total_load()
+        return self.wind / self.total_load
 
+    @property
     def fraction_high_carbon(self):
-        return self.thermal / self.total_load()
+        return self.thermal / self.total_load
 
 
 # All units are megawatts
@@ -172,14 +174,17 @@ class NE(BaseBalancingAuthority):
     # date is utc
     date = models.DateTimeField(db_index=True)
 
+    @property
     def total_load(self):
         return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
 
+    @property
     def fraction_green(self):
-        return (self.hydro + self.other_renewable) / self.total_load()
+        return (self.hydro + self.other_renewable) / self.total_load
 
+    @property
     def fraction_high_carbon(self):
-        return (self.coal) / self.total_load()
+        return (self.coal) / self.total_load
 
 
 class User(models.Model):

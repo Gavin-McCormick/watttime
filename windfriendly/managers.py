@@ -1,101 +1,114 @@
 from django.db import models
+from django.db.models.query import QuerySet
 import numpy as np
 from .settings import FORECAST_CODES
 
+class TimeseriesQuerySet(QuerySet):
+    def group_by_hour(self):
+        """Returns a list of 24 querysets, one for each hour of the day, grouped by date.hour"""
+        hours = ['%02d' % i for i in range(24)]
+        qsets = [self.filter(date__contains=' %s:' % hour).order_by('date') for hour in hours]
+        return qsets
 
-class BaseBalancingAuthorityManager(models.Manager):
-    """Model Manager for Balancing Authority models without forecasing"""
+    def filter_by_hour(self, hour):
+        """Returns a queryset grouped by date.hour"""
+        return self.filter(date__contains=' %02d:' % hour).order_by('date')
 
-    def latest_date(self, forecast_type=None):
-        """Return most recent stored datetime for forecast type"""
-        # 
-        try:
-            latest = self.latest_point(forecast_type)
-            return latest.date
-        except:
+    def max_by_attribute(self, attr):
+        """Return point with the highest value of the named attribute in queryset"""
+        if self.count() > 0:
+            try: # if db field
+                return self.order_by('-'+attr)[0]
+            except : # if property
+                return max(self, key=lambda p: getattr(p, attr))
+        else: # if no data
             return None
+
+    def min_by_attribute(self, attr):
+        """Return point with the lowest value of the named attribute in queryset"""
+        if self.count() > 0:
+            try: # if db field
+                return self.order_by(attr)[0]
+            except : # if property
+                return min(self, key=lambda p: getattr(p, attr))
+        else: # if no data
+            return None
+            
+    def earliest(self):
+        """ Return oldest stored data point in queryset.
+            If multiple with same timestamp, return the most recently extracted.        
+        """
+        if self.count() > 0:
+            r = self.order_by('date')[0]
+            if 'date_extracted' in dir(r): # filter on secondary time dimension
+                return self.filter(date=r.date).order_by('-date_extracted')[0]
+            else: # if no secondary time dimension
+                return r
+        else: # if no data
+            return None
+
+    def latest(self):
+        """ Return newest stored data point in queryset.
+            If multiple with same timestamp, return the most recently extracted.        
+        """
+        if self.count() > 0:
+            r = self.order_by('-date')[0]
+            if 'date_extracted' in dir(r): # filter on secondary time dimension
+                return self.filter(date=r.date).order_by('-date_extracted')[0]
+            else: # if no secondary time dimension
+                return r
+        else: # if no data
+            return None
+
+    def best_guess(self):
+        """ Without forecast, this is alias for latest """
+        return self.latest()
         
-    def latest_point(self, forecast_type=None):
-        """Return most recent stored data point for forecast type"""
-        forecast_qset = self.get_query_set()
-        try:
-            latest = forecast_qset.order_by('-date')[0]
-            return latest
-        except:
-            return None
-            
-    def earliest_date(self, forecast_type=None):
-        """Return oldest stored datetime for forecast type"""
-        try:
-            earliest = self.earliest_point(forecast_type)
-            return earliest.date
-        except:
-            return None
-
-    def earliest_point(self, forecast_type=None):
-        """Return oldest stored data point for forecast type"""
-        forecast_qset = self.get_query_set()
-        try:
-            earliest = forecast_qset.order_by('date')[0]
-            return earliest
-        except:
-            return None
-
-    def points_in_date_range(self, starttime, endtime, forecast_type=None):
-        """Return all data ponits in the date range for forecast type, ordered by date"""
-        forecast_qset = self.get_query_set()
-        try:
-            points = forecast_qset.filter(date__range=(starttime, endtime))
-            return points.order_by('date')
-        except:
-            return self.get_query_set().none()
-
-    def greenest_point_in_date_range(self, starttime, endtime, forecast_type=None):
-        """Return point with the highest fraction green in time period"""
-        points = self.points_in_date_range(starttime, endtime, forecast_type)
-        if len(points) > 0:
-            descending_points = sorted(points, reverse=True,
-                                       cmp=lambda p: p.fraction_green())
-            return descending_points[0]
-        else:
-            return None
-            
-    def dirtiest_point_in_date_range(self, starttime, endtime, forecast_type=None):
-        """Return point with the highest fraction dirty in time period"""
-        points = self.points_in_date_range(starttime, endtime, forecast_type)
-        if len(points) > 0:
-            descending_points = sorted(points, reverse=True,
-                                       cmp=lambda p: p.fraction_high_carbon())
-            return descending_points[0]
-        else:
-            return None
-
-    def best_guess_points_in_date_range(self, starttime, endtime):
+    def best_guess_points(self):
         """ Return list of data points for all available timestamps in date range
                 using the best available data.
         """
-        # without forecasting, this is the same as point_in_date_range
-        return self.points_in_date_range(starttime, endtime)
-        
-    def best_guess_point(self, timestamp):
-        # without forecasting, this is just the data
-        try:
-            return self.get_query_set().filter(date=timestamp)[0]
-        except:
+        timestamps = sorted(self.values_list('date', flat=True).distinct())
+        return [self.filter(date=t).best_guess() for t in timestamps]
+
+
+class ForecastedTimeseriesQuerySet(TimeseriesQuerySet):
+    def best_guess(self):
+        """ Prioritize 'actual' > 'mn_ahead' > 'hr_ahead' > 'dy_ahead' > etc.
+            And prioritize most recently extracted data for each forecast type.
+        """
+        # if no data, return None
+        if self.count() == 0:
             return None
-            
+                    
+        # if there is data, get the best forecast
+        preference_list = ['actual', 'mn_ahead', 'hr_ahead', 'dy_ahead']
+        for forecast_type in preference_list:
+
+            # see if there's data for this forecast
+            forecast_qset = self.filter(forecast_code=FORECAST_CODES[forecast_type])
+            if forecast_qset.count() > 0:
+                return forecast_qset.latest()
+
+
+class BaseBalancingAuthorityManager(models.Manager):
+    """Model Manager for Balancing Authority models without forecasting"""
+    def get_query_set(self):
+        return TimeseriesQuerySet(self.model, using=self._db)
+                    
     def greenest_subrange(self, starttime, endtime, timedelta, forecast_type=None):
         """ Return a queryset covering time period of length timedelta that is the
             greenest between starttime and endtime (inclusive).
         """
         # get full range
         if forecast_type is None:
-            rows = self.best_guess_points_in_date_range(starttime, endtime)
+            rows = self.get_query_set().filter(date__range=(starttime, endtime)).best_guess_points()
         else:
-            rows = self.points_in_date_range(starttime, endtime, forecast_type)
+            rows = self.get_query_set().filter(date__range=(starttime, endtime),
+                                               forecast_code=FORECAST_CODES[forecast_type])
                
         # find best subrange
-        green_points = {r.date: r.fraction_green() for r in rows}
+        green_points = {r.date: r.fraction_green for r in rows}
         times = sorted(green_points.keys())
         greens = [green_points[d] for d in times]
         time_pairs = [(d, d + timedelta) for d in times
@@ -132,7 +145,7 @@ class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):
                 'any' uses data from all forecast types,
                 see FORECAST_CODES for others
         """
-        qset = super(ForecastedBalancingAuthorityManager, self).get_query_set()
+        qset = ForecastedTimeseriesQuerySet(self.model, using=self._db)
         if forecast_type == 'any':
             return qset
         else:
@@ -141,68 +154,3 @@ class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):
             forecast_code = FORECAST_CODES[forecast_type]
             return qset.filter(forecast_code=forecast_code)
 
-    def latest_point(self, forecast_type=None):
-        """ Return most recent stored data point for forecast type.
-            If multiple with same timestamp, return the most recently extracted.
-        """
-        try:
-            qset = self.get_query_set(forecast_type)
-            latest_date = qset.order_by('-date')[0].date
-            latest_extracted = qset.filter(date=latest_date).order_by('-date_extracted')[0]
-            return latest_extracted
-        except:
-            return None
-
-    def earliest_point(self, forecast_type=None):
-        """ Return oldest stored data point for forecast type.
-            If multiple with same timestamp, return the most recently extracted.        
-        """
-        try:
-            qset = self.get_query_set(forecast_type)
-            earliest_date = qset.order_by('date')[0].date
-            earliest_extracted = qset.filter(date=earliest_date).order_by('-date_extracted')[0]
-            return earliest_extracted
-        except:
-            return None
-                    
-    def points_in_date_range(self, starttime, endtime, forecast_type=None):
-        """ Return all data ponits in the date range for forecast type.
-            May include multiple points with same 'date' timestamp.        
-        """
-        try:
-            qset = self.get_query_set(forecast_type)
-            points = qset.filter(date__range=(starttime, endtime))
-            return points
-        except:
-            return self.get_query_set().none()
-
-    def best_guess_points_in_date_range(self, starttime, endtime):
-        """ Return list of data points for all available timestamps in date range
-                using the best available data.
-        """
-        qset = self.get_query_set().filter(date__range=(starttime, endtime))
-        timestamps = sorted(qset.values_list('date', flat=True).distinct())
-        return [self.best_guess_point(t) for t in timestamps]
-
-    def best_guess_point(self, timestamp):
-        """ Prioritize 'actual' > 'mn_ahead' > 'hr_ahead' > 'dy_ahead' > etc.
-            And prioritize most recently extracted data for each forecast type.
-        """
-        # get all data with timestamp
-        qset = self.get_query_set().filter(date=timestamp)
-
-        # if no data, return None
-        if qset.count() == 0:
-            return self.get_query_set().none()
-            
-        # if there is data, get the best forecast
-        preference_list = ['actual', 'mn_ahead', 'hr_ahead', 'dy_ahead']
-        for forecast_type in preference_list:
-
-            # see if there's data for this forecast
-            forecast_qset = qset.filter(forecast_code=FORECAST_CODES[forecast_type])
-            
-            if forecast_qset.count() > 0:
-                # get the most recently extracted for forecast
-                return forecast_qset.order_by('-date_extracted')[0]
-                

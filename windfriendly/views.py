@@ -22,9 +22,10 @@ import json
 import logging
 import numpy
 
+from django.core.exceptions import FieldError
 from django.http import HttpResponse
 
-from windfriendly.models import User, MeterReading, group_by_hour
+from windfriendly.models import User, MeterReading
 from windfriendly.parsers import GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
@@ -62,14 +63,14 @@ def ba_from_request(request):
     ba = request.GET.get('ba', None)
     if ba:
       ba = ba.upper()
-      return ba, BA_MODELS[ba].objects
+      return ba, BA_MODELS[ba].objects.all()
 
     # try state
     state = request.GET.get('st', None)
     if state:
       state = state.upper()
       ba = BALANCING_AUTHORITIES[state]
-      return ba, BA_MODELS[ba].objects
+      return ba, BA_MODELS[ba].objects.all()
 
     # got nothing
     logging.debug('returning null BA')
@@ -94,31 +95,6 @@ def utctimes_from_request(request):
         utc_end = datetime.utcnow().replace(tzinfo=pytz.utc)
         
     return utc_start, utc_end
-
-@json_response
-def forecast(request):
-    """ TO DO: magic number 289??"""
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-
-    # get who knows what
-    row = ba_qset.order_by('-id')[:289]
-
-    hourly_avg = 0
-    forecast = []
-    for i, r in enumerate(rows):
-      hourly_avg += r.fraction_green() * 100.0
-      if i and not i % 12: # 5 minute intervals
-        data = {
-          'hour': i / 12,
-          'percent_green': round(hourly_avg / 12,3)
-          }
-        forecast.append(data)
-        hourly_avg = 0
-    return {
-      'forecast' : forecast,
-      'balancing_authority': ba_name
-      }
 
 @json_response
 def update(request, utility):
@@ -147,17 +123,6 @@ def update(request, utility):
 
     # return
     return parser.update()
-
-@json_response
-def current(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-
-    # get most recent row from model
-    row = ba_qset.latest_point()
-
-    # return
-    return row.to_dict()
 
 @json_response
 def summarystats(request):
@@ -222,29 +187,6 @@ def summarystats(request):
       'percent_green': round(percent_green,3)
       }
     return data
-
-@json_response
-def history(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-
-    # get rows
-    ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
-    if len(ba_rows) == 0:
-        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
-        return []
-    
-    # collect data
-    data = [r.to_dict() for r in ba_rows]
-
-    # return
-    return data
     
 @json_response
 def averageday(request):
@@ -258,32 +200,42 @@ def averageday(request):
     utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
-    ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
-    if len(ba_rows) == 0:
+    try:
+        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end), forecast_code=0)
+    except FieldError:
+        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end))
+        
+    if ba_rows.count() == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
     
     # collect data
-    hour_groups = group_by_hour(ba_rows)
     data = []
-    for hour, group in enumerate(hour_groups):
+    for hour, group in enumerate(ba_rows.group_by_hour()):
         if group is not None:
             # get average data
-            average_green = round(numpy.mean([r.fraction_green() for r in group])*100, 3)
-            average_dirty = round(numpy.mean([r.fraction_high_carbon() for r in group])*100, 3)
-            average_load = numpy.mean([r.total_load() for r in group])
-            representative_date = group.latest('date').date.replace(minute=0)
+            total_green = 0
+            total_dirty = 0
+            total_load = 0
+            for r in group:
+                total_green += r.fraction_green
+                total_dirty += r.fraction_high_carbon
+                total_load += r.total_load
+            average_green = round(total_green*100/group.count(), 3)
+            average_dirty = round(total_dirty*100/group.count(), 3)
+            average_load = total_load/group.count()
+            representative_date = group.latest().local_date.replace(minute=0)
         else:
             # get null data
             average_green = None
             average_dirty = None
             average_load = None
-            representative_date = ba_qset.latest_date().replace(hour=hour, minute=0)
+            representative_date = ba_qset.latest().local_date.replace(hour=hour, minute=0)
         
         # complicated date wrangling to get all local_time values in local today
         utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
         latest_day = utcnow.astimezone(BA_MODELS[ba_name].TIMEZONE).day
-        local_time = representative_date.astimezone(BA_MODELS[ba_name].TIMEZONE).replace(day=latest_day)
+        local_time = representative_date.replace(day=latest_day)
         utc_time = local_time.astimezone(pytz.utc)
         
         # add to list
@@ -315,7 +267,7 @@ def today(request):
     utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get rows
-    ba_rows = ba_qset.best_guess_points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
     if len(ba_rows) == 0:
         print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
         return []

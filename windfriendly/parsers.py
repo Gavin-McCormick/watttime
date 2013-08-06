@@ -108,13 +108,13 @@ class CAISOParser(UtilityParser):
             datapoints = self.parse(streams)
             
             # save to db
-            old_latest_date = self.MODEL.objects.latest_date(forecast_code)
+            old_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
             n_stored_points = 0
             for dp in datapoints:
                 success = self.datapoint_to_db(dp)
                 if success:
                     n_stored_points += 1
-            new_latest_date = self.MODEL.objects.latest_date(forecast_code)
+            new_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
 
             # log
             to_return[forecast_code] = {'prior_latest_date' : str(old_latest_date),
@@ -406,14 +406,14 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.MODEL.objects.latest_date() if self.update_latest else None
+        latest_date = self.MODEL.objects.all().latest().date if self.update_latest else None
         update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.MODEL.objects.latest_date())
+          'latest_date' : str(self.MODEL.objects.all().latest().date)
         }
 
 

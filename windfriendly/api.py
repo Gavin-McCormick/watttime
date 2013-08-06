@@ -1,10 +1,12 @@
-from tastypie.resources import ModelResource, ALL
+from tastypie.resources import ModelResource, ALL, trailing_slash
 from tastypie import fields
 from tastypie.serializers import Serializer
+from django.conf.urls import url
 import json as simplejson
 from django.core.serializers import json
 from .balancing_authorities import BA_MODELS
-from datetime import timedelta
+from datetime import timedelta, datetime
+import pytz
 
 
 class MySerializer(Serializer):
@@ -50,36 +52,43 @@ class BalancingAuthorityResource(ModelResource):
     percent_green = fields.FloatField(readonly=True,
                                       help_text="Percent of total electricity that is 'green'")
     def dehydrate_percent_green(self, bundle):
-        return bundle.obj.fraction_green() * 100
+        return bundle.obj.fraction_green * 100
         
     # percent dirty
     percent_dirty = fields.FloatField(readonly=True,
                                       help_text="Percent of total electricity that is 'dirty'")
     def dehydrate_percent_dirty(self, bundle):
-        return bundle.obj.fraction_high_carbon() * 100
-
+        return bundle.obj.fraction_high_carbon * 100
+        
     # generation in megawatts
     gen_MW = fields.FloatField(readonly=True,
                                help_text="Total MW of electricty generation")
     def dehydrate_gen_MW(self, bundle):
-        return bundle.obj.total_load()
+        return bundle.obj.total_load
 
     # marginal fuel code
     marginal_fuel = fields.IntegerField(readonly=True,
                                         attribute='marginal_fuel',
                                         help_text="Integer code for marginal fuel")
+    def dehydrate_marginal_fuel(self, bundle):
+        return bundle.obj.marginal_fuel
         
     # forecast code
     forecast_code = fields.IntegerField(readonly=True,
                                         default=0,
                                         attribute='forecast_code',
-                                        help_text="Integer code for forecast type (0=actual, 1=day ahead)")
+                                        help_text="Integer code for forecast type (0=actual)")
+    def dehydrate_forecast_code(self, bundle):
+        try:
+            return bundle.obj.forecast_code
+        except AttributeError:
+            return 0
             
     # timestamp in BA's local timezone
     local_date = fields.DateTimeField(readonly=True,
                                       help_text="Timestamp in balancing authority's local time")
     def dehydrate_local_date(self, bundle):
-        return bundle.obj.date.astimezone(self._meta.model.TIMEZONE)
+        return bundle.obj.local_date
 
 
 class BPAResource(BalancingAuthorityResource):
@@ -109,5 +118,33 @@ class CAISOResource(BalancingAuthorityResource):
         limit = 24 # 24 hours of hourly data
         
         
+class BPATodayResource(ModelResource):
+    # TODO make this work!
+    class Meta:
+        resource_name = 'bpa'
+        model = BA_MODELS['BPA']
+        queryset = model.objects.all() # dummy, but needed for for concreteness
+    
+    def override_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/today%s" % (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
+        ]
+
+    def get_object_list(self, request):
+        # get date range
+        ba_local_now = datetime.now(self._meta.model.TIMEZONE)
+        ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
+        utc_start = ba_local_start.astimezone(pytz.utc)
+        utc_end = ba_local_end.astimezone(pytz.utc)
+    
+        # get id list
+        ids = [r.id for r in super(BPATodayResource, self).get_object_list(request).filter(date__range=(utc_start, utc_end)).best_guess_points()]
+    
+        return super(BPATodayResource, self).get_object_list(request).filter(pk__in=ids)
+        
+        
+      
 # list of all resource classes
 BA_RESOURCES = [BPAResource, ISONEResource, CAISOResource]
