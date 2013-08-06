@@ -1,12 +1,11 @@
 from django.db import models
 from django_localflavor_us.models import PhoneNumberField, USStateField
 
-#from accounts.models import User
 from django.contrib.auth.models import User
 from accounts.messages import Message
 
 class TwilioSMSEvent(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=True)
     response_to = models.ForeignKey('self', null=True)
     to_number = PhoneNumberField()
     from_number = PhoneNumberField()
@@ -29,4 +28,3 @@ class TwilioSMSEvent(models.Model):
     msg_type = models.CharField(max_length=20, choices = msg_type_choices)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-
