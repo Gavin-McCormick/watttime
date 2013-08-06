@@ -57,9 +57,9 @@ For example, to get the most recent data point in BPA:
   	 ]
     }
 
-Or to get 4 hours of data from CAISO on August 1 (note that the date range is inclusive and times are in UTC):
+Or to get 4 hours of day-ahead-forecast data from CAISO on July 1 (note that the date range is inclusive and times are in UTC):
 
-   /api/v1/caiso/?format=json&order_by=date&date__range=2013-08-01T00:00,2013-08-01T03:00
+   /api/v1/caiso/?format=json&order_by=date&date__range=2013-07-01T00:00,2013-07-01T03:00&forecast_code=1
 
    {
 	"meta": {
@@ -70,48 +70,48 @@ Or to get 4 hours of data from CAISO on August 1 (note that the date range is in
     	"total_count": 4
   	}, 
   	"objects": [
-    		   {
-			"date": "2013-08-01T00:00:00+00:00", 
-      		   	"forecast_code": 0, 
-		        "gen_MW": 34144.0, 
-		        "local_date": "2013-07-31T17:00:00-07:00", 
-		        "marginal_fuel": 9, 
-		        "percent_dirty": 92.81522422680413, 
-		        "percent_green": 7.184775773195877, 
-		        "resource_uri": "/api/v1/caiso/1910/"
-		    }, 
-		    {
-		        "date": "2013-08-01T01:00:00+00:00", 
-		        "forecast_code": 0, 
-		        "gen_MW": 33958.0, 
-		        "local_date": "2013-07-31T18:00:00-07:00", 
-		        "marginal_fuel": 9, 
-		        "percent_dirty": 93.27223794098593, 
-		        "percent_green": 6.7277620590140765, 
-		        "resource_uri": "/api/v1/caiso/1911/"
-		    }, 
-	            {
-		        "date": "2013-08-01T02:00:00+00:00", 
-	 	        "forecast_code": 0, 
-		        "gen_MW": 33428.0, 
-		        "local_date": "2013-07-31T19:00:00-07:00", 
-		        "marginal_fuel": 9, 
-		        "percent_dirty": 94.34384794184515, 
-		        "percent_green": 5.656152058154841, 
-		        "resource_uri": "/api/v1/caiso/1912/"
-		    }, 
-		    {
-		        "date": "2013-08-01T03:00:00+00:00", 
-		        "forecast_code": 0, 
-		        "gen_MW": 32572.0, 
-		        "local_date": "2013-07-31T20:00:00-07:00", 
-		        "marginal_fuel": 9, 
-		        "percent_dirty": 94.4925792398379, 
-		        "percent_green": 5.507420760162103, 
-		        "resource_uri": "/api/v1/caiso/1913/"
-		    }
-	       ]
-	  }
+    	   {
+	      "date": "2013-07-01T00:00:00+00:00", 
+	      "forecast_code": 1, 
+      	      "gen_MW": 43830.22, 
+      	      "local_date": "2013-06-30T17:00:00-07:00", 
+      	      "marginal_fuel": 9, 
+      	      "percent_dirty": 95.07871509657035, 
+      	      "percent_green": 4.921284903429643, 
+      	      "resource_uri": "/api/v1/caiso/41/"
+    	      }, 
+    	   {
+      	      "date": "2013-07-01T01:00:00+00:00", 
+      	      "forecast_code": 1, 
+      	      "gen_MW": 42819.13, 
+      	      "local_date": "2013-06-30T18:00:00-07:00", 
+      	      "marginal_fuel": 9, 
+      	      "percent_dirty": 95.2433877101193, 
+      	      "percent_green": 4.756612289880715, 
+      	      "resource_uri": "/api/v1/caiso/42/"
+    	      }, 
+    	   {
+      	      "date": "2013-07-01T02:00:00+00:00", 
+      	      "forecast_code": 1, 
+      	      "gen_MW": 40913.05, 
+      	      "local_date": "2013-06-30T19:00:00-07:00", 
+      	      "marginal_fuel": 9, 
+      	      "percent_dirty": 95.1582685720082, 
+      	      "percent_green": 4.841731427991802, 
+      	      "resource_uri": "/api/v1/caiso/43/"
+    	      }, 
+    	   {
+	      "date": "2013-07-01T03:00:00+00:00", 
+      	      "forecast_code": 1, 
+      	      "gen_MW": 39852.36, 
+      	      "local_date": "2013-06-30T20:00:00-07:00", 
+      	      "marginal_fuel": 9, 
+      	      "percent_dirty": 94.90913461586716, 
+     	      "percent_green": 5.090865384132834, 
+      	      "resource_uri": "/api/v1/caiso/44/"
+    	      }
+	 ]
+    }
 
 
 Usage: API calls in views
@@ -133,7 +133,7 @@ Each row for each BA has the following attributes:
 * date: date-time of the observation, in UTC
 * local_date: date-time of the observation, in the BA's local time
 * date_extracted: date-time at which the data was scraped, in UTC (currently only for CAISO)
-* gen_MW: total electricity generation in megawatts
+* total_load: total electricity generation in megawatts
 * fraction_green: the fraction of electricity generation from "green" sources (wind, solar, etc)
 * fraction_high_carbon: the fraction of electricity generation from "dirty" sources (coal, etc)
 * marginal_fuel: an integer code for which fuel is on margin (defined in <code>settings.py</code>)
@@ -151,7 +151,6 @@ In addition to Django's Manager and QuerySet methods, the following additional m
 TODOs
 -------------
 An unordered list.
-* Filtering on non-0 forecast code yields no data for CAISO (failing test)
 * Build equivalents to "today" and "averageday" views into standard API
 * Refactor BPAParser to make its interface more like other parsers
 * Add <code>date_extracted</code> field to CAISO and NE models

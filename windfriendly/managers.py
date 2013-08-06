@@ -32,7 +32,10 @@ class TimeseriesQuerySet(QuerySet):
         """ Return oldest stored data point in queryset.
             If multiple with same timestamp, return the most recently extracted.        
         """
-        r = self.order_by('date')[0]
+        try:
+            r = self.order_by('date')[0]
+        except IndexError: # if no data
+            return None
         if 'date_extracted' in dir(r): # filter on secondary time dimension
             return self.filter(date=r.date).order_by('-date_extracted')[0]
         else: # if no secondary time dimension
@@ -42,7 +45,10 @@ class TimeseriesQuerySet(QuerySet):
         """ Return newest stored data point in queryset.
             If multiple with same timestamp, return the most recently extracted.        
         """
-        r = self.order_by('-date')[0]
+        try:
+            r = self.order_by('-date')[0]
+        except IndexError: # if no data
+            return None
         if 'date_extracted' in dir(r): # filter on secondary time dimension
             return self.filter(date=r.date).order_by('-date_extracted')[0]
         else: # if no secondary time dimension
@@ -127,7 +133,7 @@ class BaseBalancingAuthorityManager(models.Manager):
         
         
 class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):
-    def get_query_set(self, forecast_type=None):
+    def get_query_set(self, forecast_type='any'):
         """ forecast_type options:
                 None defaults to 'actual',
                 'any' uses data from all forecast types,

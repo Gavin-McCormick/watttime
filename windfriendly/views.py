@@ -166,7 +166,7 @@ def averageday(request):
             average_green = None
             average_dirty = None
             average_load = None
-            representative_date = ba_qset.latest().local_date.replace(hour=hour, minute=0)
+            representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
         
         # complicated date wrangling to get all local_time values in local today
         utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)

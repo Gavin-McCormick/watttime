@@ -108,11 +108,15 @@ class CAISOParser(UtilityParser):
             datapoints = self.parse(streams)
             
             # save to db
-            old_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
+            try:
+                old_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
+            except AttributeError: # if no preexisting data
+                old_latest_date = None
             n_stored_points = 0
             for dp in datapoints:
                 success = self.datapoint_to_db(dp)
                 if success:
+                    print success, FORECAST_CODES[forecast_code]
                     n_stored_points += 1
             new_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
 

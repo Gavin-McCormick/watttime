@@ -84,6 +84,11 @@ class CAISOResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
             'local_date': u'2013-06-29T00:00:00-07:00', 'marginal_fuel': 9,
             'percent_dirty': 91.70319753736749, 'percent_green': 8.296802462632513,
             'resource_uri': u'/api/v1/caiso/1/'})
+            
+    def test_forecast_filter(self):
+        resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
+                                   data={'format':'json', 'forecast_code':1})
+        self.assertGreater(len(self.deserialize(resp)['objects']), 0)        
 
            
 class NEResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
