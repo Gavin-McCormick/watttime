@@ -20,7 +20,6 @@ from dateutil import tz
 import pytz
 import json
 import logging
-import numpy
 
 from django.core.exceptions import FieldError
 from django.http import HttpResponse
@@ -125,70 +124,6 @@ def update(request, utility):
     return parser.update()
 
 @json_response
-def summarystats(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get userid
-    userid = request.GET.get('id', None)
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-        
-    # raise error if no BA
-
-    # get numbers for BA only
-    if userid is None:
-      # get rows
-      ba_rows = ba_qset.points_in_date_range(utc_start, utc_end)
-      if len(ba_rows) == 0:
-          raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
-
-      # collect sums
-      fraction_green_kw = sum([row.fraction_green() for row in ba_rows]) / len(ba_rows)
-      percent_green = fraction_green_kw * 100.0
-
-    # get numbers for user and BA data
-#    else:
-#        # TODO broken!!!! need to fix date handling
-#        userid = int(userid)
-#
-#        # get user meter objects
-#        meter_qset = MeterReading.objects.filter(userid__exact=userid)
-#
-#        # get matching dates
-#        min = windutils.min_date(meter_qset, ba_qset)
-#        max = windutils.max_date(meter_qset, ba_qset)
-#        if starttime < min:
-#          starttime = min
-#        if endtime > max:
-#          endtime = max
-#    
-#        # get user data in range
-#        meter_rows = meter_qset.filter(start__gte=starttime,
-#                                       start__lt=endtime)
-#        if len(meter_rows) == 0:
-#          raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
-#
-#        # collect sums
-#        total_green_kwh = sum([windutils.used_green_kwh(row, ba_qset) for row in meter_rows])
-#        total_kwhs = sum([windutils.total_kwh(row, ba_qset) for row in meter_rows])
-#        percent_green = total_green_kwh / total_kwhs * 100.0
-
-    # collect data
-    data = {
-      'balancing_authority': ba_name,
-      'userid': userid,
-      'utc_start': utc_start.isoformat(),
-      'utc_end': utc_end.isoformat(),
-      'percent_green': round(percent_green,3)
-      }
-    return data
-    
-@json_response
 def averageday(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
@@ -277,41 +212,7 @@ def today(request):
 
     # return
     return data
-    
-@json_response
-def greenest_subrange(request):
-    """Get best beginning, end, and percent green for a sub-timeperiod"""
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-    nhours = int(request.GET.get('nhours', 1))
-
-    # get greenest subrange
-    result = ba_qset.greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
-    best_rows, best_timepair, best_green, baseline_green = result
-    
-    # if no data, return nulls
-    if best_timepair is None:
-        raise ValueError("no data found for start %s, end %s, nhours %d" % (utc_start, utc_end, nhours))
-    
-    # collect data
-    data = {
-            'percent_green' : round(best_green*100, 3),
-            'baseline_percent_green' : round(baseline_green*100, 3),
-            'utc_start' : best_timepair[0],
-            'utc_end' : best_timepair[1],
-            'local_start' : best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE),
-            'local_end' : best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE),
-            }
-
-    # return
-    return data
-      
+          
 @json_response
 def alerts(request):
     # get name and queryset for BA
@@ -333,7 +234,7 @@ def alerts(request):
         utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get best guess data
-    ba_rows = ba_qset.best_guess_points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
     
     # set up storage
     if len(ba_rows) > 0:
@@ -342,11 +243,11 @@ def alerts(request):
         return {}
 
     # get notable times
-    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green(), reverse=True)
+    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green, reverse=True)
     data['highest_green'] = sorted_green[0].to_dict()
-    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon(), reverse=True)
+    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon, reverse=True)
     data['highest_dirty'] = sorted_dirty[0].to_dict()
-    sorted_load = sorted(ba_rows, key=lambda r : r.total_load(), reverse=True)
+    sorted_load = sorted(ba_rows, key=lambda r : r.total_load, reverse=True)
     data['highest_load'] = sorted_load[0].to_dict()
     data['lowest_load'] = sorted_load[-1].to_dict()
     sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)

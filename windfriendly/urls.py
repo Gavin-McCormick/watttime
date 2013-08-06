@@ -39,6 +39,4 @@ urlpatterns += patterns('',
         views.averageday, name='averageday'),
     url(r'^alerts[/]?$',
         views.alerts, name='alerts'),
-    url(r'^greenest_subrange[/]?$',
-        views.greenest_subrange, name='greenest_subrange'),
 )
