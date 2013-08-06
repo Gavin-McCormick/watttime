@@ -4,12 +4,6 @@ import numpy as np
 from .settings import FORECAST_CODES
 
 class TimeseriesQuerySet(QuerySet):
-    def group_by_hour(self):
-        """Returns a list of 24 querysets, one for each hour of the day, grouped by date.hour"""
-        hours = ['%02d' % i for i in range(24)]
-        qsets = [self.filter(date__contains=' %s:' % hour).order_by('date') for hour in hours]
-        return qsets
-
     def filter_by_hour(self, hour):
         """Returns a queryset grouped by date.hour"""
         return self.filter(date__contains=' %02d:' % hour).order_by('date')
@@ -38,27 +32,21 @@ class TimeseriesQuerySet(QuerySet):
         """ Return oldest stored data point in queryset.
             If multiple with same timestamp, return the most recently extracted.        
         """
-        if self.count() > 0:
-            r = self.order_by('date')[0]
-            if 'date_extracted' in dir(r): # filter on secondary time dimension
-                return self.filter(date=r.date).order_by('-date_extracted')[0]
-            else: # if no secondary time dimension
-                return r
-        else: # if no data
-            return None
+        r = self.order_by('date')[0]
+        if 'date_extracted' in dir(r): # filter on secondary time dimension
+            return self.filter(date=r.date).order_by('-date_extracted')[0]
+        else: # if no secondary time dimension
+            return r
 
     def latest(self):
         """ Return newest stored data point in queryset.
             If multiple with same timestamp, return the most recently extracted.        
         """
-        if self.count() > 0:
-            r = self.order_by('-date')[0]
-            if 'date_extracted' in dir(r): # filter on secondary time dimension
-                return self.filter(date=r.date).order_by('-date_extracted')[0]
-            else: # if no secondary time dimension
-                return r
-        else: # if no data
-            return None
+        r = self.order_by('-date')[0]
+        if 'date_extracted' in dir(r): # filter on secondary time dimension
+            return self.filter(date=r.date).order_by('-date_extracted')[0]
+        else: # if no secondary time dimension
+            return r
 
     def best_guess(self):
         """ Without forecast, this is alias for latest """

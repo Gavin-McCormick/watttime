@@ -25,7 +25,8 @@ class BaseBalancingAuthority(models.Model):
 
     class Meta:
         abstract = True
-
+        get_latest_by = 'date'
+        
     def get_title(self):
         return str(self.fraction_green)
 
@@ -65,6 +66,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""
     class Meta:
         abstract = True
+        get_latest_by = 'date'
         
     # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
     def to_dict(self):

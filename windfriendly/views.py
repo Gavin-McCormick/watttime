@@ -146,8 +146,9 @@ def averageday(request):
     
     # collect data
     data = []
-    for hour, group in enumerate(ba_rows.group_by_hour()):
-        if group is not None:
+    for hour in range(24):
+        group = ba_rows.filter_by_hour(hour)
+        if group.count() > 0:
             # get average data
             total_green = 0
             total_dirty = 0
