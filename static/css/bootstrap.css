@@ -3012,7 +3012,7 @@ table th[class*="span"],
 }
 
 .dropdown-backdrop {
-  position: fixed;
+  position: static;
   top: 0;
   right: 0;
   bottom: 0;
