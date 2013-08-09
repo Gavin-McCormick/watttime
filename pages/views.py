@@ -44,9 +44,8 @@ def BPA_status(request):
     if BPA.objects.count() == 0:
         parser = BPAParser()
         parser.update()
-    datum = BPA.latest_point()
-    print BPA.latest_point(), BPA.latest_date()
-    percent_green = datum.fraction_green() * 100.0
+    datum = BPA.objects.all().latest()
+    percent_green = datum.fraction_green * 100.0
     marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
 
      # compose message
@@ -66,9 +65,8 @@ def CA_status(request):
     if CAISO.objects.count() == 0:
         parser = CAISOParser()
         parser.update()
-    datum = CAISO.latest_point()
-    print CAISO.latest_point(), CAISO.latest_date()
-    percent_green = datum.fraction_green() * 100.0
+    datum = CAISO.objects.all().latest()
+    percent_green = datum.fraction_green * 100.0
     marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
 
      # compose message
@@ -88,9 +86,8 @@ def NE_status(request):
     if NE.objects.count() == 0:
         parser = NEParser()
         parser.update()
-    datum = NE.latest_point()
-    print NE.latest_point(), NE.latest_date()
-    percent_green = datum.fraction_green() * 100.0
+    datum = NE.objects.all().latest()
+    percent_green = datum.fraction_green * 100.0
     marginal_fuel = MARGINAL_FUELS[datum.marginal_fuel]
 
      # compose message
