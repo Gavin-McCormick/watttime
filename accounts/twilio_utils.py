@@ -4,6 +4,15 @@ import sms_tools.models
 from settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, WATTTIME_PHONE
 from workers.utils import debug, add_to_report
 
+twilio_client = None
+
+def get_twilio_client():
+    global twilio_client
+    if twilio_client is None:
+        twilio_client = twilio.rest.TwilioRestClient(account = TWILIO_ACCOUNT_SID,
+                token = TWILIO_AUTH_TOKEN)
+    return twilio_client
+
 def send_text(msg, up, force = False):
     text = msg.msg
     if len(text) >= 160:
@@ -25,8 +34,7 @@ def send_text(msg, up, force = False):
         return False
 
     try:
-        client = twilio.rest.TwilioRestClient(account = TWILIO_ACCOUNT_SID,
-                token = TWILIO_AUTH_TOKEN)
+        client = get_twilio_client()
         c = client.sms.messages.create(to = up.phone,
                 from_ = WATTTIME_PHONE,
                 body = text)
