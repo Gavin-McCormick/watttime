@@ -26,13 +26,13 @@
 
 <script type="text/javascript">
     var pusher = new Pusher("{{ pusher_key }}");
+    var channel = pusher.subscribe('ba_update');
 
     // CAISO
     $.getJSON('//wattTime.com/current/?st=ca&callback=?', function(data) {
         $('p#caiso').text(data.utc_time+' UTC');        
     });
-    var caiso_channel = pusher.subscribe('CAISO');
-    caiso_channel.bind('actual_update', function(data) {
+    channel.bind('CAISO', function(data) {
         $('p#caiso').text(data.utc_time+' UTC');
         console.log('caiso '+data.utc_time);
     });
@@ -41,8 +41,7 @@
     $.getJSON('//wattTime.com/current/?st=wa&callback=?', function(data) {
         $('p#bpa').text(data.utc_time+' UTC');        
     });
-    var bpa_channel = pusher.subscribe('BPA');
-    bpa_channel.bind('actual_update', function(data) {
+    channel.bind('BPA', function(data) {
         $('p#bpa').text(data.utc_time+' UTC');
         console.log('bpa '+data.utc_time);
     });
@@ -51,8 +50,7 @@
     $.getJSON('//wattTime.com/current/?st=ma&callback=?', function(data) {
         $('p#isone').text(data.utc_time+' UTC');        
     });
-    var isone_channel = pusher.subscribe('ISONE');
-    isone_channel.bind('actual_update', function(data) {
+    channel.bind('ISONE', function(data) {
         $('p#isone').text(data.utc_time+' UTC');
         console.log('isone '+data.utc_time);
     });

@@ -331,5 +331,5 @@ def send_text_notifications(bas):
 def push_ba_updates(ba_name):
     p = pusher.Pusher(app_id=PUSHER_APP_ID, key=PUSHER_KEY, secret=PUSHER_SECRET)
     r = BA_MODELS[ba_name].objects.all().latest('date')
-    p[ba_name].trigger('actual_update', r.to_dict())
+    p['ba_update'].trigger(ba_name, r.to_dict())
     return True
