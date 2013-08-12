@@ -8,7 +8,7 @@ from django.core.mail import send_mail, BadHeaderError
 from django.core.urlresolvers import reverse
 from windfriendly.models import NE, BPA, CAISO, MARGINAL_FUELS
 from windfriendly.parsers import NEParser, BPAParser, CAISOParser
-from settings import EMAIL_HOST_USER
+from settings import EMAIL_HOST_USER, PUSHER_KEY
 
 def server_error(request):
     return render(request, 'pages/500.html')
@@ -153,3 +153,6 @@ def facebook_pilot(request):
 
 def sierra_pilot(request):
     return render(request, 'pages/sierra_pilot.html')
+
+def feedstatus(request):
+    return render(request, 'pages/feedstatus.html', {'pusher_key': PUSHER_KEY})

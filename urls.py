@@ -88,6 +88,8 @@ urlpatterns += patterns('pages.views',
         'facebook_pilot', name='facebook_pilot'),
     url(r'^sierra_pilot[/]?$',
         'sierra_pilot', name='sierra_pilot'),
+    url(r'^feedstatus[/]',
+        'feedstatus', name='feedstatus')
 )
 handler500 = 'pages.views.server_error'
 handler404 = 'pages.views.notfound_error'

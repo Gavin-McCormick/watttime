@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Real-time feed status{% endblock %}
+
+{% block content %}
+<script src="//js.pusher.com/2.1/pusher.min.js" type="text/javascript"></script>
+
+<div class="span8 block">
+    <h4>CAISO</h4>
+    <p>Data updated hourly. Last update: </p>
+    <p id="caiso" class="info"></p>
+</div>
+
+<div class="span8 block">
+    <h4>BPA</h4>
+    <p>Data updated every 10 minutes. Last update: </p>
+    <p id="bpa" class="info"></p>
+</div>
+
+<div class="span8 block">
+    <h4>ISONE</h4>
+    <p>Data updated every 10 minutes. Last update: </p>
+    <p id="isone" class="info"></p>
+</div>
+
+
+<script type="text/javascript">
+    var pusher = new Pusher("{{ pusher_key }}");
+
+    // CAISO
+    $.getJSON('//wattTime.com/current/?st=ca&callback=?', function(data) {
+        $('p#caiso').text(data.utc_time+' UTC');        
+    });
+    var caiso_channel = pusher.subscribe('CAISO');
+    caiso_channel.bind('actual_update', function(data) {
+        $('p#caiso').text(data.utc_time+' UTC');
+        console.log('caiso '+data.utc_time);
+    });
+
+    // BPA
+    $.getJSON('//wattTime.com/current/?st=wa&callback=?', function(data) {
+        $('p#bpa').text(data.utc_time+' UTC');        
+    });
+    var bpa_channel = pusher.subscribe('BPA');
+    bpa_channel.bind('actual_update', function(data) {
+        $('p#bpa').text(data.utc_time+' UTC');
+        console.log('bpa '+data.utc_time);
+    });
+
+    // ISONE
+    $.getJSON('//wattTime.com/current/?st=ma&callback=?', function(data) {
+        $('p#isone').text(data.utc_time+' UTC');        
+    });
+    var isone_channel = pusher.subscribe('ISONE');
+    isone_channel.bind('actual_update', function(data) {
+        $('p#isone').text(data.utc_time+' UTC');
+        console.log('isone '+data.utc_time);
+    });
+</script>
+
+{% endblock %}
