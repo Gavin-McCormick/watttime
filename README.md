@@ -38,6 +38,10 @@ python manage.py migrate
 ````
 If migrate asks you to delete anything, say 'no' then rerun the command.
 
+NEW ENV VARS: PUSHER_APP_ID, PUSHER_KEY, PUSHER_SECRET
+
+NEW DEPENDENCIES: pusher
+
 
 Usage
 -------
@@ -66,6 +70,13 @@ and to have the <code>develop</code> branch be a staging ground for merging fini
     # edit some things
     # commit the edits
     git push origin myfeature
+    ````
+
+* To check out someone else's feature branch:
+    ````
+    git checkout develop
+    git checkout -b theirfeature
+    git pull origin theirfeature
     ````
 
 * To merge a feature branch into the main development/staging branch:
