@@ -25,8 +25,10 @@ from accounts.models import UserProfile
 from accounts.messages import morning_forecast_email, morning_forecast_email_first, ne_message_dirty_daytime, ne_message_dirty_evening, ne_message_clean
 from workers.utils import debug, send_daily_report, perform_scheduled_tasks, schedule_task, send_ca_texts, add_to_report
 from workers.models import latest_by_category, LastMessageSent
+from settings import PUSHER_APP_ID, PUSHER_KEY, PUSHER_SECRET
 import datetime
 import pytz
+import pusher
 
 # XXX
 # Why does this not work? !!!!
@@ -37,9 +39,11 @@ from settings import EMAIL_HOST_USER
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
     # scrape new info from utilities
-    updated_bas = update_bas(['BPA', 'ISONE'])
+    bas = ['BPA', 'ISONE']
+    updated_bas = update_bas(bas)
     perform_scheduled_tasks()
     send_ne_texts_if_necessary()
+    pushes = [push_ba_updates(ba) for ba in bas]
     print updated_bas
 
     # send notifications to users in updated regions
@@ -49,7 +53,9 @@ def run_frequent_tasks():
 def run_hourly_tasks():
     """ Should be run every hour by a clock process or scheduler """
     # scrape new info from utilities
-    updated_bas = update_bas(['CAISO'])
+    bas = ['CAISO']
+    updated_bas = update_bas(bas)
+    pushes = [push_ba_updates(ba) for ba in bas]
     print updated_bas
 
     # send notifications to users in updated regions
@@ -321,3 +327,9 @@ def send_text_notifications(bas):
 
     # return
     return notified_users
+
+def push_ba_updates(ba_name):
+    p = pusher.Pusher(app_id=PUSHER_APP_ID, key=PUSHER_KEY, secret=PUSHER_SECRET)
+    r = BA_MODELS[ba_name].objects.all().latest('date')
+    p[ba_name].trigger('actual_update', r.to_dict())
+    return True
