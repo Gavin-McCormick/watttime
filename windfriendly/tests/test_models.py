@@ -112,7 +112,7 @@ class BPATestCase(BaseBATestCase, TestCase):
         self.assertGreater(self.model.objects.all().count(), 0)
 
     def test_attributes(self):
-        self.assertEqual(self.model.TIMEZONE, pytz.timezone('US/Pacific'))
+        self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/Los_Angeles'))
         self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
         self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 
@@ -139,7 +139,7 @@ class CAISOTestCase(BaseBATestCase, TestCase):
         self.assertGreater(self.model.objects.all().count(), 0)
 
     def test_attributes(self):
-        self.assertEqual(self.model.TIMEZONE, pytz.timezone('US/Pacific'))
+        self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/Los_Angeles'))
         self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
         self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 
@@ -167,7 +167,7 @@ class NETestCase(BaseBATestCase, TestCase):
         self.assertGreater(self.model.objects.all().count(), 0)
 
     def test_attributes(self):
-        self.assertEqual(self.model.TIMEZONE, pytz.timezone('US/Eastern'))
+        self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/New_York'))
         self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
         self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 

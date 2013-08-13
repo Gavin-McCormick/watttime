@@ -135,7 +135,7 @@ def prepare_to_send_ca_texts():
     dirty_end = start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
-    worst_time = min(rows, key = (lambda r : r.fraction_green).date
+    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
 
     schedule_task(worst_time, "workers.utils.send_ca_texts(0)")
 
@@ -146,7 +146,7 @@ def prepare_to_send_ca_texts():
     clean_end = start + datetime.timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
-    best_time = max(rows, key = (lambda r : r.fraction_green).date
+    best_time = max(rows, key = (lambda r : r.fraction_green)).date
 
     schedule_task(best_time, "workers.utils.send_ca_texts(1)")
 
