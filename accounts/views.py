@@ -4,7 +4,6 @@ from accounts import models, forms, messages, twilio_utils, regions
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
-from django_localflavor_us.us_states import STATE_CHOICES
 from windfriendly.models import CAISO
 from windfriendly.parsers import CAISOParser
 import random
@@ -61,23 +60,7 @@ class ProfileEdit(FormView):
         return user.get_profile().region().user_prefs_form
 
     def form_initial(self, user):
-        up = user.get_profile()
-        if up.password_is_set:
-            password = '######'
-        else:
-            password = '(not used)'
-
-        vals = {'name'              : up.name,
-                'password'          : password,
-                'state'             : up.state,
-                'phone'             : up.phone,
-                'equipment'         : up.get_equipment(),
-                'beta_test'         : up.beta_test,
-                'ask_feedback'      : up.ask_feedback}
-
-        up.form_initial_values(vals)
-
-        return vals
+        return user.get_profile().form_initial_values()
 
     def html_params(self, user):
         up = user.get_profile()
@@ -87,26 +70,7 @@ class ProfileEdit(FormView):
                 'region' : up.region().name}
 
     def form_submitted(self, request, vals):
-        up = request.user.get_profile()
-        up.name = vals['name']
-
-        password = vals['password']
-        if not password in ['(not used)', '######']:
-            up.set_password(password)
-
-        up.set_phone(vals['phone'])
-        up.set_equipment(list(int(i) for i in vals['equipment']))
-        up.beta_test = vals['beta_test']
-        up.ask_feedback = vals['ask_feedback']
-        up.save_from_form(vals)
-
-        # This MUST go after save_from_form because the UserProfile object
-        # uses the value of the state variable to decide where to put the
-        # region-specific settings, and any region-specific settings in the form
-        # would pertain to the /old/ value of the state.
-        up.state = vals['state']
-        up.save()
-
+        request.user.get_profile().save_from_form(vals)
         return redirect('profile_view')
 
 class ProfileFirstEdit(FormView):
@@ -122,16 +86,7 @@ class ProfileFirstEdit(FormView):
         return {'name' : up.name, 'region_supported' : up.supported_location()}
 
     def form_submitted(self, request, vals):
-        up = request.user.get_profile()
-
-        password = vals['password']
-        if not password in ['(not used)', '######']:
-            up.set_password(password)
-
-        up.set_phone(vals['phone'])
-        up.state = vals['state']
-        up.save()
-
+        request.user.get_profile().save_from_form(vals)
         return redirect('phone_verify_view')
 
 # A bit hackish
@@ -236,6 +191,8 @@ def new_user_name():
 
 def new_phone_verification_number():
     return random.randint(100000, 999999)
+
+# TODO all this code needs proper logging and error handling, not using 'print'
 
 def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email__iexact = email)
@@ -343,12 +300,13 @@ def magic_login(request, magic_login_code):
         return redirect('accounts.views.frontpage')
     else:
         # This is necessary because one cannot login without authenticating
-        up.password_is_set = False
         user = up.user
         pw = str(random.randint(1000000000, 9999999999))
         user.set_password(pw)
         user.is_active = True
         user.save()
+        up.password_is_set = False
+        up.save()
 
         # 'authenticate' attaches a 'backend' object to the returned user,
         # which is necessary for the login process
@@ -376,50 +334,8 @@ def send_verification_code(user):
 def profile_view(request):
     user = request.user
     if user.is_authenticated():
-        up = user.get_profile()
-
-        if up.phone:
-            if up.is_verified:
-                phone = up.phone + ' (verified)'
-            else:
-                phone = up.phone + ' (not verified)'
-        else:
-            phone = '(none)'
-
-        equipment = up.get_equipment()
-        if equipment:
-            equipment = '; '.join(forms.EQUIPMENT_SHORT[i] for i in equipment)
-        else:
-            equipment = '(none)'
-
-        if up.beta_test:
-            beta_test = 'Yes'
-        else:
-            beta_test = 'No'
-
-        if up.ask_feedback:
-            ask_feedback = 'Yes'
-        else:
-            ask_feedback = 'No'
-
-        vals = {
-                'name' : up.name,
-                'email' : up.email,
-                'state' : up.state,
-                'long_state' : up.long_state_name(),
-                'region' : up.region().name,
-                'phone_number' : phone,
-                'equipment' : equipment,
-                'beta_test' : beta_test,
-                'ask_feedback' : ask_feedback,
-                'supported_region' : up.supported_location(),
-                'phone_verified' : up.is_verified,
-                'phone_blank' : (len(up.phone) == 0),
-                'deactivated' : (not user.is_active)
-                }
-
-        up.display_values(vals)
-
+        vals = {'deactivated' : (not user.is_active)}
+        user.get_profile().display_values(vals)
         return render(request, 'accounts/profile.html', vals)
     else:
         print ("User not authenticated")

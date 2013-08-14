@@ -43,24 +43,24 @@ criterion_dirtiest = [
 
 action_dirtiest_home_generic = [
     "What practices could you put off to a cleaner time?",
-    "If it's summer, you could adjust your air conditioning thermostat to 78° or higher. Use a fan when possible.",
-    "It's a good time to unplug vampire electronics like phone chargers. Only plug them in at night if possible.", 
+    "If it's summer, you could adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
+    "It's a good time to unplug vampire electronics like phone chargers. Only plug them in at night if possible.",
     "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
 
 action_dirtiest_home_ac = [
-    "If it's summer, you could adjust your air conditioning thermostat to 78° or higher. Use a fan when possible.",
+    "If it's summer, you could adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
     "If your A/C is on right now, switch it off and get some fresh air.",
     "It's a great time to turn off all unnecessary lights, electronics, and appliances."]
 
 action_dirtiest_work_generic = [
     "What practices could you shift to later in the day when solar and wind power are at their peak?",
-    "If it's summer and you're at work, set your air conditioning thermostat to 78° or higher. You might need to adjust your clothing and activity to maintain comfort.",
+    "If it's summer and you're at work, set your air conditioning thermostat to 78F or higher. You might need to adjust your clothing and activity to maintain comfort.",
     "Making copies? Why not save all that for later this afternoon when our electricity is cleaner?"]
 
 action_dirtiest_work_ac = [
-    "Dial back your A/C to 78° or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
+    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
     "What energy-intensive tasks could you schedule to run overnight?",
-    "Take a break from using electricity if possible. You could go chat with someone instead or go for a short walk.", 
+    "Take a break from using electricity if possible. You could go chat with someone instead or go for a short walk.",
     "Decontaminate the power grid. Can some of your electricity consumption be rescheduled?"]
 
 def ca_message_dirty(up):
@@ -107,7 +107,7 @@ criterion_dirty_emergency = [
     "This is as contaminated as electricity ever gets in {state}."]
 
 action_unusually_dirty_work_ac = [
-    "Dial back your A/C to 78° or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
+    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
     "Take a break from using electricity if possible. You could go chat with someone instead or go for a short walk.",
     "Decontaminate the power grid. Can some of your electricity consumption be rescheduled?"]
 
@@ -117,7 +117,7 @@ action_unusually_dirty_work_generic = [
     "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
 
 action_unusually_dirty_home_ac = [
-    "Dial back your A/C to 78° or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
+    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
     "It's a great time to turn off all unnecessary lights, electronics, and appliances.",
     "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
 
@@ -128,7 +128,7 @@ action_unusually_dirty_home_generic = [
 
 action_dirty_emergency_work_ac = [
     "Decontaminate the power grid. Reschedule your appliance and equipment use until later in the day.",
-    "Dial back your A/C to 78° or higher. Dirty electricity is peaking right now.",
+    "Dial back your A/C to 78F or higher. Dirty electricity is peaking right now.",
     "If your A/C is on right now, switch it off and get some fresh air."]
 
 action_dirty_emergency_work_generic = [
@@ -142,7 +142,7 @@ action_dirty_emergency_pool = [
     "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
 
 action_dirty_emergency_home_ac = [
-    "If it's summer, adjust your air conditioning thermostat to 78° or higher. Use a fan when possible.",
+    "If it's summer, adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
     "If your A/C is on right now, switch it off and get some fresh air.",
     "It's a great time to turn off all unnecessary lights, electronics, and appliances."]
 
@@ -350,5 +350,5 @@ def morning_forecast_email_first(name, best_hour, worst_hour):
         "",
         "Questions? Feedback? Write us at this email address or at the website.",
         "",
-        "–The WattTime Team"]
+        "-The WattTime Team"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst = worst_hour)

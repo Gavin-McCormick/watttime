@@ -1,3 +1,4 @@
+import accounts.config
 import accounts.regions
 import accounts.twilio_utils
 import accounts.messages

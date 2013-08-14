@@ -2,196 +2,116 @@ from django.db import models
 from django import forms
 from django_localflavor_us.us_states import STATE_CHOICES
 
-# This module MUST be imported from accounts/models.py so that the models
-# created here will be visibly to syncdb and other Django operations that
-# need to inspect all available models.
+from accounts.config import ConfigChoice, ConfigBoolean
 
-EQUIPMENT_CHOICES = [
-        (1, 'I have A/C at home (biggest single use of power in the summer)'),
-        (2, 'I have A/C at work (and can control the thermostat)'),
-        (3, 'I have a dishwasher (one of the easiest major appliances to time better)'),
-        (4, 'I have a pool pump (these use a LOT of energy and are easy to time better)'),
-        (5, 'My water heater is electric (gas heaters don\'t help with electricity timing)')
-    ]
+from accounts.forms import UserProfileForm
 
-EQUIPMENT_LONG = dict(EQUIPMENT_CHOICES)
-EQUIPMENT_SHORT = {
-        1 : 'A/C at home',
-        2 : 'A/C at work',
-        3 : 'dishwasher',
-        4 : 'pool pump',
-        5 : 'electric water heater'
-    }
+# DO NOT import accounts.models here, including indirectly through other
+# modules. See note at the end of the file.
 
+class Regions:
+    def __init__(self):
+        self.region_list = []
+        self.regions_by_name = {}
+        self.default_region = None
 
-class UserProfileForm(forms.Form):
-    name            = forms.CharField(help_text='Name', required = False)
-    password        = forms.CharField(help_text='Password', required = False)
-    state           = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
-    phone           = forms.CharField(help_text='Phone', required = False)
-    equipment       = forms.MultipleChoiceField(help_text='Equipment', choices = EQUIPMENT_CHOICES, widget = forms.CheckboxSelectMultiple(), required = False)
-    beta_test       = forms.BooleanField(help_text='Beta test', widget = forms.CheckboxInput(), required = False)
-    ask_feedback    = forms.BooleanField(help_text='Ask feedbac', widget = forms.CheckboxInput(), required = False)
+    def register_region(self, region):
+        if region.name in self.regions_by_name:
+            msg = "There is already one region named {}, cannot create another!"
+            raise ValueError(msg.format(region.name))
 
+        self.region_list.append(region)
+        self.regions_by_name[region.name] = region
 
-# Instances of ConfigType cannot (I think) be reused across multiple
-# regions or configuration parameters.
-class ConfigType:
-    def __init__(self, name):
-        self.name = name
-        self.model_field = None
-        self.form_field = None
+    def regions(self):
+        return self.region_list[:]
 
-    def form_to_model(self, value):
-        return value
+    def __len__(self):
+        return len(self.region_list)
 
-    def model_to_form(self, value):
-        return value
+    def __getitem__(self, name):
+        return self.regions_by_name[name]
 
-    def model_to_display(self, value):
-        return value
+    def get(self, name, default):
+        return self.regions_by_name.get(name, default)
 
-class ConfigBoolean(ConfigType):
-    def __init__(self, name):
-        ConfigType.__init__(self, name)
-        self.model_field = models.BooleanField(default = False)
-        self.form_field = forms.BooleanField(
-                widget = forms.CheckboxInput(), required = False)
+    def by_state(self, state):
+        for region in self.region_list:
+            if region.has_state(state):
+                return region
+        return self.default_region
 
-    def model_to_display(self, value):
-        if value:
-            return 'Yes'
-        else:
-            return 'No'
+    def set_default(self, region):
+        region_ = self.get(region.name, None)
+        if region_ is not region:
+            raise ValueError("Region {} is not already registered".
+                    format(region.name))
 
-class ConfigInteger(ConfigType):
-    def __init__(self, name):
-        ConfigType.__init__(self, name)
-        self.model_field = models.IntegerField(default = 0)
-        self.form_field = forms.IntegerField(required = False)
+        self.default_region = region
 
-    def model_to_display(self, value):
-        return str(value)
+    def create_models(self):
+        for region in self.region_list:
+            region.create_model()
 
-class ConfigChoice(ConfigType):
-    # choices: list of pairs of strings
-    #   first item is for display on /profile (shorter version)
-    #   second item is for setting on /profile/edit (longer version)
-    # at most 36 choices should be present due to character length restrictions
-    def __init__(self, name, choices):
-        assert (len(choices) < 36)
-        ConfigType.__init__(self, name)
-        self.choices = choices[:]
-        int_xs = [(i, choices[i][1]) for i in range(len(choices))]
-        str_xs = [(str(i), choices[i][1]) for i in range(len(choices))]
-        self.model_field = models.IntegerField(choices = int_xs, default = 0)
-        self.form_field = forms.ChoiceField(
-                choices = str_xs, widget = forms.RadioSelect(), required = False)
+regions = Regions()
 
-    def form_to_model(self, value):
-        return int(value)
-
-    def model_to_form(self, value):
-        return str(value)
-
-    def model_to_display(self, value):
-        return self.choices[int(value)][0]
-
-
-class ConfigMultichoice(ConfigType):
-    # like in ConfigChoice
-    def __init__(self, name, choices):
-        assert (len(choices) < 36)
-        ConfigType.__init__(self, name)
-        self.choices = choices[:]
-        int_xs = [(i, choices[i][1]) for i in range(len(choices))]
-        str_xs = [(str(i), choices[i][1]) for i in range(len(choices))]
-        self.model_field = models.CommaSeparatedIntegerField(
-                choices = int_xs, default = '', max_length = 100)
-        self.form_field = forms.MultipleChoiceField(
-                choices = str_xs, widget = forms.CheckboxSelectMultiple(),
-                required = False)
-
-    def form_to_model(self, value):
-        return ','.join(x for x in value)
-
-    def model_to_form(self, value):
-        if value:
-            return list(value.split(','))
-        else:
-            # split() doesn't work properly on the empty string
-            return []
-
-    def model_to_display(self, value):
-        if value:
-            return '; '.join(self.choices[int(x)][0] for x in value.split(','))
-        else:
-            return '(none)'
-
-
-regions = []
 class Region:
     # settings_name -- identifier for the field of UserProfile which refers
     #   to the settings for this region
     # states -- list of US states which lie at least partially in this region
-    def __init__(self, name, settings_name, states, params):
+    def __init__(self, name, settings_name, states, configs):
         self.name = name
         self.settings_name = settings_name
         self.states = states[:]
-        self.params = params[:]
+        self.configs = configs[:]
 
-        self._setup_fields()
+        self.user_prefs_form = None
+        self.user_prefs_model = None
+        self.created_model = False
+        self.created_form = False
 
-        regions.append(self)
+        self.create_form()
+        # self.create_model()   -- this is now done in accounts/models.py
 
-    def _setup_fields(self):
-        model_fields = {}
-        form_fields = {}
+        regions.register_region(self)
 
-        model_fields['__module__'] = 'accounts.models'
+    def create_form(self):
+        if self.created_form:
+            return
+        self.created_form = True
 
-        for param in self.params:
-            name = param.name
-            model_fields[name] = param.model_field
-            form_fields[name] = param.form_field
+        fields = {}
 
-        model_name  = '{}UserProfile'.format(self.name)
-        form_name   = 'UserForm_{}'.format(self.name)
-        self.user_prefs_model = type(model_name, (models.Model,), model_fields)
-        self.user_prefs_form = type(form_name, (UserProfileForm,), form_fields)
+        for config in self.configs:
+            fields[config.name] = config.form_field
+
+        form_name = 'UserForm_{}'.format(self.name)
+        self.user_prefs_form = type(form_name, (UserProfileForm,), fields)
+
+    def create_model(self):
+        if self.created_model:
+            return
+        self.created_model = True
+
+        fields = {}
+        fields['__module__'] = 'accounts.models'
+
+        for config in self.configs:
+            fields[config.name] = config.model_field
+
+        model_name = '{}UserProfile'.format(self.name)
+        self.user_prefs_model = type(model_name, (models.Model,), fields)
 
     def has_state(self, state):
         return state in self.states
 
-    def save_from_form(self, up, vals):
-        s = up.get_region_settings()
-        for param in self.params:
-            setattr(s, param.name, param.form_to_model(vals[param.name]))
-        s.save()
+null_region = Region(
+        name = 'Nowhere',
+        settings_name = 'null_settings',
+        states = [],
+        configs = [])
 
-    def form_initial_values(self, up, vals):
-        s = up.get_region_settings()
-        for param in self.params:
-            vals[param.name] = param.model_to_form(getattr(s, param.name))
-
-    def display_values(self, up, vals):
-        s = up.get_region_settings()
-        for param in self.params:
-            vals[param.name] = param.model_to_display(getattr(s, param.name))
-
-def state_to_region(state):
-    for region in regions:
-        if region.has_state(state):
-            return region
-    return null_region
-
-
-# TODO wrap all this in a lambda and execute it in accounts.models instead so
-# that all the module-scope computation is being performed in one file. Then add
-# a circular "import accounts.models" at the top of this file. This will eliminate
-# certain sources of bugs.
-#
-# Actually, I think even then I can't make it circularly importing... must be sure.
+regions.set_default(null_region)
 
 ne_freq_choices = [
     ('About daily, working hours, when dirty',
@@ -206,7 +126,7 @@ newengland = Region(
         name = 'NewEngland',
         settings_name = 'ne_settings',
         states = ['MA', 'VT', 'NH', 'ME', 'CT', 'RI'],
-        params = [ConfigChoice('message_frequency', ne_freq_choices)])
+        configs = [ConfigChoice('message_frequency', ne_freq_choices)])
 
 ca_freq_choices = [
     ('Dirtiest hour each day',
@@ -223,11 +143,31 @@ california = Region(
         name = 'California',
         settings_name = 'ca_settings',
         states = ['CA'],
-        params = [ConfigChoice('message_frequency', ca_freq_choices),
+        configs = [ConfigChoice('message_frequency', ca_freq_choices),
             ConfigBoolean('forecast_email')])
 
-null_region = Region(
-        name = 'Nowhere',
-        settings_name = 'null_settings',
-        states = [],
-        params = [])
+# The region setup is performed at module-runtime, in two steps.
+# First, in accounts.regions, each of the regions are created, with their
+# individual configurations. Second, in accounts.models, custom models are
+# created corresponding to these regions (as all models must be created in
+# accounts.models for Django to find them). As neither step works without
+# the other (if you only perform the first step, code that hits the database
+# will fail), there is a circular import, so some care must be taken to
+# do the circular import correctly.
+#
+# (All this is only necessary because Django requires models to be in the
+# models module.)
+#
+# Within accounts.regions, AFTER all regions have been created, we import
+# accounts.models so that users who import accounts.regions will still have
+# the custom models created.
+# Within accounts.models, BEFORE the custom models are created (with the
+# command "regions.create_models()"), we import accounts.regions so that
+# the regions will have been configured first. (Admittedly this import is
+# necessary to execute the command anyhow.)
+#
+# Short version: every time we import accounts.regions, we must then
+# import accounts.models, and the easy way to guarantee that is to place
+# this import here, at the END of the file. Placing it before the regions
+# have been configured will cause problems.
+import accounts.models

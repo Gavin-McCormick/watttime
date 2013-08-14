@@ -1,7 +1,19 @@
 from django import forms
 from django_localflavor_us.us_states import STATE_CHOICES
 
-import accounts.regions
+from accounts import config
+
+# DO NOT import accounts.models, including indirectly through other modules,
+# as this module is imported by accounts.regions. See that file for explanation.
+
+class UserProfileForm(forms.Form):
+    name            = config.config_name.form_field
+    password        = forms.CharField(help_text='Password', required = False)
+    state           = config.config_state.form_field
+    phone           = forms.CharField(help_text='Phone', required = False)
+    equipment       = config.config_equipment.form_field
+    beta_test       = config.config_beta_test.form_field
+    ask_feedback    = config.config_ask_feedback.form_field
 
 class SignupForm(forms.Form):
     email = forms.CharField(help_text='Email')
@@ -33,9 +45,3 @@ class UserProfileFirstForm(forms.Form):
         super(UserProfileFirstForm, self).__init__(*args, **kwargs)
         self.fields['password'].widget.attrs['placeholder'] = u'Password'
         self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
-
-# This form had to be in regions.py because it was needed there
-UserProfileForm = accounts.regions.UserProfileForm
-
-# This variable properly belongs here to go with UserProfileForm
-EQUIPMENT_SHORT = accounts.regions.EQUIPMENT_SHORT
