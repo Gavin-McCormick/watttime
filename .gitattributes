@@ -1,1 +1,4 @@
 *.txt -text
+*.json binary
+*.tsv binary
+# tsv is typo for csv
