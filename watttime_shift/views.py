@@ -39,8 +39,8 @@ def shift(request):
             # get best subrange and percent green
             ba_pair = filter(lambda x: x[0]==sr.ba, sr.BA_CHOICES)
             ba_name = ba_pair[0][1]
-            result = BA_MODELS[ba_name].greenest_subrange(requested_start, requested_end,
-                                                          requested_timedelta)
+            result = BA_MODELS[ba_name].objects.greenest_subrange(requested_start, requested_end,
+                                                                  requested_timedelta)
             best_rows, best_timepair, best_green, baseline_green = result
             best_start_str = best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime("%I %p").strip('0')
             best_end_str = best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime("%I %p").strip('0')
