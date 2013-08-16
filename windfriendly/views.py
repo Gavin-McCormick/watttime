@@ -20,12 +20,12 @@ from dateutil import tz
 import pytz
 import json
 import logging
-import numpy
 
 from django.contrib.syndication.views import Feed
+from django.core.exceptions import FieldError
 from django.http import HttpResponse
 
-from windfriendly.models import User, MeterReading, group_by_hour
+from windfriendly.models import User, MeterReading
 from windfriendly.parsers import GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
@@ -97,31 +97,6 @@ def utctimes_from_request(request):
     return utc_start, utc_end
 
 @json_response
-def forecast(request):
-    """ TO DO: magic number 289??"""
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-
-    # get who knows what
-    row = ba_qset.order_by('-id')[:289]
-
-    hourly_avg = 0
-    forecast = []
-    for i, r in enumerate(rows):
-      hourly_avg += r.fraction_green() * 100.0
-      if i and not i % 12: # 5 minute intervals
-        data = {
-          'hour': i / 12,
-          'percent_green': round(hourly_avg / 12,3)
-          }
-        forecast.append(data)
-        hourly_avg = 0
-    return {
-      'forecast' : forecast,
-      'balancing_authority': ba_name
-      }
-
-@json_response
 def update(request, utility):
     # try to get info from request
     try:
@@ -150,104 +125,6 @@ def update(request, utility):
     return parser.update()
 
 @json_response
-def current(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-
-    # get most recent row from model
-    row = BA_MODELS[ba_name].latest_point()
-
-    # return
-    return row.to_dict()
-
-@json_response
-def summarystats(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get userid
-    userid = request.GET.get('id', None)
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-
-    # raise error if no BA
-
-    # get numbers for BA only
-    if userid is None:
-      # get rows
-      ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
-      if len(ba_rows) == 0:
-          raise ValueError('no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end)))
-
-      # collect sums
-      fraction_green_kw = sum([row.fraction_green() for row in ba_rows]) / len(ba_rows)
-      percent_green = fraction_green_kw * 100.0
-
-    # get numbers for user and BA data
-#    else:
-#        # TODO broken!!!! need to fix date handling
-#        userid = int(userid)
-#
-#        # get user meter objects
-#        meter_qset = MeterReading.objects.filter(userid__exact=userid)
-#
-#        # get matching dates
-#        min = windutils.min_date(meter_qset, ba_qset)
-#        max = windutils.max_date(meter_qset, ba_qset)
-#        if starttime < min:
-#          starttime = min
-#        if endtime > max:
-#          endtime = max
-#    
-#        # get user data in range
-#        meter_rows = meter_qset.filter(start__gte=starttime,
-#                                       start__lt=endtime)
-#        if len(meter_rows) == 0:
-#          raise ValueError('no data for start %s, end %s' % (repr(starttime), repr(endtime)))
-#
-#        # collect sums
-#        total_green_kwh = sum([windutils.used_green_kwh(row, ba_qset) for row in meter_rows])
-#        total_kwhs = sum([windutils.total_kwh(row, ba_qset) for row in meter_rows])
-#        percent_green = total_green_kwh / total_kwhs * 100.0
-
-    # collect data
-    data = {
-      'balancing_authority': ba_name,
-      'userid': userid,
-      'utc_start': utc_start.isoformat(),
-      'utc_end': utc_end.isoformat(),
-      'percent_green': round(percent_green,3)
-      }
-    return data
-
-@json_response
-def history(request):
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-
-    # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
-    if len(ba_rows) == 0:
-        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
-        return []
-
-    # collect data
-    data = [r.to_dict() for r in ba_rows]
-
-    # return
-    return data
-
-@json_response
 def averageday(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
@@ -259,32 +136,43 @@ def averageday(request):
     utc_start, utc_end = utctimes_from_request(request)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].points_in_date_range(utc_start, utc_end)
-    if len(ba_rows) == 0:
+    try:
+        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end), forecast_code=0)
+    except FieldError:
+        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end))
+        
+    if ba_rows.count() == 0:
         print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
         return []
 
     # collect data
-    hour_groups = group_by_hour(ba_rows)
     data = []
-    for hour, group in enumerate(hour_groups):
-        if group is not None:
+    for hour in range(24):
+        group = ba_rows.filter_by_hour(hour)
+        if group.count() > 0:
             # get average data
-            average_green = round(numpy.mean([r.fraction_green() for r in group])*100, 3)
-            average_dirty = round(numpy.mean([r.fraction_high_carbon() for r in group])*100, 3)
-            average_load = numpy.mean([r.total_load() for r in group])
-            representative_date = group.latest('date').date.replace(minute=0)
+            total_green = 0
+            total_dirty = 0
+            total_load = 0
+            for r in group:
+                total_green += r.fraction_green
+                total_dirty += r.fraction_high_carbon
+                total_load += r.total_load
+            average_green = round(total_green*100/group.count(), 3)
+            average_dirty = round(total_dirty*100/group.count(), 3)
+            average_load = total_load/group.count()
+            representative_date = group.latest().local_date.replace(minute=0)
         else:
             # get null data
             average_green = None
             average_dirty = None
             average_load = None
-            representative_date = BA_MODELS[ba_name].latest_date().replace(hour=hour, minute=0)
+            representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
 
         # complicated date wrangling to get all local_time values in local today
         utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
         latest_day = utcnow.astimezone(BA_MODELS[ba_name].TIMEZONE).day
-        local_time = representative_date.astimezone(BA_MODELS[ba_name].TIMEZONE).replace(day=latest_day)
+        local_time = representative_date.replace(day=latest_day)
         utc_time = local_time.astimezone(pytz.utc)
 
         # add to list
@@ -316,47 +204,13 @@ def today(request):
     utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get rows
-    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
+    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
     if len(ba_rows) == 0:
         print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
         return []
 
     # collect data
     data = [r.to_dict() for r in ba_rows]
-
-    # return
-    return data
-
-@json_response
-def greenest_subrange(request):
-    """Get best beginning, end, and percent green for a sub-timeperiod"""
-    # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
-    # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
-
-    # get requested date range
-    utc_start, utc_end = utctimes_from_request(request)
-    nhours = int(request.GET.get('nhours', 1))
-
-    # get greenest subrange
-    result = BA_MODELS[ba_name].greenest_subrange(utc_start, utc_end, timedelta(hours=nhours))
-    best_rows, best_timepair, best_green, baseline_green = result
-
-    # if no data, return nulls
-    if best_timepair is None:
-        raise ValueError("no data found for start %s, end %s, nhours %d" % (utc_start, utc_end, nhours))
-
-    # collect data
-    data = {
-            'percent_green' : round(best_green*100, 3),
-            'baseline_percent_green' : round(baseline_green*100, 3),
-            'utc_start' : best_timepair[0],
-            'utc_end' : best_timepair[1],
-            'local_start' : best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE),
-            'local_end' : best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE),
-            }
 
     # return
     return data
@@ -382,8 +236,7 @@ def alerts(request):
         utc_end = ba_local_end.astimezone(pytz.utc)
 
     # get best guess data
-    ba_rows = BA_MODELS[ba_name].best_guess_points_in_date_range(utc_start, utc_end)
-
+    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
     # set up storage
     if len(ba_rows) > 0:
         data = {}
@@ -391,11 +244,11 @@ def alerts(request):
         return {}
 
     # get notable times
-    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green(), reverse=True)
+    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green, reverse=True)
     data['highest_green'] = sorted_green[0].to_dict()
-    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon(), reverse=True)
+    sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon, reverse=True)
     data['highest_dirty'] = sorted_dirty[0].to_dict()
-    sorted_load = sorted(ba_rows, key=lambda r : r.total_load(), reverse=True)
+    sorted_load = sorted(ba_rows, key=lambda r : r.total_load, reverse=True)
     data['highest_load'] = sorted_load[0].to_dict()
     data['lowest_load'] = sorted_load[-1].to_dict()
     sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)

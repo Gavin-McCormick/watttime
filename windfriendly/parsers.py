@@ -24,7 +24,8 @@ import datetime
 import pytz
 import pandas
 
-from windfriendly.models import BPA, NE, CAISO, MeterReading, User, MARGINAL_FUELS, FORECAST_CODES
+from .models import BPA, NE, CAISO, MeterReading, User
+from .settings import MARGINAL_FUELS, FORECAST_CODES
 
 import xml.etree.ElementTree as ET
 
@@ -107,13 +108,17 @@ class CAISOParser(UtilityParser):
             datapoints = self.parse(streams)
             
             # save to db
-            old_latest_date = self.MODEL.latest_date(forecast_code)
+            try:
+                old_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
+            except AttributeError: # if no preexisting data
+                old_latest_date = None
             n_stored_points = 0
             for dp in datapoints:
                 success = self.datapoint_to_db(dp)
                 if success:
+                    print success, FORECAST_CODES[forecast_code]
                     n_stored_points += 1
-            new_latest_date = self.MODEL.latest_date(forecast_code)
+            new_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
 
             # log
             to_return[forecast_code] = {'prior_latest_date' : str(old_latest_date),
@@ -229,7 +234,8 @@ class CAISOParser(UtilityParser):
                 try:
                     tac_col = df['TAC_AREA_NAME']
                 except KeyError:
-                    raise KeyError('no tac found for %s %s' % (energy_type, forecast_type))
+                    msg = 'No tac found for %s %s.' % (energy_type, forecast_type)
+                    raise KeyError(msg)
                 total_index = tac_col.index[tac_col == 'CA ISO-TAC']
             else:
                 total_index = None
@@ -404,14 +410,14 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.MODEL.latest_date() if self.update_latest else None
+        latest_date = self.MODEL.objects.all().latest().date if self.update_latest else None
         update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.MODEL.latest_date())
+          'latest_date' : str(self.MODEL.objects.all().latest().date)
         }
 
 
