@@ -1,7 +1,6 @@
 # content of text messages
 # the %s symbol is replaced by the variable that appears after the % symbol at the end
 import random
-#TODO seasonal messaging: winter/summer/autumn/spring by region
 
 class Message:
     USE_LESS = 'use_less'
@@ -38,30 +37,28 @@ def rand(options):
     return options[index]
 
 criterion_dirtiest = [
-    "Right now in {state}, dirty electricity is contaminating our power grid.",
-    "This is as dirty as our electricity will get today."]
+    "This is probably going to be the dirtiest power {state} sees today.",
+    "This hour is the least clean your electricity will get today."]
 
 action_dirtiest_home_generic = [
-    "What practices could you put off to a cleaner time?",
-    "If it's summer, you could adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
-    "It's a good time to unplug vampire electronics like phone chargers. Only plug them in at night if possible.",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
+    "Look around. Can you find one thing on that doesn't need to be?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light on that's not needed?"]
 
 action_dirtiest_home_ac = [
-    "If it's summer, you could adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
-    "If your A/C is on right now, switch it off and get some fresh air.",
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances."]
+    "Biggest power draw is A/C - think you could dial back the thermostat?",
+    "If your A/C is on, think you could switch it off for just a bit?",
+    "Look around - see a light on that's not needed?"]
 
 action_dirtiest_work_generic = [
-    "What practices could you shift to later in the day when solar and wind power are at their peak?",
-    "If it's summer and you're at work, set your air conditioning thermostat to 78F or higher. You might need to adjust your clothing and activity to maintain comfort.",
-    "Making copies? Why not save all that for later this afternoon when our electricity is cleaner?"]
+    "Try a treasure hunt break! Can you find 1 thing on that isn't needed?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light or monitor on that's not needed?"]
 
 action_dirtiest_work_ac = [
-    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
-    "What energy-intensive tasks could you schedule to run overnight?",
-    "Take a break from using electricity if possible. You could go chat with someone instead or go for a short walk.",
-    "Decontaminate the power grid. Can some of your electricity consumption be rescheduled?"]
+    "Biggest power draw is A/C - think you could dial back the thermostat?",
+    "If the A/C is on, any chance you could dial it back for a bit?",
+    "Look around. Can you find one thing on that doesn't need to be?"]
 
 def ca_message_dirty(up):
     # TODO choose between home vs. work appropriately.
@@ -70,23 +67,23 @@ def ca_message_dirty(up):
     return Message.use_less(make_msg(c, a, state = 'CA'))
 
 criterion_cleanest = [
-    "Eureka! This is today's clean power peak!",
-    "This is a fantastic time to perform those electricity-intensive tasks you've been putting off."]
+    "This is the cleanest time this evening to use power.",
+    "Lots of renewable power on the grid right now!"]
 
 action_cleanest_dishwasher = [
-    "Some of the biggest reductions in electricity comsumption come from more efficient techology.",
-    "If your dishwasher is already loaded, now would be a great time to run it.",
-    "Running a dishwasher late at night is the best time for clean dishes and cleaner electricity."]
+    "Can you think of anything you could turn on now rather than later?",
+    "Dishwasher loaded? Now would be a great time to run it.",
+    "Anything you could run now instead of later? Laundry? Dishwasher?"]
 
 action_cleanest_home_ac = [
-    "This is the best time of day for electricity-intensive tasks.",
-    "Major appliances and equipment run on a cleaner power grid right now.",
-    "Vacuming keeps your home clean. If you do around {best}, it helps keep {state} clean too."]
+    "Anything you could run now instead of later? Laundry? Oven?",
+    "Good time to, say, recharge electronics or turn up the A/C if you're hot.",
+    "Can you think of anything you could turn on now rather than later?"]
 
 action_cleanest_home_generic = [
-    "Right now the grid is a clean as it gets. What electricity-based chores could you plan to do at this time of day?",
-    "If your washing requires electricity, this is the best time for maximum cleanliness.",
-    "Solar and wind power are decontaminating the grid. What appliances or equipment could you run now instead of later?"]
+    "Can you think of anything you could turn on now rather than later?",
+    "Great time to recharge any electronics.",
+    "Anything you could run now instead of later? Laundry? Oven?"]
 
 def ca_message_clean(up):
     # TODO choose actions appropriately
@@ -95,65 +92,66 @@ def ca_message_clean(up):
     return Message.use_more(make_msg(c, a, state = 'CA'))
 
 criterion_unusually_dirty = [
-    "Right now in {state}, dirty electricity is contaminating the power grid.",
-    "This is as dirty as our electricity will get today."]
+    "Power is unusually dirty right now in {state}!",
+    "Not much renewable power right now."]
 
 criterion_unusually_clean = [
-    "{state} electricity is hitting a rare clean power peak right now.",
-    "This is an especially clean time to utilize electricity."]
+    "{state} electricity is unusually clean right now.",
+    "Your power is unusually full of renewables atm."]
 
 criterion_dirty_emergency = [
-    "Right now the {state} electricity grid is about as dirty as it ever gets.",
-    "This is as contaminated as electricity ever gets in {state}."]
+    "Electricity's about as dirty as it ever gets in {state} right now.",
+    "This is about as dirty as power ever gets in {state}!"]
 
 action_unusually_dirty_work_ac = [
-    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
-    "Take a break from using electricity if possible. You could go chat with someone instead or go for a short walk.",
-    "Decontaminate the power grid. Can some of your electricity consumption be rescheduled?"]
+    "Biggest user for power is A/C - think you could dial back the thermostat?",
+    "Is the A/C on? Think anyone would mind you dialing it back for a bit?",
+    "Look around. Can you find one thing that doesn't need to be on?"]
 
 action_unusually_dirty_work_generic = [
-    "What energy-intensive jobs could you schedule to run overnight?",
-    "What practices could you shift to later in the day when solar and wind power are at their peak?",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
+    "Any appliances you aren't using that you could turn off?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - what's one thing that doesn't need to be on? A light?"]
 
 action_unusually_dirty_home_ac = [
-    "Dial back your A/C to 78F or higher. Lowering shades, wearing appropriate clothing, and modulating your activity will save you money.",
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances.",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
+    "Biggest draw for power is A/C - think you could dial back the thermostat?",
+    "If your A/C is on, think you could switch it off for just a bit?",
+    "Any appliances you aren't using that you could turn off?"]
 
 action_unusually_dirty_home_generic = [
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances.",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m.",
-    "What practices could you shift to later in the day when solar and wind power are at their peak?"]
+    "Any appliances you aren't using that you could turn off?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around - see a light on that's not needed?"]
 
 action_dirty_emergency_work_ac = [
-    "Decontaminate the power grid. Reschedule your appliance and equipment use until later in the day.",
-    "Dial back your A/C to 78F or higher. Dirty electricity is peaking right now.",
-    "If your A/C is on right now, switch it off and get some fresh air."]
+    "If the A/C is on, think anyone would mind you dialing it back for a bit?",
+    "Up to 40% of power in CA goes to A/C. Can you dial yours back 2 degrees?",
+    "Think you could turn off one thing? What do you need least?"]
 
 action_dirty_emergency_work_generic = [
-    "What practices could you shift to later in the day when solar and wind power are at their peak?",
-    "It's a good time to unplug vampire electronics like phone chargers. Only plug them in at night if possible.",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Can you find one thing on that doesn't need to be?",
+    "Can you turn off one thing? See a light or monitor on that's not needed?"]
 
 action_dirty_emergency_pool = [
-    "Pool water pumps use a LOT of energy. Only run it occasionally, or put it on a timer so it runs later in the day.",
-    "What practices could you shift to later in the day when solar and wind power are at their peak?",
-    "Create a bigger impact and postpone any major appliance and equipment use until after 4 p.m."]
+    "Pool pump use a LOT of power. Could you turn yours off for the day?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Anything you could stand to turn off? Lights? Pool pump?"]
 
 action_dirty_emergency_home_ac = [
-    "If it's summer, adjust your air conditioning thermostat to 78F or higher. Use a fan when possible.",
-    "If your A/C is on right now, switch it off and get some fresh air.",
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances."]
+    "Up to 40% of power in CA goes to A/C. Is yours on? Can you turn off for now?",
+    "If the A/C is on, any chance you could turn it off at least for a bit?",
+    "Look around. Anything you could stand to turn off for now?"]
 
 action_dirty_emergency_waterheater = [
-    "Some of the biggest reductions in electricity comsumption come from more efficient techology.",
-    "Hot water requires lots of power. Showering before bed or very early in the morning improves its clean impact."]
+    "Your water heater is a huge power draw. Can you shut it off for an hour?",
+    "Hot water requires lots of power. Can you avoid using any for a few hours?",
+    "Look around. Anything you could stand to turn off for now?"]
 
 action_dirty_emergency_home_generic = [
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances.",
-    "If your A/C is on right now, switch it off. It's adding to a really dirty power grid.",
-    "What practices could you shift to later in the day when solar and wind power are at their peak?"]
+    "What's one thing that doesn't need to be on? A light? TV?",
+    "Think you could turn off one thing? What do you need least?",
+    "Look around. Anything you could stand to turn off for now?"]
 
 action_unusually_clean_work_generic = [
     "Is there anything you could turn on now rather than later?",
@@ -165,30 +163,30 @@ action_unusually_clean_home_ac = [
     "Hot? Maybe you could turn up A/C, precool while you're on clean power?"]
 
 action_unusually_clean_precool = [
-    "If it's hot out, this would be a better time to run the A/C or a fan.",
-    "Solar and wind are cleaning out the electricity grid. A/C won't have as much a negative impact right now."]
+    "Think it'll be hot today? Why not turn up A/C now while it's clean?",
+    "Expecting a hot day? Why not pre-cool your house before work?"]
 
 action_unusually_clean_dishwasher = [
-    "The electricity grid is unusually clean. This is a great time to run the dishwasher.",
-    "Solar and wind are at their peak. Major appliances and equipment run on a cleaner power grid right now.",
-    "Are there any energy-intensive tasks you could accomplish now rather than later?"]
+    "No chance your dishwasher's full? Could you run it now while power's clean?",
+    "Anything you could run now instead of later? Laundry? Oven? Dishwasher?",
+    "Can you think of anything you could turn on now rather than later?"]
 
 action_unusually_clean_home_generic = [
-    "Solar and wind power are decontaminating the grid. What appliances or equipment could you run now instead of later?",
-    "If your washing requires electricity, this is the best time for maximum power grid cleanliness.",
-    "This is one of the best possible times to do laundry or electricity-intensive chores."]
+    "Can you think of anything you could turn on now rather than later?",
+    "Great time to recharge any electronics.",
+    "Anything you could run now instead of later? Laundry? Oven?"]
 
 ne_criterion_dirty = [
-    "Dirty {fuel} power is at it's peak. This should only last an hour."]
+    "You're running on dirty {fuel} power. Generally lasts less than an hour."]
 ne_criterion_clean = [
-    "Cleaner {fuel} power is at its peak. This should only last an hour."]
+    "You're running on clean renewable {fuel}. Typically lasts less than one hour."]
 
 ne_action_dirty_daytime = [
-    "It's a great time to turn off all unnecessary lights, electronics, and appliances."]
+    "Anything you can turn off that you don't need right now?"]
 ne_action_dirty_evening = [
-    "What energy-intensive practices could you postpone?"]
+    "Any way you can use a less power for a bit?"]
 ne_action_clean = [
-    "This is the best time of day for electricity-intensive tasks."]
+    "Great time to start laundry, dishes, etc."]
 
 def ne_message_dirty_daytime(up, fuel):
     c = rand(ne_criterion_dirty)
@@ -252,11 +250,11 @@ def email_signup_message(userid, name):
 # I believe this message refers to the alpha test and is no longer needed. - Gavin
 def account_activated_message(userid, name, phone):
     lines = ["Welcome to Wattime %s," % name,
-             "We're excited that you've launched WattTime clean energy notifications! You are now subscribed to SMS notifications that let you know when you can make a immediate impact. We'll send notifications to:",
+             "We're excited that you've launched WattTime clean energy notifications! You are now subscribed to SMS notifications that track the clean energy status of your electricity. We'll send notifications to:",
              "%s" % phone,
-             "If you answer a few quick questions at http://watttime.com/profile/%s, we'll send you more relevant messages. You can update your preferences at any time." % userid,
+             "If you answer a few quick questions at http://watttime.com/profile/%s, we'll send you more relevant messages. You can return to this link to update your preferences at any time." % userid,
              "To unsubscribe from SMS notifications, click on http://watttime.com/unsubscribe/%s." % phone.replace('-',''),
-             "Thanks!",
+             "Cheers",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -266,9 +264,9 @@ def account_inactivated_message(userid, name, phone):
              "You are now unsubscribed from WattTime SMS notifications to this phone number:",
              "%s" % phone,
              "We are super sorry to see you go! You can turn SMS notifications on at any time by updating your preferences at http://watttime.com/profile/%s." % userid,
-             "Whatever your destination, we hope you keep an eye out for ways to help build today's clean energy economy.",
+             "Whatever your destination, we hope you keep an eye out for ways to help build tomorrow's clean energy economy today.",
              "",
-             "Good Luck!",
+             "Take care,",
              "The WattTime Team"
              ]
     return Message.information("\n".join(lines))
@@ -280,9 +278,9 @@ def invite_message(email, url, name = None):
             "",
             "We're excited that you're joining us in building a cleaner energy economy.",
             "",
-            "Using WattTime is free and easy, and you can make an impact immediately. To begin, visit {url} to set up your notifications."
+            "Using WattTime is free and easy, yet it makes a real difference. To begin, visit {url} to set up your notifications."
             "",
-            "Thanks!",
+            "Cheers,",
             "The WattTime Team"
         ]
     if name is None:
@@ -290,9 +288,9 @@ def invite_message(email, url, name = None):
     return ("\n".join(lines)).format(name = name, url = url)
 
 def invite_message_unsupported(email, url, name = None):
-    lines = ["Hi {name}! Welcome to WattTime!",
+    lines = ["Hi {name}, welcome to WattTime!",
             "",
-            "We're excited that you're joining us to build a cleaner energy economy.",
+            "We're excited that you're thinking about joining us in building a cleaner energy economy.",
             "",
             "Right now, our service is only available in California and New England. But we're growing fast! As soon as we're available in your area, we'll send you a note so you can set up an account if you like.",
             "",
@@ -310,7 +308,7 @@ def resend_login_message(name, url):
             "",
             "You can log in to your account at {url}.",
             "",
-            "Thanks!",
+            "Cheers,",
             "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, url = url)
 
@@ -330,25 +328,26 @@ def alpha_completed(name):
     return ("\n".join(lines)).format(name = name)
 
 def morning_forecast_email(name, best_hour, worst_hour):
-    lines = ["Good Morning {name}!",
+    lines = ["Good Morning {name}",
         "",
-        "Today's clean power peak for California arrives at {best}, while the dirtiest electricity is at {worst}.",
+        "Today between 7am and 11pm, there will be a clean power peak at {best}, while the dirtiest energy will come at {worst}.",
         "",
-        "It takes a while for cleaner energy to get going during the day, and we use a lot of energy in the morning just to get our day started. What practices could you shift to late afternoon or evening?",
+        "Whatever you do today, make it amazing. More info always available at http://watttime.com/status",
         "",
-        "California's clean energy forecast is always available at http://watttime.com/status",
         "",
+        "Because everything you do matters,",
         "Your Friends at WattTime"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst=worst_hour)
 
 def morning_forecast_email_first(name, best_hour, worst_hour):
     lines = ["Good morning {name}!",
         "",
-        "Welcome to the WattTime morning forecast! Today's clean power peak for California arrives at {best}, while the dirtiest electricity is at {worst}. Do you normally perform any energy-intensive practices at {worst}? What could you easily shift to later in the day?",
+        "Welcome to your first WattTime morning forecast! Today from 8am-10pm, California's electricity will be cleanest at {best} and dirtiest at {worst}. Can you find a way to save your energy around {worst}?",
         "",
         "You can always see the daily clean energy outlook for California or other regions at http://watttime.com/status (updated hourly)",
         "",
-        "Questions? Feedback? Write us at this email address or at the website.",
+        "Questions? Feedback? You can write us at this address at any time.",
         "",
-        "-The WattTime Team"]
+        "Because everything you do matters,",
+        "The WattTime Team"]
     return ("\n".join(lines)).format(name = name, best = best_hour, worst = worst_hour)
