@@ -334,7 +334,7 @@ def morning_forecast_email(name, best_hour, worst_hour):
         "",
         "Today's clean power peak for California arrives at {best}, while the dirtiest electricity is at {worst}.",
         "",
-        "It takes a while for cleaner energy to get going during the day, and we use a lot of energy in the morning just to get our day started. What practices could you shift to late afternoon that critical in the morning?",
+        "It takes a while for cleaner energy to get going during the day, and we use a lot of energy in the morning just to get our day started. What practices could you shift to late afternoon or evening?",
         "",
         "California's clean energy forecast is always available at http://watttime.com/status",
         "",
