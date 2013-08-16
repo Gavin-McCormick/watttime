@@ -132,7 +132,7 @@ def prepare_to_send_ca_texts():
 
     # Dirty texts
     dirty_start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
-    dirty_end = start + datetime.timedelta(hours = 14) # 10pm PST
+    dirty_end = dirty_start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
     worst_time = min(rows, key = (lambda r : r.fraction_green)).date
@@ -143,7 +143,7 @@ def prepare_to_send_ca_texts():
 
     # Clean texts
     clean_start = convert_tz(now_ca.replace(hour = 17), utc) # 5pm PST
-    clean_end = start + datetime.timedelta(hours = 5) # 10pm PST
+    clean_end = clean_start + datetime.timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
     best_time = max(rows, key = (lambda r : r.fraction_green)).date
@@ -160,7 +160,7 @@ def send_ne_texts_if_necessary():
     is_daytime = (9 <= now_ne.hour < 17)
     is_evening = (17 <= now_ne.hour < 22)
 
-    fuel = NE.obejcts.all().latest().marginal_fuel
+    fuel = NE.objects.all().latest().marginal_fuel
     fuel_name = MARGINAL_FUELS[fuel]
     # 0 = coal
     # 1 = oil
