@@ -41,7 +41,6 @@ class UserProfile(models.Model):
     ne_settings         = models.ForeignKey(ne_model, blank = True, null = True)
     null_settings       = models.ForeignKey(null_model, blank = True, null = True)
 
-    # TODO remove
     equipment           = config.config_equipment.model_field
 
     def supported_location(self):
@@ -113,6 +112,12 @@ class UserProfile(models.Model):
         vals['phone_verified'] = self.is_verified
         vals['phone_blank'] = (len(self.phone) == 0)
         return vals
+
+    def set_equipment(self, xs):
+        self.equipment = config.config_equipment.python_to_model(xs)
+
+    def get_equipment(self):
+        return config.config_equipment.model_to_python(self.equipment)
 
     def local_now(self):
          # TO DO make it work for other states
