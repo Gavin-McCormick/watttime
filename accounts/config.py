@@ -17,6 +17,9 @@ class ConfigType:
     def form_to_model(self, value):
         return value
 
+    def python_to_model(self, value):
+        return value
+
     def model_to_form(self, value):
         return value
 
@@ -32,6 +35,9 @@ class ConfigType:
     def save_form_to_model(self, model, form):
         if self.name in form:
             setattr(model, self.name, self.form_to_model(form[self.name]))
+    def save_python_to_model(self, model, vals):
+        if self.name in form:
+            setattr(model, self.name, self.python_to_model(vals[self.name]))
 
     # Override this method if you need custom loading behavior. Doing so
     # makes the function 'model_to_form' irrelevant.
@@ -101,6 +107,9 @@ class ConfigMultichoice(ConfigType):
 
     def form_to_model(self, value):
         return ','.join(x for x in value)
+
+    def python_to_model(self, value):
+        return ','.join(str(x) for x in value)
 
     def model_to_form(self, value):
         if value:
