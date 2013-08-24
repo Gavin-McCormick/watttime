@@ -189,7 +189,7 @@ action_unusually_clean_home_generic = [
     "What appliances or equipment should you run now instead of later?"]
 
 ne_criterion_dirty = [
-    "Dirty {fuel} power is at it's peak. This should only last an hour."]
+    "Dirty {fuel} power is at its peak. This should only last an hour."]
 ne_criterion_clean = [
     "Cleaner {fuel} power is at its peak. This should only last an hour."]
 
