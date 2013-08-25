@@ -39,3 +39,6 @@ nosetests.xml
 
 #vi
 *.swp
+
+# data directory for the thermostat code
+thermo/data
