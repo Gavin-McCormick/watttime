@@ -142,7 +142,7 @@ def run():
         except:
             traceback.print_exc()
 
-        time.sleep(5 * 60)
+        time.sleep(c.update_frequency * 60)
 
 if __name__ == "__main__":
     run()

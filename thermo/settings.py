@@ -137,6 +137,7 @@ supported_isos = ['isone', 'bpa', 'caiso']
 class Settings:
     def __init__(self,
             iso                 = 'isone',
+            update_frequency    = 5,
             timezone            = 'UTC',
             fahrenheit          = True,
             thermostat          = None):
@@ -144,5 +145,8 @@ class Settings:
             raise ValueError("Unknown ISO {}. Supported ISOs are: {}".
                     format(iso, ', '.join(supported_isos)))
         self.iso = iso.lower()
+        if update_frequency < 1:
+            raise ValueError("Can't update more than once a minute.")
+        self.update_frequency = update_frequency
         self.timezone = pytz.timezone(timezone)
         self.thermostat = thermostat

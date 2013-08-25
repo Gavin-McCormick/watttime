@@ -104,6 +104,19 @@ config = Settings(
 
         iso                     = 'isone',
 
+# Specify how often, in minutes, you would like the controller to check the
+# status of the electric grid at the WattTime website and update the current
+# thermostat temperature setting. The frequency with which the website updates
+# varies from region to region:
+#
+# isone - updates every 10 minutes
+# caiso - updates every hour
+# bpa - updates every hour
+#
+# Default is 5 minutes.
+
+        update_frequency        = 5,
+
 # 'timezone' should be the name of a time zone in the IANA time zone database
 # https://en.wikipedia.org/wiki/IANA_time_zone_database
 # Examples:
