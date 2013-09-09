@@ -1,7 +1,7 @@
 from django.db import models
 import pytz
 from .managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorityManager
-from .settings import MARGINAL_FUELS
+from .settings import MARGINAL_FUELS, FORECAST_CODES
 #from accounts.models import User
 
 class BaseBalancingAuthority(models.Model):
@@ -116,6 +116,10 @@ class CAISO(BaseForecastedBalancingAuthority):
         return (self.wind + self.solar) / self.load
 
     @property
+    def fraction_wind(self):
+        return self.wind / self.load
+
+    @property
     def fraction_high_carbon(self):
         return 1.0 - self.fraction_green
 
@@ -152,6 +156,10 @@ class BPA(BaseBalancingAuthority):
         return self.wind / self.total_load
 
     @property
+    def fraction_wind(self):
+        return self.wind / self.total_load
+
+    @property
     def fraction_high_carbon(self):
         return self.thermal / self.total_load
 
@@ -185,8 +193,62 @@ class NE(BaseBalancingAuthority):
         return (self.hydro + self.other_renewable) / self.total_load
 
     @property
+    def fraction_wind(self):
+        return self.other_renewable / self.total_load
+
+    @property
     def fraction_high_carbon(self):
         return (self.coal) / self.total_load
+        
+
+class MISO(BaseForecastedBalancingAuthority):
+    # use non-forecasted manager
+    objects = BaseBalancingAuthorityManager()
+
+    # timezone        
+    TIMEZONE = pytz.timezone('America/Chicago')
+
+    # forecast type is the index in FORECAST_CODES
+    forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
+
+    # generation and load in MW
+    gas = models.FloatField()
+    nuclear = models.FloatField()
+    other_gen = models.FloatField() # Hydro, Pumped Storage Hydro, Diesel, Demand Response Resources, External Asynchronous Resources and a varied assortment of solid waste, garbage and wood pulp burners
+    coal = models.FloatField()
+    wind = models.FloatField()
+    load = models.FloatField()
+
+    # date is utc
+    date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from MISO
+    date_extracted = models.DateTimeField(db_index=True)
+
+    @property
+    def marginal_fuel(self):
+        """Integer code for marginal fuel"""
+        # implement this as an actual field for BAs with data
+        return MARGINAL_FUELS.index('None')
+
+    @property
+    def total_load(self):
+        return self.load
+        
+    @property
+    def total_gen(self):
+        return self.gas + self.coal + self.nuclear + self.wind + self.other_gen
+
+    @property
+    def fraction_green(self):
+        return (self.wind) / self.total_gen
+        
+    @property
+    def fraction_wind(self):
+        return (self.wind) / self.total_gen
+
+    @property
+    def fraction_high_carbon(self):
+        return (self.coal) / self.total_gen       
 
 
 class User(models.Model):
