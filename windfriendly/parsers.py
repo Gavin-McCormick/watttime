@@ -116,7 +116,6 @@ class CAISOParser(UtilityParser):
             for dp in datapoints:
                 success = self.datapoint_to_db(dp)
                 if success:
-                    print success, FORECAST_CODES[forecast_code]
                     n_stored_points += 1
             new_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
 
@@ -124,6 +123,7 @@ class CAISOParser(UtilityParser):
             to_return[forecast_code] = {'prior_latest_date' : str(old_latest_date),
                                         'update_rows' : n_stored_points,
                                         'latest_date' : str(new_latest_date),
+                                        'ba': 'CAISO',
                                         }
         
         # return
@@ -233,11 +233,11 @@ class CAISOParser(UtilityParser):
             if energy_type == self.TOTAL_CODE:
                 try:
                     tac_col = df['TAC_AREA_NAME']
+                    total_index = tac_col.index[tac_col == 'CA ISO-TAC']
                 except KeyError:
                     msg = 'No tac found for %s %s.' % (energy_type, forecast_type)
-                    #raise KeyError(msg)
+                   # raise KeyError(msg)
                     continue
-                total_index = tac_col.index[tac_col == 'CA ISO-TAC']
             else:
                 total_index = None
             
@@ -285,6 +285,8 @@ class CAISOParser(UtilityParser):
         for key in ['load', 'wind', 'solar']:
             if key not in dp.keys():
                 return False
+        if not dp['load'] > 0:
+            return False
            
         if dp['forecast_type'] == self.ACTUAL_CODE:
             # store actual data only if it's not there already
@@ -422,7 +424,8 @@ class BPAParser(UtilityParser):
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.MODEL.objects.all().latest().date)
+          'latest_date' : str(self.MODEL.objects.all().latest().date),
+          'ba': 'BPA',
         }
 
 
@@ -499,7 +502,7 @@ class NEParser(UtilityParser):
         except ValueError: # failed to parse time
             pass
 
-        return {}
+        return {'ba': 'ISONE'}
         
 
 class MISOParser(UtilityParser):
@@ -539,10 +542,10 @@ class MISOParser(UtilityParser):
         to_return = {'prior_latest_date' : str(old_latest_date),
                      'update_rows' : n_stored_points,
                      'latest_date' : str(new_latest_date),
+                     'ba': 'MISO',
                     }
         
         # return
-        print to_return
         return to_return
 
     def scrape(self, url):
