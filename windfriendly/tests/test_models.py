@@ -119,7 +119,7 @@ class BPATestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'marginal_fuel': 9, 'percent_dirty': 5.369, 'load_MW': 13094.0,
+                             {'marginal_fuel': 9, 'percent_dirty': 5.369, 'load_MW': 5076.0, 'gen_MW': 13094.0,
                               'percent_green': 0.909, 'local_time': '2013-06-23 01:00',
                               'utc_time': '2013-06-23 08:00'})
 
@@ -148,7 +148,7 @@ class CAISOTestCase(BaseBATestCase, TestCase):
         self.assertDictEqual(row.to_dict(),
                              {'percent_green': 8.297, 'marginal_fuel': 9,
                              'date_extracted': '2013-06-29 23:48', 'forecast_code': 0,
-                             'percent_dirty': 91.703, 'load_MW': 30374.0,
+                             'percent_dirty': 91.703, 'load_MW': 30374.0, 'gen_MW': 30374.0,
                              'utc_time': '2013-06-29 07:00', 'local_time': '2013-06-29 00:00'})
 
 
@@ -174,6 +174,6 @@ class NETestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'load_MW': 14644.099999999997, 'local_time': '2013-06-30 10:58',
+                             {'load_MW': 14644.099999999997, 'gen_MW': 14644.099999999997, 'local_time': '2013-06-30 10:58',
                              'marginal_fuel': 2, 'percent_dirty': 0.0, 'percent_green': 11.293,
                              'utc_time': '2013-06-30 14:58'})
