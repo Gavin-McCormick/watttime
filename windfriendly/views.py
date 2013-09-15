@@ -213,8 +213,8 @@ def greenest_subrange(request):
     best_rows, best_timepair, best_green, baseline_green = result
 
     # return
-    return {'recommended_start': best_timepair[0],
-            'recommended_end': best_timepair[1],
+    return {'recommended_start': best_timepair[0].isoformat(),
+            'recommended_end': best_timepair[1].isoformat(),
             'recommended_fraction_green': best_green,
             'baseline_fraction_green': baseline_green,
             'date_created': date_created

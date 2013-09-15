@@ -17,8 +17,8 @@ The <code>greenest_subrange</code> view in the windfriendly app is also relevant
 For example:
     '''
     $ curl "http://localhost:8000/greenest_subrange/?st=CA&time_range_hours=12&usage_hours=3"
-    {'recommended_start': datetime.datetime(2013, 9, 15, 7, 0, tzinfo=<UTC>), 'recommended_fraction_green': 0.062227287573985268, 'recommended_end': datetime.datetime(2013, 9, 15, 10, 0, tzinfo=<UTC>), 'baseline_fraction_green': 0.058149527336833352, 'date_created': datetime.datetime(2013, 9, 15, 0, 34, 6, 458584, tzinfo=<UTC>)}"
-    $ curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"ba": 0, "recommended_start": "2013-09-15T07:00", "recommended_fraction_green": 0.062227287573985268, "baseline_fraction_green": 0.058149527336833352, "date_created": "2013-09-15T00:34:06", "requested_by": null, "time_range_hours": 12.0, "usage_hours": 3.0}' http://localhost:8000/api/v1/shift/
+    {'recommended_start': '2013-09-15T06:00:00+00:00', 'recommended_fraction_green': 0.062227287573985268, 'recommended_end': '2013-09-15T06:00:00+00:00', 'baseline_fraction_green': 0.058149527336833352, 'date_created': '2013-09-15T00:34:06+00:00')}"
+    $ curl --dump-header - -H "Content-Type: application/json" -X POST --data '{"ba": 0, "recommended_start": "2013-09-15T06:00:00+00:00", "recommended_fraction_green": 0.062227287573985268, "baseline_fraction_green": 0.058149527336833352, "date_created": "2013-09-15T00:34:06", "requested_by": null, "time_range_hours": 12.0, "usage_hours": 3.0}' http://localhost:8000/api/v1/shift/
     HTTP/1.0 201 CREATED
     Date: Sun, 15 Sep 2013 00:42:26 GMT
     Server: WSGIServer/0.1 Python/2.7.4
