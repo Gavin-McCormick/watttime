@@ -123,6 +123,7 @@ Here are the cheat sheet versions:
 * get "best guess" data (actual data or most recent forecast data) between 12AM today and 12AM tomorrow in the BA's local time: <code>/today/?st=[ST]</code>
 * get an average day of data by aggregating the historical period by hour (e.g., the hour 14 data is the average of the data on each day at 2PM): <code>/averageday/?st=[ST]&start=[YYYYmmDDHHSS]&end=[YYYYmmDDHHSS]</code>
 * get max and min alerts for the historical period: <code>/alerts/?st=[ST]&start=[YYYYmmDDHHSS]&end=[YYYYmmDDHHSS]</code>
+* get the greenest subrange of length <code>usage_hours</code> out of the next <code>time_range_hours</code> (to be used with the watttime_shift app): <code>/greenest_subrange/?st=[ST]&time_range_hours=[float]&usage_hours=[float]</code>
 
 All start and end date-time arguments are optional and are in UTC. Use the two-letter state code in <code>st=[ST]</code>, or replace with <code>ba=[BA_NAME]</code>.
 

@@ -186,6 +186,39 @@ def averageday(request):
 
     # return
     return sorted(data, key=lambda r: r['local_time'])
+    
+@json_response
+def greenest_subrange(request):
+    """Get cleanest subrange using objects.greenest_subrange"""
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_name is None:
+        raise ValueError("No balancing authority found, check location arguments.")
+        
+    # get other args from request
+    time_range_hours = float(request.GET.get('time_range_hours', 0))
+    if not time_range_hours > 0:
+        raise ValueError('Must provide time_range_hours arg')
+    usage_hours = float(request.GET.get('usage_hours', 0))
+    if not usage_hours > 0:
+        raise ValueError('Must provide usage_hours arg')
+
+    # calculate result
+    date_created = pytz.utc.localize(datetime.utcnow())
+    requested_end = date_created + timedelta(hours=time_range_hours)
+    requested_timedelta = timedelta(hours=usage_hours)
+    result = BA_MODELS[ba_name].objects.greenest_subrange(date_created, requested_end,
+                                                          requested_timedelta)
+    best_rows, best_timepair, best_green, baseline_green = result
+
+    # return
+    return {'recommended_start': best_timepair[0].isoformat(),
+            'recommended_end': best_timepair[1].isoformat(),
+            'recommended_fraction_green': best_green,
+            'baseline_fraction_green': baseline_green,
+            'date_created': date_created
+            }
 
 @json_response
 def today(request):

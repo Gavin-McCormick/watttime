@@ -71,7 +71,6 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
     ('Gavin "typo" McCormick', 'gavin.mccormick+watttimeadmin@gmail.com'),
     ('Anna Schneider', 'annarschneider+watttimeadmin@gmail.com'),
-    ('Eric Stansifer', 'eric.stansifer+watttimeadmin@gmail.com'),
 )
 SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS

@@ -3,17 +3,14 @@ watttime
 
 How green is your energy, right now?
 
+API
+------
+Check the READMEs in the windfriendly and watttime_shift apps for API documentation.
+
 
 Install
 -------
 * Clone this repo.
-* Install the [Heroku toolbelt](https://toolbelt.heroku.com/), then:
-    ````
-    cd watttime
-    heroku login
-    heroku git:remote -a watttime
-    ````
-
 * Install dependencies: Install pip from http://www.pip-installer.org/en/latest/installing.html (bottom of page under "Installing from source"), then
     ````
     sudo pip install -r requirements.txt
@@ -28,6 +25,8 @@ Install
     ````
 
 * Set up environment variables in your environment (for example in your .bashrc file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
+* If you have been given deploy permissions, install the [Heroku toolbelt](https://toolbelt.heroku.com/) and add watttime as a Heroku remote. If you don't know what this is about, don't worry about it :)
+
 
 Upgrade
 ---------
