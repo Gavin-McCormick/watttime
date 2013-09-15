@@ -303,7 +303,7 @@ ALLOW_NEW_REGISTRATIONS = True
 
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
-GOOGLE_ANALYTICS_DOMAIN = 'herokuapp.com'
+GOOGLE_ANALYTICS_DOMAIN = 'watttime.com'
 
 # Cross-Origin Resource Sharing
 CORS_ORIGIN_ALLOW_ALL = True
