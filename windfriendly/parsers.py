@@ -235,7 +235,8 @@ class CAISOParser(UtilityParser):
                     tac_col = df['TAC_AREA_NAME']
                 except KeyError:
                     msg = 'No tac found for %s %s.' % (energy_type, forecast_type)
-                    raise KeyError(msg)
+                    #raise KeyError(msg)
+                    continue
                 total_index = tac_col.index[tac_col == 'CA ISO-TAC']
             else:
                 total_index = None
@@ -281,9 +282,10 @@ class CAISOParser(UtilityParser):
     def _is_datapoint_to_store(self, dp):
         """Returns bool for whether or not to store this data point in db"""
         # reject if invalid data
-        if not dp['load'] > 0:
-            return False
-            
+        for key in ['load', 'wind', 'solar']:
+            if key not in dp.keys():
+                return False
+           
         if dp['forecast_type'] == self.ACTUAL_CODE:
             # store actual data only if it's not there already
             qset = self.MODEL.objects.filter(date=dp['timestamp'],
@@ -410,7 +412,10 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.MODEL.objects.all().latest().date if self.update_latest else None
+        try:
+            latest_date = self.MODEL.objects.all().latest().date
+        except AttributeError: # if no data
+            latest_date = None
         update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
@@ -525,7 +530,10 @@ class MISOParser(UtilityParser):
             success = self.datapoint_to_db(dp)
             if success:
                 n_stored_points += 1
-        new_latest_date = self.MODEL.objects.latest().date
+        try:
+            new_latest_date = self.MODEL.objects.latest().date
+        except AttributeError: # if no preexisting data
+            new_latest_date = None
 
         # log
         to_return = {'prior_latest_date' : str(old_latest_date),

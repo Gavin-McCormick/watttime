@@ -153,20 +153,23 @@ def averageday(request):
             # get average data
             total_green = 0
             total_dirty = 0
-            total_load = 0
+            total_gen = 0
+            count = 0.0
             for r in group:
-                total_green += r.fraction_green
-                total_dirty += r.fraction_high_carbon
-                total_load += r.total_load
-            average_green = round(total_green*100/group.count(), 3)
-            average_dirty = round(total_dirty*100/group.count(), 3)
-            average_load = total_load/group.count()
+                if r.total_gen > 0: # don't try to handle bad data
+                    total_green += r.fraction_green
+                    total_dirty += r.fraction_high_carbon
+                    total_gen += r.total_gen
+                    count += 1.0
+            average_green = round(total_green*100/count, 3)
+            average_dirty = round(total_dirty*100/count, 3)
+            average_gen = total_gen/count
             representative_date = group.latest().local_date.replace(minute=0)
         else:
             # get null data
             average_green = None
             average_dirty = None
-            average_load = None
+            average_gen = None
             representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
 
         # complicated date wrangling to get all local_time values in local today
@@ -178,7 +181,7 @@ def averageday(request):
         # add to list
         data.append({'percent_green': average_green,
                      'percent_dirty': average_dirty,
-                     'load_MW': average_load,
+                     'gen_MW': average_gen,
                      'utc_time': utc_time.strftime('%Y-%m-%d %H:%M'),
                      'local_time': local_time.strftime('%Y-%m-%d %H:%M'),
                      'hour': local_time.hour,
@@ -281,9 +284,9 @@ def alerts(request):
     data['highest_green'] = sorted_green[0].to_dict()
     sorted_dirty = sorted(ba_rows, key=lambda r : r.fraction_high_carbon, reverse=True)
     data['highest_dirty'] = sorted_dirty[0].to_dict()
-    sorted_load = sorted(ba_rows, key=lambda r : r.total_load, reverse=True)
-    data['highest_load'] = sorted_load[0].to_dict()
-    data['lowest_load'] = sorted_load[-1].to_dict()
+    sorted_gen = sorted(ba_rows, key=lambda r : r.total_gen, reverse=True)
+    data['highest_gen'] = sorted_gen[0].to_dict()
+    data['lowest_gen'] = sorted_gen[-1].to_dict()
     sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)
     data['worst_marginal'] = sorted_marginal[0].to_dict()
    # data['best_marginal'] = sorted_marginal[-1].to_dict() TODO: use best non-None marginal

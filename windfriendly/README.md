@@ -3,10 +3,11 @@ Overview
 <code>windfriendly</code> is a reusable (i.e., standalone) app that handles scraping, processing, and retrieving functionality
 for renewable energy generation data from Independent System Operators (ISOs) and other balancing authorities (BAs).
 
-Currently, three BAs are supported:
+Currently, four BAs are supported:
 * CAISO: California
 * BPA: Washington, Oregon, Idaho
 * ISONE: Massachusetts, Maine, Vermont, New Hampshire, Connecticut, Rhode Island
+* MISO: much of the Midwest and Great Lakes
 
 In this app, each BA is associated with:
 * a parser that scrapes the data (in <code>parsers.py</code>)
@@ -22,7 +23,7 @@ The standard JSON API is built with [Tastypie](http://django-tastypie.readthedoc
 
     /api/v1/[BA_NAME]/?format=json
 
-where <code>[BA_NAME]</code> is one of 'caiso', 'bpa', or 'isone'.
+where <code>[BA_NAME]</code> is one of 'caiso', 'bpa', 'isone', or 'miso'.
 
 The following filters are available:
 * limit: default is one day's worth of data

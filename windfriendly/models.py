@@ -18,6 +18,7 @@ class BaseBalancingAuthority(models.Model):
         return {'percent_green': round(self.fraction_green*100, 3),
                 'percent_dirty': round(self.fraction_high_carbon*100, 3),
                 'load_MW': self.total_load,
+                'gen_MW': self.total_gen,
                 'marginal_fuel': self.marginal_fuel,
                 'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
@@ -42,8 +43,20 @@ class BaseBalancingAuthority(models.Model):
         return 0.0
 
     @property
+    def total_gen(self):
+        """Total generation on the grid, in MW"""
+        # implement this in daughter classes
+        return 0.0
+
+    @property
     def fraction_green(self):
-        """Fraction of load that is 'green', whatever that means"""
+        """Fraction of generation that is 'green', whatever that means"""
+        # implement this in daughter classes
+        return 0
+
+    @property
+    def fraction_wind(self):
+        """Fraction of generation that is from wind"""
         # implement this in daughter classes
         return 0
 
@@ -73,6 +86,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
         return {'percent_green': round(self.fraction_green*100, 3),
                 'percent_dirty': round(self.fraction_high_carbon*100, 3),
                 'load_MW': self.total_load,
+                'gen_MW': self.total_gen,
                 'marginal_fuel': self.marginal_fuel,
                 'forecast_code': self.forecast_code,
                 'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
@@ -112,12 +126,23 @@ class CAISO(BaseForecastedBalancingAuthority):
         return float(self.load)
 
     @property
+    def total_gen(self):
+        """TODO: just a wrapper for load"""
+        return float(self.load)
+
+    @property
     def fraction_green(self):
-        return (self.wind + self.solar) / self.load
+        try:
+            return (self.wind + self.solar) / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_wind(self):
-        return self.wind / self.load
+        try:
+            return self.wind / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_high_carbon(self):
@@ -148,20 +173,33 @@ class BPA(BaseBalancingAuthority):
         return MARGINAL_FUELS.index('None')
 
     @property
-    def total_load(self):
+    def total_gen(self):
         return float(self.wind + self.hydro + self.thermal)
 
     @property
+    def total_load(self):
+        return float(self.load)
+
+    @property
     def fraction_green(self):
-        return self.wind / self.total_load
+        try:
+            return self.wind / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_wind(self):
-        return self.wind / self.total_load
+        try:
+            return self.wind / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_high_carbon(self):
-        return self.thermal / self.total_load
+        try:
+            return self.thermal / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
 
 # All units are megawatts
@@ -185,20 +223,34 @@ class NE(BaseBalancingAuthority):
     date = models.DateTimeField(db_index=True)
 
     @property
-    def total_load(self):
+    def total_gen(self):
         return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
 
     @property
+    def total_load(self):
+        """TODO: Just a wrapper around total generation for now"""
+        return self.total_gen
+
+    @property
     def fraction_green(self):
-        return (self.hydro + self.other_renewable) / self.total_load
+        try:
+            return (self.hydro + self.other_renewable) / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_wind(self):
-        return self.other_renewable / self.total_load
+        try:
+            return self.other_renewable / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_high_carbon(self):
-        return (self.coal) / self.total_load
+        try:
+            return (self.coal) / self.total_gen
+        except ZeroDivisionError:
+            return 0
         
 
 class MISO(BaseForecastedBalancingAuthority):
@@ -240,15 +292,24 @@ class MISO(BaseForecastedBalancingAuthority):
 
     @property
     def fraction_green(self):
-        return (self.wind) / self.total_gen
+        try:
+            return (self.wind) / self.total_gen
+        except ZeroDivisionError:
+            return 0
         
     @property
     def fraction_wind(self):
-        return (self.wind) / self.total_gen
+        try:
+            return (self.wind) / self.total_gen
+        except ZeroDivisionError:
+            return 0
 
     @property
     def fraction_high_carbon(self):
-        return (self.coal) / self.total_gen       
+        try:
+            return (self.coal) / self.total_gen       
+        except ZeroDivisionError:
+            return 0
 
 
 class User(models.Model):

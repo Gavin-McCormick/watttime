@@ -21,6 +21,6 @@ from windfriendly.balancing_authorities import BA_PARSERS
 class ParserTestCase(TestCase):
     def test_all(self):
         self.assertIsNotNone(BA_PARSERS['MISO']().update())
-      #  self.assertIsNotNone(BA_PARSERS['BPA']().update())
+        self.assertIsNotNone(BA_PARSERS['BPA']().update())
         self.assertIsNotNone(BA_PARSERS['NE']().update())
         self.assertIsNotNone(BA_PARSERS['CAISO']().update())
