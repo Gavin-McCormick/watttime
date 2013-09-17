@@ -179,12 +179,12 @@ def averageday(request):
         utc_time = local_time.astimezone(pytz.utc)
 
         # add to list
-        data.append({'percent_green': average_green,
-                     'percent_dirty': average_dirty,
-                     'gen_MW': average_gen,
-                     'utc_time': utc_time.strftime('%Y-%m-%d %H:%M'),
-                     'local_time': local_time.strftime('%Y-%m-%d %H:%M'),
-                     'hour': local_time.hour,
+        data.append({"percent_green": average_green,
+                     "percent_dirty": average_dirty,
+                     "gen_MW": average_gen,
+                     "utc_time": utc_time.strftime('%Y-%m-%d %H:%M'),
+                     "local_time": local_time.strftime('%Y-%m-%d %H:%M'),
+                     "hour": local_time.hour,
                     })
 
     # return
@@ -216,11 +216,11 @@ def greenest_subrange(request):
     best_rows, best_timepair, best_green, baseline_green = result
 
     # return
-    return {'recommended_start': best_timepair[0].isoformat(),
-            'recommended_end': best_timepair[1].isoformat(),
-            'recommended_fraction_green': best_green,
-            'baseline_fraction_green': baseline_green,
-            'date_created': date_created
+    return {"recommended_start": best_timepair[0].isoformat(),
+            "recommended_end": best_timepair[1].isoformat(),
+            "recommended_fraction_green": best_green,
+            "baseline_fraction_green": baseline_green,
+            "date_created": date_created.isoformat(),
             }
 
 @json_response
@@ -379,15 +379,17 @@ def average_usage_for_period(request, userid):
 
     # return data
     data = {
-      'userid': userid,
-      'ba': ba_name,
-      'percent_green': round(percent_green,3),
-      'total_kwh': total_kwhs,
-      'buckets': results
+      "userid": userid,
+      "ba": ba_name,
+      "percent_green": round(percent_green,3),
+      "total_kwh": total_kwhs,
+      "buckets": results
       }
     return data
 
 _epoch = datetime(2000, 1, 1, tzinfo = pytz.utc)
+
+
 class ToggleFeed(Feed):
     title = "Toggle every hour feed"
     link = "/"
