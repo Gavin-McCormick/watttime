@@ -15,25 +15,51 @@
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
 from django.conf.urls import patterns, url
+from django.views.generic import TemplateView, RedirectView
 from . import views
 
+# tools
 urlpatterns = patterns('',
-    url(r'^faq[/]?$',
-        views.faq, name='faq'),
-    url(r'^signed_up[/]?$',
-        views.signed_up, name='signed_up'),
-    url(r'^signed_up_future[/]?$',
-        views.signed_up_future, name='signed_up_future'),
-    url(r'^contact[/]?$',
-        views.contact, name='contact'),
-    url(r'^contact/thankyou[/]?$',
-        views.thankyou, name='contact_thank_you'),
-    url(r'^about-us[/]?$',
-        views.about_us, name='about-us'),
-    url(r'^how-it-works[/]?$',
-        views.how_it_works, name='how-it-works'),
-    url(r'^terms-of-service[/]?$',
-        views.terms_of_service, name='terms-of-service'),
-    url(r'^status[/]?$',
+    url(r'^status[/]$',
         views.status, name='status'),
+    url(r'^status/faq[/]$',
+        TemplateView.as_view(template_name='pages/status_faq.html'), name='status_faq'),
+    url(r'^alerts/about[/]$',
+        TemplateView.as_view(template_name='pages/alerts_about.html'), name='alerts_about'),
+    url(r'^alerts/faq[/]$',
+        TemplateView.as_view(template_name='pages/alerts_faq.html'), name='alerts_faq'),
+)
+
+# tactics
+urlpatterns += patterns('',
+    url(r'^how-it-works[/]$',
+        TemplateView.as_view(template_name='pages/how_it_works.html'), name='how-it-works'),
+    url(r'^impact[/]$',
+        TemplateView.as_view(template_name='pages/impact.html'), name='impact'),
+)
+
+# team
+urlpatterns += patterns('',
+    url(r'^about-us[/]$',
+        TemplateView.as_view(template_name='pages/about_us.html'), name='about-us'),
+    url(r'^join-us[/]$',
+        TemplateView.as_view(template_name='pages/join_us.html'), name='join-us'),
+    url(r'^partner[/]$',
+        TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
+)
+
+# other
+urlpatterns += patterns('',
+    url(r'^faq[/]$',
+        TemplateView.as_view(template_name='pages/faq.html'), name='faq'),
+    url(r'^signed_up[/]$',
+        TemplateView.as_view(template_name='pages/signed_up.html'), name='signed_up'),
+    url(r'^signed_up_future[/]$',
+        TemplateView.as_view(template_name='pages/signed_up_future.html'), name='signed_up_future'),
+    url(r'^contact[/]$',
+        views.contact, name='contact'),
+    url(r'^contact/thankyou[/]$',
+        TemplateView.as_view(template_name='pages/contact_thank_you.html'), name='contact_thank_you'),
+    url(r'^terms-of-service[/]$',
+        TemplateView.as_view(template_name='pages/terms_of_service.html'), name='terms-of-service'),
 )
