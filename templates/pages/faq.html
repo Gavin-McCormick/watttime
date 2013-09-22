@@ -1,167 +1,223 @@
 {% extends "base.html" %}
 
-{% block title %}FAQ{% endblock %}
+{% block title %}WattTime: FAQ{% endblock %}
 
 {% block content %}
 
-<h2>The Details</h2>
+<h2>FAQ</h2>
 </br>
-<div class="accordion well" id="accordion2">
+
+<div class="accordion well" id="accordion-gen">
+<h4 class="text-info">General</h4>
+
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-		<blockquote><p class="text-info">What is WattTime?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseOne" class="accordion-body collapse">
-      <div class="accordion-inner">
-		<p class="text-info">WattTime helps you make informed decisions about energy use. Similar to many municipal information systems, WattTime uses a text message notification service to inform you when your energy source is particularly dirty or particularly clean. Coming soon: other services to give you even more control over where your power comes from.</p>
-	  </div>
-    </div>
-  </div>
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-<blockquote><p class="text-info">How does it work?</p></blockquote>
-      </a>
-    </div>
-    <div id="collapseTwo" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">Most modern electricity markets in America are run like giant auctions, with power traded in a single market across large regions. WattTime tracks goings-on in these markets in real time, bringing you information about the current sources of power in different markets. That way you can decide whether it's a good time to buy power by using electricity (e.g. by running the dishwasher, charging your electronic devices, or turning on a power strip). Future versions will track more precise details about these markets, bringing you ever greater flexibility and impact in your ability to have a say in how these markets work.</p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-<blockquote><p class="text-info">What does the service cost?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseThree" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">WattTime is free! Please note however that the current version of WattTime does send occasional text messages (you control the frequency), so if you pay to receive and send text messages, normal rates may apply. Please check with your carrier.</p>
-	  </div>
-    </div>
-  </div>
-  
-  
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
-<blockquote><p class="text-info">Are you available in my region?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseFour" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">Currently we are available in California and New England
-        (Massachusetts, Conneticut, Rhode Island, Vermont, New Hampshire, and Maine).
-        If you'd like to be notified when we are available in your state, just sign up on our main page! In the meantime, if you live in California, New England, or the Pacific Northwest, you can still see how clean electricity is in your are at any time by visiting our <a href="{% url 'status' %}">status</a> page.</p>
-	  </div>
-    </div>
-  </div>
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">
-<blockquote><p class="text-info">How do I unsubscribe or change my settings?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseFive" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">To change your settings, including unsubscribing, just <a href="{% url 'user_login' %}">log in</a> and edit your preferences.</p>
-	  </div>
-    </div>
-  </div>
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">
-<blockquote><p class="text-info">What's your privacy policy?</p></blockquote>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseSix">
+        <blockquote><p class="text-info">What's your privacy policy?</p></blockquote>
 	    </a>
     </div>
     <div id="collapseSix" class="accordion-body collapse">
       <div class="accordion-inner">
-<p class="text-info">We will never, ever, sell, share or publish any individually identifiable information without your explicit consent. That includes your contact information - no spam here. We do collect anonymous user data and may eventually publish any important findings in scientific journals. We believe that rigorous scientific research and people-centered design can be an important tool in the fight against climate change. But we take anonymity seriously!</p> 
+        <p class="text-info">
+            We will never, ever, sell, share or publish any individually identifiable
+            information without your explicit consent. That includes your contact
+            information—no spam here. We do collect anonymous user data and may eventually
+            publish any important findings in scientific journals. We believe that rigorous
+            scientific research and people-centered design can be an important tool in the
+            fight against climate change. But we take anonymity seriously!
+        </p> 
 	  </div>
     </div>
   </div>
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSeven">
-<blockquote><p class="text-info">Are you a private company?</p></blockquote>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseSeven">
+        <blockquote><p class="text-info">Are you a private company?</p></blockquote>
 	    </a>
     </div>
     <div id="collapseSeven" class="accordion-body collapse">
       <div class="accordion-inner">
-<p class="text-info">Right now we are just a small group of dedicated individuals trying to do some good in the world on our own time. We may eventually incorporate if we conclude that is the best way to ensure that we can continue to make our service relevant and effective. But our top priority is and will remain to help energy consumers make decisions according to their own values. We believe that when people can freely choose their energy sources it can have a big impact in the fight against climate change.</p>
+        <p class="text-info">
+            Right now we are just a small group of dedicated individuals trying todo some
+            good in the world on our own time. We may eventually incorporate if we conclude
+            that is the best way to ensure that we can continue to make our service relevant
+            and effective. But our top priority is and will remain to help energy consumers
+            make decisions according to their own values. We believe that when people can
+            freely choose their energy sources it can have a big impact in the fight against
+            climate change.
+        </p>
 	  </div>
     </div>
   </div>
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseEight">
-<blockquote><p class="text-info">Why do you need pilot testing?</p></blockquote>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEight">
+        <blockquote><p class="text-info">Why do you need pilot testing?</p></blockquote>
 	    </a>
     </div>
     <div id="collapseEight" class="accordion-body collapse">
       <div class="accordion-inner">
-<p class="text-info">Every good product and service needs prototyping, iteration, and testing to be the best it can be. As far as we have been able to determine, this is a fundamentally novel approach to fighting climate change. While ours is not the first project to give users information about the cleanliness of electricity, our approach is fundamentally different “under the hood” because it leverages real-time marginal rather than average environmental information, dramatically increasing the impact of your actions. While our novel design works according to economic theory, we never fully trust theory until it is backed up by hard data and experience. (And neither should you!) Our pilot testing and research will help validate the concept and provide critical insight for scaling WattTime to improve energy futures for millions of users.</p>
+        <p class="text-info">
+            Every good product and service needs prototyping, iteration, and testing to be
+            the best it can be. As far as we have been able to determine, this is a
+            fundamentally novel approach to fighting climate change. While ours is not the
+            first project to give users information about the cleanliness of electricity,
+            our approach is fundamentally different “under the hood” because it leverages
+            real-time marginal rather than average environmental information, dramatically
+            increasing the impact of your actions. While our novel design works according to
+            economic theory, we never fully trust theory until it is backed up by hard data
+            and experience. (And neither should you!) Our pilot testing and research will help
+            validate the concept and provide critical insight for scaling WattTime to improve
+            energy futures for millions of users.
+        </p>
 	  </div>
     </div>
   </div>
-  
-    <div class="accordion-group">
+  <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseNine">
-<blockquote><p class="text-info">What are your future plans?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseNine" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">Text messages are just one source of information that can trigger dynamic shifts in our energy consumption habits. We know many Americans have both the motivation and the ability to make a lasting, positive impact on our future energy security. That’s why we are working to build even more convenient ways for you to find out and leverage precise, meaningful about your regional energy status. With these additional capabilities, we aim to increase your choices and convenience for taking control of your own energy future.</p>
-	  </div>
-    </div>
-  </div>
-  
-    <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTen">
-<blockquote><p class="text-info">Why do you want to know about my appliances?</p></blockquote>
-	    </a>
-    </div>
-    <div id="collapseTen" class="accordion-body collapse">
-      <div class="accordion-inner">
-<p class="text-info">Our goal is to give you maximum control over the environmental impacts of your own energy use in as convenient a fashion as possible.  Different kinds of appliances are convenient to control in different ways - for example sometimes laundry can wait until tomorrow, but you probably wouldn’t want to turn off your thermostat for a whole day!  The more we know about your appliances, the more convenient our messaging can be, and the more relevant to you. But we’re only asking to help tailor your experience. If you’d rather not tell us about your particular equipment, you are welcome to opt for the generic messages instead.</p>
-	  </div>
-    </div>
-  </div>
-  
-    <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseEleven">
-<blockquote><p class="text-info">I’m having a problem. How do I troubleshoot?</p></blockquote>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEleven">
+        <blockquote><p class="text-info">I’m having a problem. How do I troubleshoot?</p></blockquote>
 	    </a>
     </div>
     <div id="collapseEleven" class="accordion-body collapse">
       <div class="accordion-inner">
-<p class="text-info">You can reach us via the <a href="{% url 'contact'%}">contact page</a>. We’re happy to help!</p>
+        <p class="text-info">
+            You can reach us via the <a href="{% url 'contact'%}">contact page</a>. We’re
+            happy to help!
+        </p>
+	  </div>
+    </div>
+  </div>  
+
+</div> <!-- end general -->
+
+<div class="accordion well" id="accordion-accounts">
+<h4 class="text-info">Accounts</h4>
+</div> <!-- end accounts -->
+
+<div class="accordion well" id="accordion-alerts">
+<h4 class="text-info">Alerts</h4>
+
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseThree">
+        <blockquote><p class="text-info">What does the WattTime Alerts cost?</p></blockquote>
+	    </a>
+    </div>
+    <div id="collapseThree" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p class="text-info">
+            WattTime Alerts is free! Please note however that WattTime Alerts can
+            send occasional text messages (you control the frequency), so if you pay to
+            receive and send text messages, normal rates may apply. Please check with your
+            carrier.
+        </p>
 	  </div>
     </div>
   </div>
-  
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwelve">
-<blockquote><p class="text-info">I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</p></blockquote>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFour">
+        <blockquote><p class="text-info">Is WattTime Alerts available in my region?</p></blockquote>
+	    </a>
+    </div>
+    <div id="collapseFour" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p class="text-info">
+            Currently Alerts by SMS are available in California and New England (Massachusetts,
+            Conneticut, Rhode Island, Vermont, New Hampshire, and Maine).
+            Forecast Alerts by email are also available in California.
+            If you'd like to be notified when we are available in your state,
+            just sign up on our main page!
+            In the meantime, if you live in California, New England, or the Pacific Northwest,
+            you can still see how clean electricity is in your region at any time by visiting
+            our <a href="{% url 'status' %}">status</a> page.
+        </p>
+	  </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFive">
+        <blockquote><p class="text-info">How do I unsubscribe or change my settings?</p></blockquote>
+	    </a>
+    </div>
+    <div id="collapseFive" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p class="text-info">
+            To change your settings, including unsubscribing from Alerts, just
+            <a href="{% url 'user_login' %}">log in</a> and edit your preferences.
+        </p>
+	  </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTen">
+        <blockquote><p class="text-info">Why do you want to know about my appliances?</p></blockquote>
+	    </a>
+    </div>
+    <div id="collapseTen" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p class="text-info">
+            Our goal is to give you maximum control over the environmental impacts of your
+            own energy use in as convenient a fashion as possible. Different kinds of
+            appliances are convenient to control in different ways—for example sometimes
+            laundry can wait until tomorrow, but you probably wouldn’t want to turn off your
+            thermostat for a whole day! The more we know about your appliances, the more
+            convenient our messaging can be, and the more relevant to you. But we’re only
+            asking to help tailor your experience. If you’d rather not tell us about your
+            particular equipment, you are welcome to opt for the generic messages instead.
+        </p>
+	  </div>
+    </div>
+  </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTwelve">
+        <blockquote><p class="text-info">I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</p></blockquote>
 	    </a>
     </div>
     <div id="collapseTwelve" class="accordion-body collapse">
       <div class="accordion-inner">
-<p class="text-info">We contact you when the grid is particularly clean or dirty, but of course we can't control exactly when that will be. In fact the electricity fuel mix can be quite unpredictable, depending on everything from weather to the strategies of different power plants. (Otherwise we could just hand out calendars!) We’ll do our best not to text you more than about the amount you signed up for, but some days the grid is pretty average all day and there’s just not much to report. You can always see the recent status at our grid <a href="{% url 'status' %}">status page</a>.</p>
+        <p class="text-info">
+            We contact you when the grid is particularly clean or dirty,
+            but of course we can't control exactly when that will be. In fact the electricity
+            fuel mix can be quite unpredictable, depending on everything from weather to the
+            strategies of different power plants. (Otherwise we could just hand out calendars!)
+            We’ll do our best not to text you more than about the amount you signed up for,
+            but some days the grid is pretty average all day and there’s just not much to
+            report. You can always see the recent status at our grid
+            <a href="{% url 'status' %}">status page</a>.
+        </p>
 	  </div>
     </div>
   </div>
-</div>
 
+</div> <!-- end alerts -->
+
+<div class="accordion well" id="accordion-status">
+<h4 class="text-info">Status</h4>
+
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFour">
+        <blockquote><p class="text-info">Is WattTime Status available in my region?</p></blockquote>
+	    </a>
+    </div>
+    <div id="collapseFour" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p class="text-info">
+            Currently WattTime Status is available in California, New England, and the Pacific
+            Northwest.
+            If you'd like to be notified when we are available in your state,
+            just sign up on our main page!
+        </p>
+	  </div>
+    </div>
+  </div>
+
+</div> <!-- end status -->
 
 
 </div>

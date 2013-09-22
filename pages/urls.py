@@ -22,12 +22,8 @@ from . import views
 urlpatterns = patterns('',
     url(r'^status[/]$',
         views.status, name='status'),
-    url(r'^status/faq[/]$',
-        TemplateView.as_view(template_name='pages/status_faq.html'), name='status_faq'),
-    url(r'^alerts/about[/]$',
-        TemplateView.as_view(template_name='pages/alerts_about.html'), name='alerts_about'),
-    url(r'^alerts/faq[/]$',
-        TemplateView.as_view(template_name='pages/alerts_faq.html'), name='alerts_faq'),
+    url(r'^alerts/home[/]$',
+        TemplateView.as_view(template_name='pages/alerts_home.html'), name='alerts_home'),
 )
 
 # tactics
