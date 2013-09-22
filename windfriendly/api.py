@@ -64,7 +64,7 @@ class BalancingAuthorityResource(ModelResource):
     gen_MW = fields.FloatField(readonly=True,
                                help_text="Total MW of electricty generation")
     def dehydrate_gen_MW(self, bundle):
-        return bundle.obj.total_load
+        return bundle.obj.total_gen
 
     # marginal fuel code
     marginal_fuel = fields.IntegerField(readonly=True,
@@ -117,6 +117,14 @@ class CAISOResource(BalancingAuthorityResource):
         queryset = model.objects.all()
         limit = 24 # 24 hours of hourly data
         
+
+class MISOResource(BalancingAuthorityResource):
+    """ Resource for MISO model """
+    class Meta(BalancingAuthorityResource.Meta):
+        resource_name = 'miso'
+        model = BA_MODELS[resource_name.upper()]
+        queryset = model.objects.all()
+        limit = 12*24 # 24 hours of 5-minute data
       
 # list of all resource classes
-BA_RESOURCES = [BPAResource, ISONEResource, CAISOResource]
+BA_RESOURCES = [BPAResource, ISONEResource, CAISOResource, MISOResource]

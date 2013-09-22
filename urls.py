@@ -54,8 +54,7 @@ urlpatterns += patterns('',
 
 # features patterns
 urlpatterns += patterns('',
-    url(r'^shift[/]$',
-        'watttime_shift.views.shift', name='shift'),
+    url(r'',  include('watttime_shift.urls')),
 )
 
 # pages patterns
