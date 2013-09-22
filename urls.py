@@ -59,36 +59,10 @@ urlpatterns += patterns('',
 )
 
 # pages patterns
-urlpatterns += patterns('pages.views',
-    url(r'^faq[/]?$',
-        'faq', name='faq'),
-    url(r'^signed_up[/]?$',
-        'signed_up', name='signed_up'),
-    url(r'^signed_up_future[/]?$',
-        'signed_up_future', name='signed_up_future'),
-    url(r'^contact[/]?$',
-        'contact', name='contact'),
-    url(r'^contact/thankyou[/]?$',
-        'thankyou', name='contact_thank_you'),
-    url(r'^about-us[/]?$',
-        'about_us', name='about-us'),
-    url(r'^how-it-works[/]?$',
-        'how_it_works', name='how-it-works'),
-    url(r'^terms-of-service[/]?$',
-        'terms_of_service', name='terms-of-service'),
-    url(r'^status[/]?$',
-        'status', name='status'),
-    url(r'^NE_status[/]?$',
-        'NE_status', name='NE_status'),
-    url(r'^CA_status[/]?$',
-        'CA_status', name='CA_status'),
-    url(r'^BPA_status[/]?$',
-        'BPA_status', name='BPA_status'),
-    url(r'^facebook_pilot[/]?$',
-        'facebook_pilot', name='facebook_pilot'),
-    url(r'^sierra_pilot[/]?$',
-        'sierra_pilot', name='sierra_pilot'),
+urlpatterns += patterns('',
+    url(r'',  include('pages.urls')),
 )
+
 handler500 = 'pages.views.server_error'
 handler404 = 'pages.views.notfound_error'
 
