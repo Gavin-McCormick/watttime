@@ -233,22 +233,7 @@
    						
   						<div class="span5"> 
 
-  						<form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
-                        
-                    	<p class="fieldWrapper ">
-                        <!--<label>Please send us your email to get you started.</label>
-                        <span class="help-block">Example block-level help text here.</span>        
-						<span class="help-inline">{{ form.email.errors }}</span> -->
-
-						{{ form.email.errors }}
-                    	{{ form.email }} 
-                                                      	
-                        {{ form.state.errors }}
-                        {{ form.state }}
-
-                    	</p>           
-  						<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
-                        </form> 
+  						{% include "accounts/signup_form_snippet.html" with form=signup_form %}
                         </br>
                                                                                                     
                     	<p class="lead text-info"><small>WattTime is currently available for California and New England. You can still sign up if you live elsewhere. We'll update you when we become available in your region.</small></p>

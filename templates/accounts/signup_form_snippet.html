@@ -1,0 +1,15 @@
+<form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
+                        
+    <p class="fieldWrapper ">
+
+        {{ form.email.errors }}
+        {{ form.email }} 
+                                                      	
+        {{ form.state.errors }}
+        {{ form.state }}
+
+    </p>           
+ 
+   <input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
+
+</form>

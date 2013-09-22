@@ -37,7 +37,7 @@ def frontpage(request):
     
     # return
     return render(request, 'index.html',
-            {'form' : form, 'current_green' : greenery})
+            {'signup_form' : form, 'current_green' : greenery})
 
 def status(request):
     user = request.user
