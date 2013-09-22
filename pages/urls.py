@@ -46,6 +46,8 @@ urlpatterns += patterns('',
 
 # other
 urlpatterns += patterns('',
+    url(r'^placeholder[/]$',
+        TemplateView.as_view(template_name='pages/placeholder.html'), name='placeholder'),
     url(r'^faq[/]$',
         TemplateView.as_view(template_name='pages/faq.html'), name='faq'),
     url(r'^signed_up[/]$',
