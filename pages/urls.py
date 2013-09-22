@@ -18,8 +18,14 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView
 from . import views
 
-# tools
+# home
 urlpatterns = patterns('',
+    url(r'^[/]?$',
+        views.frontpage, name='home'),
+)
+
+# tools
+urlpatterns += patterns('',
     url(r'^status[/]$',
         views.status, name='status'),
     url(r'^alerts/home[/]$',

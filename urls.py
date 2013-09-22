@@ -27,13 +27,10 @@ admin.autodiscover()
 
 # basic patterns
 urlpatterns = patterns('',
-    url(r'^[/]?$',
-        # 'accounts.views.profile_create', name='home'),
-        'accounts.views.frontpage', name='home'),
-    url(r'^data_text/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
-        'workers.views.data_text_view', name='data_text'),
-    url(r'^data_json/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
-        'workers.views.data_json_view', name='data_json'),
+  #  url(r'^data_text/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+  #      'workers.views.data_text_view', name='data_text'),
+  #  url(r'^data_json/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+  #      'workers.views.data_json_view', name='data_json'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
@@ -52,7 +49,7 @@ urlpatterns += patterns('',
 #    url(r'accounts[/]',  include('invitation.urls')),
 #)
 
-# features patterns
+# tools patterns
 urlpatterns += patterns('',
     url(r'',  include('watttime_shift.urls')),
 )

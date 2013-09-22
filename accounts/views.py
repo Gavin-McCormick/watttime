@@ -341,18 +341,6 @@ def profile_view(request):
         print ("User not authenticated")
         return redirect('user_login')
 
-def frontpage(request):
-    if CAISO.objects.count() == 0:
-        parser = CAISOParser()
-        parser.update()
-    datum = CAISO.objects.all().filter(forecast_code=0).latest()
-    percent_green = datum.fraction_green * 100.0
-    greenery = str(int(percent_green + 0.5)) + '%'
-
-    form = forms.SignupForm(initial = {'state' : u'CA'})
-    return render(request, 'index.html',
-            {'form' : form, 'current_green' : greenery})
-
 def set_active(request, new_value):
     user = request.user
     if user.is_authenticated():

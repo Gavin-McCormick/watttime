@@ -1,18 +1,43 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from models import ContactForm
-from django.template import RequestContext
-from django import forms
-from django.forms.widgets import *
 from django.core.mail import send_mail, BadHeaderError
 from django.core.urlresolvers import reverse
 from settings import EMAIL_HOST_USER
+
+from models import ContactForm
+from accounts.forms import SignupForm
+from windfriendly.balancing_authorities import BA_MODELS, BA_PARSERS, BALANCING_AUTHORITIES
 
 def server_error(request):
     return render(request, 'pages/500.html')
 
 def notfound_error(request):
     return render(request, 'pages/404.html')
+
+def frontpage(request):
+    # set state
+    # TODO get from user location
+    state = 'CA'
+    
+    # get ba for state
+    ba_name = BALANCING_AUTHORITIES[state]
+    ba = BA_MODELS[ba_name]
+    ba_parser = BA_PARSERS[ba_name]
+    
+    # get current percent green
+    if ba.objects.count() == 0:
+        parser = ba_parser()
+        parser.update()
+    datum = ba.objects.all().filter(forecast_code=0).latest()
+    percent_green = datum.fraction_green * 100.0
+    greenery = str(int(percent_green + 0.5)) + '%'
+
+    # set up signup form
+    form = SignupForm(initial = {'state' : u'%s' % state})
+    
+    # return
+    return render(request, 'index.html',
+            {'form' : form, 'current_green' : greenery})
 
 def status(request):
     user = request.user
