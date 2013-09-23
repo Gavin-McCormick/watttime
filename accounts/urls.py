@@ -15,6 +15,7 @@
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
 from django.conf.urls import patterns, url
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = patterns('',
@@ -42,4 +43,8 @@ urlpatterns = patterns('',
         views.deactivate, name='deactivate'),
     url(r'^reactivate[/]?$',
         views.reactivate, name='reactivate'),
+    url(r'^signed_up[/]$',
+        TemplateView.as_view(template_name='accounts/signed_up.html'), name='signed_up'),
+    url(r'^signed_up_future[/]$',
+        TemplateView.as_view(template_name='accounts/signed_up_future.html'), name='signed_up_future'),
 )
