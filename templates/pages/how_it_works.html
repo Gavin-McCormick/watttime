@@ -1,12 +1,79 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}WattTime: How It Works{% endblock %}
 
 {% block content %}
 
-<h2>How WattTime Works</h2>
-<br>
-<div class="well">
+	<div class="full-width-features feature-1">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h1>WattTime is Built for You</h1>
+
+					<h2>WattTime is designed to support and enhance your lifestyle <br class="hidden-phone"> while fostering a cleaner energy economy. It’s more than a message. It's a movement.</h2>
+
+				</div>
+
+			</div>
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-medal"></i>
+
+					<h3>Empowering</h3>
+
+					<p>WattTime creates options for you to exert more control over your clean energy choices. Find out what works for you.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-demo"></i>
+
+					<h3>Easy and relevant</h3>
+
+					<p>WattTime is free and easy to use. Getting started is quick, and timely messages ensure that you get relevant information.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<i class="icon-features-mini icon-income"></i>
+
+					<h3>Big impact</h3>
+
+					<p>By shifting a few of your tasks–even just a little–your energy consumption can have a big impact. WattTime helps you direct that impact where it's most needed.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<img src="{% static "images/icon-sunflowerBW.png" %}" width="38" >
+
+					<h3>A resilient future</h3>
+
+					<p>Join others and create the clean energy economy. Help build a more resilient future, and use collective action to power the world.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
 <!--<p>
     <p class="text-info">
         Imagine buying food from someone who wouldn't tell you where it came from. The finest
@@ -70,5 +137,5 @@ WattTime works by affecting whatever power plants are economically marginal at a
 <li>
 We’re glad you asked! There are many programs out there that already try to get people to save energy at peak time. Often utilities justify these programs by talking about the environment. And in some circumstances, they really can help the environment a little. But that’s not why they’re doing it! Real-time pricing is completely determined by money.  During peak times electricity is more expensive in wholesale markets, and utilities are trying to cut costs. In many cases that can actually be worse for the environment. At WattTime, we’re here to give you control over your environmental impact, so we don’t focus on peak times unless they happen to be dirty times as well.</li>
 -->
-</div>
+
 {% endblock %}
