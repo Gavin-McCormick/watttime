@@ -175,7 +175,7 @@ profile_first_edit = ProfileFirstEdit()
 
 phone_verify_view = PhoneVerifyView()
 
-user_login = LoginView()
+#user_login = LoginView()
 
 create_user = CreateUserView()
 
@@ -191,6 +191,17 @@ def new_phone_verification_number():
     return random.randint(100000, 999999)
 
 # TODO all this code needs proper logging and error handling, not using 'print'
+
+def user_login(request):
+    # set up forms
+    signup_form = forms.SignupForm(initial = {'state' : u'%s' % 'CA'})
+    login_form = forms.LoginForm()
+    
+    # return
+    return render(request, 'accounts/login.html',
+            {'signup_form' : signup_form,
+             'login_form' : login_form})
+    
 
 def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email__iexact = email)

@@ -1,25 +1,30 @@
 {% extends "base.html" %}
-{% block title %}WattTime{% endblock %}
+{% block title %}WattTime: Log in{% endblock %}
 
 {% block content %}
 
-<h2>Welcome Back!</h2>
+<h2>Welcome!</h2>
 </br></br>
-<div class="alert alert-block alert-success"><p class="lead text-success">Enter your email address and password below to login into your existing WattTime account.</p>
+<div class="span5 alert alert-block alert-success">
+    <p class="lead text-success">
+        Log in to your existing WattTime account:
+    </p>
 
-<form action="{% url 'user_login' %}" method="post" class="form-inline">{% csrf_token %}
-    <p class="fieldWrapper">
-        {{ form.email.errors }}
-        {{ form.email }}
+    {% include "accounts/login_form_snippet.html" with form=login_form %}
 
-        {{ form.password.errors }}
-        {{ form.password }}
-   <input type="submit" class="btn btn-awesome" name="login" value="Login" /></p>
-</form>
+    <p class="text-success"><small>
+        Forget your password? Just enter your email, leave the password blank,
+        and click Login to receive an account recovery email.
+    </small></p>
 </div>
 
-<p class="lead text-info alert alert-block alert-info">Don't have an account yet? You can sign up on the <a href="{% url 'home' %}">main page</a>.
-</br>Forget your password? Just enter your email and click Login to receive an account recovery email.</p>
+<div class="span5 alert alert-block alert-info">
+    <p class="lead text-info">
+        Don't have an account yet? You can sign up right here:
+    </p>
+    
+    {% include "accounts/signup_form_snippet.html" with form=signup_form %}
+</div>
 
 {% endblock %}
 
