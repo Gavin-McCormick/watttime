@@ -63,31 +63,8 @@ handler500 = 'pages.views.server_error'
 handler404 = 'pages.views.notfound_error'
 
 # accounts patterns
-urlpatterns += patterns('accounts.views',
-    # url(r'^signup[/]?$', 
-    #     'accounts.views.profile_create', name='profile_create'),
-    url(r'^magic_invite/(?P<email>[a-zA-Z0-9._+@-]+)[/]?$',
-        'http_invite', name='http_invite'),
-    url(r'^magic_invite/(?P<email>[a-zA-Z0-9._+@-]+)/(?P<name>[a-zA-Z 0-9._+@-]+)[/]?$',
-        'http_invite_with_name', name='http_invite_with_name'),
-    url(r'^profile/(?P<magic_login_code>[0-9]+)[/]?$',
-        'magic_login', name='magic_login'),
-    url(r'^login[/]?$',
-        'user_login', name='user_login'),
-    url(r'^profile[/]?$',
-        'profile_view', name='profile_view'),
-    url(r'^profile/edit[/]?$',
-        'profile_edit', name='profile_edit'),
-    url(r'^profile/first_edit[/]?$',
-        'profile_first_edit', name='profile_first_edit'),
-    url(r'^profile/verify_phone[/]?$',
-        'phone_verify_view', name='phone_verify_view'),
-    url(r'^california_signup[/]?$',
-        'create_user', name='create_user'),
-    url(r'^deactivate[/]?$',
-        'deactivate', name='deactivate'),
-    url(r'^reactivate[/]?$',
-        'reactivate', name='reactivate'),
+urlpatterns += patterns('',
+    url(r'', include('accounts.urls')),
 )
 
 # windfriendly API patterns

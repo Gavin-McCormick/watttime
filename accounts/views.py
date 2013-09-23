@@ -4,8 +4,6 @@ from accounts import models, forms, messages, twilio_utils, regions
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
-from windfriendly.models import CAISO
-from windfriendly.parsers import CAISOParser
 import random
 from django.utils.timezone import now
 from django.core.mail import send_mail
