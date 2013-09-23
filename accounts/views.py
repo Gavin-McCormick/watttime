@@ -175,7 +175,7 @@ profile_first_edit = ProfileFirstEdit()
 
 phone_verify_view = PhoneVerifyView()
 
-#user_login = LoginView()
+user_login = LoginView()
 
 create_user = CreateUserView()
 
@@ -192,13 +192,13 @@ def new_phone_verification_number():
 
 # TODO all this code needs proper logging and error handling, not using 'print'
 
-def user_login(request):
+def authenticate(request):
     # set up forms
     signup_form = forms.SignupForm(initial = {'state' : u'%s' % 'CA'})
     login_form = forms.LoginForm()
     
     # return
-    return render(request, 'accounts/login.html',
+    return render(request, 'accounts/authenticate.html',
             {'signup_form' : signup_form,
              'login_form' : login_form})
     
