@@ -12,7 +12,7 @@
 <head>
 
 {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
-  {% include "pages/google_analytics.html" %}
+  {% include "base_snippets/google_analytics.html" %}
 {% endif %}
 
 <title>WattTime</title>
@@ -23,135 +23,15 @@
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-
-<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
-
-
-<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
-
-
-<!-- Le fav and touch icons 
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
--->
-<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
-
-
-
-<!-- font links here -->
-
-<!-- <link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" /> -->
-
-<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
-
-<link href='//fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-
-
-<!--[if lt IE 9]>
-
-	<link rel="stylesheet" type="text/css" href="{% static "css/ie8.css" %}" />
-
-<![endif]-->
-
-<!--[if lt IE 98>
-
-	<link rel="stylesheet" type="text/css" href="{% static "css/ie7.css" %} " />
-
-<![endif]-->
-
-
-<!-- scripts for making things pretty and functional-->
-
-<script src="{% static "js/jquery-1.10.2.min.js" %}"></script>
-
-<script src="{% static "js/bootstrap.js" %} "></script>
-
-<!-- <script src="{% static "js/bootstrap.min.js" %} "></script> -->
-
-<!-- <script src="{% static "js/jquery-1.8.2.min.js" %} "></script> -->
-
-<script src="{% static "js/jquery.easing.1.3.js" %} "></script>
-
-<script src="{% static "js/masonry.min.js" %} "></script>
-
-<script src="{% static "js/jquery.watermark.min.js" %} "></script>
-
-<script src="{% static "js/waypoints.min.js" %} "></script>
-
-<script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
-
-<script src="{% static "js/respond.min.js" %} "></script>
-
+<!-- links to stylesheets and scripts for making things pretty and functional-->
+{% include "base_snippets/head_links.html" %}
+{% include "base_snippets/head_scripts.html" %}
 
 </head>
 
 <body name="top">
     
-
-		<!-- Navbar
-    ================================================== -->
-   <div class="navbar navbar-inverse">
-    <div class="navbar-inner">
-     <div class="container">
- 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-          <a class="brand" href="{% url 'home' %}">
-			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
-			</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav nav-pills pull-right">
-            
-            <li class="dropdown">
-                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="icon-signal"></i> STATUS</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><i class="icon-time"></i> SHIFT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-bell"></i> ALERTS</a></li>
-				</ul>
-              </li>
-              
-              <li class="dropdown">
-                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">ABOUT <i class="icon-bullhorn icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> THE TEAM</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="icon-envelope"></i> CONTACT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'faq' %}"><i class="icon-book"></i> RESOURCES</a></li>
-				</ul>
-              </li>
-              
-              <li class="">
-				<a href="{% url 'faq' %}">HELP <i class="icon-question-sign icon-white"></i></a>
-              </li>    
-                     
-              <li class="dropdown">
-              {% if user.is_authenticated %}
-               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="icon-cog icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
-      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-user"></i> SETTINGS</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="icon-off"></i> LOG OUT</a></li>
-                </ul>
-              {% else %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN</a></li>
-              {% endif %}
-              
-                      <!--       </ul></li>  -->
-            </ul>
-            
-          </div>
-        </div>
-      </div>
-    </div>				
-    
-		
+    {% include "base_snippets/navbar.html" %}
 
 <!-- Main Splash Header -->
 
@@ -420,83 +300,7 @@
 
 	</div>
 
-	<div class="shield">
-
-		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
-
-	</div>
-
-		
-
-<div class="footer" name="contact">
-
-	<div class="container">
-
-		<div class="copyright">
-
-			<a href="{% url 'home' %}" class="logo">
-
-				<img src="{% static "images/WattTimeWordLogo.png" %}" alt="WattTime" width="120">
-
-			</a>
-
-			<p>
-
-				Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013. <a href="{% url 'terms-of-service' %}">Terms of Service</a><br> 
-
-				Built in Berkeley, California with composted parts from around the world.
-
-			</p>
-
-		</div>
-
-		<div class="social-policies">
-
-			<ul class="links">
-
-				<li class="contact">
-
-					<a href="mailto:watttime.app@gmail.com" class="">Contact</a>
-
-				</li>
-
-				<!-- <li class="blog">
-
-					<a href="//watttime.com/blog">Blog</a>
-
-				</li> -->
-
-				<li class="facebook">
-
-					<a href="//www.facebook.com/wattTimeApp">Facebook</a>
-
-				</li>
-
-				<li class="twitter">
-
-					<a href="//twitter.com/watttime">Twitter</a>
-
-				</li>
-
-			</ul>
-
-			<!--
-
-			<div class="policies">
-
-				<a href="http://watttime.com/privacy-policy">Privacy Policy</a> &bull; <a href="#">Terms of Use</a>
-
-			</div>
-
-			-->
-
-		</div>
-
-	</div>
-
-
-	</div>
-
+{% include "base_snippets/footer.html" %}
 
 </body>
 
