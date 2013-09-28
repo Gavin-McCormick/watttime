@@ -12,35 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Sam Marcellus, Anna Schneider, Kevin Yang
+# Authors: Anna Schneider
 
 from django.conf.urls import patterns, url, include
 from tastypie.api import Api
 from . import views
-from .api import BA_RESOURCES
+from .api import ShiftResource
 
 
 v1_api = Api(api_name='v1')
-for bar in BA_RESOURCES:
-    v1_api.register(bar())
+v1_api.register(ShiftResource())
 
 # tastypie resource urls
 urlpatterns = patterns('',
     (r'^api/', include(v1_api.urls)),
 )
 
-# windfriendly API patterns
+# features patterns
 urlpatterns += patterns('',
-    url(r'^update/(?P<utility>[a-zA-Z0-9_-]+)[/]?$',
-        views.update, name='update'),
-    url(r'^today[/]?$',
-        views.today, name='today'),
-    url(r'^averageday[/]?$',
-        views.averageday, name='averageday'),
-    url(r'^greenest_subrange[/]?$',
-        views.greenest_subrange, name='greenest_subrange'),
-    url(r'^feed/toggle[/]?$',
-        views.ToggleFeed(), name='toggle_feed'),
-    url(r'^alerts[/]?$',
-        views.alerts, name='alerts'),
+    url(r'^shift[/]$',
+        views.shift, name='shift'),
 )

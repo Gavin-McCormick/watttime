@@ -3,17 +3,14 @@ watttime
 
 How clean is your energy, right now?
 
+API
+------
+Check the READMEs in the windfriendly and watttime_shift apps for API documentation.
+
 
 Install
 -------
 * Clone this repo.
-* Install the [Heroku toolbelt](https://toolbelt.heroku.com/), then:
-    ````
-    cd watttime
-    heroku login
-    heroku git:remote -a watttime
-    ````
-
 * Install dependencies: Install pip from http://www.pip-installer.org/en/latest/installing.html (bottom of page under "Installing from source"), then
     ````
     sudo pip install -r requirements.txt
@@ -27,7 +24,9 @@ Install
     # if migrate asks you to delete anything, say no then rerun the command
     ````
 
-* Set up environment variables in your environment (for example in your .bashrc file). The list of environmental variables that need to be externally set can be found at the top of the settings.py file. Create a file called .bashrc in your root directory. You can do this by opening your shell and tying ````touch .bashrc````. Edit this file by typing ````vi .bashrc````. You can then paste the environmental variables. Hit ````esc```` and ````:x```` to exit. In MacOS you may need to add the line ````source ~/.bashrc```` to .bash_profile file in your home directory. This directs it to look at .bashrc for the list of environment variables.
+* Set up environment variables in your environment (for example in your .bashrc file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
+* If you have been given deploy permissions, install the [Heroku toolbelt](https://toolbelt.heroku.com/) and add watttime as a Heroku remote. If you don't know what this is about, don't worry about it :)
+
 
 Upgrade
 ---------

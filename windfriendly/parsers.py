@@ -24,7 +24,7 @@ import datetime
 import pytz
 import pandas
 
-from .models import BPA, NE, CAISO, MeterReading, User
+from .models import BPA, NE, CAISO, MISO, MeterReading, User
 from .settings import MARGINAL_FUELS, FORECAST_CODES
 
 import xml.etree.ElementTree as ET
@@ -116,7 +116,6 @@ class CAISOParser(UtilityParser):
             for dp in datapoints:
                 success = self.datapoint_to_db(dp)
                 if success:
-                    print success, FORECAST_CODES[forecast_code]
                     n_stored_points += 1
             new_latest_date = self.MODEL.objects.filter(forecast_code=FORECAST_CODES[forecast_code]).latest().date
 
@@ -124,6 +123,7 @@ class CAISOParser(UtilityParser):
             to_return[forecast_code] = {'prior_latest_date' : str(old_latest_date),
                                         'update_rows' : n_stored_points,
                                         'latest_date' : str(new_latest_date),
+                                        'ba': 'CAISO',
                                         }
         
         # return
@@ -233,10 +233,11 @@ class CAISOParser(UtilityParser):
             if energy_type == self.TOTAL_CODE:
                 try:
                     tac_col = df['TAC_AREA_NAME']
+                    total_index = tac_col.index[tac_col == 'CA ISO-TAC']
                 except KeyError:
                     msg = 'No tac found for %s %s.' % (energy_type, forecast_type)
-                    raise KeyError(msg)
-                total_index = tac_col.index[tac_col == 'CA ISO-TAC']
+                   # raise KeyError(msg)
+                    continue
             else:
                 total_index = None
             
@@ -281,9 +282,12 @@ class CAISOParser(UtilityParser):
     def _is_datapoint_to_store(self, dp):
         """Returns bool for whether or not to store this data point in db"""
         # reject if invalid data
+        for key in ['load', 'wind', 'solar']:
+            if key not in dp.keys():
+                return False
         if not dp['load'] > 0:
             return False
-            
+           
         if dp['forecast_type'] == self.ACTUAL_CODE:
             # store actual data only if it's not there already
             qset = self.MODEL.objects.filter(date=dp['timestamp'],
@@ -410,14 +414,18 @@ class BPAParser(UtilityParser):
         b.save()
 
     def update(self):
-        latest_date = self.MODEL.objects.all().latest().date if self.update_latest else None
+        try:
+            latest_date = self.MODEL.objects.all().latest().date
+        except AttributeError: # if no data
+            latest_date = None
         update = self.getBPA(latest_date)
         for row in update:
             self.writeBPA(row)
         return {
           'prior_latest_date' : str(latest_date),
           'update_rows' : len(update),
-          'latest_date' : str(self.MODEL.objects.all().latest().date)
+          'latest_date' : str(self.MODEL.objects.all().latest().date),
+          'ba': 'BPA',
         }
 
 
@@ -494,7 +502,153 @@ class NEParser(UtilityParser):
         except ValueError: # failed to parse time
             pass
 
-        return {}
+        return {'ba': 'ISONE'}
+        
+
+class MISOParser(UtilityParser):
+    def __init__(self):
+        self.MODEL = MISO
+        self.BASE_URL = 'https://www.misoenergy.org/ria/'
+        self.LOAD_CODE = 'load'
+        self.GEN_CODE = 'gen'
+        self.URLS = {self.LOAD_CODE: self.BASE_URL + 'ptpTotalLoad.aspx?format=xml',
+                     self.GEN_CODE: self.BASE_URL + 'FuelMix.aspx?XML=True'}
+        self.TZ = self.MODEL.TIMEZONE
+        
+    def update(self):
+        # return data
+        to_return = {}
+        
+        # scrape and parse data
+        streams = {code : self.scrape(self.URLS[code]) for code in [self.LOAD_CODE, self.GEN_CODE]}
+        datapoints = self.parse(streams)
+        
+        # save to db
+        try:
+            old_latest_date = self.MODEL.objects.latest().date
+        except AttributeError: # if no preexisting data
+            old_latest_date = None
+        n_stored_points = 0
+        for dp in datapoints:
+            success = self.datapoint_to_db(dp)
+            if success:
+                n_stored_points += 1
+        try:
+            new_latest_date = self.MODEL.objects.latest().date
+        except AttributeError: # if no preexisting data
+            new_latest_date = None
+
+        # log
+        to_return = {'prior_latest_date' : str(old_latest_date),
+                     'update_rows' : n_stored_points,
+                     'latest_date' : str(new_latest_date),
+                     'ba': 'MISO',
+                    }
+        
+        # return
+        return to_return
+
+    def scrape(self, url):
+        # Make request for data
+        try:
+            xmlf = requests.get(url).text
+        except requests.exceptions.RequestException:
+            xmlf = urllib2.urlopen(url).read()
+
+        # return
+        return xmlf
+        
+    def parse(self, streams):
+        # set up storage
+        # datapoints[timestamp] = datapoint
+        datapoints = {}
+
+        # parse each stream independently
+        data_sets = [self._parse_gen(streams[self.GEN_CODE]),
+                     self._parse_load(streams[self.LOAD_CODE])]
+        
+        # add data to datapoints
+        for ds in data_sets:
+            for ts, data_dict in ds.iteritems():
+                try:
+                    datapoints[ts].update(data_dict)
+                except KeyError:
+                    datapoints[ts] = {'timestamp' : ts}
+                    datapoints[ts].update(data_dict)
+                    
+        # convert to list and return
+        datapoints_list = datapoints.values()
+        sorted_dps = sorted(datapoints_list, key=lambda x: x['timestamp'])
+        return sorted_dps
+        
+    def _parse_gen(self, stream):
+        """Parse a generation mix xml file and return a dict with k=timestamp, v=data"""
+        # get root
+        root = ET.fromstring(stream)
+        
+        # get generation data
+        data = {child.attrib['CATEGORY'].lower() : float(child.attrib['ACT']) 
+                        for child in root[0]}
+                            
+        # get timestamp
+        time_string = root[0][0].attrib['INTERVALEST']
+        dt = datetime.datetime.strptime(time_string, '%Y-%m-%dT%H:%M:%S')
+        if dt.tzinfo == None:
+            dt = self.TZ.localize(dt)
+        dt = dt.astimezone(pytz.UTC)
+
+        # return
+        return {dt: data}
+    
+    def _parse_load(self, stream):
+        """Parse a real-tme load xml file and return a dict with k=timestamp, v=data"""
+        # get root
+        root = ET.fromstring(stream)
+        
+        # get most recent load element
+        data_elt = root.find('FiveMinTotalLoad').findall('Load')[-1]
+        data = {'load' : float(data_elt.attrib['Value'])}
+                            
+        # get timestamp
+        time_string = root.attrib['Date'] + ' ' + data_elt.attrib['Time']
+        dt = datetime.datetime.strptime(time_string, '%d-%b-%Y %H:%M')
+        if dt.tzinfo == None:
+            dt = self.TZ.localize(dt)
+        dt = dt.astimezone(pytz.UTC)
+
+        # return
+        return {dt: data}
+
+    def datapoint_to_db(self, dp):
+        if self._is_datapoint_to_store(dp):
+            row = self.MODEL()
+            row.load = dp['load']  
+            row.wind = dp['wind']
+            row.coal = dp['coal']
+            row.nuclear = dp['nuclear']
+            row.gas = dp['natural gas']
+            row.other_gen = dp['other']
+            row.date = dp['timestamp'].astimezone(pytz.utc)
+            row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.save()
+            return True
+        else:
+            return False
+
+    def _is_datapoint_to_store(self, dp):
+        """Returns bool for whether or not to store this data point in db"""
+        # reject if invalid data
+        if not ('load' in dp.keys() and 'wind' in dp.keys()):
+            return False
+            
+        # store actual data only if it's not there already
+        qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                         forecast_code=FORECAST_CODES['actual'])
+        if qset.count() > 0:
+            return False
+        else:
+            return True
+                                
 
 class UserDataParser:
     pass

@@ -345,7 +345,7 @@ def frontpage(request):
     if CAISO.objects.count() == 0:
         parser = CAISOParser()
         parser.update()
-    datum = CAISO.objects.all().latest()
+    datum = CAISO.objects.all().filter(forecast_code=0).latest()
     percent_green = datum.fraction_green * 100.0
     greenery = str(int(percent_green + 0.5)) + '%'
 

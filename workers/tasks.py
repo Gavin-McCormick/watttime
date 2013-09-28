@@ -37,7 +37,7 @@ from settings import EMAIL_HOST_USER
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
     # scrape new info from utilities
-    updated_bas = update_bas(['BPA', 'ISONE'])
+    updated_bas = update_bas(['BPA', 'ISONE', 'MISO'])
     perform_scheduled_tasks()
     send_ne_texts_if_necessary()
     print updated_bas
