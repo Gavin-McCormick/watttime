@@ -70,21 +70,26 @@
 <div class="row-fluid" id="charts" >
 
 <div class="span4 offset1">
-<p class="lead text-success" style="text-align: left;">Click on a shaded region to see how clean its electricity supply is right now. </p>
-<div id="map" align="left" class=""></div>
-<p class="alert alert-success text-success" style="text-align: left;">Supported States: California, Washington, Idaho, Oregon, New Hampshire, Massachusetts, Vermont, Maine, Rhode Island, Connecticut.</p>
+    <div id="map" align="left" class=""></div>
+    <p class="alert alert-success text-success" style="text-align: left;">
+        Click on your state to see how clean the electricity supply is right now.
+    </p>
 </div>   
 
 <div class="span5 offset1">
-<p class="lead text-success" style="text-align: left;">Graphs show live data and may take a second to load.</p>
-<div id="green-chart" align="left" class=""></div>
-<p class="alert alert-success text-success" style="text-align: left;">The graph above shows today's actual clean electricity supply for each region along with the average. For California, the dotted green line is the projected forecast.</p>
-
+    <div id="green-chart" align="left" class=""></div>
+    <p class="alert alert-success text-success" style="text-align: left;">
+        The graph shows live data of today's clean electricity supply, along
+        with a typical average day.
+        For California, the dotted green line is the projected forecast.
+    </p>
 </div>
 
 </div>
 
-<p class="lead text-success alert alert-info" style="text-align: center;">For a detailed list of supported states and data sources, visit the <a href="{% url 'faq' %}" >Help</a> page.</p>
+<p class="lead text-success alert alert-info" style="text-align: center;">
+    <a href="{% url 'faq' %}" >FAQ</a>
+</p>
 </div>
 
 
@@ -148,13 +153,13 @@
 
     // Get the data
     var initial_chart_for_state = function(state) {
-        d3.json("//watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//www.watttime.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 average_data.push(d);
             });
-        d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+        d3.json("//www.watttime.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -224,7 +229,7 @@
                 .attr("dy", "0em")
                 .style("text-anchor", "middle")
                 .style("font-size","20px")
-                .text("Today's green energy in "+state); 
+                .text("Clean energy in "+state); 
 
             var legend = svg.append("text")
                 .attr("class", "legend")
@@ -238,7 +243,7 @@
                 .attr("dx", "-0em")
                 .attr("fill", "#339999")
                 .style("font-size","14px")
-                .text("actual"); 
+                .text("today"); 
             legend.append("tspan")
                 .attr("class", "average")
                 .attr("dx", "3em")
@@ -351,17 +356,17 @@
             ['Guam', 0, 'GM'],
             ['Hawaii', 0, 'HI'],
             ['Idaho', 2, 'ID'],
-            ['Illinois', 0, 'IL'],
-            ['Indiana', 0, 'IN'],
-            ['Iowa', 0, 'IA'],
+            ['Illinois', 4, 'IL'],
+            ['Indiana', 4, 'IN'],
+            ['Iowa', 4, 'IA'],
             ['Kansas', 0, 'KS'],
             ['Kentucky', 0, 'KY'],
             ['Louisiana', 0, 'LA'],
             ['Maine', 3, 'ME'],
             ['Maryland', 0, 'MD'],
             ['Massachusetts', 3, 'MA'],
-            ['Michigan', 0, 'MI'],
-            ['Minnesota', 0, 'MN'],
+            ['Michigan', 4, 'MI'],
+            ['Minnesota', 4, 'MN'],
             ['Mississippi', 0, 'MS'],
             ['Missouri', 0, 'MO'],
             ['Montana', 0, 'MT'],
@@ -372,7 +377,7 @@
             ['New Mexico', 0, 'NM'],
             ['New York', 0, 'NY'],
             ['North Carolina', 0, 'NC'],
-            ['North Dakota', 0, 'ND'],
+            ['North Dakota', 4, 'ND'],
             ['Northern Marianas Islands', 0, ''],
             ['Ohio', 0, 'OH'],
             ['Oklahoma', 0, 'OK'],
@@ -381,7 +386,7 @@
             ['Puerto Rico', 0, 'PR'],
             ['Rhode Island', 3, 'RI'],
             ['South Carolina', 0, 'SC'],
-            ['South Dakota', 0, 'SD'],
+            ['South Dakota', 4, 'SD'],
             ['Tennessee', 0, 'TN'],
             ['Texas', 0, 'TX'],
             ['Utah', 0, 'UT'],
@@ -390,7 +395,7 @@
             ['Virgin Islands', 0, 'VI'],
             ['Washington', 2, 'WA'],
             ['West Virginia', 0, 'WV'],
-            ['Wisconsin', 0, 'WI'],
+            ['Wisconsin', 4, 'WI'],
             ['Wyoming', 0, 'WY']
         ]);
         
