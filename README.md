@@ -1,7 +1,7 @@
 watttime
 ========
 
-How green is your energy, right now?
+How clean is your energy, right now?
 
 
 Install
@@ -27,7 +27,7 @@ Install
     # if migrate asks you to delete anything, say no then rerun the command
     ````
 
-* Set up environment variables in your environment (for example in your .bashrc file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
+* Set up environment variables in your environment (for example in your .bashrc file). The list of environmental variables that need to be externally set can be found at the top of the settings.py file. Create a file called .bashrc in your root directory. You can do this by opening your shell and tying ````touch .bashrc````. Edit this file by typing ````vi .bashrc````. You can then paste the environmental variables. Hit ````esc```` and ````:x```` to exit. In MacOS you may need to add the line ````source ~/.bashrc```` to .bash_profile file in your home directory. This directs it to look at .bashrc for the list of environment variables.
 
 Upgrade
 ---------
