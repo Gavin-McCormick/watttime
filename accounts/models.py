@@ -70,6 +70,11 @@ class UserProfile(models.Model):
         if 'phone' in vals:
             self.set_phone(vals['phone'])
 
+        if 'name' in vals:
+            self.name = vals['name']
+        if 'email' in vals:
+            self.email = vals['email']
+
         if 'password' in vals:
             password = vals['password']
             if not password in ['(not used)', '######']:
