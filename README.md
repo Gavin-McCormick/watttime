@@ -24,7 +24,7 @@ Install
     # if migrate asks you to delete anything, say no then rerun the command
     ````
 
-* Set up environment variables in your environment (for example in your .bashrc file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
+* Set up environment variables in your environment (for example in your  file). The list of environment variables that need to be externally set can be found at the top of the settings.py file.
 * If you have been given deploy permissions, install the [Heroku toolbelt](https://toolbelt.heroku.com/) and add watttime as a Heroku remote. If you don't know what this is about, don't worry about it :)
 
 
@@ -74,3 +74,5 @@ and to have the <code>develop</code> branch be a staging ground for merging fini
     git merge --no-ff myfeature
     git push origin develop
     ````
+
+TEST COMMIT
