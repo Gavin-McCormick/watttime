@@ -19,7 +19,6 @@ Install
 * Set up models (follow instructions for syncdb):
     ````
     python manage.py syncdb
-    ./south_startup.sh
     python manage.py migrate
     # if migrate asks you to delete anything, say no then rerun the command
     ````
