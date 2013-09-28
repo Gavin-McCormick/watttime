@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime: Create account{% endblock %}
+
+{% block content %}
+<h2>Welcome to WattTime!</h2><br>
+
+<p class="lead alert alert-info text-info">
+    Welcome {{ name }}! Create your account here.
+</p>
+
+<br>
+<div class="alert alert-success">
+<form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
+
+     <div class="control-group">
+           <div class="controls">
+             {{ form.name }}
+             <span class="help-inline text-warning">Your name</span>     
+             <span class="help-inline">{{ form.name.errors }}</span>
+           </div>
+           <div class="controls">
+             {{ form.password }}
+             <span class="help-inline text-warning">choose a good one</span>     
+             <span class="help-inline">{{ form.password.errors }}</span>
+           </div>
+     </div>
+
+    <input type="submit" class="btn btn-info" value="Submit" />
+    </div>
+    </div>
+</form>
+
+</div>
+{% endblock %}

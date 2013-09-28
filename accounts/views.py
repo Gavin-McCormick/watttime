@@ -71,6 +71,19 @@ class ProfileEdit(FormView):
         request.user.get_profile().save_from_form(vals)
         return redirect('profile_view')
 
+class ProfileCreate(FormView):
+    def __init__(self):
+        FormView.__init__(self, 'profile_create', forms.AccountCreateForm)
+
+    def html_params(self, user):
+        up = user.get_profile()
+        return {'name' : up.name, 'region_supported' : up.supported_location()}
+
+    def form_submitted(self, request, vals):
+        request.user.get_profile().save_from_form(vals)
+        return redirect('profile_first_edit')
+
+
 class ProfileFirstEdit(FormView):
     def __init__(self):
         FormView.__init__(self, 'profile_first_edit', forms.UserProfileFirstForm)
@@ -87,7 +100,7 @@ class ProfileFirstEdit(FormView):
         request.user.get_profile().save_from_form(vals)
         return redirect('phone_verify_view')
 
-# A bit hackish
+# A bit hackish 
 class PhoneVerifyView(FormView):
     def __init__(self):
         FormView.__init__(self, '', forms.PhoneVerificationForm)
@@ -173,6 +186,8 @@ profile_edit = ProfileEdit()
 
 profile_first_edit = ProfileFirstEdit()
 
+profile_create = ProfileCreate()
+
 phone_verify_view = PhoneVerifyView()
 
 user_login = LoginView()
@@ -192,7 +207,7 @@ def new_phone_verification_number():
 
 # TODO all this code needs proper logging and error handling, not using 'print'
 
-def authenticate(request):
+def authenticate_view(request):
     # set up forms
     signup_form = forms.SignupForm(initial = {'state' : u'%s' % 'CA'})
     login_form = forms.LoginForm()
