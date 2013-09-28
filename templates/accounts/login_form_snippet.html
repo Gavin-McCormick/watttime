@@ -1,0 +1,13 @@
+<form action="{% url 'user_login' %}" method="post" class="form-inline">{% csrf_token %}
+    <p class="fieldWrapper">
+        {{ form.email.errors }}
+        {{ form.email }}
+
+        {{ form.password.errors }}
+        {{ form.password }}
+    </p>
+    <p>
+        <input type="submit" class="btn btn-awesome" name="login" value="Login" />
+    </p>
+</form>
+

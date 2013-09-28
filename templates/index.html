@@ -12,7 +12,7 @@
 <head>
 
 {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
-  {% include "pages/google_analytics.html" %}
+  {% include "base_snippets/google_analytics.html" %}
 {% endif %}
 
 <title>WattTime</title>
@@ -23,135 +23,15 @@
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
-
-<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap-responsive.css" %}" />
-
-
-<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
-
-
-<!-- Le fav and touch icons 
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
--->
-<link rel="shortcut icon" type="image/x-icon" href="{% static "favicon.ico" %} " />
-
-
-
-<!-- font links here -->
-
-<!-- <link rel="stylesheet" type="text/css" href="{% static "css/stately.css" %}" /> -->
-
-<link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,700,900' rel='stylesheet' type='text/css'>
-
-<link href='//fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-
-
-<!--[if lt IE 9]>
-
-	<link rel="stylesheet" type="text/css" href="{% static "css/ie8.css" %}" />
-
-<![endif]-->
-
-<!--[if lt IE 98>
-
-	<link rel="stylesheet" type="text/css" href="{% static "css/ie7.css" %} " />
-
-<![endif]-->
-
-
-<!-- scripts for making things pretty and functional-->
-
-<script src="{% static "js/jquery-1.10.2.min.js" %}"></script>
-
-<script src="{% static "js/bootstrap.js" %} "></script>
-
-<!-- <script src="{% static "js/bootstrap.min.js" %} "></script> -->
-
-<!-- <script src="{% static "js/jquery-1.8.2.min.js" %} "></script> -->
-
-<script src="{% static "js/jquery.easing.1.3.js" %} "></script>
-
-<script src="{% static "js/masonry.min.js" %} "></script>
-
-<script src="{% static "js/jquery.watermark.min.js" %} "></script>
-
-<script src="{% static "js/waypoints.min.js" %} "></script>
-
-<script src="{% static "js/jquery.parallax-1.1.3.js" %} "></script>
-
-<script src="{% static "js/respond.min.js" %} "></script>
-
+<!-- links to stylesheets and scripts for making things pretty and functional-->
+{% include "base_snippets/head_links.html" %}
+{% include "base_snippets/head_scripts.html" %}
 
 </head>
 
 <body name="top">
     
-
-		<!-- Navbar
-    ================================================== -->
-   <div class="navbar navbar-inverse">
-    <div class="navbar-inner">
-     <div class="container">
- 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-          <a class="brand" href="{% url 'home' %}">
-			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
-			</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav nav-pills pull-right">
-            
-            <li class="dropdown">
-                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="icon-signal"></i> STATUS</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><i class="icon-time"></i> SHIFT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-bell"></i> ALERTS</a></li>
-				</ul>
-              </li>
-              
-              <li class="dropdown">
-                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">ABOUT <i class="icon-bullhorn icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> THE TEAM</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="icon-envelope"></i> CONTACT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'faq' %}"><i class="icon-book"></i> RESOURCES</a></li>
-				</ul>
-              </li>
-              
-              <li class="">
-				<a href="{% url 'faq' %}">HELP <i class="icon-question-sign icon-white"></i></a>
-              </li>    
-                     
-              <li class="dropdown">
-              {% if user.is_authenticated %}
-               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="icon-cog icon-white"></i> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
-      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-user"></i> SETTINGS</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="icon-off"></i> LOG OUT</a></li>
-                </ul>
-              {% else %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'user_login' %}">LOG IN</a></li>
-              {% endif %}
-              
-                      <!--       </ul></li>  -->
-            </ul>
-            
-          </div>
-        </div>
-      </div>
-    </div>				
-    
-		
+    {% include "base_snippets/navbar.html" %}
 
 <!-- Main Splash Header -->
 
@@ -233,22 +113,7 @@
    						
   						<div class="span5"> 
 
-  						<form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
-                        
-                    	<p class="fieldWrapper ">
-                        <!--<label>Please send us your email to get you started.</label>
-                        <span class="help-block">Example block-level help text here.</span>        
-						<span class="help-inline">{{ form.email.errors }}</span> -->
-
-						{{ form.email.errors }}
-                    	{{ form.email }} 
-                                                      	
-                        {{ form.state.errors }}
-                        {{ form.state }}
-
-                    	</p>           
-  						<input type="submit" class="btn btn-awesome pull-left" name="sign_up" value="Let's Do It!">
-                        </form> 
+  						{% include "accounts/signup_form_snippet.html" with form=signup_form %}
                         </br>
                                                                                                     
                     	<p class="lead text-info"><small>WattTime is currently available for California and New England. You can still sign up if you live elsewhere. We'll update you when we become available in your region.</small></p>
@@ -274,151 +139,10 @@
 
 	</a>
 
-	<div class="full-width-features feature-1">
 
-		<div class="container">
-
-			<div class="row">
-
-				<div class="span12">
-
-					<img src="{% static "images/WattTimeShield_sm.png" %}" class="fly-wheel" width="120">
-
-					<h1>WattTime is Built for You</h1>
-
-					<h2>WattTime is designed to support and enhance your lifestyle <br class="hidden-phone"> while fostering a cleaner energy economy. It’s more than a message. It's a movement.</h2>
-
-				</div>
-
-			</div>
-
-			<div class="row">
-
-				<div class="span12">
-
-					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
-
-				</div>
-
-				<div class="span3">
-
-					<i class="icon-features-mini icon-medal"></i>
-
-					<h3>Empowering</h3>
-
-					<p>WattTime creates options for you to exert more control over your clean energy choices. Find out what works for you.</p>
-
-				</div>
-
-				<div class="span3">
-
-					<i class="icon-features-mini icon-demo"></i>
-
-					<h3>Easy and relevant</h3>
-
-					<p>WattTime is free and easy to use. Getting started is quick, and timely messages ensure that you get relevant information.</p>
-
-				</div>
-
-				<div class="span3">
-
-					<i class="icon-features-mini icon-income"></i>
-
-					<h3>Big impact</h3>
-
-					<p>By shifting a few of your tasks–even just a little–your energy consumption can have a big impact. WattTime helps you direct that impact where it's most needed.</p>
-
-				</div>
-
-				<div class="span3">
-
-					<img src="{% static "images/icon-sunflowerBW.png" %}" width="38" >
-
-					<h3>A resilient future</h3>
-
-					<p>Join others and create the clean energy economy. Help build a more resilient future, and use collective action to power the world.</p>
-
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
 
 	
 	
-	<div class="full-width-features feature-2">
-
-		<div class="container">
-
-			<div class="row">
-
-				<div class="span12">
-
-					<h1>Getting Started is Easy</h1>
-
-					<h2>WattTime lets you know when the electricity you consume is coming from renewable sources. <br class="hidden-phone">You decide when and what kind of energy you want to use.</h2>
-
-				</div>
-
-			</div>
-
-			<div class="row">
-
-				<div class="span12">
-
-					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
-
-				</div>
-
-				<div class="span3">
-
-					<h1>Step 1</h1>
-
-					<h3>Sign up is simple</h3>
-
-					<p>All we need is your email address and phone number to get you started.</p>
-					
-				</div>
-
-				<div class="span3">
-
-					<h1>Step 2</h2>
-
-					<h3>Verify your device</h3>
-
-					<p>We make sure your device is verified so we can send secure notifications directly to your device.</p>
-
-				</div>
-
-				<div class="span3">
-
-					<h1>Step 3</h2>
-
-					<h3>Get more notifications</h3>
-
-					<p>Context matters. With just a few questions about the kind of energy you use at home or work, we can send you more relevant notifications.</p>
-
-				</div>
-
-				<div class="span3">
-
-					<h1>Step 4</h2>
-
-					<h3>Trigger clean energy economics</h3>
-
-					<p>When you receive a text, join others and create the clean energy economy by shifting your consumption patterns to cleaner energy sources.</p>
-
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-
-
 
 
 	<div class="container call-to-action">
@@ -435,83 +159,7 @@
 
 	</div>
 
-	<div class="shield">
-
-		<img src="{% static "images/WattTimeWhiteShield.png" %} " alt="WattTime" width="75" class="">
-
-	</div>
-
-		
-
-<div class="footer" name="contact">
-
-	<div class="container">
-
-		<div class="copyright">
-
-			<a href="{% url 'home' %}" class="logo">
-
-				<img src="{% static "images/WattTimeWordLogo.png" %}" alt="WattTime" width="120">
-
-			</a>
-
-			<p>
-
-				Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013. <a href="{% url 'terms-of-service' %}">Terms of Service</a><br> 
-
-				Built in Berkeley, California with composted parts from around the world.
-
-			</p>
-
-		</div>
-
-		<div class="social-policies">
-
-			<ul class="links">
-
-				<li class="contact">
-
-					<a href="mailto:watttime.app@gmail.com" class="">Contact</a>
-
-				</li>
-
-				<!-- <li class="blog">
-
-					<a href="//watttime.com/blog">Blog</a>
-
-				</li> -->
-
-				<li class="facebook">
-
-					<a href="//www.facebook.com/wattTimeApp">Facebook</a>
-
-				</li>
-
-				<li class="twitter">
-
-					<a href="//twitter.com/watttime">Twitter</a>
-
-				</li>
-
-			</ul>
-
-			<!--
-
-			<div class="policies">
-
-				<a href="http://watttime.com/privacy-policy">Privacy Policy</a> &bull; <a href="#">Terms of Use</a>
-
-			</div>
-
-			-->
-
-		</div>
-
-	</div>
-
-
-	</div>
-
+{% include "base_snippets/footer.html" %}
 
 </body>
 

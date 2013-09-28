@@ -4,8 +4,6 @@ from accounts import models, forms, messages, twilio_utils, regions
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
-from windfriendly.models import CAISO
-from windfriendly.parsers import CAISOParser
 import random
 from django.utils.timezone import now
 from django.core.mail import send_mail
@@ -194,6 +192,17 @@ def new_phone_verification_number():
 
 # TODO all this code needs proper logging and error handling, not using 'print'
 
+def authenticate(request):
+    # set up forms
+    signup_form = forms.SignupForm(initial = {'state' : u'%s' % 'CA'})
+    login_form = forms.LoginForm()
+    
+    # return
+    return render(request, 'accounts/authenticate.html',
+            {'signup_form' : signup_form,
+             'login_form' : login_form})
+    
+
 def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email__iexact = email)
     if len(ups) > 0:
@@ -340,18 +349,6 @@ def profile_view(request):
     else:
         print ("User not authenticated")
         return redirect('user_login')
-
-def frontpage(request):
-    if CAISO.objects.count() == 0:
-        parser = CAISOParser()
-        parser.update()
-    datum = CAISO.objects.all().filter(forecast_code=0).latest()
-    percent_green = datum.fraction_green * 100.0
-    greenery = str(int(percent_green + 0.5)) + '%'
-
-    form = forms.SignupForm(initial = {'state' : u'CA'})
-    return render(request, 'index.html',
-            {'form' : form, 'current_green' : greenery})
 
 def set_active(request, new_value):
     user = request.user

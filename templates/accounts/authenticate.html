@@ -3,19 +3,27 @@
 
 {% block content %}
 
-<h2>Welcome Back!</h2>
+<h2>Welcome!</h2>
 </br></br>
-<div class="alert alert-block alert-success">
+<div class="span5 alert alert-block alert-success">
     <p class="lead text-success">
         Log in to your existing WattTime account:
     </p>
 
-    {% include "accounts/login_form_snippet.html" with form=form %}
+    {% include "accounts/login_form_snippet.html" with form=login_form %}
 
     <p class="text-success"><small>
         Forget your password? Just enter your email, leave the password blank,
         and click Login to receive an account recovery email.
     </small></p>
+</div>
+
+<div class="span5 alert alert-block alert-info">
+    <p class="lead text-info">
+        Don't have an account yet? You can sign up right here:
+    </p>
+    
+    {% include "accounts/signup_form_snippet.html" with form=signup_form %}
 </div>
 
 {% endblock %}

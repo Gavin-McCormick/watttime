@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}WattTime: Alerts{% endblock %}
+
+{% block content %}
+
+<h2>WattTime Alerts</h2>
+
+<br>
+	<div class="full-width-features feature-2">
+
+		<div class="container">
+
+			<h4 class="text-info">WattTime lets you know when the electricity you consume is coming from renewable sources. <br class="hidden-phone">You decide when and what kind of energy you want to use.</h4>
+
+			<div class="row">
+
+				<div class="span12">
+
+					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShield_sm.png" %}" width="50"></span></h4>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 1</h1>
+
+					<h3>Sign up is simple</h3>
+
+					<p>All we need is your email address and phone number to get you started.</p>
+					
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 2</h2>
+
+					<h3>Verify your device</h3>
+
+					<p>We make sure your device is verified so we can send secure notifications directly to your device.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 3</h2>
+
+					<h3>Get more notifications</h3>
+
+					<p>Context matters. With just a few questions about the kind of energy you use at home or work, we can send you more relevant notifications.</p>
+
+				</div>
+
+				<div class="span3">
+
+					<h1>Step 4</h2>
+
+					<h3>Trigger clean energy economics</h3>
+
+					<p>When you receive a text, join others and create the clean energy economy by shifting your consumption patterns to cleaner energy sources.</p>
+
+				</div>
+
+			</div>
+
+		</div>
+
+{% endblock %}
