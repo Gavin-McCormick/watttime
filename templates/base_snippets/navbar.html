@@ -1,60 +1,67 @@
 {% load staticfiles %}
-   <div class="navbar navbar-inverse">
-    <div class="navbar-inner">
+   <div class="navbar navbar-inverse" role="navigation">
      <div class="container">
- 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+   <div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime"></a>
+  </div>
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content 
       <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+        <span class="glyphicon glyphicon-align-justify"></span>
       </a>
+      
           <a class="brand" href="{% url 'home' %}">
 			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
-			</a>
+			</a>-->
+			
           <div class="nav-collapse collapse">
             <ul class="nav nav-pills pull-right">
             
             <li class="dropdown">
-                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
+                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="glyphicon glyphicon-wrench glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="icon-signal"></i> STATUS</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><i class="icon-time"></i> SHIFT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'alerts_home' %}"><i class="icon-bell"></i> ALERTS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="glyphicon glyphicon-tasks"></i> STATUS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><i class="glyphicon glyphicon-time"></i> SHIFT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'alerts_home' %}"><i class="glyphicon glyphicon-bell"></i> ALERTS</a></li>
 				</ul>
               </li>
               
             <li class="dropdown">
-                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TACTICS <i class="icon-wrench icon-white"></i> <b class="caret"></b></a>
+                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TACTICS <i class="glyphicon glyphicon-random glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><i class="icon-signal"></i> HOW IT WORKS</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'impact' %}"><i class="icon-time"></i> IMPACT</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'placeholder' %}"><i class="icon-bell"></i> BLOG</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><i class="glyphicon glyphicon-certificate"></i> HOW IT WORKS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'impact' %}"><i class="glyphicon glyphicon-stats"></i> IMPACT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'placeholder' %}"><i class="glyphicon glyphicon-pencil"></i> BLOG</a></li>
 				</ul>
               </li>
 
               <li class="dropdown">
-                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">TEAM <i class="icon-bullhorn icon-white"></i> <b class="caret"></b></a>
+                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">TEAM <i class="glyphicon glyphicon-bullhorn glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="icon-info-sign"></i> ABOUT US</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'join-us' %}"><i class="icon-book"></i> JOIN THE TEAM</a></li>
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="icon-envelope"></i> CONTACT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="glyphicon glyphicon-info-sign"></i> ABOUT US</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'join-us' %}"><i class="glyphicon glyphicon-thumbs-up"></i> JOIN</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="glyphicon glyphicon-envelope"></i> CONTACT</a></li>
 				</ul>
               </li>
               
               <li class="">
-				<a href="{% url 'faq' %}">FAQ <i class="icon-question-sign icon-white"></i></a>
+				<a href="{% url 'faq' %}">FAQ <i class="glyphicon glyphicon-question-sign glyphicon-white"></i></a>
               </li>    
                      
               <li class="dropdown">
               {% if user.is_authenticated %}
-               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="icon-cog icon-white"></i> <b class="caret"></b></a>
+               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="glyphicon glyphicon-user glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
-      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="icon-user"></i> SETTINGS</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="icon-off"></i> LOG OUT</a></li>
+      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="glyphicon glyphicon-cog"></i> SETTINGS</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="glyphicon glyphicon-off"></i> LOG OUT</a></li>
                 </ul>
               {% else %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}"><i class="glyphicon glyphicon-flash"></i> LOG IN</a></li>
               {% endif %}
               
                       <!--       </ul></li>  -->
@@ -63,4 +70,4 @@
           </div>
         </div>
       </div>
-    </div>				
+      </div>
