@@ -2,18 +2,73 @@
 WattTime aqua: #339999;
 highlight: #33cc99;
 yellow: #ffff33;
-
 */
 
+html, body {
+	height: 100%;
+}
 
+.slogan {
+    font-family: "Pacifico", cursive;
+	font-size:40px;
+	color:#fff;
+	text-align:center;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 1);
+    margin-bottom:40px;
+}
+
+.current {
+    font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:900;
+	color:#fff;
+	font-size:55px;
+	line-height: 60px;
+	margin-bottom:30px;
+	text-align:center;
+}
+
+.circle_links {
+    width: 530px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.circles {
+    background: url(../images/circles.png);
+    width:175px;
+    height:175px;
+}
+.tools {background-position: 0 -2px}
+.tools:hover {background-position: 0 -172px;}
+.tactics {background-position: -175px -2px;}
+.tactics:hover {background-position: -175px -172px;}
+.teams {background-position: -350px -2px;}
+.teams:hover {background-position: -350px -172px;}
+
+.gray_bar{
+    background-color:#F5F5F5;
+    width:100%;
+    height:200px;
+    margin-top:50px;
+}
+
+.header_shadow {
+    text-shadow: 1px 1px 0px rgba(155, 155, 155, 1);
+}
+
+.center {text-align:center;}
+.green {color:#8DC63F;}
+.yellow {color:#FFDE17;}
+.blue {color:#99DFF9;}
 
 /* styles for body text & background*/
 
 body{
-	background:url(../images/home-bg.jpg) no-repeat top center #339999;
+    background: url(../images/home-bg.jpg) no-repeat;
+	background-size:cover;
+	background-position: 100% top;
+	background-color: #FFD600;
 	font-family:Helvetica, Arial, sans-serif;
 	color:#7f7f7f;
-	background-attachment:fixed;
 }
 
 body a{

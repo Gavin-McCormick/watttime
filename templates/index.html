@@ -55,109 +55,110 @@
 
 <!-- Main Splash Header -->
 
-			<div class="header-main container">
-				<div class="row-fluid">
-				<h1>It's <span style="color:#fff">
-						
-						<!--this little widget get the browser's local time and displays it -->
-						<script type="text/javascript">
-						<!--
-						var currentTime = new Date()
-						var hours = currentTime.getHours()
-						var minutes = currentTime.getMinutes()
-
-						if (minutes < 10)
-						minutes = "0" + minutes
-
-						var suffix = "am";
-						if (hours >= 12) {
-						suffix = "pm";
-						hours = hours - 12;
-						}
-						if (hours == 0) {
-						hours = 12;
-						}
-
-						document.write("<b>" + hours + ":" + minutes + " " + suffix + "</b>")
-						//-->
-						</script>
-
-                </span> and <br> the California electricity grid is <span style="color:#ffff33; text-shadow: 0.05em 0.05em #339999;">{{current_green}}</span> clean.</h1>
+<div class="header-main container">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="slogan">
+                How <span class="green">green</span> is your <span class="yellow">electricity</span>? <span class="current">{{current_green}}</span> clean.
+            </div>
+            <br />
+            <div class="circle_links">
+                <div id="tools" class="pull-left circles tools" alt="Tools"></div>
+                <div id="tactics" class="pull-left circles tactics" alt="Tactics"></div>
+                <div id="teams" class="pull-left circles teams" alt="Teams"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-                <!-- Time Zone Localization
-                
-                	  <div class="header-main">
-					  {% load tz %}
-					  {% timezone "US/Eastern" %}
-					  <h1>It's <span style="color:#339999">{{ time|date:'I:m a' }}</span> and
-					  <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span>
-					  Green. </h1>
-					  {% endtimezone %} -->
-                                                  
-                                        
-				<!-- Grid localization script: identifies users by IP; prints location field
+{#				<div class="row-fluid">#}
+{#				<h1>It's <span style="color:#fff">#}
+{#						#}
+{#						<!--this little widget get the browser's local time and displays it -->#}
+{#						<script type="text/javascript">#}
+{#						<!--#}
+{#						var currentTime = new Date()#}
+{#						var hours = currentTime.getHours()#}
+{#						var minutes = currentTime.getMinutes()#}
+{##}
+{#						if (minutes < 10)#}
+{#						minutes = "0" + minutes#}
+{##}
+{#						var suffix = "am";#}
+{#						if (hours >= 12) {#}
+{#						suffix = "pm";#}
+{#						hours = hours - 12;#}
+{#						}#}
+{#						if (hours == 0) {#}
+{#						hours = 12;#}
+{#						}#}
+{##}
+{#						document.write("<b>" + hours + ":" + minutes + " " + suffix + "</b>")#}
+{#						//-->#}
+{#						</script>#}
+{##}
+{#                </span> and <br> the California electricity grid is <span style="color:#ffff33; text-shadow: 0.05em 0.05em #339999;">{{current_green}}</span> clean.</h1>#}
+{##}
+{##}
+{#                <!-- Time Zone Localization#}
+{#                #}
+{#                	  <div class="header-main">#}
+{#					  {% load tz %}#}
+{#					  {% timezone "US/Eastern" %}#}
+{#					  <h1>It's <span style="color:#339999">{{ time|date:'I:m a' }}</span> and#}
+{#					  <br> the New England Electricity Grid is <span style="color:#ffff33">{{ current_green }}</span>#}
+{#					  Green. </h1>#}
+{#					  {% endtimezone %} -->#}
+{#                                                  #}
+{#                                        #}
+{#				<!-- Grid localization script: identifies users by IP; prints location field#}
+{##}
+{#				<script language="JavaScript" src="//j.maxmind.com/app/geoip.js"></script>#}
+{# #}
+{#				<br>Country Code:#}
+{#				<script language="JavaScript">document.write(geoip_country_code());</script>#}
+{#				<br>Country Name:#}
+{#				<script language="JavaScript">document.write(geoip_country_name());</script>#}
+{#				<br>City:#}
+{#				<script language="JavaScript">document.write(geoip_city());</script>#}
+{#				<br>Region:#}
+{#				<script language="JavaScript">document.write(geoip_region());</script>#}
+{#				<br>Region Name:#}
+{#				<script language="JavaScript">document.write(geoip_region_name());</script>#}
+{#				<br>Latitude:#}
+{#				<script language="JavaScript">document.write(geoip_latitude());</script>#}
+{#				<br>Longitude:#}
+{#				<script language="JavaScript">document.write(geoip_longitude());</script>#}
+{#				<br>Postal Code:#}
+{#				<script language="JavaScript">document.write(geoip_postal_code());</script> #}
+{##}
+{#				-->#}
+{#						<h2>We Can Do Better</h2>#}
+{#</div> <!--end of Title Splash -->#}
+{#                <div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px; padding: 0px 0px 0px 0px;">#}
+{#                    <div class="span5 offset1">#}
+{#                        <p class="lead text-info">WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make a positive impact on your own terms.</p>#}
+{#                        <p class="lead text-success">Get Started Today!</p> <!-- Just sign up below.</p> -->#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="span5"> #}
+{#                    {% include "accounts/signup_form_snippet.html" with form=signup_form %}#}
+{#                    </br>                                                                     #}
+{#                    <p class="lead text-info"><small>WattTime is currently available for California and New England. You can still sign up if you live elsewhere. We'll update you when we become available in your region.</small></p>#}
+{#                </div>#}
 
-				<script language="JavaScript" src="//j.maxmind.com/app/geoip.js"></script>
- 
-				<br>Country Code:
-				<script language="JavaScript">document.write(geoip_country_code());</script>
-				<br>Country Name:
-				<script language="JavaScript">document.write(geoip_country_name());</script>
-				<br>City:
-				<script language="JavaScript">document.write(geoip_city());</script>
-				<br>Region:
-				<script language="JavaScript">document.write(geoip_region());</script>
-				<br>Region Name:
-				<script language="JavaScript">document.write(geoip_region_name());</script>
-				<br>Latitude:
-				<script language="JavaScript">document.write(geoip_latitude());</script>
-				<br>Longitude:
-				<script language="JavaScript">document.write(geoip_longitude());</script>
-				<br>Postal Code:
-				<script language="JavaScript">document.write(geoip_postal_code());</script> 
-
-				-->
-                                        
-                                       
-						<h2>We Can Do Better</h2>
-
-				</div> <!--end of Title Splash -->
-
-						<div class="row-fluid alert alert-block" style="margin-top:20px; margin-bottom:40px; padding: 0px 0px 0px 0px;">
- 						<div class="span5 offset1">
- 						<p class="lead text-info">WattTime notifies you when your electricity consumption creates a cleaner energy economy. Using occasional and timely text messages, WattTime helps you make a positive impact on your own terms.</p>
-   						<p class="lead text-success">Get Started Today!</p> <!-- Just sign up below.</p> -->
-
-						</div>
-   						
-  						<div class="span5"> 
-
-  						{% include "accounts/signup_form_snippet.html" with form=signup_form %}
-                        </br>
-                                                                                                    
-                    	<p class="lead text-info"><small>WattTime is currently available for California and New England. You can still sign up if you live elsewhere. We'll update you when we become available in your region.</small></p>
-						</div>
-
-						
-						</div>	
-						</div>					
-		
-
-	
-		    <!-- provides a div for the photo credit -->      	
-
-	<div class="photo-wrap">
-	<div class="photo-credit pull-right">
-			Photo Credit:<a href="//www.flickr.com/photos/theaucitron/5810163712/" target="_blank"> theaucitron</a>
-</div></div>
-	</div>  <!--close header-main -->
-
-	<a href="#feature-set" class="down-tab" name="feature-set">
-
-		TELL ME MORE! <i class="arrow arrow-down">&nbsp;</i>
-
-	</a>
+<div class="gray_bar">
+    <div class="container">
+        <div class="row-fluid">
+            <div class="center">
+                <br /><br /><h4><span class="green"><strong>WHAT DO WE DO?</strong></span></h4>
+                <h3>WattTime creates tools that empower you to <span class="blue header_shadow">lower your carbon footprint</span>
+                <br />by <span class="blue header_shadow">shifting when you use energy</span> to times when the grid is green.</h3>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
