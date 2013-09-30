@@ -4,31 +4,81 @@
 
 {% block content %}
 
+<div class="full-width-features panel">
+    <div class="container">
+        <div class="row">
+		<div class="col-md-12">
+                <h1>WattTime Shift</h1>
+                <h3>
+                    When is the cleanest time to charge your electric car?
+                    How about when to run your A/C or do your laundry?<br>
+                    WattTime can help you shift your actions and target today's best times
+                    for clean energy!
+                    {% if not user.is_authenticated %}
+                        <br><a href="{% url 'authenticate' %}"> Sign in to track your impact! </a>
+                    {% endif %}
+                </h3>
+            </div>
+        </div>
+        <div class="well alert-success">
+            <div class="row">
+                 <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
+                    <div class="controls">
+                        <h3>
+                            I need to do something that uses electricity for
+                            {{ form.usage_hours }} hours out of the next 
+                            {{ form.time_range_hours }} hours. 
+                            <input type="submit" class="btn btn-success" value="Go!">
+                        </h3>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-<h2>WattTime Shift</h2>
-<br>
-<div class="alert alert-info lead"><strong>When is the cleanest time to charge your electric car? How about when to run your A/C or do your laundry?</strong>
-    <em class="text-info">  If you are in California, WattTime Shift can help you target the best times for clean energy!</em>
- </div>
- 
-<div class="alert alert-success lead text-success" >
- <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
- <div class="controls">I need to do something that uses electricity for {{ form.usage_hours }} hours out of the next 
-  {{ form.time_range_hours }} hours.  <input type="submit" class="btn btn-success" value="Go!">
-</div></form>
-  </div>
+        {% if best_green %}
+        <div class="well">
+            <div class="row">
+                <h3>Your personal WattTime Shift recommendation:</h3>
+                <div class="col-md-3">
+                    <h3>start at</h3>
+                    <h1>{{ best_start }}</h1>
+                </div>
+                <div class="col-md-3">
+                    <h3>end at</h3>
+                    <h1>{{ best_end }}</h1>
+                </div>
+                <div class="col-md-3">
+                    <h3>your energy will be</h3>
+                    <h1>{{ best_green }}% clean</h1>
+                </div>
+                <div class="col-md-3">
+                    <h3>that's better than average by</h3>
+                    <h1>{{ percent_improved }}%</h1>
+                </div>
+            </div>
+        </div>
+    
+        {% elif error %}
+        <div class="row">
+            <div class="well">
+                <h3>
+                    Sorry, WattTime is powerful but we don't offer time machines yet.
+                    The first number of hours (how long you want to use energy for)
+                    should be smaller than the second (how long until you want to be done).
+                    Try again?
+                </h3>
+            </div>
+            
+        {% endif %}
 
-{% if best_green %}
-    <div class="lead text-info alert alert-warning"><strong class="text-info">If you shift your most energy-intense tasks to between {{ best_start }} and {{ best_end }},</strong>
-        the California grid will be <span class="text-error">{{ best_green }}% </span>clean. You could make your electricity <span class="text-error">{{ percent_improved }} percent</span> cleaner just by waiting!
+        <div class="row alert-info">
+            <div class="col-md-12">
+                <h3>
+                    WattTime Shift is currently available in California, and more regions are coming soon.<br>
+                    Questions about WattTime Shift? Try the <a href="{% url 'faq' %}" >FAQ</a>.
+                </h3>
+            </div>
+        </div>
     </div>
-    
-{% elif error %}
-    <div class="lead text-info alert alert-warning">
-        Sorry, WattTime is powerful but we don't offer time machines yet. Please let us know how you do it! Usually the first number of hours should be smaller than the second. <em>Try again?</em>
-    </div>
-    
-
-    
-{% endif %}
+</div>
 {% endblock %}

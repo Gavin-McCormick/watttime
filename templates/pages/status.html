@@ -42,56 +42,42 @@
 }
 </style>
 
-<br><br>
-
-
-<h2>Current Status</h2>
-</br>
-    <div class="well" style="padding: 0px 0px 0px 0px;">
-{% if internet_explorer %}
-    <p class="lead text-warning" style="text-align: center;">We're sorry, some of our graphs may not display correctly in Internet Explorer!</p>
-{% endif %}
-<p class="lead text-success" style="text-align: center;"><strong class="text-info">How clean is your regional electricity supply?</strong></p>
-
-<!-- energy status bar (so you know when you are having fun)
-<div class="well" style="margin:0px 100px 0px 100px">
-<div class="progress progress-striped active" style="margin:0px 100px 0px 100px">
-  <div class="bar bar-success" style="width: 30%;"></div>
-  <div class="bar bar-warning" style="width: 20%;"></div>
-  <div class="bar bar-danger" style="width: 50%;"></div>
+<div class="full-width-features panel container">
+    <div class="container">
+        <div class="row">
+            <h1>WattTime Status</h1>
+            <h3>
+                How clean is your electricity today? 
+                Click on a state to explore!
+                <br>
+                The WattTime Status graph shows the latest real-time data about today's clean
+                electricity supply, along with a typical average day.
+                Clean energy forecasts are also available for some regions.
+            </h3>
+        </div>
+    
+        <div class="row" id="charts" >
+            <div class="col-md-6">
+                <div id="map" align="center" class=""></div>
+            </div>   
+        
+            <div class="col-md-6">
+                <div id="green-chart" align="center" class=""></div>
+            </div>
+        </div>
+        <div class="row alert-info">
+            <div class="col-md-12">
+                <h3>
+                Be patient, fetching your live data may take a moment.
+                <br>
+                WattTime Status works best with newer browsers.
+                <br>
+                Questions about WattTime Status? Try the <a href="{% url 'faq' %}" >FAQ</a>.
+                </h3>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div style="text-align: center;"><p class="badge badge-success">% clean</p>
-<p class="badge badge-warning">% mixed</p>
-<p class="badge badge-important">% dirty</p></div>
-
-</div></br>
--->
-<div class="row-fluid" id="charts" >
-
-<div class="span4 offset1">
-    <div id="map" align="left" class=""></div>
-    <p class="alert alert-success text-success" style="text-align: left;">
-        Click on your state to see how clean the electricity supply is right now.
-    </p>
-</div>   
-
-<div class="span5 offset1">
-    <div id="green-chart" align="left" class=""></div>
-    <p class="alert alert-success text-success" style="text-align: left;">
-        The graph shows live data of today's clean electricity supply, along
-        with a typical average day.
-        For California, the dotted green line is the projected forecast.
-    </p>
-</div>
-
-</div>
-
-<p class="lead text-success alert alert-info" style="text-align: center;">
-    <a href="{% url 'faq' %}" >FAQ</a>
-</p>
-</div>
-
 
 <script type="text/javascript">
 
@@ -414,7 +400,7 @@
         options['resolution'] = 'provinces';
         options['width'] = 420;
         //options['height'] = 200;
-        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa'];
+        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa', '#33ccaa'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     
