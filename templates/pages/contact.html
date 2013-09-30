@@ -1,60 +1,18 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}WattTime: Contact us{% endblock %}
+{% block title %}WattTime: Contacted{% endblock %}
 
 {% block content %}
-	<h2>Contact Us</h2>
+
+<div class="page-header">
+<h2>Thank You</h2>
 </br>
-		<div class="container well" style="padding:0px 0px 0px 0px;">
-		
-		<p class="lead text-info" style="text-align:center">
-                Comments? Questions? Want to partner with us? <br> Get in touch!
-            </p>
+</div>
 
-			<form action="" method="post" class="">
-			{% csrf_token %}
-			{{ form.non_field_errors }}
+<div class="alert alert-success">...</div>
 
-				<div class="span4 offset2">
-
-					<p class="fieldWrapper">
-       			   	{{ form.name.errors }}
-        			<!--<label for="id_name">Name:</label>
-        			-->
-        			{{ form.name }}
-    				
-        			{{ form.email.errors }}
-        			<!--<label for="id_email">Email:</label>
-        			-->
-        			{{ form.email }}
-    				
-        			{{ form.subject.errors }}
-       			 	<!--<label for="id_subject">Subject:</label>
-       			 	-->
-        			{{ form.subject }}
-        			</p>
-        			
-        			<p><input type="submit" class="btn btn-awesome pull-left" value="Send"></p>
-
-    				
-				</div>
+<p class="lead">We will do our best to get back to you as soon as possible.</p>
 
 
-				<div class="span4">
 
-				<p class="fieldWrapper">
-        		{{ form.message.errors }}
-       		 	<!--<label for="id_message">Message:</label>
-       		 	-->
-        		{{ form.message }}
-   				 </p>
-				
-				</div>
-
-
-			</form>
-
-		</div>
-
-	
 {% endblock %}
