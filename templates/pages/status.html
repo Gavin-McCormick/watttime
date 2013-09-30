@@ -12,17 +12,17 @@
 
 <style>
 #charts .avline { 
-    stroke: #AAAAAA;
+    stroke: #999999;
     stroke-width: 3;
     fill: none;
 }
 #charts .actualline { 
-    stroke: #339999;
+    stroke: #99DFF9;
     stroke-width: 3;
     fill: none;
 }
 #charts .fcline { 
-    stroke: #33cc99;
+    stroke: #8DC63F;
     stroke-dasharray: 12,12;
     stroke-width: 3;
     fill: none;
@@ -30,7 +30,7 @@
 #charts .axis path,
 #charts .axis line {
     fill: none;
-    stroke: grey;
+    stroke: #cccccc;
     stroke-width: 2;
     shape-rendering: crispEdges;
 }
@@ -42,20 +42,22 @@
 }
 </style>
 
-<div class="full-width-features panel container">
-    <div class="container">
-        <div class="row">
-            <h1>WattTime Status</h1>
-            <h3>
-                How clean is your electricity today? 
-                Click on a state to explore!
-                <br>
-                The WattTime Status graph shows the latest real-time data about today's clean
-                electricity supply, along with a typical average day.
-                Clean energy forecasts are also available for some regions.
-            </h3>
-        </div>
-    
+<div class="page-header">
+<h2>WattTime Explorer</h2>
+</br>
+</div>
+            
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <h3 class="panel-title">How clean is your electricity today? <br>Click on a state to explore!</h3>
+    </div>
+    	
+
+	<div class="panel-body">
+  	
+
+
+
         <div class="row" id="charts" >
             <div class="col-md-6">
                 <div id="map" align="center" class=""></div>
@@ -65,19 +67,21 @@
                 <div id="green-chart" align="center" class=""></div>
             </div>
         </div>
-        <div class="row alert-info">
-            <div class="col-md-12">
-                <h3>
-                Be patient, fetching your live data may take a moment.
+        
+        <div class="alert alert-info"><p class="text-info">WattTime Explorer shows the latest real-time data about today's clean electricity supply, along with a typical average day. For California, clean energy forecasts are also available. States and regions in green are wattTime-enabled.</p>
+		</div>
+        
+        </div>
+        
+        <div class="panel-footer">Please be patient. WattTime is fetching live data, and it may take a moment.
                 <br>
                 WattTime Status works best with newer browsers.
                 <br>
-                Questions about WattTime Status? Try the <a href="{% url 'faq' %}" >FAQ</a>.
-                </h3>
-            </div>
-        </div>
-    </div>
+                Questions about WattTime Explorer? Try the <a href="{% url 'faq' %}" >FAQ</a>.
+         </div>
+               
 </div>
+
 
 <script type="text/javascript">
 
@@ -193,6 +197,7 @@
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .style("font-size","14px")
+                .attr("fill", "#999999")
                 .text("local time"); 
         
             svg.append("g")         // Add the Y Axis
@@ -206,6 +211,7 @@
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .style("font-size","14px")
+                .attr("fill", "#999999")
                 .text("percent of total energy"); 
     
             svg.append("text")
@@ -215,6 +221,7 @@
                 .attr("dy", "0em")
                 .style("text-anchor", "middle")
                 .style("font-size","20px")
+                .attr("fill", "#999999")
                 .text("Clean energy in "+state); 
 
             var legend = svg.append("text")
@@ -227,19 +234,19 @@
             legend.append("tspan")
                 .attr("class", "actual")
                 .attr("dx", "-0em")
-                .attr("fill", "#339999")
+                .attr("fill", "#99DFF9")
                 .style("font-size","14px")
                 .text("today"); 
             legend.append("tspan")
                 .attr("class", "average")
                 .attr("dx", "3em")
-                .attr("fill", "#AAAAAA")
+                .attr("fill", "#999999")
                 .style("font-size","14px")
                 .text("average");
             legend.append("tspan")
                 .attr("class", "forecast")
                 .attr("dx", "3em")
-                .attr("fill", "#33cc99")
+                .attr("fill", "#8DC63F")
                 .style("font-size","14px")
                 .text("forecast");        
         });
@@ -308,7 +315,7 @@
         
             svg.select(".chart.title")
                 .duration(500)
-                .text("Today's clean energy in "+state); 
+                .text("Today's Clean Energy in "+state); 
 
        
         });
@@ -400,7 +407,7 @@
         options['resolution'] = 'provinces';
         options['width'] = 420;
         //options['height'] = 200;
-        options['colors'] = ['#DDEEF8', '#33ccaa', '#33ccaa', '#33ccaa', '#33ccaa'];
+        options['colors'] = ['#99DFF9', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     
