@@ -4,24 +4,26 @@
 
 {% block content %}
 
-<div class="full-width-features panel">
-    <div class="container">
-        <div class="row">
-		<div class="col-md-12">
-                <h1>WattTime Shift</h1>
-                <h3>
-                    When is the cleanest time to charge your electric car?
-                    How about when to run your A/C or do your laundry?<br>
+
+<div class="page-header">
+<h2>WattTime Shift</h2>
+</br>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <p class="panel-title text-center">When is the cleanest time to charge your electric car?<br>
+                    How about when to run your A/C or do your laundry?</p><h3 class="panel-title lead">
                     WattTime can help you shift your actions and target today's best times
-                    for clean energy!
+                    for clean energy!</h3>
                     {% if not user.is_authenticated %}
-                        <br><a href="{% url 'authenticate' %}"> Sign in to track your impact! </a>
-                    {% endif %}
-                </h3>
-            </div>
-        </div>
-        <div class="well alert-success">
-            <div class="row">
+                    <h3><a href="{% url 'authenticate' %}"> Sign in to track your impact! </a>
+                    {% endif %}</h3>
+    </div>
+    	
+
+	<div class="panel-body">
+  			<div class="well">
                  <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
                     <div class="controls">
                         <h3>
@@ -33,11 +35,9 @@
                     </div>
                 </form>
             </div>
-        </div>
 
         {% if best_green %}
         <div class="well">
-            <div class="row">
                 <h3>Your personal WattTime Shift recommendation:</h3>
                 <div class="col-md-3">
                     <h3>start at</h3>
@@ -70,15 +70,14 @@
             </div>
             
         {% endif %}
-
-        <div class="row alert-info">
-            <div class="col-md-12">
-                <h3>
-                    WattTime Shift is currently available in California, and more regions are coming soon.<br>
-                    Questions about WattTime Shift? Try the <a href="{% url 'faq' %}" >FAQ</a>.
-                </h3>
-            </div>
-        </div>
+	</div>
+	
+	<div class="panel-footer">
+                <p class="text-center">
+                    WattTime Shift is currently only available for California, but more regions are coming soon.<br>
+                    Questions about WattTime Shift? Please visit the <a href="{% url 'faq' %}" >FAQ</a>.
+                </p>
+     
     </div>
 </div>
 {% endblock %}
