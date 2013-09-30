@@ -4,16 +4,34 @@
 
 {% block content %}
 
-<h2>FAQ</h2>
-</br>
+<div class="page-header">
+<h2>Frequently Asked Questions</h2>
+<br>
+<div class="panel panel-default">
+  <div class="panel-body">
 
-<div class="accordion well" id="accordion-gen">
-<h4 class="text-info">General</h4>
+<ul class="list-inline">
+  <li><a href="#general"><h4>General</h4></a></li>&bull;
+  <li><a href="#accounts"><h4>Accounts</h4></a></li>&bull;
+  <li><a href="#settings"><h4>Settings</h4></a></li>&bull;
+  <li><a href="#alerts"><h4>Alerts</h4></a></li>&bull;
+  <li><a href="#explorer"><h4>Explorer</h4></a></li>&bull;
+  <li><a href="#shift"><h4>Shift</h4></a></li>
+</ul>
+
+  </div>
+</div>
+</div>
+
+<div class="panel panel-default">
+<div class="panel-heading" id="general"><h3 class="panel-title">General</h3></div>
+<div class="panel-body accordion" id="accordion-gen">
+
 
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseSix">
-        <blockquote><p class="text-info">What's your privacy policy?</p></blockquote>
+        <p class="text-info">What's your privacy policy?</p>
 	    </a>
     </div>
     <div id="collapseSix" class="accordion-body collapse">
@@ -32,7 +50,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseSeven">
-        <blockquote><p class="text-info">Are you a private company?</p></blockquote>
+        <p class="text-info">Are you a private company?</p>
 	    </a>
     </div>
     <div id="collapseSeven" class="accordion-body collapse">
@@ -52,7 +70,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEight">
-        <blockquote><p class="text-info">Why do you need pilot testing?</p></blockquote>
+        <p class="text-info">Why do you need pilot testing?</p>
 	    </a>
     </div>
     <div id="collapseEight" class="accordion-body collapse">
@@ -76,7 +94,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEleven">
-        <blockquote><p class="text-info">I’m having a problem. How do I troubleshoot?</p></blockquote>
+        <p class="text-info">I’m having a problem. How do I troubleshoot?</p>
 	    </a>
     </div>
     <div id="collapseEleven" class="accordion-body collapse">
@@ -89,15 +107,16 @@
     </div>
   </div>  
 
-</div> <!-- end general -->
+</div></div><!-- end general -->
 
-<div class="accordion well" id="accordion-accounts">
-<h4 class="text-info">Accounts</h4>
+<div class="panel panel-default">
+<div class="panel-heading" id="accounts"><h3 class="panel-title">Accounts</h3></div>
+<div class="panel-body accordion" id="accordion-gen">
 
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-accounts" href="#collapseAccountsOne">
-        <blockquote><p class="text-info">How do I sign up?</p></blockquote>
+        <p class="text-info">How do I sign up?</p>
 	    </a>
     </div>
     <div id="collapseAccountsOne" class="accordion-body collapse">
@@ -112,7 +131,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-accounts" href="#collapseAccountsTwo">
-        <blockquote><p class="text-info">I forgot my username or password, what now?</p></blockquote>
+        <p class="text-info">I forgot my username or password, what now?</p>
 	    </a>
     </div>
     <div id="collapseAccountsTwo" class="accordion-body collapse">
@@ -124,15 +143,16 @@
     </div>
   </div>
 
-</div> <!-- end accounts -->
+</div></div> <!-- end accounts -->
 
-<div class="accordion well" id="accordion-alerts">
-<h4 class="text-info">Alerts</h4>
+<div class="panel panel-default">
+<div class="panel-heading" id="alerts"><h3 class="panel-title">Alerts</h3></div>
+<div class="panel-body accordion" id="accordion-gen">
 
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseThree">
-        <blockquote><p class="text-info">What does the WattTime Alerts cost?</p></blockquote>
+        <p class="text-info">What does the WattTime Alerts cost?</p>
 	    </a>
     </div>
     <div id="collapseThree" class="accordion-body collapse">
@@ -149,7 +169,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFour">
-        <blockquote><p class="text-info">Is WattTime Alerts available in my region?</p></blockquote>
+        <p class="text-info">Is WattTime Alerts available in my region?</p>
 	    </a>
     </div>
     <div id="collapseFour" class="accordion-body collapse">
@@ -170,7 +190,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFive">
-        <blockquote><p class="text-info">How do I unsubscribe or change my settings?</p></blockquote>
+        <p class="text-info">How do I unsubscribe or change my settings?</p>
 	    </a>
     </div>
     <div id="collapseFive" class="accordion-body collapse">
@@ -185,7 +205,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTen">
-        <blockquote><p class="text-info">Why do you want to know about my appliances?</p></blockquote>
+        <p class="text-info">Why do you want to know about my appliances?</p>
 	    </a>
     </div>
     <div id="collapseTen" class="accordion-body collapse">
@@ -206,7 +226,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTwelve">
-        <blockquote><p class="text-info">I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</p></blockquote>
+        <p class="text-info">I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</p>
 	    </a>
     </div>
     <div id="collapseTwelve" class="accordion-body collapse">
@@ -225,15 +245,16 @@
     </div>
   </div>
 
-</div> <!-- end alerts -->
+</div></div> <!-- end alerts -->
 
-<div class="accordion well" id="accordion-status">
-<h4 class="text-info">Status</h4>
+<div class="panel panel-default">
+<div class="panel-heading" id="explorer"><h3 class="panel-title">Explorer</h3></div>
+<div class="panel-body accordion" id="accordion-gen">
 
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-status" href="#collapseStatusOne">
-        <blockquote><p class="text-info">Is WattTime Status available in my region?</p></blockquote>
+        <p class="text-info">Is WattTime Status available in my region?</p>
 	    </a>
     </div>
     <div id="collapseStatusOne" class="accordion-body collapse">
@@ -248,15 +269,16 @@
     </div>
   </div>
 
-</div> <!-- end status -->
+</div></div> <!-- end status -->
 
-<div class="accordion well" id="accordion-shift">
-<h4 class="text-info">Shift</h4>
+<div class="panel panel-default">
+<div class="panel-heading" id="shift"><h3 class="panel-title">Shift</h3></div>
+<div class="panel-body accordion" id="accordion-gen">
 
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-shift" href="#collapseShiftOne">
-        <blockquote><p class="text-info">Is WattTime Shift available in my region?</p></blockquote>
+        <p class="text-info">Is WattTime Shift available in my region?</p>
 	    </a>
     </div>
     <div id="collapseShiftOne" class="accordion-body collapse">
@@ -270,7 +292,7 @@
     </div>
   </div>
 
-</div> <!-- end shift -->
+</div></div> <!-- end shift -->
 
 </div>
 {% endblock %}
