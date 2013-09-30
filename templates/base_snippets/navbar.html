@@ -1,17 +1,17 @@
 {% load staticfiles %}
-   <div class="navbar navbar-inverse" role="navigation">
-     <div class="container">
+   <div class="navbar navbar-inverse navbar-static-top" role="navigation">
    <div class="navbar-header">
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-large btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="glyphicon glyphicon-align-justify"></span>
-      </a>
-      
-          <a class="brand" href="{% url 'home' %}">
+          	<a class="navbar-brand" href="{% url 'home' %}">
 			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
 			</a>
 			
-          <div class="nav-collapse collapse">
+			<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      		<button class="btn btn-large btn-navbar pull-right" data-toggle="collapse" data-target=".nav-collapse">
+        	<span class="glyphicon glyphicon-align-justify"></span>
+      		</button>
+	</div>
+			
+          <div class="nav-collapse collapse in">
             <ul class="nav nav-pills pull-right">
             
             <li class="dropdown">
@@ -26,16 +26,16 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TACTICS <i class="glyphicon glyphicon-random glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><i class="glyphicon glyphicon-certificate"></i> HOW IT WORKS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><i class="glyphicon glyphicon-flash"></i> HOW IT WORKS</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'impact' %}"><i class="glyphicon glyphicon-stats"></i> IMPACT</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'placeholder' %}"><i class="glyphicon glyphicon-pencil"></i> BLOG</a></li>
 				</ul>
               </li>
 
               <li class="dropdown">
-                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">TEAM <i class="glyphicon glyphicon-bullhorn glyphicon-white"></i> <b class="caret"></b></a>
+                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">TEAM <i class="glyphicon glyphicon-globe glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
-				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="glyphicon glyphicon-info-sign"></i> ABOUT US</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><i class="glyphicon glyphicon-flag"></i> ABOUT US</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'join-us' %}"><i class="glyphicon glyphicon-thumbs-up"></i> JOIN</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="glyphicon glyphicon-envelope"></i> CONTACT</a></li>
 				</ul>
@@ -50,10 +50,10 @@
                <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="glyphicon glyphicon-user glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
       			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="glyphicon glyphicon-cog"></i> SETTINGS</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="glyphicon glyphicon-off"></i> LOG OUT</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="glyphicon glyphicon-log-out"></i> LOG OUT</a></li>
                 </ul>
               {% else %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}"><i class="glyphicon glyphicon-flash"></i> LOG IN</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN <i class="glyphicon glyphicon-log-in"></i></a></li>
               {% endif %}
               
                       <!--       </ul></li>  -->
@@ -61,5 +61,4 @@
             
           </div>
         </div>
-      </div>
-      </div>
+  
