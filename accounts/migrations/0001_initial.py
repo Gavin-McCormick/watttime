@@ -25,7 +25,7 @@ class Migration(SchemaMigration):
         db.create_table(u'accounts_userprofile', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('userid', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.User'])),
-            ('goal', self.gf('accounts.multi_choice.MultiSelectField')(max_length=100)),
+            ('goal', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('text_freq', self.gf('django.db.models.fields.IntegerField')(default=3)),
             ('channel', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('ac', self.gf('django.db.models.fields.IntegerField')(default=3)),
@@ -60,7 +60,7 @@ class Migration(SchemaMigration):
             'ac': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
             'channel': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'furnace': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'goal': ('accounts.multi_choice.MultiSelectField', [], {'max_length': '100'}),
+            'goal': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'text_freq': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
             'userid': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['accounts.User']"}),
