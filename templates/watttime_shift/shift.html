@@ -21,7 +21,7 @@
                     How about when to run your A/C or do your laundry?
             </p>
             {% if not user.is_authenticated %}
-                <h3 class="text-center"><a class="btn btn-primary" href="{% url 'authenticate' %}">
+                <h3 class="text-center"><a class="btn btn-info" href="{% url 'authenticate' %}">
                     Sign in to track your impact!
                 </a></h3>
             {% endif %}
@@ -38,14 +38,11 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
-{% if best_green %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">Your personal WattTime Shift recommendation</h3>
-    </div>
-    <div class="panel-body">
+
+        {% if best_green %}
+        <div class="row">
+            <h3 class="text-center">Your personal WattTime Shift recommendation:</h3>
+        </div>
         <div class="row">
             <div class="col-md-4">
                 <h4 class="text-center">start at</h4>
@@ -63,32 +60,25 @@
                 <h4 class="text-center">better than average</h4>
             </div>
         </div>
-    </div>
-</div>
     
-{% elif error %}
-<div class="panel panel-warning">
-    <div class="panel-heading">
-        <h3 class="panel-title text-warning">Oops, try again?</h3>
-    </div>
-    <div class="panel-body">
+        {% elif error %}
         <div class="row">
             <div class="col-md-12">
-                <h4 class="text-warning">
+                <h3 class="text-warning">
                     Sorry, WattTime is powerful but we don't offer time machines yet.
                     The first number of hours (how long you want to use energy for)
                     should be smaller than the second (how long until you want to be done).
-                </h4>
+                    Try again?
+                </h3>
             </div>
         </div>
-    </div>
-</div>
             
-{% endif %}
-<div class="panel panel-default">
-    <div class="panel-footer">
+        {% endif %}
+	</div>
+	
+	<div class="panel-footer">
                 WattTime Shift is currently only available for California, but more regions are coming soon.<br>
                 Questions about WattTime Shift? Please visit the <a href="{% url 'faq' %}#shift" >FAQ</a>.
-    </div>
+        </div>
 </div>
 {% endblock %}
