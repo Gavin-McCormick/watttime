@@ -4,91 +4,91 @@
 {% block title %}WattTime: Impact{% endblock %}
 
 {% block content %}
+<div class="page-header">
+<h2>Impact</h2>
+</br>
+</div>
 
-<div class="full-width-features panel">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Impacts in action</h1>
-                <h3>
-                    With WattTime, users can time their electricity use to help cleaner energy
-                    sources compete and grow.
-                </h3>
-            </div>
-            <div class="col-md-12">
-                <h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
-            </div>
-            <div class="col-md-6">
-                <h3>Percent clean energy</h3>
-                <p class="text">
-                    Our software can show users how much of their region's power currently comes 
-                    from clean renewable sources, the only way to shift demand towards
-                    inframarginal renewable fuel sources. 
-                </p>            
-            </div>  
-            <div class="col-md-6">
-                <h3>Marginal fuel</h3>
-                <p>
-                    Users can see the current marginal fuel source in their region, allowing them
-                    to shift demand towards cleaner conventional fuels such as hydropower and
-                    biomass away from dirty sources such as coal and oil. (Currently
-                    implemented in New England only; additional regions coming soon).
-                </p>
-            </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Impacts in action</h3>
+        <p>
+            With WattTime, users can time their electricity use to help cleaner energy
+            sources compete and grow.
+        </p>
+    </div>
+    <div class="panel-body">
+        <div class="col-md-6">
+            <h3 class="text-center">Percent clean energy</h3>
+            <p class="text-info">
+                Our software can show users how much of their region's power currently comes 
+                from clean renewable sources, the only way to shift demand towards
+                inframarginal renewable fuel sources. 
+            </p>            
+        </div>  
+        <div class="col-md-6">
+            <h3 class="text-center">Marginal fuel</h3>
+            <p class="text-info">
+                Users can see the current marginal fuel source in their region, allowing them
+                to shift demand towards cleaner conventional fuels such as hydropower and
+                biomass away from dirty sources such as coal and oil. (Currently
+                implemented in New England only; additional regions coming soon).
+            </p>
         </div>
     </div>
 </div>
 
-<div class="full-width-features panel">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Coming soon</h1>
-                <h3>
-                By combining open data with automated real-time economic analysis, it should
-                soon be possible for our users to also time electricity to take advantage of
-                many more powerful strategies.
-                (These ones are currently under development by
-                our crack team of economists and data analysts from UC Berkeley, MIT, and the
-                University of Western Australia.)
-                </h3>
-            </div>
-            <div class="col-md-12">
-                <h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
-            </div>
-            <div class="col-md-6">
-                <h3>Curtailment</h3>
-                <p>
-                    By exploiting wind power oversupply, users in select locations will be
-                    able to reduce emissions by up to 100% at optimal times.
-                </p>            
-            </div>  
-            <div class="col-md-6">
-                <h3>Renewable intermittency</h3>
-                <p>
-                    Through automation of select devices, users will be able to use energy at
-                    times which exploit minor spikes in the availability of renewable energy,
-                    making renewable energy more competitive with fossil power plants.
-                </p>
-            </div>
-            <div class="col-md-6">
-                <h3>Reduced ramping</h3>
-                <p>
-                    With automation, users can even reduce pollution from traditional power
-                    plants by allowing them to reduce wasteful episodes of turning up and down
-                    repeatedly.
-                    <a href="http://pubs.acs.org/doi/abs/10.1021/es801437">Some estimates</a>
-                    suggest this technique can reduce power plant emissions by up to 25%.
-                </p>
-            </div>
-            <div class="col-md-6">
-                <h3>Forecast insurance</h3>
-                <p>
-                    Pushing electricity demand to offset the difference between wind power
-                    plants's production and their forecats.
-                </p>
-            </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Coming soon</h3>
+        <p>
+            By combining open data with automated real-time economic analysis, it should
+            soon be possible for our users to also time electricity to take advantage of
+            many more powerful strategies.
+            (These ones are currently under development by
+            our crack team of economists and data analysts from UC Berkeley, MIT, and the
+            University of Western Australia.)
+        </p>
+    </div>
+    <div class="panel-body">
+        <div class="col-md-6">
+            <h3 class="text-center">Curtailment</h3>
+            <p class="text-info">
+                By exploiting wind power oversupply, users in select locations will be
+                able to reduce emissions by up to 100% at optimal times.
+            </p>            
+        </div>  
+        <div class="col-md-6">
+            <h3 class="text-center">Renewable intermittency</h3>
+            <p class="text-info">
+                Through automation of select devices, users will be able to use energy at
+                times which exploit minor spikes in the availability of renewable energy,
+                making renewable energy more competitive with fossil power plants.
+            </p>
         </div>
+        <div class="col-md-6">
+            <h3 class="text-center">Reduced ramping</h3>
+            <p class="text-info">
+                With automation, users can even reduce pollution from traditional power
+                plants by allowing them to reduce wasteful episodes of turning up and down
+                repeatedly.
+                <a href="http://pubs.acs.org/doi/abs/10.1021/es801437">Some estimates</a>
+                suggest this technique can reduce power plant emissions by up to 25%.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h3 class="text-center">Forecast insurance</h3>
+            <p class="text-info">
+                Pushing electricity demand to offset the difference between wind power
+                plants's production and their forecats.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-footer">
+        Questions about WattTime? Try the <a href="{% url 'faq' %}#general" >FAQ</a>.
     </div>
 </div>
 

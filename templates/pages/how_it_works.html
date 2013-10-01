@@ -5,74 +5,77 @@
 
 {% block content %}
 
-	<div class="full-width-features panel">
+<div class="page-header">
+<h2>How it works</h2>
+</br>
+</div>
 
-		<div class="container">
-
-			<div class="row">
-
-				<div class="col-md-12">
-
-					<h1>WattTime is Built for You</h1>
-
-					<h3>WattTime is designed to support and enhance your lifestyle <br class="hidden-phone"> while fostering a cleaner energy economy. It’s more than a message. It's a movement.</h3>
-
-				</div>
-
-			</div>
-
-			<div class="row">
-
-				<div class="col-md-12">
-
-					<h4 class="icon-line"><span><img src="{% static "images/WattTimeShieldBW.png" %}" width="50"></span></h4>
-
-				</div>
-
-				<div class="col-md-3">
-
-					<i class="icon-features-mini icon-medal"></i>
-
-					<h3>Empowering</h3>
-
-					<p>WattTime creates options for you to exert more control over your clean energy choices. Find out what works for you.</p>
-
-				</div>
-
-				<div class="col-md-3">
-
-					<i class="icon-features-mini icon-demo"></i>
-
-					<h3>Easy and relevant</h3>
-
-					<p>WattTime is free and easy to use. Getting started is quick, and timely messages ensure that you get relevant information.</p>
-
-				</div>
-
-				<div class="col-md-3">
-
-					<i class="icon-features-mini icon-income"></i>
-
-					<h3>Big impact</h3>
-
-					<p>By shifting a few of your tasks–even just a little–your energy consumption can have a big impact. WattTime helps you direct that impact where it's most needed.</p>
-
-				</div>
-
-				<div class="col-md-3">
-
-					<img src="{% static "images/icon-sunflowerBW.png" %}" width="38" >
-
-					<h3>A resilient future</h3>
-
-					<p>Join others and create the clean energy economy. Help build a more resilient future, and use collective action to power the world.</p>
-
-				</div>
-
-			</div>
-
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="text-center">
+                    WattTime is built for you
+                </h3>
+                <p class="text-center">
+                    WattTime is designed to support and enhance your lifestyle 
+                    <br class="hidden-phone"> while fostering a cleaner energy economy.
+                    It’s more than a message. It's a movement.
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+		<div class="col-md-3">
+        		<i class="icon-features-mini icon-medal"></i>
+			<h3 class="text-center">Empowering</h3>
+        		<p class="text-info">
+                        WattTime creates options for you to exert more control over your
+                        clean energy choices. Find out what works for you.
+                    </p>
 		</div>
 
+		<div class="col-md-3">
+        		<i class="icon-features-mini icon-demo"></i>
+			<h3 class="text-center">Easy and relevant</h3>
+			<p class="text-info">
+                        WattTime is free and easy to use. Getting started is quick, and
+                        real-time tools ensure that you get relevant information.
+                    </p>
+		</div>
+
+		<div class="col-md-3">
+                    <i class="icon-features-mini icon-income"></i>
+        		<h3 class="text-center">Big impact</h3>
+			<p class="text-info">
+                        By shifting a few of your tasks–even just a little–your energy
+                        consumption can have a big impact. WattTime helps you direct that
+                        impact where it's most needed.
+                    </p>
+		</div>
+
+		<div class="col-md-3">
+                    <div class="row">
+			<div class="col-md-4"></div>
+			<div class="col-md-4">
+                        <img src="{% static "images/icon-sunflowerBW.png" %}" width="38">
+			</div>
+			<div class="col-md-4"></div>
+                    </div>  
+                    <div class="row">
+                    <div class="col-md-12">
+			<h3 class="text-center">A resilient future</h3>
+			<p class="text-info">
+                        Join others and create the clean energy economy. Help build a more
+                        resilient future, and use collective action to power the world.
+                    </p>
+                    </div></div>
+		</div>
 	</div>
+    </div>
+    <div class="panel-footer">
+        Questions about WattTime? Try the <a href="{% url 'faq' %}#general" >FAQ</a>.
+    </div>
+</div>
 
 {% endblock %}
