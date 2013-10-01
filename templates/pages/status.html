@@ -54,30 +54,33 @@
     	
 
 	<div class="panel-body">
-  	
 
-
-
-        <div class="row" id="charts" >
-            <div class="col-md-6">
-                <div id="map" align="center" class=""></div>
-            </div>   
-        
-            <div class="col-md-6">
-                <div id="green-chart" align="center" class=""></div>
+            <div class="row" id="charts" >
+                <div class="col-md-6">
+                    <div id="map" align="center" class=""></div>
+                </div>   
+            
+                <div class="col-md-6">
+                    <div id="green-chart" align="center" class=""></div>
+                </div>
             </div>
-        </div>
-        
-        <div class="alert alert-info"><p class="text-info">WattTime Explorer shows the latest real-time data about today's clean electricity supply, along with a typical average day. For California, clean energy forecasts are also available. States and regions in green are wattTime-enabled.</p>
-		</div>
+            
+            <div class="alert alert-info">
+                <p class="text-info">
+                    WattTime Explorer shows the latest real-time data about today's clean
+                    electricity supply, along with a typical average day. For California, clean
+                    energy forecasts are also available. Regions in green are
+                    WattTime-enabled.
+                </p>
+        	</div>
         
         </div>
         
         <div class="panel-footer">Please be patient. WattTime is fetching live data, and it may take a moment.
                 <br>
-                WattTime Status works best with newer browsers.
+                WattTime Explorer works best with newer browsers.
                 <br>
-                Questions about WattTime Explorer? Try the <a href="{% url 'faq' %}" >FAQ</a>.
+                Questions about WattTime Explorer? Try the <a href="{% url 'faq' %}#explorer" >FAQ</a>.
          </div>
                
 </div>
@@ -407,7 +410,7 @@
         options['resolution'] = 'provinces';
         options['width'] = 420;
         //options['height'] = 200;
-        options['colors'] = ['#99DFF9', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F'];
+        options['colors'] = ['#DDDDDD', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     

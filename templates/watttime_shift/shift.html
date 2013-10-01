@@ -11,73 +11,74 @@
 </div>
 
 <div class="panel panel-default">
-	<div class="panel-heading">
-    <p class="panel-title text-center">When is the cleanest time to charge your electric car?<br>
-                    How about when to run your A/C or do your laundry?</p><h3 class="panel-title lead">
-                    WattTime can help you shift your actions and target today's best times
-                    for clean energy!</h3>
-                    {% if not user.is_authenticated %}
-                    <h3><a href="{% url 'authenticate' %}"> Sign in to track your impact! </a>
-                    {% endif %}</h3>
-    </div>
-    	
-
-	<div class="panel-body">
-  			<div class="well">
-                 <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
-                    <div class="controls">
-                        <h3>
-                            I need to do something that uses electricity for
-                            {{ form.usage_hours }} hours out of the next 
-                            {{ form.time_range_hours }} hours. 
-                            <input type="submit" class="btn btn-success" value="Go!">
-                        </h3>
-                    </div>
-                </form>
-            </div>
+    <div class="panel-body">
+        <div class="row">
+            <h3 class="text-center">
+                Shift your actions to target today's best times for clean energy<br>
+            </h3>
+            <p class="text-center">
+                    When is the cleanest time to charge your electric car?
+                    How about when to run your A/C or do your laundry?
+            </p>
+            {% if not user.is_authenticated %}
+                <h3 class="text-center"><a class="btn btn-primary" href="{% url 'authenticate' %}">
+                    Sign in to track your impact!
+                </a></h3>
+            {% endif %}
+        </div>
+      	<div class="well">
+            <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
+                <div class="controls">
+                    <h3>
+                        I need to do something that uses electricity for
+                        {{ form.usage_hours }} hours out of the next 
+                        {{ form.time_range_hours }} hours. 
+                        <input type="submit" class="btn btn-success" value="Go!">
+                    </h3>
+                </div>
+            </form>
+        </div>
 
         {% if best_green %}
-        <div class="well">
-                <h3>Your personal WattTime Shift recommendation:</h3>
-                <div class="col-md-3">
-                    <h3>start at</h3>
-                    <h1>{{ best_start }}</h1>
-                </div>
-                <div class="col-md-3">
-                    <h3>end at</h3>
-                    <h1>{{ best_end }}</h1>
-                </div>
-                <div class="col-md-3">
-                    <h3>your energy will be</h3>
-                    <h1>{{ best_green }}% clean</h1>
-                </div>
-                <div class="col-md-3">
-                    <h3>that's better than average by</h3>
-                    <h1>{{ percent_improved }}%</h1>
-                </div>
+        <div class="row">
+            <h3 class="text-center">Your personal WattTime Shift recommendation:</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h4 class="text-center">start at</h4>
+                <h1 class="text-info">{{ best_start }}</h1>
+                <h4 class="text-center">end at {{ best_end }}</h4>
+            </div>
+            <div class="col-md-4">
+                <h4 class="text-center">to use</h4>
+                <h1 class="text-info">{{ best_green }}%</h1>
+                <h4 class="text-center">clean energy</h4>
+            </div>
+            <div class="col-md-4">
+                <h4 class="text-center">that's</h4>
+                <h1 class="text-info">{{ percent_improved }}%</h1>
+                <h4 class="text-center">better than average</h4>
             </div>
         </div>
     
         {% elif error %}
         <div class="row">
-            <div class="well">
-                <h3>
+            <div class="col-md-12">
+                <h3 class="text-warning">
                     Sorry, WattTime is powerful but we don't offer time machines yet.
                     The first number of hours (how long you want to use energy for)
                     should be smaller than the second (how long until you want to be done).
                     Try again?
                 </h3>
             </div>
+        </div>
             
         {% endif %}
 	</div>
 	
 	<div class="panel-footer">
-                <p class="text-center">
-                    WattTime Shift is currently only available for California, but more regions are coming soon.<br>
-                    Questions about WattTime Shift? Please visit the <a href="{% url 'faq' %}" >FAQ</a>.
-                </p>
-     
-    </div>
+                WattTime Shift is currently only available for California, but more regions are coming soon.<br>
+                Questions about WattTime Shift? Please visit the <a href="{% url 'faq' %}#shift" >FAQ</a>.
+        </div>
 </div>
 {% endblock %}
