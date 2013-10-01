@@ -1,22 +1,30 @@
 {% extends "base.html" %}
-{% block title %}WattTime: Log in{% endblock %}
+{% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Welcome Back!</h2>
-</br></br>
-<div class="alert alert-block alert-success">
-    <p class="lead text-success">
-        Log in to your existing WattTime account:
-    </p>
-
-    {% include "accounts/login_form_snippet.html" with form=form %}
-
-    <p class="text-success"><small>
-        Forget your password? Just enter your email, leave the password blank,
-        and click Login to receive an account recovery email.
-    </small></p>
+<div class="page-header">
+<h2>Log in</h2>
+</br>
 </div>
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Welcome back!
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% include "accounts/login_form_snippet.html" with form=form %}
+    </div>
+    <div class="panel-footer">
+        Don't have an account yet? <a href="{% url 'create_user' %}">Sign up here.</a><br>
+        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+    </div>
+</div>
+
+
 
 {% endblock %}
 

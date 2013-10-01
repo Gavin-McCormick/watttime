@@ -3,29 +3,48 @@
 
 {% block content %}
 
-<h2>Welcome!</h2>
-</br></br>
-<div class="span5 alert alert-block alert-success">
-    <p class="lead text-success">
-        Log in to your existing WattTime account:
-    </p>
-
-    {% include "accounts/login_form_snippet.html" with form=login_form %}
-
-    <p class="text-success"><small>
-        Forget your password? Just enter your email, leave the password blank,
-        and click Login to receive an account recovery email.
-    </small></p>
+<div class="page-header">
+<h2>Sign up/Log in</h2>
+</br>
 </div>
 
-<div class="span5 alert alert-block alert-info">
-    <p class="lead text-info">
-        Don't have an account yet? You can sign up right here:
-    </p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Log in to your existing WattTime account.
+                </h3>
+            </div>
+            <div class="panel-body">
+                {% include "accounts/login_form_snippet.html" with form=login_form %}
+            </div>
+            <div class="panel-footer">
+                <p>Forget your password? Just enter your email, leave the password blank,
+                and click Login to receive an account recovery email.
+                </p>
+            </div>
+        </div>
+    </div>
     
-    {% include "accounts/signup_form_snippet.html" with form=signup_form %}
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Don't have an account yet? You can sign up right here.
+                </h3>
+            </div>
+            <div class="panel-body">
+                {% include "accounts/signup_form_snippet.html" with form=signup_form %}
+            </div>
+        </div>
+    </div>
+</div> 
+<div class="panel panel-default">
+    <div class="panel-footer">
+        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+    </div>
 </div>
-
 {% endblock %}
 
 <!-- The following is used for Facebook Connect and was removed by Gavin on Sunday

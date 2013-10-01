@@ -3,14 +3,26 @@
 
 {% block content %}
 
-<h2>Welcome!</h2>
+<div class="page-header">
+<h2>Sign up</h2>
+</br>
+</div>
 
-<p class="lead">To begin, please enter your email address.</p>
-<form action="{% url 'create_user' %}" class="form-inline" method="post">{% csrf_token %}
-    <p class="fieldWrapper">{{ form.email }}
-    <input type="submit" name="sign_up" class="btn btn-awesome " value="Join!" />
-    {{ form.email.errors }}</p>
- </form>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Let's get you started.
+        </h3>
+    </div>
+    <div class="panel-body">
+        {% include "accounts/signup_form_snippet.html" with form=form %}
+    </div>
+    <div class="panel-footer">
+        Have an account already? <a href="{% url 'user_login' %}">Log in here.</a><br>
+        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+    </div>
+</div>
 
 
 {% endblock %}
