@@ -1,4 +1,5 @@
 /* sean's additions */
+
 html, body {
 	height: 100%;
 }
@@ -48,6 +49,47 @@ html, body {
 
 .header_shadow {
     text-shadow: 1px 1px 0px rgba(155, 155, 155, 1);
+}
+
+.content {
+    width:900px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.content_background {
+    background-color:#ffffff;
+}
+
+.haiku {
+    font-family: "Pacifico", cursive;
+	font-size:15px;
+	text-align:center;
+    width:175px;
+}
+
+.subsections{
+    width:700px;
+    padding:40px 0px 0px 10px;
+}
+
+.subheaders {
+    font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:900;
+	font-size:50px;
+	line-height: 50px;
+	margin-bottom:10px;
+}
+
+.subcontent {
+    margin-left:65px;
+}
+
+.icon {
+    background-color:#8DC63F;
+    width:50px;
+    height:50px;
+    margin-right:10px;
 }
 
 .center {text-align:center;}

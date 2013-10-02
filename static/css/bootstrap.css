@@ -1,11 +1,11 @@
 /*!
  * Bootstrap v2.3.2
  *
- * Copyright 2012 Twitter, Inc
+ * Copyright 2013 Twitter, Inc
  * Licensed under the Apache License v2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ * Designed and built with all the love in the world by @mdo and @fat.
  */
 
 .clearfix {
@@ -231,7 +231,7 @@ body {
 }
 
 a {
-  color: #66cc99;
+  color: #0088cc;
   text-decoration: none;
 }
 
@@ -676,48 +676,48 @@ cite {
 }
 
 .muted {
-  color: #999999 !important;;
+  color: #999999;
 }
 
 a.muted:hover,
 a.muted:focus {
-  color: #808080 !important;;
+  color: #808080;
 }
 
 .text-warning {
-  color: #c09853 !important;
+  color: #c09853;
 }
 
 a.text-warning:hover,
 a.text-warning:focus {
-  color: #a47e3c !important;;
+  color: #a47e3c;
 }
 
 .text-error {
-  color: #b94a48 !important;;
+  color: #b94a48;
 }
 
 a.text-error:hover,
 a.text-error:focus {
-  color: #953b39 !important;;
+  color: #953b39;
 }
 
 .text-info {
-  color: #3a87ad !important;;
+  color: #3a87ad;
 }
 
 a.text-info:hover,
 a.text-info:focus {
-  color: #2d6987 !important;;
+  color: #2d6987;
 }
 
 .text-success {
-  color: #468847 !important;;
+  color: #468847;
 }
 
 a.text-success:hover,
 a.text-success:focus {
-  color: #356635 !important;;
+  color: #356635;
 }
 
 .text-left {
@@ -881,8 +881,7 @@ dd {
 
 .dl-horizontal dt {
   float: left;
-  /* width: 160px; */
-  width: 220px;
+  width: 160px;
   overflow: hidden;
   clear: left;
   text-align: right;
@@ -891,8 +890,7 @@ dd {
 }
 
 .dl-horizontal dd {
-  /* margin-left: 180px; */
-  margin-left: 240px;
+  margin-left: 180px;
 }
 
 hr {
@@ -2284,7 +2282,7 @@ table th[class*="span"],
   *margin-right: .3em;
   line-height: 14px;
   vertical-align: text-top;
-  background-image: url("../images/glyphicons-halflings.png");
+  background-image: url("../img/glyphicons-halflings.png");
   background-position: 14px 14px;
   background-repeat: no-repeat;
 }
@@ -2308,7 +2306,7 @@ table th[class*="span"],
 .dropdown-submenu:focus > a > [class^="icon-"],
 .dropdown-submenu:hover > a > [class*=" icon-"],
 .dropdown-submenu:focus > a > [class*=" icon-"] {
-  background-image: url("../images/glyphicons-halflings-white.png");
+  background-image: url("../img/glyphicons-halflings-white.png");
 }
 
 .icon-glass {
@@ -3012,7 +3010,7 @@ table th[class*="span"],
 }
 
 .dropdown-backdrop {
-  position: static;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -3926,14 +3924,8 @@ input[type="submit"].btn.btn-mini {
 
 .alert-info {
   color: #3a87ad;
-  background-color: #d9edf7;  
-   padding: 8px 35px 8px 14px;
-  margin-bottom: 20px;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  border-color: 1px solid #bce8f1;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
 }
 
 .alert-info h4 {
