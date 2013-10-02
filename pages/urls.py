@@ -36,8 +36,8 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     url(r'^how-it-works[/]$',
         TemplateView.as_view(template_name='pages/how_it_works.html'), name='how-it-works'),
-    url(r'^impact[/]$',
-        TemplateView.as_view(template_name='pages/impact.html'), name='impact'),
+    url(r'^why-it-works[/]$',
+        TemplateView.as_view(template_name='pages/why_it_works.html'), name='why-it-works'),
 )
 
 # team
