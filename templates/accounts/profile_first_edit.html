@@ -3,35 +3,54 @@
 {% block title %}WattTime: Get started{% endblock %}
 
 {% block content %}
-<h2>Get started</h2><br>
+<div class="page-header">
+<h2>Get started</h2>
+</br>
+</div>
 
-<p class="lead alert alert-info text-info">
-    Thanks for signing up for WattTime! You can get started with our clean energy tools today.
-    <a href="{% url 'status' %}">Status</a>
-    <a href="{% url 'shift' %}">Shift</a>
-    <a href="{% url 'alerts_home' %}">Alerts</a>
-</p>
-
-
-{% if region_supported %}
-<div class="alert alert-success">
-<p class="lead alert alert-info text-info">
-    Sign up for SMS alerts
-</p>
-<form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
-     <div class="control-group">
-       <div class="controls">
-		{{ form.phone }}<span class="help-inline text-warning">area code + seven-digit number</span>
-	<span class="help-inline">{{ form.phone.errors }}</span>
+<div col="row">
+    <div class="col-md-2">
+        <div class="panel panel-default">
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a href="#">Profile</a></li>
+              <li><a href="{% url 'profile_edit' %}">Settings</a></li>
+              <li><a href="{% url 'status' %}">Alerts: SMS</a></li>
+              <li><a href="{% url 'status' %}">Alerts: Email</a></li>
+            </ul>
+        </div>
     </div>
-    <input type="submit" class="btn btn-info" value="Submit" />
-</form>
-<p class="alert alert-warning text-warning">
-    <span class="badge badge-warning"><i class="icon-hand-right icon-white"></i></span>
-    WattTime alert frequency varies, but you can adjust how often you receive them in your
-    settings. Please keep in mind that your mobile service provider may charge you for receiving
-    and sending text messages.
-</p>
+    
+    <div class="col-md-10">
+        <p class="lead alert alert-info text-info">
+            Thanks for signing up for WattTime! You can get started with our clean energy tools today.
+            <a href="{% url 'status' %}">Status</a>
+            <a href="{% url 'shift' %}">Shift</a>
+            <a href="{% url 'alerts_home' %}">Alerts</a>
+        </p>
+        
+        
+        {% if region_supported %}
+        <div class="alert alert-success">
+            <p class="lead alert alert-info text-info">
+                Sign up for SMS alerts
+            </p>
+            <form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
+                 <div class="control-group">
+                   <div class="controls">
+                		{{ form.phone }}<span class="help-inline text-warning">area code + seven-digit number</span>
+                    	<span class="help-inline">{{ form.phone.errors }}</span>
+                    </div>
+                <input type="submit" class="btn btn-info" value="Submit" />
+                </div>                
+            </form>
+            <p class="alert alert-warning text-warning">
+                <span class="badge badge-warning"><i class="icon-hand-right icon-white"></i></span>
+                WattTime alert frequency varies, but you can adjust how often you receive them in your
+                settings. Please keep in mind that your mobile service provider may charge you for receiving
+                and sending text messages.
+            </p>
+        </div>
+    </div>
 </div>
 {% endif %}
 

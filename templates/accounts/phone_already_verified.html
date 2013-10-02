@@ -3,7 +3,27 @@
 
 {% block content %}
 
-<h2>Already Verified!</h2>
-<p class="text-success alert alert-block alert-success">Well Done! The phone number {{ phone_number }} has been confirmed by WattTime as belonging to you. You can return to your <a href="{% url 'profile_view' %}" class="btn btn-info">profile page</a> to view and edit your other settings. Or why not check out the <a href="{% url 'status' %}" class="btn btn-info">current status</a></p>
+<div class="page-header">
+<h2>Already verified</h2>
+</br>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            You're all set!
+        </h3>
+    </div>
+    <div class="panel-body">
+        The phone number {{ phone_number }} has been confirmed by WattTime as
+        belonging to you. You can return to your <a href="{% url 'profile_view' %}" class="btn btn-info">profile page</a>
+        to view and edit your other settings.
+        Or why not check out the current status of your electricity at <a href="{% url 'status' %}" class="btn btn-info">WattTime Explorer</a>?
+    </div>
+    <div class="panel-footer">
+        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+    </div>
+</div>
+
 
 {% endblock %}
