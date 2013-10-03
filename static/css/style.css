@@ -50,6 +50,39 @@ html, body {
     text-shadow: 1px 1px 0px rgba(155, 155, 155, 1);
 }
 
+.content {
+    width:900px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.content_background {
+    background-color:#ffffff;
+}
+
+.divider {
+    width:100%;
+    border-bottom:1px solid #b3b3b3;
+    margin:30px 0 0 0;
+}
+
+.haiku {
+    font-family: "Pacifico", cursive;
+	font-size:15px;
+	text-align:center;
+    width:175px;
+}
+
+.subsections{
+    width:700px;
+    padding:40px 0px 0px 10px;
+}
+
+.center {text-align:center;}
+.green {color:#8DC63F;}
+.yellow {color:#FFDE17;}
+.blue {color:#99DFF9;}
+
 /* end sean's additions */
 
 
