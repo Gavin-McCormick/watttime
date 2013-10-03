@@ -63,7 +63,7 @@ html, body {
 .divider {
     width:100%;
     border-bottom:1px solid #b3b3b3;
-    margin:30px 0 0 0;
+    margin:50px 0 50px 0;
 }
 
 .haiku {
@@ -78,11 +78,31 @@ html, body {
     padding:40px 0px 0px 10px;
 }
 
+.subheaders {
+    font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:900;
+	font-size:50px;
+	line-height: 50px;
+	margin-bottom:10px;
+}
+
+.subcontent {
+    margin-left:65px;
+}
+
+.icon {
+    background-color:#8DC63F;
+    width:50px;
+    height:50px;
+    margin-right:10px;
+}
+
 .center {text-align:center;}
 .green {color:#8DC63F;}
 .yellow {color:#FFDE17;}
 .blue {color:#99DFF9;}
-
+.gray {color:#6D6371;}
+.white {color:#FFFFFF;}
 /* end sean's additions */
 
 
