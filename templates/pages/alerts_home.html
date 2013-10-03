@@ -15,19 +15,18 @@
         <div class="row">
             <div class="col-md-12">
                 <h3 class="text-center">
-                    Now you can decide what kind of energy you want to use.
+                    It's your energy and your choice.
                 </h3>
                 <p class="text-center">
-                    Sign up for WattTime Alerts to be notified when electricity is coming from
-                    particularly clean or dirty sources. 
+                    WattTime Alerts notify you when your electricity can make the biggest impact. 
                 </p>
                     {% if not user.is_authenticated %}
-                        <h3 class="text-center"><a class="btn btn-primary" href="{% url 'authenticate' %}">
+                        <h3 class="text-center"><a class="btn btn-info" href="{% url 'authenticate' %}">
                             Sign in and get started!
                         </a></h3>
                     {% else %}
-                        <h3 class="text-center"><a class="btn btn-primary" href="{% url 'profile_view' %}">
-                            Check your profile!
+                        <h3 class="text-center"><a class="btn btn-info" href="{% url 'profile_view' %}">
+                            View your profile!
                         </a></h3>
                     {% endif %}
                 </h3>
@@ -39,37 +38,35 @@
                 <h3 class="text-center">Make a difference in four easy steps:</h3>
             </div>
             <div class="col-md-3">
-                <h1 class="text-info">#1</h1>
+                <h1 class="text-info">1</h1>
                 <h3 class="text-center">Sign up is simple</h3>
                 <p class="text-info">
-                    All we need is your email address or phone number to get you started.
+                    Your email address or phone number is all we need to get you started.
                 </p>
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-info">#2</h1>
+                <h1 class="text-info">2</h1>
                 <h3 class="text-center">Verify it's you</h3>
                 <p class="text-info">
-                    We make sure your contact info is verified so we can send secure alerts
+                    We verify your contact info so we can send secure alerts
                     directly to your device.
                 </p>
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-info">#3</h1>
+                <h1 class="text-info">3</h1>
                 <h3 class="text-center">Personalize</h3>
                 <p class="text-info">
-                    You are in control of your account. Tailor your alerts to your personal 
-                    values and lifestyle, or stick with the default settings.
+                    You are in control of your account. Tailor your alerts to be more meaningful to you, or stick with the default settings.
                 </p>
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-info">#4</h1>
+                <h1 class="text-info">4</h1>
                 <h3 class="text-center">Take action</h3>
                 <p class="text-info">
-                    When you receive a text or email, join others and create the clean energy
-                    economy by shifting your electricity use to cleaner sources.
+                    When you receive alert texts or emails, use then to learn about the best times and join others by shifting your electricity use to cleaner sources.
                 </p>
             </div>
         </div>

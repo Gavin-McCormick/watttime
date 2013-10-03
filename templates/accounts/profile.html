@@ -3,10 +3,10 @@
 {% block title %}WattTime: Profile{% endblock %}
 
 {% block content %}
+<div class="page-header">
 <h2>Profile</h2>
-<div class="container-fluid">
-<div class="row-fluid">
-
+</br>
+</div>
 
 {% if deactivated %}
 <p class="lead alert alert-block text-warning">Your account is currently deactivated.</p><p class="alert-info alert-block text-info">You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-success">reactivate</a> your account at any time.</p>
