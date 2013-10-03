@@ -14,16 +14,17 @@
     <div class="panel-body">
         <div class="row">
             <h3 class="text-center">
-                Shift your actions to target today's best times for clean energy<br>
+                Shift your actions to target today's best times for clean energy.<br>
             </h3>
             <p class="text-center">
                     When is the cleanest time to charge your electric car?
-                    How about when to run your A/C or do your laundry?
+                    Could you do your laundry now, or is it better to wait a few hours?
+                    
             </p>
             {% if not user.is_authenticated %}
                 <h3 class="text-center"><a class="btn btn-info" href="{% url 'authenticate' %}">
                     Sign in to track your impact!
-                </a></h3>
+                </a></h3></br></br>
             {% endif %}
         </div>
       	<div class="well">

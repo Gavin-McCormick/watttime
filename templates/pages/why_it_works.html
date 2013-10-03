@@ -1,39 +1,41 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block title %}WattTime: Why it works{% endblock %}
+{% block title %}WattTime: Why It Works{% endblock %}
 
 {% block content %}
 <div class="page-header">
-<h2>Why it works</h2>
+<h2>Why it Works</h2>
 </br>
 </div>
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>Techniques in action today</h3>
+        <h3>Techniques in Action Today</h3>
         <p>
-            With WattTime, users can time their electricity use to help cleaner energy
-            sources compete and grow.
+            Using WattTime, electricity consumers can optimize their electricity use to promote the development of cleaner energy
+            sources while lowering greenhouse gas emissions.
         </p>
     </div>
-    <div class="panel-body">
-        <div class="col-md-6">
-            <h3 class="text-center">Percent clean energy</h3>
+    	<div class="panel-body">
+    	<div class="col-md-6">
+            <h3 class="text-center">Percent Clean Energy</h3>
             <p class="text-info">
-                Our software can show users what share of their region's power currently comes 
-                from clean renewable sources, currently the only way for ordinary people to 
-                shift demand to prioritize existing inframarginal renewable fuel sources. 
+                WattTime shows people how much of their region's electricity comes 
+                from clean and renewable sources. This is one of the most effective ways to shift demand towards
+                economically sustainable fuel sources. 
+
             </p>            
-        </div>  
+        </div> 
+         
         <div class="col-md-6">
-            <h3 class="text-center">Marginal fuel</h3>
+            <h3 class="text-center">Marginal Fuel</h3>
             <p class="text-info">
-                Users can see the current marginal fuel source in their region, allowing them
-                to shift demand as they like, such as towards cleaner peaker fuels like hydropower 
-                and biomass, and away from dirty sources such as coal and oil. (Yes, in today's 
-                low natural gas price regime, we do indeed see peaker coal.) Currently 
-                implemented in New England only; additional regions coming soon.
+                With the ability to see current marginal fuel sources in their region, 
+                electricity consumers can shift their demand as they like towards more renewable
+                fuels such as hydropower and biomass away from dirty sources such as coal and oil. (Currently
+                implemented in New England only; additional regions coming soon).
+
             </p>
         </div>
     </div>
@@ -43,35 +45,33 @@
     <div class="panel-heading">
         <h3>Coming soon</h3>
         <p>
-            By combining open data with automated real-time economic analysis, it should
-            soon be possible for our users to also time electricity to take advantage of
-            a growing list of even more powerful strategies to increase renewable power 
+            By combining open data with our Renewables Integration Response analytics, WattTime is working to equip
+            ordinary people with powerful, real-time economic instruments that increase renewable power 
             competitiveness and reduce system emissions without reducing power availability.
-            (Currently under development by
-            our crack team of energy economists and data analysts from UC Berkeley, MIT, and the
-            University of Western Australia.)
+            (These are currently under development by
+            our crack team of economists and data analysts from UC Berkeley, MIT, and the
+
         </p>
     </div>
     <div class="panel-body">
         <div class="col-md-6">
             <h3 class="text-center">Curtailment</h3>
             <p class="text-info">
-                By exploiting periods of wind power oversupply due to transmission constraints, 
-                users in select locations will be able to reduce indirect emissions by up to 100% 
-                at optimal times.
+                By exploiting wind power oversupply, electricity customers in select locations will be
+                able to reduce indirect emissions by up to 100% at optimal times.
+
             </p>            
         </div>  
         <div class="col-md-6">
-            <h3 class="text-center">Renewable intermittency</h3>
+            <h3 class="text-center">Renewable Intermittency</h3>
             <p class="text-info">
-                Through automation of select devices, users will be able to use energy at
-                times which exploit minor fluctuations in the availability of wind and solar energy,
-                turning the tables on renewables intermittency and making renewables more
-                competitive with fossil power plants.
+                Device automation allows for fine-grained energy response timing. 
+    			It can leverage minor spikes in the availability of renewable energy and 
+                help make renewable energy more competitive with fossil fuel-powered plants like coal.
             </p>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center">Reduced ramping</h3>
+            <h3 class="text-center">Reduced Ramping</h3>
             <p class="text-info">
                 With automation, users can even reduce pollution from traditional power
                 plants by allowing them to reduce wasteful episodes of turning up and down
@@ -81,21 +81,18 @@
             </p>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center">Forecast insurance</h3>
+            <h3 class="text-center">Forecast Insurance</h3>
             <p class="text-info">
-                By pushing electricity demand to offset the difference between wind power
-                plants's production and their forecats, users can effectively increase the 
-                capacity factor of intermittant resources for the few most valuable moments 
-                the year, increasing grid stability and paving the way for renewables to 
+                WattTime's Renewables Integration Response tools can help offset the difference between actual wind power
+                plant production and wind power forecasts by moderating consumer demand during the most valuable moments. This increases grid stability and paves the way for renewables to 
                 compete on equal footing in capacity markets.
+
             </p>
         </div>
     </div>
-</div>
 
-<div class="panel panel-default">
     <div class="panel-footer">
-        Questions about WattTime? Try the <a href="{% url 'faq' %}#general" >FAQ</a>.
+        Are you interested in supporting any of WattTime's work? Get in touch!
     </div>
 </div>
 
