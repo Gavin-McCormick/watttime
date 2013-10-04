@@ -67,9 +67,9 @@
             </div>
             <br />
             <div class="circle_links">
-                <a href="#tools"><div class="pull-left circles tools" alt="Tools"></div></a>
-                <a href="#tactics"><div class="pull-left circles tactics" alt="Tactics"></div></a>
-                <a href="#teams"><div class="pull-left circles teams" alt="Teams"></div></a>
+                <a href="#tools" class="pull-left circles tools" alt="Tools"></a>
+                <a href="#tactics" class="pull-left circles tactics" alt="Tactics"></a>
+                <a href="#teams" class="pull-left circles teams" alt="Teams"></a>
             </div>
         </div>
     </div>
@@ -103,17 +103,17 @@
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="green subheaders">SHIFT</div>
+                    <a href="{% url 'shift' %}" class="green subheaders">SHIFT <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">Discover the best time today to use electricity.</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="green subheaders">ALERTS</div>
+                    <a href="{% url 'alerts_home' %}" class="green subheaders">ALERTS <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">Get intelligent notifications of particularly dirty or clean times delivered right to your phone or inbox.</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="green subheaders">EXPLORER</div>
+                    <a href="{% url 'status' %}" class="green subheaders">EXPLORER <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">You know weather forecasts—now get clean energy forecasts.</div>
                 </div>
             </div>
@@ -125,17 +125,17 @@
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="blue subheaders">HOW IT WORKS</div>
+                    <a href="{% url 'how-it-works' %}" class="blue subheaders">HOW IT WORKS <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">How timing your power can make a difference for clean energy.</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="blue subheaders">WHY IT WORKS</div>
+                    <a href="{% url 'why-it-works' %}" class="blue subheaders">WHY IT WORKS <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">Specific technical mechanisms of our renewables integration and source demand response strategies.</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="blue subheaders">BLOG</div>
+                    <a href="{% url 'placeholder' %}" class="blue subheaders">BLOG <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">What we're up to, what we care about, and what we’ve learned.</div>
                 </div>
             </div>
@@ -147,20 +147,21 @@
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="yellow subheaders">SIGN UP</div>
+                    <a href="{% url 'placeholder' %}" class="yellow subheaders">SIGN UP <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">Sign up for our beta today!</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="yellow subheaders">ABOUT</div>
+                    <a href="{% url 'about-us' %}" class="yellow subheaders">ABOUT <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">Get to know the team behind WattTime.</div>
                 </div>
                 <div class="pull-right subsections">
                     <div class="icon pull-left"></div>
-                    <div class="yellow subheaders">WORK WITH US</div>
+                    <a href="{% url 'join-us' %}" class="yellow subheaders">WORK WITH US <span class="glyphicon glyphicon-arrow-right"></span></a>
                     <div class="subcontent">We’re open source, making a better future, and you can help.</div>
                 </div>
             </div>
+            <br /><br />
 
         </div>
     </div>
@@ -172,13 +173,13 @@
             <br />
             <span class="subheaders green">Awards:</span>
             <a href="{% url 'about-us' %}">
-                <span class="pull-right blue">About Us <span class="glyphicon glyphicon-arrow-right"></span>
+                <span class="pull-right blue">About Us <span class="glyphicon glyphicon-arrow-right"></span></span>
             </a>
         </div>
         <div class="">
-            <a href="//info.cleantech.com/CleantechFacebookContest.html" target="_blank"><div class="awards pull-left cleantech"></div></a>
-            <a href="http://cleanandgreenhackathon.com/results/" target="_blank"><div class="awards pull-left cleanandgreen"></div></a>
-            <a href="//berkeley.cleanweb.co/" target="_blank"><div class="awards pull-left cleanweb"></div></a>
+            <a href="//info.cleantech.com/CleantechFacebookContest.html" target="_blank" class="awards pull-left cleantech"></a>
+            <a href="http://cleanandgreenhackathon.com/results/" target="_blank" class="awards pull-left cleanandgreen"></a>
+            <a href="//berkeley.cleanweb.co/" target="_blank" class="awards pull-left cleanweb"></a>
         </div>
     </div>
 </div>
