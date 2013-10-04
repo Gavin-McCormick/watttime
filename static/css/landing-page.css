@@ -104,6 +104,12 @@ html, body {
     padding: 3px 10px 0 10px;
 }
 
+.beta_icon {
+    background: url(../images/beta_icon.png);
+    width:87px;
+    height:87px;
+}
+
 .awards {
     background: url(../images/awards.png);
     width:303px;
@@ -134,4 +140,22 @@ html, body {
 #home {
     background: url(../images/home-bg.jpg) repeat fixed 100% top;
     min-height: 1000px;
+}
+
+.lp_form-control {
+    width:310px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+input[type="password"], input[type="email"] {
+    height:35px;
+}
+
+.lp_form {
+    margin-left:20px;
+}
+
+.lp_well {
+    height:135px;
 }
