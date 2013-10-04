@@ -1,3 +1,9 @@
+/* .green {color:#8DC63F;}
+.yellow {color:#FFDE17;}
+.blue {color:#99DFF9;}
+.gray {color:#6D6371;}
+.white {color:#FFFFFF;} */
+
 html, body {
 	height: 100%;
 }
@@ -41,12 +47,14 @@ html, body {
 .gray_bar{
     background-color:#F5F5F5;
     width:100%;
-    height:200px;
+    height:500px;
     margin-top:50px;
 }
 
-.header_shadow {
-    text-shadow: 1px 1px 0px rgba(155, 155, 155, 1);
+.energy_story {
+    background: url(../images/energy_story.png);
+    width:100%;
+    height:315px;
 }
 
 .content {
@@ -80,13 +88,11 @@ html, body {
 .subheaders {
     font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
 	font-weight:900;
-	font-size:50px;
-	line-height: 50px;
-	margin-bottom:10px;
+	font-size:20px;
 }
 
 .subcontent {
-    margin-left:65px;
+    margin-left:60px;
 }
 
 /* placeholder image */
@@ -96,4 +102,13 @@ html, body {
     width:50px;
     height:50px;
     margin-right:10px;
+}
+
+.reverse_green {
+    font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:900;
+	font-size:20px;
+    color: #FFFFFF;
+    background-color: #8DC63F;
+    padding: 3px 10px 0 10px;
 }
