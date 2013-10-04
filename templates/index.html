@@ -30,6 +30,9 @@
 </head>
 
 <body name="top">
+<section id="home" data-type="background" data-speed="10" class="pages">
+<article>
+
 <div class="navbar navbar-inverse">
     <div class="navbar-inner">
         <div class="container">
@@ -71,7 +74,7 @@
         </div>
     </div>
 </div>
-
+<br /><br />
 <div class="gray_bar" style="height:500px;">
     <div class="container">
         <div class="row-fluid">
@@ -164,9 +167,9 @@
 </div>
 
 <div class="gray_bar">
-    <br />
     <div class="container">
         <div>
+            <br />
             <span class="subheaders green">Awards:</span>
             <a href="{% url 'about-us' %}">
                 <span class="pull-right blue">About Us <span class="glyphicon glyphicon-arrow-right"></span>
@@ -182,6 +185,21 @@
 
 {% include "base_snippets/footer.html" %}
 
+</article>
+</section>
 </body>
+
+<script>
+$(document).ready(function(){
+    $('section[data-type="background"]').each(function(){
+        var $bgobj = $(this);
+        $(window).scroll(function() {
+            var yPos = -($window.scrollTop() / $bgobj.data('speed'));
+            var coords = '50% '+ yPos + 'px';
+            $bgobj.css({ backgroundPosition: coords });
+        });
+    });
+});
+</script>
 
 </html>

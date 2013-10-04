@@ -48,7 +48,6 @@ html, body {
     background-color:#F5F5F5;
     width:100%;
     height:200px;
-    margin-top:50px;
 }
 
 .energy_story {
@@ -124,3 +123,8 @@ html, body {
 .cleanandgreen:hover {background-position: -303px -121px;}
 .cleanweb {background-position: -606px 0;}
 .cleanweb:hover {background-position: -606px -121px;}
+
+#home {
+    background: url(../images/home-bg.jpg) 50% 0 repeat fixed; min-height: 1000px;
+    background-position: 100% top;
+}

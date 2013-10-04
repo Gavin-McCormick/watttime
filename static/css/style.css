@@ -11,9 +11,6 @@
 /* styles for body text & background*/
 
 body{
-	background: url(../images/home-bg.jpg) no-repeat;
-	background-size:cover;
-	background-position: 100% top;
 	background-color: #FFFFFF;
 	font-family:Helvetica, Arial, sans-serif;
 	color:#7f7f7f;
