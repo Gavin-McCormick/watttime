@@ -81,26 +81,18 @@ html, body {
 
 .subsections{
     width:700px;
-    padding:40px 0px 0px 10px;
+    padding:40px 0 0 10px;
 }
 
 .subheaders {
     font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
 	font-weight:900;
 	font-size:20px;
+    margin-left:10px;
 }
 
 .subcontent {
     margin-left:60px;
-}
-
-/* placeholder image */
-
-.icon {
-    background-color:#8DC63F;
-    width:50px;
-    height:50px;
-    margin-right:10px;
 }
 
 .reverse_green {
@@ -124,7 +116,22 @@ html, body {
 .cleanweb {background-position: -606px 0;}
 .cleanweb:hover {background-position: -606px -121px;}
 
+.lp_icons {
+    background: url(../images/LP_icons.png);
+    width:50px;
+    height:50px;
+}
+.shift {background-position: 0 0}
+.alerter {background-position: 0 -50px;}
+.explorer {background-position: 0 -100px;}
+.hiw {background-position: 0 -150px}
+.wiw {background-position: 0 -200px;}
+.blog {background-position: 0 -250px;}
+.beta {background-position: 0 -300px}
+.about {background-position: 0 -350px;}
+.join {background-position: 0 -400px;}
+
 #home {
-    background: url(../images/home-bg.jpg) 50% 0 repeat fixed; min-height: 1000px;
-    background-position: 100% top;
+    background: url(../images/home-bg.jpg) repeat fixed 100% top;
+    min-height: 1000px;
 }
