@@ -11,14 +11,14 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
+        <h3 class="panel-title text-center text-primary">
             Let's get you started.
         </h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body text-center">
         {% include "accounts/signup_form_snippet.html" with form=form %}
     </div>
-    <div class="panel-footer">
+    <div class="panel-footer text-center">
         Have an account already? <a href="{% url 'user_login' %}">Log in here.</a><br>
         Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
     </div>

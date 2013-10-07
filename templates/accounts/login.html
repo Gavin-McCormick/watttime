@@ -4,21 +4,21 @@
 {% block content %}
 
 <div class="page-header">
-<h2>Log in</h2>
+<h2>Sign In</h2>
 </br>
 </div>
 
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            Welcome back!
+        <h3 class="panel-title text-center text-primary">
+            Welcome Back!
         </h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body text-center">
         {% include "accounts/login_form_snippet.html" with form=form %}
     </div>
-    <div class="panel-footer">
+    <div class="panel-footer text-center">
         Don't have an account yet? <a href="{% url 'create_user' %}">Sign up here.</a><br>
         Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
     </div>

@@ -3,8 +3,12 @@
 
 {% block content %}
 
+<div class="page-header">
 <h2>Email Address Not Found</h2>
-<p class="lead text-error alert alert-error">We could not find a user with the email address <span class="muted">{{ email }}</span>. You could <a href="{% url 'home' %}" class="btn btn-success">create an account</a>. Or why not check out the <a href="{% url 'status' %}" class="btn btn-info">current status</a> ?</p>
+</br>
+</div>
+
+<div class="alert alert-warning"><p class="text-warning">We could not find a user with the email address <span class="text-muted">{{ email }}</span>. Please check to see that your information was entered correctly. Or you could <a href="{% url 'authenticate' %}" class="btn btn-xs btn-success">create an account</a>.</p></div>
 
 {% endblock %}
 

@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="page-header">
-<h2>Sign up/Log in</h2>
+<h2>Sign In - Sign Up</h2>
 </br>
 </div>
 
@@ -12,7 +12,7 @@
     <div class="col-md-6">  
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
+                <h3 class="panel-title text-primary">
                     Log in to your existing WattTime account.
                 </h3>
             </div>
@@ -30,21 +30,17 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">
+                <h3 class="panel-title text-primary">
                     Don't have an account yet? You can sign up right here.
                 </h3>
             </div>
             <div class="panel-body">
                 {% include "accounts/signup_form_snippet.html" with form=signup_form %}
             </div>
-        </div>
+    <div class="panel-footer"><p>WattTime accounts get you access to notifications, tools to track your impact, and immediate WattTime updates.</p>
     </div>
-</div> 
-<div class="panel panel-default">
-    <div class="panel-footer">
-        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+</div>     </div>
     </div>
-</div>
 {% endblock %}
 
 <!-- The following is used for Facebook Connect and was removed by Gavin on Sunday
