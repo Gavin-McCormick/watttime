@@ -1,20 +1,23 @@
 {% load staticfiles %}
    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
    <div class="navbar-header">
+          		
+          	
           	<a class="navbar-brand" href="{% url 'home' %}">
 			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
 			</a>
-			
-			<!-- .btn-navbar is used as the toggle for collapsed navbar content 
-      		<button class="btn btn-large btn-navbar pull-right" data-toggle="collapse" data-target=".nav-collapse">
+			 
+			 <!-- .btn-navbar is used as the toggle for collapsed navbar content 
+      		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
         	<span class="glyphicon glyphicon-align-justify"></span>
       		</button> -->
+		
 	</div>
 			
-          <div class="nav-collapse collapse in">
-            <ul class="nav nav-pills pull-right">
+          <div class="nav nav-collapse pull-right">
+            <ul class="nav nav-pills">
             
-            <li class="dropdown">
+            <li class="dropdown" >
                 <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="glyphicon glyphicon-wrench glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><i class="glyphicon glyphicon-tasks"></i> EXPLORER</a></li>
@@ -53,7 +56,7 @@
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="glyphicon glyphicon-log-out"></i> LOG OUT</a></li>
                 </ul>
               {% else %}
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN <i class="glyphicon glyphicon-log-in"></i></a></li>
+                <li class="" role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN <i class="glyphicon glyphicon-log-in"></i></a></li>
               {% endif %}
               
                       <!--       </ul></li>  -->

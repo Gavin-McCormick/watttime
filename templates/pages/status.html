@@ -49,7 +49,7 @@
             
 <div class="panel panel-default">
 	<div class="panel-heading">
-    <h3 class="panel-title">How clean is your electricity right now? <br>Click on a state to explore!</h3>
+    <h3 class="panel-title text-center">How clean is your electricity right now? <br>Click on a state to explore!</h3>
     </div>
     	
 
@@ -66,22 +66,30 @@
             </div>
             
             <div class="alert alert-info">
-                <p class="text-info">
+                <p class="text-info text-center">
                     WattTime Explorer shows the latest real-time data about today's clean
                     electricity supply, along with a typical average day. For California, clean
                     energy forecasts are also available. Regions in green are
                     WattTime-enabled.
                 </p>
         	</div>
+        	
+        	
+        	<div class="alert alert-warning alert-dismissable">
+  			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+ 	 		<p class="text-warning text-center">
+            <strong>Please be patient.</strong> WattTime is fetching live data, and it may take a moment.
+                <br>
+                WattTime Explorer works best with newer browsers.
+                </p>
+			</div>
         
         </div>
         
-        <div class="panel-footer">Please be patient. WattTime is fetching live data, and it may take a moment.
-                <br>
-                WattTime Explorer works best with newer browsers.
-                <br>
-                Questions about Explorer? Try the <a href="{% url 'faq' %}#explorer" >FAQ</a>.
-         </div>
+        <div class="panel-footer text-center">
+        Find the best time to use electricity and <a href="{% url 'shift' %}">track your impact with WattTime Shift</a>, or to receive notifications when your actions have the biggest impact, sign up for <a href="{% url 'alerts_home' %}">WattTime Alerts</a>.
+        
+        </div>
                
 </div>
 
