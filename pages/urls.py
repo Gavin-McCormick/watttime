@@ -46,8 +46,8 @@ urlpatterns += patterns('',
         TemplateView.as_view(template_name='pages/about_us.html'), name='about-us'),
     url(r'^join-us[/]$',
         TemplateView.as_view(template_name='pages/join_us.html'), name='join-us'),
-    url(r'^partner[/]$',
-        TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
+  #  url(r'^partner[/]$',
+  #      TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
 )
 
 # other
