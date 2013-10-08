@@ -14,27 +14,53 @@
     <p class="panel-title text-info">Welcome <span class="text-success">{{ name }}!</span> These are your account settings.</p>
     </div>
 
-	<div class="panel-body">
+	<div class="panel-body">	
 	
 	<div class="tabbable"> 
 	
   	<ul class="nav nav-tabs">
+  	
+  	    <li class="active"><a href="#tab1" data-toggle="tab" class="text-success">Account Status</a></li>
     
-    	<li class="active"><a href="#tab1" data-toggle="tab">Your Info</a></li>
+    	<li><a href="#tab2" data-toggle="tab" class="text-success">Your Info</a></li>
     
-    	<li><a href="#tab2" data-toggle="tab">Message Preferences</a></li>
+    	<li><a href="#tab3" data-toggle="tab" class="text-success">Alert Preferences</a></li>
     	
-    	<li><a href="#tab3" data-toggle="tab">Energy Profile</a></li>
+    	<li><a href="#tab4" data-toggle="tab" class="text-success">Energy Profile</a></li>
     	
-    	<li><a href="#tab4" data-toggle="tab">WattTime News</a></li>
+    	<li><a href="#tab5" data-toggle="tab" class="text-success">WattTime News</a></li>
   	
   	</ul>
   	
   	<div class="tab-content">
+  	
+  	<div class="tab-pane active" id="tab1">
+	<br>
+	{% if deactivated %}
+	<p class="text-warning">Your account is currently deactivated. You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">reactivate</a> your account at any time.</p></div>
+	{% else %}
+    	{% if phone_verified %}
+    	<p class="text-info">Success! You are signed up to receive WattTime SMS alerts!</p>
+    	{% else %}
+    		{% if phone_blank %}
+    		<p class="text-info">If you provide and <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify </a> your phone number, you will receive WattTime SMS notifications.</p>
+    			{% else %}
+    			<p class="text-info">Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime SMS notifications.</p>
+   		{% endif %}
+    {% endif %}
+    {% if supported_region %}
+    {% else %}
+    <p class="text-info">Please note alerts are not yet available in {{ state }}. We'll let you know as soon as they are.</p>
+    {% endif %}
+	<p class="text-info">If you wish to stop receiving WattTime notifications, you may <a href="{% url 'deactivate' %}" class="btn btn-xs btn-warning">deactivate</a> your account at any time.</p>
+	{% endif %}
+	
+
+	</div>
     
-    <div class="tab-pane active" id="tab1">
-    <ul class="list-group">
-      <li class="list-group-item"><table class="table">
+    <div class="tab-pane" id="tab2">
+    <br>
+<table class="table">
   
 
 	<form action="{% url 'profile_edit' %}" class="form-horizontal" method="post">{% csrf_token %}
@@ -70,12 +96,12 @@
     </tr>
     
     
-    </table></li><input type="submit" class="btn btn-info pull-right" value="Save changes" /></ul>
+    </table><input type="submit" class="btn btn-info pull-right" value="Save changes" />
     </div>
     
-    <div class="tab-pane" id="tab2">
-      <ul class="list-group">
-    <ul class="list-group"><li class="list-group-item">{% if region == "California" %}
+    <div class="tab-pane" id="tab3">
+    <br>
+{% if region == "California" %}
 
 <p class="text-success">Message Timing and Type</p>
 {{ form.message_frequency.errors }}
@@ -91,36 +117,33 @@
 {{ form.message_frequency.errors }}
 <div class="profile-edit">{{ form.message_frequency }}</div>
 
-{% endif %}</li>
+{% endif %}
 <input type="submit" class="btn btn-info pull-right" value="Save changes" />
-</ul>
 </div>
     
-<div class="tab-pane" id="tab3">
-<ul class="list-group"><li class="list-group-item"><p class="text-success">Appliances and Energy-Intensive Practices</p>
+<div class="tab-pane" id="tab4">
+<br>
+<p class="text-success">Appliances and Energy-Intensive Practices</p>
 {{ form.equipment.errors }}
-<div class="profile-edit text-info">{{ form.equipment }}</div></li>
+<div class="profile-edit text-info">{{ form.equipment }}</div>
 <input type="submit" class="btn btn-info pull-right" value="Save changes" />
-</ul>
+
 </div>
     
-    <div class="tab-pane" id="tab4">
-<ul class="list-group">
-    
-    <li class="list-group-item"><p class="text-success"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
-</li>
-    
-    <li class="list-group-item"><p class="text-success"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
-</li>
+    <div class="tab-pane" id="tab5">
+<br>
+<p class="text-success"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
+<p class="text-success"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
+<br>
 
 <input type="submit" class="btn btn-info pull-right" value="Save changes" />
-</ul>
+
 
     </div>
   
   	</div>
 	</div>
-	</div>
+	
 	
 
 </form>
