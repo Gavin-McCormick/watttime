@@ -5,32 +5,127 @@
 {% block content %}
 
 <div class="page-header">
-<h2>Personalize Your Alerts</h2>
+<h2>Profile Settings</h2>
 </br>
 </div>
 
-<div class="row-fluid">
-<div class="span6 alert alert-block alert-success">
-<p class="lead text-success">Welcome {{ name }}!<br> These are your account settings.</p>
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <p class="panel-title text-info">Welcome <span class="text-success">{{ name }}!</span> These are your account settings.</p>
+    </div>
 
-<form action="{% url 'profile_edit' %}" class="form-horizontal" method="post">{% csrf_token %}
-  <div class="control-group">
-    <label class="control-label text-success" for="inputName">Name</label>
-    <div class="controls">{{ form.name }}</div></div>
-  <div class="control-group">
-    <label class="control-label text-success" for="inputName">Password</label>
-    <div class="controls">{{ form.password }}</div></div>           
-  <div class="control-group">
-    <label class="control-label text-success" for="inputName">Email</label>
-    <div class="controls text-info">{{ email }}</div></div>
-  <div class="control-group">
-    <label class="control-label text-success" for="inputName">State</label>
-    <div class="controls">{{ form.state }}</div></div>         
-  <div class="control-group">
-    <label class="control-label text-success" for="inputName">Mobile Phone</label>
-    <div class="controls">{{ form.phone }} 
- </div></div> 
+	<div class="panel-body">
+	
+	<div class="tabbable"> 
+	
+  	<ul class="nav nav-tabs">
+    
+    	<li class="active"><a href="#tab1" data-toggle="tab">Your Info</a></li>
+    
+    	<li><a href="#tab2" data-toggle="tab">Message Preferences</a></li>
+    	
+    	<li><a href="#tab3" data-toggle="tab">Energy Profile</a></li>
+    	
+    	<li><a href="#tab4" data-toggle="tab">WattTime News</a></li>
+  	
+  	</ul>
+  	
+  	<div class="tab-content">
+    
+    <div class="tab-pane active" id="tab1">
+    <ul class="list-group">
+      <li class="list-group-item"><table class="table">
+  
 
+	<form action="{% url 'profile_edit' %}" class="form-horizontal" method="post">{% csrf_token %}
+  	
+  	<tr class="control-group active">
+    <td><label class="control-label text-info" for="inputName">Name</label></td>
+    <td class="controls">{{ form.name }}</td>
+    <td>{{ name }}</td>
+    </tr>
+  	
+  	<tr class="control-group active">
+    <td><label class="control-label text-info" for="inputName">Password</label></td>
+    <td class="controls">{{ form.password }}</td>
+    <td>{{ password }}</td>
+    </tr>
+    
+    <tr class="control-group">
+    <td><label class="control-label text-info" for="inputName">Email</label></td>
+    <td class="controls">{{ form.email }}</td>
+    <td>{{ email }}</td>
+    </tr>
+    
+    <tr class="control-group active">
+    <td><label class="control-label text-info" for="inputName">State</label></td>
+    <td class="controls">{{ form.state }}</td>
+    <td>{{ state }}</td>
+    </tr>
+    
+    <tr class="control-group active">
+    <td><label class="control-label text-info" for="inputName">Mobile Phone</label></td>
+    <td class="controls">{{ form.phone }}</td>
+    <td>{{ phone }}</td>
+    </tr>
+    
+    
+    </table></li><input type="submit" class="btn btn-info pull-right" value="Save changes" /></ul>
+    </div>
+    
+    <div class="tab-pane" id="tab2">
+      <ul class="list-group">
+    <ul class="list-group"><li class="list-group-item">{% if region == "California" %}
+
+<p class="text-success">Message Timing and Type</p>
+{{ form.message_frequency.errors }}
+<div class="profile-edit text-info">{{ form.message_frequency }}</div>
+
+<p class="text-success"><label class="checkbox inline">{{ form.forecast_email }}I want to receive the WattTime daily forecast each morning via email.{{ form.forecast_email.errors }}</label></p>
+
+{% endif %}
+
+{% if region == "NewEngland" %}
+
+<p class="text-info">Message Timing and Type</p>
+{{ form.message_frequency.errors }}
+<div class="profile-edit">{{ form.message_frequency }}</div>
+
+{% endif %}</li>
+<input type="submit" class="btn btn-info pull-right" value="Save changes" />
+</ul>
+</div>
+    
+<div class="tab-pane" id="tab3">
+<ul class="list-group"><li class="list-group-item"><p class="text-success">Appliances and Energy-Intensive Practices</p>
+{{ form.equipment.errors }}
+<div class="profile-edit text-info">{{ form.equipment }}</div></li>
+<input type="submit" class="btn btn-info pull-right" value="Save changes" />
+</ul>
+</div>
+    
+    <div class="tab-pane" id="tab4">
+<ul class="list-group">
+    
+    <li class="list-group-item"><p class="text-success"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
+</li>
+    
+    <li class="list-group-item"><p class="text-success"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
+</li>
+
+<input type="submit" class="btn btn-info pull-right" value="Save changes" />
+</ul>
+
+    </div>
+  
+  	</div>
+	</div>
+	</div>
+	
+
+</form>
+    
+  	
 <!--
 <div class="control-group">
     <label class="control-label text-success" for="inputName">Message Frequency</label>
@@ -45,43 +140,19 @@
     <label class="control-label text-success" for="inputName">Updates about Future WattTime Features</label>
     <div class="controls text-success">{{ beta_test }}</div></div>
 -->
-</div>
 
 
 <!-- Wrapping <label></label> around multiple radio buttons breaks the interface in Firefox -->
 
-<div class="span6 alert alert-block alert-success">
 
-{% if region == "California" %}
-
-<p class="lead text-success">Message Timing and Type</p>
-{{ form.message_frequency.errors }}
-<div class="profile-edit">{{ form.message_frequency }}</div>
-
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.forecast_email }}I want to receive the WattTime daily forecast each morning via email.{{ form.forecast_email.errors }}</label></p>
-
-{% endif %}
-
-{% if region == "NewEngland" %}
-
-<p class="lead text-success">Message Timing and Type</p>
-{{ form.message_frequency.errors }}
-<div class="profile-edit">{{ form.message_frequency }}</div>
-
-{% endif %}
-
-<p class="lead text-success">Appliances and Energy-Intensive Practices</p>
-{{ form.equipment.errors }}
-<div class="profile-edit">{{ form.equipment }}</div>
-
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
-
-<p class="text-success alert alert-info"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
-
-<input type="submit" class="btn btn-info pull-left" value="Save changes" />
 
 
 </div>
-</form>
+
+ <div class="panel-footer text-center">
+        Find the best time to use electricity and <a href="{% url 'shift' %}">track your impact with WattTime Shift</a>, or to receive notifications when your actions have the biggest impact, sign up for <a href="{% url 'alerts_home' %}">WattTime Alerts</a>.
+        
+        </div>
+
 </div>
 {% endblock %}
