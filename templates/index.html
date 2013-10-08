@@ -51,7 +51,7 @@
               {% if user.is_authenticated %}
                <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="glyphicon glyphicon-user glyphicon-white"></i> <b class="caret"></b></a>
       			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
-      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_view' %}"><i class="glyphicon glyphicon-cog"></i> SETTINGS</a></li>
+      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_edit' %}"><i class="glyphicon glyphicon-cog"></i> SETTINGS</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'account_logout' %}"><i class="glyphicon glyphicon-log-out"></i> LOG OUT</a></li>
                 </ul>
               {% else %}

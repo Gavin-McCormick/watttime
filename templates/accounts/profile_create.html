@@ -9,31 +9,29 @@
 </br>
 </div>
 
-<p class="lead alert alert-info text-info">
-    Welcome {{ name }}! Create your account here.
-</p>
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <h3 class="panel-title">Welcome {{ name }}! Create your account here.</h3>
+    </div>
 
-<br>
-<div class="alert alert-success">
+	<div class="panel-body">
 <form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
 
      <div class="control-group">
+     <label class="control-label text-info" for="inputName">Name</label>
            <div class="controls">
              {{ form.name }}
-             <span class="help-inline text-warning">Your name</span>     
              <span class="help-inline">{{ form.name.errors }}</span>
            </div>
+           <label class="control-label text-info" for="inputPassword">Password</label>
            <div class="controls">
              {{ form.password }}
-             <span class="help-inline text-warning">choose a good one</span>     
              <span class="help-inline">{{ form.password.errors }}</span>
            </div>
      </div>
 
     <input type="submit" class="btn btn-info" value="Submit" />
+    </form>
     </div>
     </div>
-</form>
-
-</div>
 {% endblock %}

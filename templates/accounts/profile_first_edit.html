@@ -8,32 +8,19 @@
 </br>
 </div>
 
-<div col="row">
-    <div class="col-md-2">
-        <div class="panel panel-default">
-            <ul class="nav nav-pills nav-stacked">
-              <li class="active"><a href="#">Profile</a></li>
-              <li><a href="{% url 'profile_edit' %}">Settings</a></li>
-              <li><a href="{% url 'status' %}">Alerts: SMS</a></li>
-              <li><a href="{% url 'status' %}">Alerts: Email</a></li>
-            </ul>
-        </div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <h3 class="panel-title">Thanks for signing up for WattTime! You can get started with our clean energy tools today.</h3>
     </div>
-    
-    <div class="col-md-10">
-        <p class="lead alert alert-info text-info">
-            Thanks for signing up for WattTime! You can get started with our clean energy tools today.
-            <a href="{% url 'status' %}">Status</a>
-            <a href="{% url 'shift' %}">Shift</a>
-            <a href="{% url 'alerts_home' %}">Alerts</a>
-        </p>
-        
-        
-        {% if region_supported %}
-        <div class="alert alert-success">
-            <p class="lead alert alert-info text-info">
+
+	<div class="panel-body">	
+	
+	<ul class="list-group">
+  <li class="list-group-item">
+  {% if region_supported %}
                 Sign up for SMS alerts
-            </p>
+    
             <form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
                  <div class="control-group">
                    <div class="controls">
@@ -44,15 +31,20 @@
                 </div>                
             </form>
             <p class="alert alert-warning text-warning">
-                <span class="badge badge-warning"><i class="icon-hand-right icon-white"></i></span>
+                <i class="glyphicon glyphicon-hand-right"></i>
                 WattTime alert frequency varies, but you can adjust how often you receive them in your
                 settings. Please keep in mind that your mobile service provider may charge you for receiving
                 and sending text messages.
             </p>
-        </div>
-    </div>
-</div>
-{% endif %}
+            
+            </li>
+  <li class="list-group-item">Explore WattTime Forecasts</li>
+  <li class="list-group-item">See how to Shift {% endif %}</li>
+  <li class="list-group-item">Porta ac consectetur ac</li>
+  <li class="list-group-item">Vestibulum at eros</li>
+</ul>
 
-
+</div></div>
+	
+<
 {% endblock %}
