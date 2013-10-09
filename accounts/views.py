@@ -153,7 +153,7 @@ class LoginView(FormView):
                 return render(request, 'accounts/wrong_password.html', {'email' : email})
         else:
             email_login_user(up.user)
-            return redirect('accounts.views.frontpage')
+            return redirect('accounts.views.authenticate_view')
 
     def __call__(self, request):
         if request.user.is_authenticated():

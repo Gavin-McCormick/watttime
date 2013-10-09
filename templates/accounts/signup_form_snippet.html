@@ -1,16 +1,7 @@
-<form action="{% url 'create_user' %}" method="post" >{% csrf_token %}
-                        
-    <p class="fieldWrapper ">
+{% load bootstrap3 %}
 
-        {{ form.email.errors }}
-        {{ form.email }} 
-                                                      	
-        {{ form.state.errors }}
-        {{ form.state }}
-
-    </p>           
-    <p>
-        <input type="submit" class="btn btn-success" name="sign_up" value="Go">
-    </p>
-
+<form action="{% url 'create_user' %}" method="post" >
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary" value="Go">Go</button>
 </form>

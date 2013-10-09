@@ -16,16 +16,16 @@ class UserProfileForm(forms.Form):
     ask_feedback    = config.config_ask_feedback.form_field
 
 class SignupForm(forms.Form):
-    email = forms.CharField(help_text='Email')
-    state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
+    email = forms.CharField() #help_text='Email')
+    state = forms.ChoiceField(choices = STATE_CHOICES) #, help_text='State')
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['placeholder'] = u'Email'
 
 class LoginForm(forms.Form):
-    email = forms.CharField(help_text='Email')
-    password = forms.CharField(help_text='Password',
+    email = forms.CharField() #help_text='Email')
+    password = forms.CharField( #help_text='Password',
             widget=forms.PasswordInput(), required = False)
 
     def __init__(self, *args, **kwargs):
