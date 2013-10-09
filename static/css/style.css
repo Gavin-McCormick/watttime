@@ -68,11 +68,11 @@ body a:hover{
   background-image: -webkit-linear-gradient(top, #99DFF9, #8DC63F);
   background-image: -o-linear-gradient(top, #8DC63F, #99DFF9);
   background-image: linear-gradient(to bottom, #8DC63F, #99DFF9);
-  background-repeat: repeat-x;
+  background-repeat: repeat-x; */
   border-color: #99DFF9 #99DFF9 #fff;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff33', endColorstr='#ff99DFF9', GradientType=0);
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); */
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); 
 } 
 
 .navbar-inverse .btn-navbar:hover,
