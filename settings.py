@@ -219,6 +219,7 @@ INSTALLED_APPS = (
 #    'registration',
     'corsheaders',
     'tastypie',
+    'bootstrap3',
 )
 
 # A sample logging configuration. The only tangible logging
