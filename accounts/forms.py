@@ -37,8 +37,9 @@ class PhoneVerificationForm(forms.Form):
     verification_code = forms.IntegerField(label='Verification code')
 
 class AccountCreateForm(forms.Form):
-    name = forms.CharField(help_text='Name')
-    password = forms.CharField(help_text='Password', widget=forms.PasswordInput())
+    name = forms.CharField() #help_text='Name')
+    password = forms.CharField(#help_text='Password',
+                               widget=forms.PasswordInput())
    # state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
 
     def __init__(self, *args, **kwargs):
@@ -47,7 +48,7 @@ class AccountCreateForm(forms.Form):
         self.fields['password'].widget.attrs['placeholder'] = u'Password'
 
 class UserProfileFirstForm(forms.Form):
-    phone = forms.CharField(help_text='Phone')
+    phone = forms.CharField() #help_text='Phone')
    # state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
 
     def __init__(self, *args, **kwargs):

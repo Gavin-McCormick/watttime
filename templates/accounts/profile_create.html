@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
 {% block title %}WattTime: Create account{% endblock %}
 
@@ -15,22 +16,11 @@
     </div>
 
 	<div class="panel-body">
-<form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
+<form action="{% url 'profile_first_edit' %}" method="post">
+    {% csrf_token %}
 
-     <div class="control-group">
-     <label class="control-label text-info" for="inputName">Name</label>
-           <div class="controls">
-             {{ form.name }}
-             <span class="help-inline">{{ form.name.errors }}</span>
-           </div>
-           <label class="control-label text-info" for="inputPassword">Password</label>
-           <div class="controls">
-             {{ form.password }}
-             <span class="help-inline">{{ form.password.errors }}</span>
-           </div>
-     </div>
-
-    <input type="submit" class="btn btn-info" value="Submit" />
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary" value="Go">Go</button>
     </form>
     </div>
     </div>

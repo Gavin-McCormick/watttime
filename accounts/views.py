@@ -48,7 +48,7 @@ class FormView:
 
             return self.render(request, 'accounts/{}.html'.format(self.html_file), vals)
         else:
-            return redirect('user_login')
+            return redirect('authenticate')
 
 class ProfileEdit(FormView):
     def __init__(self):
@@ -74,6 +74,7 @@ class ProfileEdit(FormView):
 class ProfileCreate(FormView):
     def __init__(self):
         FormView.__init__(self, 'profile_create', forms.AccountCreateForm)
+       # self.require_authentication = False
 
     def html_params(self, user):
         up = user.get_profile()
