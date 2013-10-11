@@ -8,44 +8,64 @@
 </br>
 </div>
 
+
 <div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-4">  
+    <div class="col-md-3"></div>
+    <div class="col-md-6">  
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-primary">
-                    Log in to your existing WattTime account.
-                </h3>
-            </div>
             <div class="panel-body">
-                {% include "accounts/login_form_snippet.html" with form=login_form %}
-            </div>
-            <div class="panel-footer">
-                <p>Forget your password? Just enter your email, leave the password blank,
-                and click Login to receive an account recovery email.
-                </p>
+        
+                <div class="tabbable"> 
+        	
+                    <ul class="nav nav-tabs">  	
+                        <li class="active"><a href="#tab1" data-toggle="tab">Sign in</a></li>
+                        <li><a href="#tab2" data-toggle="tab">Sign up</a></li>
+                    </ul>
+        
+                    <div class="tab-content">
+        
+                        <div class="tab-pane active" id="tab1">
+                            <div class="col-md-12">
+                                <h3>
+                                    Log in to your existing WattTime account.
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                {% include "accounts/login_form_snippet.html" with form=login_form %}
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <p>
+                                    Forget your password? Just enter your email, leave the password blank,
+                                    and click Go to receive an account recovery email.
+                                </p>
+                            </div>
+                        </div>
+        
+                        <div class="tab-pane" id="tab2">
+                            <div class="col-md-12">
+                                <h3>
+                                    Don't have an account yet? You can sign up right here.
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                {% include "accounts/signup_form_snippet.html" with form=signup_form %}
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <p>
+                                    An account gets you access to WattTime Alerts, tools to track your impact, and
+                                    occasional updates.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>        
             </div>
         </div>
     </div>
-    
-    <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title text-primary">
-                    Don't have an account yet? You can sign up right here.
-                </h3>
-            </div>
-            <div class="panel-body">
-                {% include "accounts/signup_form_snippet.html" with form=signup_form %}
-            </div>
-            <div class="panel-footer">
-                <p>
-                    WattTime accounts get you access to notifications, tools to track your impact, and
-                    immediate WattTime updates.
-                </p>
-            </div>
-        </div>
-     </div>
+    <div class="col-md-3"></div>
 </div>
 
 {% endblock %}
