@@ -108,6 +108,7 @@ html, body {
     background: url(../images/beta_icon.png);
     width:87px;
     height:87px;
+    margin-left:25px;
 }
 
 .awards {
