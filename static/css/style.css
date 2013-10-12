@@ -7,6 +7,22 @@
 .white {color:#FFFFFF;}
 
 
+.nb_icons {
+    background: url(../images/LP_icons_small.png);
+    width:14px;
+    height:14px;
+}
+.nbshift {background-position: 0 0}
+.nbalerter {background-position: 0 -14px;}
+.nbexplorer {background-position: 0 -28px;}
+.nbhiw {background-position: 0 -42px}
+.nbwiw {background-position: 0 -56px;}
+.nbblog {background-position: 0 -70px;}
+.nbbeta {background-position: 0 -84px}
+.nbabout {background-position: 0 -98px;}
+.nbjoin {background-position: 0 -112px;}
+
+
 
 /* styles for body text & background*/
 
