@@ -16,8 +16,10 @@
 
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
+from django.contrib.auth import views as django_views
 from . import views
 
+# custom urls
 urlpatterns = patterns('',
     url(r'^magic_invite/(?P<email>[a-zA-Z0-9._+@-]+)[/]?$',
         views.http_invite, name='http_invite'),
@@ -29,10 +31,8 @@ urlpatterns = patterns('',
         views.authenticate_view, name='authenticate'),
     url(r'^login[/]?$',
         views.user_login, name='user_login'),
-    url(r'^profile[/]?$',
-        views.profile_view, name='profile_view'),
-    url(r'^profile/edit[/]?$',
-        views.profile_edit, name='profile_edit'),
+    url(r'^profile/settings[/]?$',
+        views.profile_settings, name='profile_settings'),
     url(r'^profile/create[/]?$',
         views.profile_create, name='profile_create'),
     url(r'^profile/firsttime[/]?$',
@@ -49,4 +49,31 @@ urlpatterns = patterns('',
         TemplateView.as_view(template_name='accounts/signed_up.html'), name='signed_up'),
     url(r'^signed_up_future[/]$',
         TemplateView.as_view(template_name='accounts/signed_up_future.html'), name='signed_up_future'),
+)
+
+# Django built-in urls
+urlpatterns += patterns('',
+    url(r'^accounts/password/change[/]$',
+        django_views.password_change,
+        {'template_name': 'accounts/password_change.html'},
+        name='password_change'),
+    url(r'^accounts/password/reset[/]$',
+        django_views.password_reset,
+        {'template_name': 'accounts/password_reset_form.html', 'email_template_name': 'accounts/password_reset_email.html'},
+        name='password_reset'),
+    url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)[/]$',
+        django_views.password_reset_confirm,
+        {'template_name': 'accounts/password_reset_confirm.html'},
+        name='password_reset_confirm'),
+    url(r'^accounts/password/reset/complete[/]$',
+        django_views.password_reset_complete,
+        {'template_name': 'accounts/password_reset_complete.html'},
+        name='password_reset_complete'),
+    url(r'^accounts/password/reset/done[/]$',
+        django_views.password_reset_done,
+        {'template_name': 'accounts/password_reset_done.html'},
+        name='password_reset_done'),
+    url(r'^accounts/logout[/]$',
+        django_views.logout, {'next_page':'/'},
+        name='logout'),
 )

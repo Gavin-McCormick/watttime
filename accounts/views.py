@@ -52,7 +52,7 @@ class FormView:
 
 class ProfileEdit(FormView):
     def __init__(self):
-        FormView.__init__(self, 'profile_edit', forms.UserProfileForm)
+        FormView.__init__(self, 'profile_settings', forms.UserProfileForm)
 
     def form(self, user):
         return user.get_profile().region().user_prefs_form
@@ -69,7 +69,7 @@ class ProfileEdit(FormView):
 
     def form_submitted(self, request, vals):
         request.user.get_profile().save_from_form(vals)
-        return redirect('profile_view')
+        return redirect('profile_settings')
 
 class ProfileCreate(FormView):
     def __init__(self):
@@ -112,7 +112,7 @@ class PhoneVerifyView(FormView):
         if code == up.verification_code:
             up.is_verified = True
             up.save()
-            return redirect('profile_view')
+            return redirect('profile_settings')
         else:
             return render(request, 'accounts/phone_verification_wrong.html',
                     {'phone_number' : up.phone, 'form' : self.form()})
@@ -147,9 +147,15 @@ class LoginView(FormView):
 
         if password:
             user = authenticate(username = up.user.username, password = password)
-            if user and up.password_is_set:
+            # if username was set wrong, try with email
+            if user is None:
+                user = authenticate(username = email, password = password)
+                
+            # try to login
+            print user
+            if user is not None:
                 login(request, user)
-                return redirect('profile_view')
+                return redirect('profile_settings')
             else:
                 return render(request, 'accounts/wrong_password.html', {'email' : email})
         else:
@@ -158,14 +164,13 @@ class LoginView(FormView):
 
     def __call__(self, request):
         if request.user.is_authenticated():
-            return redirect('profile_view')
+            return redirect('profile_settings')
         else:
             return FormView.__call__(self, request)
 
 class CreateUserView(FormView):
     def __init__(self):
         FormView.__init__(self, 'signup', forms.SignupForm)
-        self.require_authentication = False
 
     def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'], state = vals['state'])
@@ -183,7 +188,7 @@ class CreateUserView(FormView):
             return render(request, 'accounts/user_already_exists.html',
                     {'email' : email})
 
-profile_edit = ProfileEdit()
+profile_settings = ProfileEdit()
 
 profile_first_edit = ProfileFirstEdit()
 
@@ -356,24 +361,14 @@ def send_verification_code(user):
         print ("Send unsuccessful.")
     return sent
 
-def profile_view(request):
-    user = request.user
-    if user.is_authenticated():
-        vals = {'deactivated' : (not user.is_active)}
-        user.get_profile().display_values(vals)
-        return render(request, 'accounts/profile.html', vals)
-    else:
-        print ("User not authenticated")
-        return redirect('user_login')
-
 def set_active(request, new_value):
     user = request.user
     if user.is_authenticated():
         user.is_active = new_value
         user.save()
-        return redirect('profile_view')
+        return redirect('profile_settings')
     else:
-        return redirect('user_login')
+        return redirect('authenticate')
 
 def deactivate(request):
     return set_active(request, False)
