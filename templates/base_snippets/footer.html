@@ -1,75 +1,31 @@
 {% load staticfiles %}
-		
+
 <div class="footer" name="contact">
-
-	<div class="container">
-
-		<div class="copyright">
-
-			<a href="{% url 'home' %}" class="logo">
-
-				<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" alt="WattTime" width="120">
-
-			</a>
-
-			<p>
-
-				Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013.<br> 
-
-				Built in Berkeley, California with composted parts from around the world.
-
-			</p>
-
-		</div>
-
-		<div class="social-policies">
-
-			<ul class="links">
-
-					<li class="contact">
-
-					<a href="mailto:watttime.app@gmail.com" class="">Contact</a>
-
-				</li>
-
-				 <li class="blog">
-
-					<a href="//watttime.com/blog">Blog</a>
-
-				</li> 
-
-
-				<li class="facebook text-center">
-
-					<a href="//www.facebook.com/wattTimeApp">Facebook</a>
-
-				</li>
-
-				<li class="twitter text-center">
-
-					<a href="//twitter.com/watttime">Twitter</a>
-
-				</li>
-
-			</ul>
-
-			
-
-			<div class="policies" >
-
-				<p>
-                            <a href="{% url 'privacy' %}">Privacy Policy</a> &bull;
-                            <a href="{% url 'terms-of-service' %}">Terms of Use</a>
-                        </p>
-
-			</div>
-
-			
-
-		</div>
-
-	</div>
-
+    <div class="container" style="background:#002C3C;">
+        <div class="copyright">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static "images/WattTimeWhiteWordLogo.png" %}" alt="WattTime" width="120">
+            </a>
+            <p>
+                Made by the team at <a href="{% url 'home' %}">WattTime</a>. Copyright 2013.<br>
+                Built in Berkeley, California with composted parts from around the world.
+            </p>
+        </div>
+        <div class="social-policies">
+            <ul class="links">
+                <li class="contact"><a href="mailto:watttime.app@gmail.com" class="">Contact</a></li>
+                <li class="blog"><a href="//watttime.com/blog">Blog</a></li>
+                <li class="facebook text-center"><a href="//www.facebook.com/wattTimeApp">Facebook</a></li>
+                <li class="twitter text-center"><a href="//twitter.com/watttime">Twitter</a></li>
+            </ul>
+            <div class="policies" >
+                <p>
+                    <a href="{% url 'privacy' %}">Privacy Policy</a> &bull;
+                    <a href="{% url 'terms-of-service' %}">Terms of Use</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 
