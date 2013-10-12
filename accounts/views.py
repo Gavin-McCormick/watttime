@@ -73,6 +73,12 @@ class ProfileEdit(FormView):
             hrs_shifted += r.usage_hours
             fraction_clean += r.usage_hours*r.recommended_fraction_green
             fraction_improved += (r.recommended_fraction_green - r.baseline_fraction_green) / r.baseline_fraction_green
+        if hrs_shifted > 0:
+            av_clean = fraction_clean / hrs_shifted * 100
+            av_improved = fraction_improved / hrs_shifted * 100
+        else:
+            av_clean = 0
+            av_improved = 0
         return {'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
@@ -83,8 +89,8 @@ class ProfileEdit(FormView):
                 'supported_location' : up.supported_location(),
                 'forecasted_location' : up.supported_location_forecast(),
                 'hrs_shifted' : round(hrs_shifted, 1),
-                'av_clean': round(fraction_clean / hrs_shifted * 100, 1),
-                'av_improved': round(fraction_improved / hrs_shifted * 100, 1),
+                'av_clean': round(av_clean, 1),
+                'av_improved': round(av_improved, 1),
                 }
 
     def form_submitted(self, request, vals):
