@@ -11,25 +11,23 @@
 
 <div class="panel panel-default">
 	<div class="panel-heading">
-    <h3 class="panel-title">Welcome {{ name }}! These are your account settings.</h3>
+    <h3 class="panel-title">Welcome {{ name }}! View and edit your account settings here.</h3>
     </div>
 
 	<div class="panel-body">	
 	
 	<div class="tabbable"> 
 	
-  	<ul class="nav nav-tabs">
+  	<ul class="nav nav-tabs nav-justified" id="myTab">
   	
-  	    <li class="active"><a href="#tab1" data-toggle="tab" class="text-success">Account Status</a></li>
+  	      <li class="active"><a href="#tab1" data-toggle="tab" class="text-success">Account Status</a></li>
     
-    	<li><a href="#tab2" data-toggle="tab" class="text-success">Your Info</a></li>
-    
-    	<li><a href="#tab3" data-toggle="tab" class="text-success">Alert Preferences</a></li>
-    	
-    	<li><a href="#tab4" data-toggle="tab" class="text-success">Energy Profile</a></li>
-    	
-    	<li><a href="#tab5" data-toggle="tab" class="text-success">WattTime News</a></li>
-  	
+        	<li><a href="#tab2" data-toggle="tab" class="text-success">User Info</a></li>
+        
+        	<li><a href="#tab3" data-toggle="tab" class="text-success">WattTime Alerts</a></li>
+        	
+        	<li><a href="#tab4" data-toggle="tab" class="text-success">Personalize</a></li>
+        	      	
   	</ul>
   	
   	<div class="tab-content">
@@ -48,11 +46,11 @@
     			<p class="text-info">Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime SMS notifications.</p>
    		{% endif %}
     {% endif %}
-    {% if supported_region %}
+    {% if supported_location %}
     {% else %}
     <p class="text-info">Please note alerts are not yet available in {{ state }}. We'll let you know as soon as they are.</p>
     {% endif %}
-	<p class="text-info">If you wish to stop receiving WattTime notifications, you may <a href="{% url 'deactivate' %}" class="btn btn-xs btn-warning">deactivate</a> your account at any time.</p>
+	<p class="text-info">If you wish to stop receiving WattTime Alerts, you may <a href="{% url 'deactivate' %}" class="btn btn-xs btn-warning">deactivate</a> your account at any time.</p>
 	{% endif %}
 	
 
@@ -60,60 +58,74 @@
     
     <div class="tab-pane" id="tab2">
     <br>
-<table class="table">
   
 
 	<form action="{% url 'profile_settings' %}" class="form-horizontal" method="post">{% csrf_token %}
-  	
-  	<tr class="control-group active">
-    <td><label class="control-label text-info" for="inputName">Name</label></td>
-    <td class="controls">{{ form.name }}</td>
-    <td>{{ name }}</td>
-    </tr>
-  	
-  	<tr class="control-group active">
-    <td><label class="control-label text-info" for="inputName">Password</label></td>
-    <td class="controls">{{ form.password }}</td>
-    <td>{{ password }}</td>
-    </tr>
+    <p>Login info</p>
+    <table class="table">  	
+        <tr class="control-group">
+        <td><label class="control-label text-info" for="inputName">Email</label></td>
+        <td>{{ email }}</td>
+        <td>(Your email is your login name.)</td>
+        </tr>
+      	<tr class="control-group">
+        <td><label class="control-label text-info" for="inputName">Password</label></td>
+        <td>***</td>
+        <td><a href="{% url 'password_change' %}">Change password?</a></td>
+        </tr>
+    </table>
     
-    <tr class="control-group">
-    <td><label class="control-label text-info" for="inputName">Email</label></td>
-    <td class="controls">{{ form.email }}</td>
-    <td>{{ email }}</td>
-    </tr>
-    
-    <tr class="control-group active">
-    <td><label class="control-label text-info" for="inputName">State</label></td>
-    <td class="controls">{{ form.state }}</td>
-    <td>{{ state }}</td>
-    </tr>
-    
-    <tr class="control-group active">
-    <td><label class="control-label text-info" for="inputName">Mobile Phone</label></td>
-    <td class="controls">{{ form.phone }}</td>
-    <td>{{ phone }}</td>
-    </tr>
-    
-    
-    </table><input type="submit" class="btn btn-info pull-right" value="Save changes" />
+    <p>User settings</p>
+    <table class="table">  	
+        <tr class="control-group">
+        <td><label class="control-label text-info" for="inputName">Name</label></td>
+        <td>{{ name }}</td>
+        <td class="controls">{{ form.name }}</td>
+        <td>(Hello friend!)</td>
+        </tr>
+      	
+        <tr class="control-group">
+        <td><label class="control-label text-info" for="inputName">State</label></td>
+        <td>{{ state }}</td>
+        <td class="controls">{{ form.state }}</td>
+        <td>(You have the most impact on your regional grid.)</td>
+        </tr>
+        
+        <tr class="control-group">
+        <td><label class="control-label text-info" for="inputName">Phone</label></td>
+        <td>{{ phone }}</td>
+        <td class="controls">{{ form.phone }}</td>
+        <td>(Changing your phone number will trigger a 1-time SMS message for verification.)</td>
+        </tr>
+    </table>
+
+    <p>Keep in touch</p>
+    <p><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive periodic updates about new features and regions.{{ form.beta_test.errors }}</label></p>
+    <p><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
+
+
+    <input type="submit" class="btn btn-info pull-right" value="Save changes" />
     </div>
     
     <div class="tab-pane" id="tab3">
     <br>
 {% if region == "California" %}
-
-<p class="text-success">Message Timing and Type</p>
+{% if phone_verified %}
+<p>WattTime Alerts by SMS to {{ phone }}</p>
 {{ form.message_frequency.errors }}
-<div class="profile-edit text-info">{{ form.message_frequency }}</div>
-
-<p class="text-success"><label class="checkbox inline">{{ form.forecast_email }}I want to receive the WattTime daily forecast each morning via email.{{ form.forecast_email.errors }}</label></p>
+<div class="profile-edit">{{ form.message_frequency }}</div>
+{% else %}
+<p>WattTime Alerts by SMS</p>
+<p>Looks like we don't have a phone number for you! You can add one on the "User Info" tab.
+{% endif %}
+<p>WattTime Alerts by email to {{ email }}</p>
+<p><label class="checkbox inline">{{ form.forecast_email }}I want to receive the daily WattTime Morning Forecast email.{{ form.forecast_email.errors }}</label></p>
 
 {% endif %}
 
 {% if region == "NewEngland" %}
 
-<p class="text-info">Message Timing and Type</p>
+<p>WattTime Alerts by SMS</p>
 {{ form.message_frequency.errors }}
 <div class="profile-edit">{{ form.message_frequency }}</div>
 
@@ -123,17 +135,18 @@
     
 <div class="tab-pane" id="tab4">
 <br>
-<p class="text-success">Appliances and Energy-Intensive Practices</p>
+<p>
+    WattTime uses information about your appliances and energy-intensive practices to recommend
+    the most impactful actions that you could take.
+</p>
 {{ form.equipment.errors }}
-<div class="profile-edit text-info">{{ form.equipment }}</div>
+<div class="profile-edit">{{ form.equipment }}</div>
 <input type="submit" class="btn btn-info pull-right" value="Save changes" />
 
 </div>
     
     <div class="tab-pane" id="tab5">
 <br>
-<p class="text-success"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive updates about new features and regions.{{ form.beta_test.errors }}</label></p>
-<p class="text-success"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
 <br>
 
 <input type="submit" class="btn btn-info pull-right" value="Save changes" />
@@ -178,4 +191,22 @@
         </div>
 
 </div>
+
+<script>
+    $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    });
+
+    // store the currently selected tab in the hash value
+    $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+        var id = $(e.target).attr("href").substr(1);
+        window.location.hash = id;
+    });
+
+    // on load of the page: switch to the currently selected tab
+    var hash = window.location.hash;
+    $('#myTab a[href="' + hash + '"]').tab('show');
+</script>
+
 {% endblock %}

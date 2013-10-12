@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+
 {% block title %}WattTime{% endblock %}
 
 {% block content %}
@@ -19,13 +21,10 @@
         </p>
     </div>
     <div class="panel-body">
-        <form action="{% url 'phone_verify_view' %}" class="form-inline" method="post">
-                {% csrf_token %}
-                <p class="fieldWrapper">
-                {{ form.verification_code.errors }}
-                {{ form.verification_code }}
-                <!-- <input type="int" name="code"> -->
-               <input type="submit" class="btn btn-awesome" name="phone_verify" value="Verify" /></p>
+        <form action="{% url 'phone_verify_view' %}" class="form-horizontal-inline" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary" value="Go">Go</button>
         </form>
     </div>
     <div class="panel-footer">

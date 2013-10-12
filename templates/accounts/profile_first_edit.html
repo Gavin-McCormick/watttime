@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
 {% block title %}WattTime: Get started{% endblock %}
 
@@ -16,35 +17,43 @@
 
 	<div class="panel-body">	
 	
-	<ul class="list-group">
-  <li class="list-group-item">
-  {% if region_supported %}
-                Sign up for SMS alerts
-    
-            <form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
-                 <div class="control-group">
-                   <div class="controls">
-                		{{ form.phone }}<span class="help-inline text-warning">area code + seven-digit number</span>
-                    	<span class="help-inline">{{ form.phone.errors }}</span>
-                    </div>
-                <input type="submit" class="btn btn-info" value="Submit" />
-                </div>                
-            </form>
-            <p class="alert alert-warning text-warning">
-                <i class="glyphicon glyphicon-hand-right"></i>
-                WattTime alert frequency varies, but you can adjust how often you receive them in your
-                settings. Please keep in mind that your mobile service provider may charge you for receiving
-                and sending text messages.
-            </p>
-            
-            </li>
-  <li class="list-group-item">Explore WattTime Forecasts</li>
-  <li class="list-group-item">See how to Shift {% endif %}</li>
-  <li class="list-group-item">Porta ac consectetur ac</li>
-  <li class="list-group-item">Vestibulum at eros</li>
-</ul>
-
-</div></div>
+        {% if region_supported %}
+	<div class="col-md-12">
+          <div class="well">
+                    Sign up for SMS alerts
+        
+                <form action="{% url 'profile_first_edit' %}" method="post">{% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn btn-primary" value="Go">Go</button>
+                </form>
+                <p class="alert alert-warning text-warning">
+                    <i class="glyphicon glyphicon-hand-right"></i>
+                    WattTime alert frequency varies, but you can adjust how often you receive them in your
+                    settings. Please keep in mind that your mobile service provider may charge you for receiving
+                    and sending text messages.
+                </p>
+                        
+            </div>
+        </div>
+        {% endif %}
+        {% if region_forecasted %}
+	<div class="col-md-12">
+          <div class="well">
+                Take action today with <a href="{% url 'shift' %}">WattTime Shift</a>
+            </div>
+        </div>
+	<div class="col-md-12">
+          <div class="well">
+                Receive the <a href="{% url 'profile_settings' %}#tab3">Morning Forecast</a> in your inbox
+            </div>
+        </div>
+        {% endif %}
+	<div class="col-md-12">
+          <div class="well">
+                Monitor the grid with <a href="{% url 'status' %}">WattTime Explorer</a>
+            </div>
+        </div>
+    </div>
+</div>
 	
-<
 {% endblock %}

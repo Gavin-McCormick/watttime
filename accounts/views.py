@@ -65,11 +65,20 @@ class ProfileEdit(FormView):
         return {'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
-                'region' : up.region().name}
+                'phone' : up.phone,
+                'region' : up.region().name,
+                'phone_verified' : up.is_verified,
+                'supported_location' : up.supported_location(),
+                'forecasted_location' : up.supported_location_forecast(),                
+                }
 
     def form_submitted(self, request, vals):
-        request.user.get_profile().save_from_form(vals)
-        return redirect('profile_settings')
+        up = request.user.get_profile()
+        up.save_from_form(vals)
+        if up.phone and not up.is_verified:
+            return redirect('phone_verify_view')
+        else:
+            return redirect('profile_settings')
 
 class ProfileCreate(FormView):
     def __init__(self):
@@ -95,7 +104,8 @@ class ProfileFirstEdit(FormView):
 
     def html_params(self, user):
         up = user.get_profile()
-        return {'name' : up.name, 'region_supported' : up.supported_location()}
+        return {'name' : up.name, 'region_supported' : up.supported_location(),
+                'region_forecasted': up.supported_location_forecast()}
 
     def form_submitted(self, request, vals):
         request.user.get_profile().save_from_form(vals)
@@ -145,22 +155,19 @@ class LoginView(FormView):
             return render(request, 'accounts/no_such_user.html', {'email' : email})
         up = ups[0]
 
-        if password:
-            user = authenticate(username = up.user.username, password = password)
-            # if username was set wrong, try with email
-            if user is None:
-                user = authenticate(username = email, password = password)
-                
-            # try to login
-            print user
-            if user is not None:
-                login(request, user)
-                return redirect('profile_settings')
-            else:
-                return render(request, 'accounts/wrong_password.html', {'email' : email})
+        user = authenticate(username = up.user.username, password = password)
+        # if username was set wrong, try with email
+        if user is None:
+            user = authenticate(username = email, password = password)
+        if user is None:
+            user = authenticate(username = up.name, password = password)
+        
+        # try to login
+        if user is not None:
+            login(request, user)
+            return redirect('profile_settings')
         else:
-            email_login_user(up.user)
-            return redirect('accounts.views.authenticate_view')
+            return render(request, 'accounts/wrong_password.html', {'email' : email})
 
     def __call__(self, request):
         if request.user.is_authenticated():
@@ -171,6 +178,14 @@ class LoginView(FormView):
 class CreateUserView(FormView):
     def __init__(self):
         FormView.__init__(self, 'signup', forms.SignupForm)
+
+    def __call__(self, request):
+        if request.method == 'POST':
+            form = self._form(request.POST)
+            if form.is_valid():
+                return self.form_submitted(request, form.cleaned_data)
+        else:
+            form = self._form
 
     def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'], state = vals['state'])
@@ -227,13 +242,12 @@ def authenticate_view(request):
 def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email__iexact = email)
     if len(ups) > 0:
-        print (len(ups))
         print ("User(s) with email {} already exists, aborting user creation!".
                 format(email))
         return None
 
     username = new_user_name()
-    user = User.objects.create_user(username, email = None, password = None)
+    user = User.objects.create_user(username, email = email, password = None)
     user.is_active = False
     user.is_staff = False
     user.is_superuser = False
@@ -344,7 +358,7 @@ def magic_login(request, magic_login_code):
 
         login(request, user)
         print ("Logged in user {}".format(up.name))
-        return redirect('profile_first_edit')
+        return redirect('profile_create')
 
 # Returns True if code sent successfully, otherwise False
 def send_verification_code(user):

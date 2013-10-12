@@ -26,7 +26,7 @@ class SignupForm(forms.Form):
 class LoginForm(forms.Form):
     email = forms.CharField() #help_text='Email')
     password = forms.CharField( #help_text='Password',
-            widget=forms.PasswordInput(), required = False)
+            widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
