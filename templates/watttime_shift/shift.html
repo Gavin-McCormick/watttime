@@ -61,6 +61,12 @@
                 <h4 class="text-center">better than average</h4>
             </div>
         </div>
+        {% if  user.is_authenticated %}
+            <h3 class="text-center"><a class="btn btn-info" href="{% url 'profile_settings' %}">
+                How much have you shifted? Track your impact!
+            </a></h3></br></br>
+        {% endif %}
+
     
         {% elif error %}
         <div class="row">

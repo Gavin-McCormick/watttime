@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from accounts import models, forms, messages, twilio_utils, regions
+from watttime_shift.models import ShiftRequest
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
@@ -62,14 +63,28 @@ class ProfileEdit(FormView):
 
     def html_params(self, user):
         up = user.get_profile()
+
+        # get shift scores
+        uid = user.id
+        hrs_shifted = 0.0
+        fraction_clean = 0.0
+        fraction_improved = 0.0
+        for r in ShiftRequest.objects.all().filter(requested_by=uid):
+            hrs_shifted += r.usage_hours
+            fraction_clean += r.usage_hours*r.recommended_fraction_green
+            fraction_improved += (r.recommended_fraction_green - r.baseline_fraction_green) / r.baseline_fraction_green
         return {'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
                 'phone' : up.phone,
                 'region' : up.region().name,
                 'phone_verified' : up.is_verified,
+                'phone_blank' : len(up.phone) > 0,
                 'supported_location' : up.supported_location(),
-                'forecasted_location' : up.supported_location_forecast(),                
+                'forecasted_location' : up.supported_location_forecast(),
+                'hrs_shifted' : round(hrs_shifted, 1),
+                'av_clean': round(fraction_clean / hrs_shifted * 100, 1),
+                'av_improved': round(fraction_improved / hrs_shifted * 100, 1),
                 }
 
     def form_submitted(self, request, vals):
