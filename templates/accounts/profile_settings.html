@@ -68,10 +68,10 @@
                     	<p class="text-info">You are signed up to receive WattTime Alerts by SMS to {{ phone }}.</p>
                     	<p class="text-info">Edit your settings anytime by clicking on the tabs above.</p>
             	{% else %}
-            		{% if phone_blank %}
-                    		<p class="text-info">If you provide and <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify </a> your phone number, you will receive WattTime Alerts by SMS.</p>
-            		{% else %}
+            		{% if has_phone %}
             			<p class="text-info">Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime Alerts by SMS.</p>
+            		{% else %}
+                    	<p class="text-info">Get started with WattTime Alerts by adding a phone number on the "User Info" tab.</p>
            		{% endif %}
                 {% endif %}
                 {% if supported_location %}

@@ -79,13 +79,14 @@ class ProfileEdit(FormView):
         else:
             av_clean = 0
             av_improved = 0
+            
         return {'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
                 'phone' : up.phone,
                 'region' : up.region().name,
                 'phone_verified' : up.is_verified,
-                'phone_blank' : len(up.phone) > 0,
+                'has_phone' : len(up.phone) > 0,
                 'supported_location' : up.supported_location(),
                 'forecasted_location' : up.supported_location_forecast(),
                 'hrs_shifted' : round(hrs_shifted, 1),
@@ -207,6 +208,7 @@ class CreateUserView(FormView):
                 return self.form_submitted(request, form.cleaned_data)
         else:
             form = self._form
+            return redirect('authenticate')
 
     def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'], state = vals['state'])
