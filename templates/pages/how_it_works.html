@@ -92,11 +92,9 @@
             </div>
         </div>
     </div>
-    <div class="panel-footer">
-        View today's clean energy <a href="{% url 'status' %}">forecast at WattTime Explorer</a> <br>Receive notifications when your actions have the biggest impact, via <a href="{% url 'alerts_home' %}">WattTime Alerts</a>. <br>Find the best time to use electricity and <a href="{% url 'shift' %}">track your impact with WattTime Shift</a>.
-    </div>
-	</div>
-    </div>
 </div>
+
+{% include "base_snippets/footer_tactics.html" %}
+
 
 {% endblock %}

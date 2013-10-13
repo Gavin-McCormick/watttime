@@ -46,19 +46,19 @@
         </div>
         <div class="row">
             <div class="col-md-4">
-                <h4>start at</h4>
+                <h3>start at</h3>
                 <h1 class="text-score">{{ best_start }}</h1>
-                <h4>end at {{ best_end }}</h4>
+                <h3>end at {{ best_end }}</h3>
             </div>
             <div class="col-md-4">
-                <h4>to use</h4>
+                <h3>to use</h3>
                 <h1 class="text-score">{{ best_green }}%</h1>
-                <h4>clean energy</h4>
+                <h3>clean energy</h3>
             </div>
             <div class="col-md-4">
-                <h4>that's</h4>
+                <h3>that's</h3>
                 <h1 class="text-score">{{ percent_improved }}%</h1>
-                <h4>better than average</h4>
+                <h3>better than average</h3>
             </div>
         </div>
         {% if  user.is_authenticated %}
@@ -81,10 +81,14 @@
         </div>
             
         {% endif %}
-	</div>
 	
-	<div class="panel-footer">
-                WattTime Shift is currently only available for California, but more regions are coming soon.<br>View today's clean energy <a href="{% url 'status' %}">forecast at WattTime Explorer</a>, or to receive notifications when your actions have the biggest impact, sign up for <a href="{% url 'alerts_home' %}">WattTime Alerts</a>. 
+	<div class="alert alert-warning alert-dismissable"">
+  		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <p class="text-warning">WattTime Shift is currently only available for California, but more regions are coming soon.</p>
         </div>
+	</div>
 </div>
+
+{% include "base_snippets/footer_tools.html" %}
+
 {% endblock %}

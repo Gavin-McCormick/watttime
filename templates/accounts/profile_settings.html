@@ -218,15 +218,10 @@
 
 
 </div>
-
- <div class="panel-footer">
-        WattTime Tools:
-            <a href="{% url 'shift' %}" class="btn btn-info">Shift</a>
-            <a href="{% url 'status' %}" class="btn btn-info">Explorer</a>        
-            <a href="{% url 'alerts_home' %}" class="btn btn-info">Alerts</a>
-        </div>
-
 </div>
+
+{% include "base_snippets/footer_tools.html" %}
+
 
 <script>
     $('#myTab a').click(function (e) {
