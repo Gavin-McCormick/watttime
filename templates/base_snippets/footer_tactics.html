@@ -1,11 +1,11 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <h3>Learn more:
-            <a href="{% url 'how-it-works' %}" class="btn btn-info">How it works</a>
-            <a href="{% url 'why-it-works' %}" class="btn btn-info">Why it works</a>        
-            <a href="{% url 'about-us' %}" class="btn btn-info">About us</a>        
-            <a href="{% url 'contact' %}" class="btn btn-info">Contact</a>        
-        </h3>
+        <h2>Learn more:
+            <button type="button" class="btn btn-default"><a href="{% url 'how-it-works' %}"><span class="nb_icons nbhiw pull-left"></span>&nbsp; <strong>HOW IT WORKS</strong></a></button>
+            <button type="button" class="btn btn-default"><a href="{% url 'why-it-works' %}"><span class="nb_icons nbwiw pull-left"></span>&nbsp; <strong>WHY IT WORKS</strong></a></button>
+            <button type="button" class="btn btn-default"><a href="{% url 'about-us' %}"><span class="nb_icons nbabout pull-left"></span>&nbsp; <strong>ABOUT US</strong></a></button>  
+            <button type="button" class="btn btn-default"><a href="{% url 'contact' %}"><i class="glyphicon glyphicon-envelope green"></i>&nbsp; <strong>CONTACT</strong></a></button>  
+        </h2>
     </div>
 </div>
 
