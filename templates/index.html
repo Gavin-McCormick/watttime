@@ -82,16 +82,18 @@
         <div class="lp_well">
             <div class="beta_icon pull-left"></div>
             <div class="pull-left lp_form">
-                <form class="form-inline" role="form" style="margin-top: 10px;">
+                <form class="form-inline" style="margin-top: 10px;" action="{% url 'create_user' %}" method="post" >
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="">Email Address</label><br />
-                        <input type="email" class="lp_form-control" id="" placeholder="Enter Email">
+                        <div class="lp_form-control">{{ signup_form.email }}</div>
                     </div>
                     <div class="form-group">
-                        <label for="">Password</label><br />
-                        <input type="password" class="lp_form-control" id="" placeholder="Password">
+                        <label for="">State</label><br />
+                        <div class="lp_form-control">{{ signup_form.state }}</div>
                     </div>
                     <button type="submit" class="btn btn-default" style="margin-top: 25px;">Submit</button>
+                  </form>
                 </form>
             </div>
         </div>

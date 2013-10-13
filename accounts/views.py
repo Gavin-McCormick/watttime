@@ -206,9 +206,12 @@ class CreateUserView(FormView):
             form = self._form(request.POST)
             if form.is_valid():
                 return self.form_submitted(request, form.cleaned_data)
+
         else:
             form = self._form
             return redirect('authenticate')
+        
+        return redirect('authenticate')
 
     def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'], state = vals['state'])

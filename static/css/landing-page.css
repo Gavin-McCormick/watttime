@@ -142,6 +142,12 @@ html, body {
     margin-right: 10px;
 }
 
+.lp_form-control > input, select {
+    width:310px;
+    height: 35px;
+    margin-right: 10px;
+}
+
 input[type="password"], input[type="email"] {
     height:35px;
 }
