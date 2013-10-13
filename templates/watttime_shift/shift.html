@@ -13,16 +13,16 @@
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
-            <h3 class="text-center">
+            <h3>
                 Shift your actions to target today's best times for clean energy.<br>
             </h3>
-            <p class="text-center">
+            <p>
                     When is the cleanest time to charge your electric car?
                     Could you do your laundry now, or is it better to wait a few hours?
                     
             </p>
             {% if not user.is_authenticated %}
-                <h3 class="text-center"><a class="btn btn-info" href="{% url 'authenticate' %}">
+                <h3><a class="btn btn-info" href="{% url 'authenticate' %}">
                     Sign in to track your impact!
                 </a></h3></br></br>
             {% endif %}
@@ -42,27 +42,27 @@
 
         {% if best_green %}
         <div class="row">
-            <h3 class="text-center">Your personal WattTime Shift recommendation:</h3>
+            <h3>Your personal WattTime Shift recommendation:</h3>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <h4 class="text-center">start at</h4>
-                <h1 class="text-info">{{ best_start }}</h1>
-                <h4 class="text-center">end at {{ best_end }}</h4>
+                <h4>start at</h4>
+                <h1 class="text-score">{{ best_start }}</h1>
+                <h4>end at {{ best_end }}</h4>
             </div>
             <div class="col-md-4">
-                <h4 class="text-center">to use</h4>
-                <h1 class="text-info">{{ best_green }}%</h1>
-                <h4 class="text-center">clean energy</h4>
+                <h4>to use</h4>
+                <h1 class="text-score">{{ best_green }}%</h1>
+                <h4>clean energy</h4>
             </div>
             <div class="col-md-4">
-                <h4 class="text-center">that's</h4>
-                <h1 class="text-info">{{ percent_improved }}%</h1>
-                <h4 class="text-center">better than average</h4>
+                <h4>that's</h4>
+                <h1 class="text-score">{{ percent_improved }}%</h1>
+                <h4>better than average</h4>
             </div>
         </div>
         {% if  user.is_authenticated %}
-            <h3 class="text-center"><a class="btn btn-info" href="{% url 'profile_settings' %}">
+            <h3><a class="btn btn-info" href="{% url 'profile_settings' %}">
                 How much have you shifted? Track your impact!
             </a></h3></br></br>
         {% endif %}
@@ -83,7 +83,7 @@
         {% endif %}
 	</div>
 	
-	<div class="panel-footer text-center">
+	<div class="panel-footer">
                 WattTime Shift is currently only available for California, but more regions are coming soon.<br>View today's clean energy <a href="{% url 'status' %}">forecast at WattTime Explorer</a>, or to receive notifications when your actions have the biggest impact, sign up for <a href="{% url 'alerts_home' %}">WattTime Alerts</a>. 
         </div>
 </div>

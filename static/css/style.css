@@ -5,7 +5,7 @@
 .blue {color:#99DFF9;}
 .gray {color:#6D6371;}
 .white {color:#FFFFFF;}
-
+.darkblue {color:#002C3C;}
 
 .nb_icons {
     background: url(../images/LP_icons_small.png);
@@ -328,21 +328,24 @@ h2 {
 
 h3 {
 	color:#8DC63F;
-
+	text-align:center;
 }
 
 h4 {
 	color:#8DC63F;
-
+	text-align:left;
 }
 
 p {
-	color:#8DC63F;
-	text-align:left;
-
+	color:#6D6371;
+	text-align:center;
 }
 
-
+.text-score {
+	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:900;
+	color:#FFDE17;
+}
 
 /* charts */
 
@@ -737,6 +740,8 @@ h4.icon-line span{
 .footer p{
 	margin-top:10px;
 	line-height:24px;
+	text-align:left;
+      color:#8DC63F;
 }
 .footer a{
 	color:#40b6cb;

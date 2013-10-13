@@ -39,23 +39,23 @@
                     {% else %}
                         <div class="col-md-4">
                             <h4>time shifted:</h4>
-                            <h1 class="text-info">{{ hrs_shifted }}</h1>   
+                            <h1 class="text-score">{{ hrs_shifted }}</h1>   
                             <h4>hours</h4>
                         </div>            
                         <div class="col-md-4">
                             <h4>energy used:</h4>
-                            <h1 class="text-info">{{ av_clean }}%</h1>   
+                            <h1 class="text-score">{{ av_clean }}%</h1>   
                             <h4>clean on average</h4>
                         </div>            
                         <div class="col-md-4">
                             <h4>that's</h4>
-                            <h1 class="text-info">{{ av_improved }}%</h1>   
+                            <h1 class="text-score">{{ av_improved }}%</h1>   
                             <h4>cleaner than without Shift</h4>
                         </div>            
                         <a href="{% url 'shift' %}" class="btn btn-primary">Shift again!</a>
                     {% endif %}
                 {% else %}
-                    <p class="text-info">Sorry, WattTime Shift is not yet available in {{ state }}. We'll let you know as soon as it is.</p>
+                    <p>Sorry, WattTime Shift is not yet available in {{ state }}. We'll let you know as soon as it is.</p>
                 {% endif %}
         </div>
  
@@ -65,18 +65,18 @@
                 	<p class="text-warning">Your account is currently deactivated. You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">reactivate</a> your account at any time.</p></div>
         	{% else %}
             	{% if phone_verified %}
-                    	<p class="text-info">You are signed up to receive WattTime Alerts by SMS to {{ phone }}.</p>
-                    	<p class="text-info">Edit your settings anytime by clicking on the tabs above.</p>
+                    	<p>You are signed up to receive WattTime Alerts by SMS to {{ phone }}.</p>
+                    	<p>Edit your settings anytime by clicking on the tabs above.</p>
             	{% else %}
             		{% if has_phone %}
-            			<p class="text-info">Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime Alerts by SMS.</p>
+            			<p>Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime Alerts by SMS.</p>
             		{% else %}
-                    	<p class="text-info">Get started with WattTime Alerts by adding a phone number on the "User Info" tab.</p>
+                    	<p>Get started with WattTime Alerts by adding a phone number on the "User Info" tab.</p>
            		{% endif %}
                 {% endif %}
                 {% if supported_location %}
                 {% else %}
-                    <p class="text-info">Sorry, WattTime Alerts are not yet available in {{ state }}. We'll let you know as soon as they are.</p>
+                    <p>Sorry, WattTime Alerts are not yet available in {{ state }}. We'll let you know as soon as they are.</p>
                 {% endif %}
         	{% endif %}
             </div>
@@ -219,7 +219,7 @@
 
 </div>
 
- <div class="panel-footer text-center">
+ <div class="panel-footer">
         WattTime Tools:
             <a href="{% url 'shift' %}" class="btn btn-info">Shift</a>
             <a href="{% url 'status' %}" class="btn btn-info">Explorer</a>        

@@ -49,7 +49,7 @@
             
 <div class="panel panel-default">
 	<div class="panel-heading">
-    <p class="panel-title text-primary text-center lead">WattTime Explorer shows the latest real-time data about today's clean electricity supply, along with a typical average day. <br>Click on the green regions in the map to explore today's clean energy status.</p>
+    <p class="panel-title">WattTime Explorer shows the latest real-time data about today's clean electricity supply, along with a typical average day. <br>Click on the green regions in the map to explore today's clean energy status.</p>
     </div>
     	
 
@@ -66,15 +66,17 @@
             </div>
             <br>
             <div class="alert alert-info">
-                <p class="text-info text-center">
-                    <strong class="text-success">For California, clean energy forecasts are also available.</strong> We are constantly working to make WattTime Explorer available for new regions. If you'd like to be notified when we are available in your state, <a href="{% url 'join-us' %}">sign up</a> and we'll keep you updated!
+                <p>
+                    We are constantly working to make WattTime Explorer available for new regions.
+                    If you'd like to be notified when we are available in your state,
+                    <a href="{% url 'authenticate' %}">sign up</a> and we'll keep you updated!
                 </p>
         	</div>
         	
         	
         	<div class="alert alert-warning alert-dismissable">
   			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
- 	 		<p class="text-warning text-center">
+ 	 		<p class="text-warning">
             <strong>Please be patient.</strong> WattTime is fetching live data, and it may take a moment.
                 <br>
                 WattTime Explorer works best with newer browsers.
@@ -83,7 +85,7 @@
         
         </div>
         
-        <div class="panel-footer text-center">
+        <div class="panel-footer">
         Find the best time to use electricity and <a href="{% url 'shift' %}">track your impact with WattTime Shift</a>, or to receive notifications when your actions have the biggest impact, sign up for <a href="{% url 'alerts_home' %}">WattTime Alerts</a>.
         
         </div>
