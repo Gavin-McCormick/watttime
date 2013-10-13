@@ -6,34 +6,34 @@
 
 
 <div>
-<h2>WattTime Shift</h2>
+<h1>WattTime Shift</h1>
 </br>
 </div>
 
 <div class="panel panel-default">
     <div class="panel-body">
         <div class="row">
-            <h3>
-                Shift your actions to target today's best times for clean energy.<br>
-            </h3>
+            <h2>
+                Align your day
+            </h2>
             <p>
-                    When is the cleanest time to charge your electric car?
-                    Could you do your laundry now, or is it better to wait a few hours?
-                    
+                Shift your actions to target today's best times for clean energy.<br>
+                When is the cleanest time to charge your electric car?
+                Could you do your laundry now, or is it better to wait a few hours?                   
             </p>
             {% if not user.is_authenticated %}
-                <h3><a class="btn btn-info" href="{% url 'authenticate' %}">
+                <p><a class="btn btn-info" href="{% url 'authenticate' %}">
                     Sign in to track your impact!
-                </a></h3></br></br>
+                </a></p></br></br>
             {% endif %}
         </div>
       	<div class="well">
             <form action="{% url 'shift' %}" method="post" >{% csrf_token %}
                 <div class="controls">
                     <h3>
-                        I need to do something that uses electricity for
-                        {{ form.usage_hours }} hours out of the next 
-                        {{ form.time_range_hours }} hours. 
+                        I need to do something that<br>
+                         uses electricity for {{ form.usage_hours }} hours<br>
+                        out of the next {{ form.time_range_hours }} hours.<br><br>
                         <input type="submit" class="btn btn-success" value="Go!">
                     </h3>
                 </div>
