@@ -6,7 +6,7 @@
 {% block content %}
 
 <div>
-<h2>WattTime Alerts</h2>
+<h1>WattTime Alerts</h1>
 </br>
 </div>
 
@@ -31,13 +31,13 @@
                     easy change to your electricity use can make the biggest impact.
                 </p>
                     {% if not user.is_authenticated %}
-                        <h3><a class="btn btn-info" href="{% url 'authenticate' %}">
+                        <p><a class="btn btn-info" href="{% url 'authenticate' %}">
                             Sign in and get started!
-                        </a></h3>
+                        </a><p>
                     {% else %}
-                        <h3><a class="btn btn-info" href="{% url 'profile_settings' %}">
+                        <p><a class="btn btn-info" href="{% url 'profile_settings' %}">
                             View your profile!
-                        </a></h3>
+                        </a></p>
                     {% endif %}
                 </h3>
             </div>
@@ -48,16 +48,16 @@
                 <h3>Make a difference in four easy steps:</h3>
             </div>
             <div class="col-md-3">
-                <h1 class="text-score">1</h1>
-                <h3>Sign up is simple</h3>
+                <p class="text-score">1</p>
+                <h4>Sign up is simple</h4>
                 <p>
                     Your email address or phone number is all we need to get you started.
                 </p>
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-score">2</h1>
-                <h3>Verify it's you</h3>
+                <p class="text-score">2</p>
+                <h4>Verify it's you</h4>
                 <p>
                     We verify your contact info so we can send secure alerts
                     directly to your device.
@@ -65,8 +65,8 @@
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-score">3</h1>
-                <h3>Personalize</h3>
+                <p class="text-score">3</p>
+                <h4>Personalize</h4>
                 <p>
                     You are in control of your account. Tailor your alerts to be more meaningful
                     to you, or stick with the default settings.
@@ -74,8 +74,8 @@
             </div>
 
             <div class="col-md-3">
-                <h1 class="text-score">4</h1>
-                <h3>Take action</h3>
+                <p class="text-score">4</p>
+                <h4>Take action</h4>
                 <p>
                     When you receive a message, join your neighbors
                     and shift your electricity use to cleaner sources.
