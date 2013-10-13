@@ -296,16 +296,6 @@ body a:hover{
 /* styles for main feature text */
 
 h1 {
-	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
-	font-weight:900;
-	color:#fff;
-	font-size:55px;
-	line-height: 60px;
-	margin-bottom:30px;
-	text-align:center;
-
-}
-h2 {
 	font-family: "Pacifico", cursive;
 	font-size:40px;
 	color:#fff;
@@ -317,25 +307,29 @@ h2 {
 	/*background:url(../images/line-white-gap.gif) no-repeat center center;*/
 }
 
-/*h4 {
+h2 {
 	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
-	font-weight:400;
-	color:#99DFF9;
-	font-size:21px;
-	margin-bottom:0px;
-	padding-top:10px;
-}*/
+	font-weight:600;
+	color:#FFDE17;
+	text-align:center;
+}
 
 h3 {
+	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+	font-weight:600;
 	color:#8DC63F;
 	text-align:center;
 }
 
 h4 {
 	color:#8DC63F;
-	text-align:left;
+	text-align:center;
 }
 
+h5 {
+	color:#8DC63F;
+	text-align:left;
+}
 p {
 	color:#6D6371;
 	text-align:center;
@@ -345,6 +339,9 @@ p {
 	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
 	font-weight:900;
 	color:#FFDE17;
+	font-size:55px;
+	line-height: 60px;
+	margin-bottom:30px;
 }
 
 /* charts */
