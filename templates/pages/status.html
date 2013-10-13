@@ -30,31 +30,60 @@
 #charts .axis path,
 #charts .axis line {
     fill: none;
-    stroke: #cccccc;
+    stroke: #6D6371;
     stroke-width: 2;
     shape-rendering: crispEdges;
 }
+#charts .axis text {
+    font-family:"Source Sans Pro", Helvetica, Arial, sans-serif;
+    fill: #6D6371;
+}
+
 #charts div {
     font-size: 100%;
 }
 #charts .points {
     fill: #339999;
 }
+#charts .label {
+    font-size:18px;
+    font-weight:400;
+    font-family:"Source Sans Pro", Helvetica, Arial, sans-serif;
+    fill:#6D6371;
+}
+#charts .title {
+    font-size:20px;
+    font-weight:600;
+    font-family:"Source Sans Pro", Helvetica, Arial, sans-serif;
+    fill:#FFDE17;
+}
+#charts tspan {
+    font-family:"Source Sans Pro", Helvetica, Arial, sans-serif;
+    font-size:16px;
+    font-weight:600;
+}
+
 </style>
 
 <div>
-<h2>WattTime Explorer</h2>
+<h1>WattTime Explorer</h1>
 </br>
 </div>
             
 <div class="panel panel-default">
-	<div class="panel-heading">
-    <p class="panel-title">WattTime Explorer shows the latest real-time data about today's clean electricity supply, along with a typical average day. <br>Click on the green regions in the map to explore today's clean energy status.</p>
-    </div>
-    	
-
 	<div class="panel-body">
-
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    Monitor your power
+                </h2>
+                <p>
+                    WattTime Explorer shows the latest real-time data about today's clean
+                    electricity supply, along with a typical average day. <br>
+                    Click on the green regions in the map to explore today's clean energy status.
+                    More regions coming soon!
+                </p>
+            <hr>
             <div class="row" id="charts" >
                 <div class="col-md-6">
                     <div id="map" align="center" class=""></div>
@@ -65,26 +94,21 @@
                 </div>
             </div>
             <br>
-            <div class="alert alert-info">
-                <p>
-                    We are constantly working to make WattTime Explorer available for new regions.
-                    If you'd like to be notified when we are available in your state,
-                    <a href="{% url 'authenticate' %}">sign up</a> and we'll keep you updated!
-                </p>
-        	</div>
-        	
-        	
+
         	<div class="alert alert-warning alert-dismissable">
   			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
  	 		<p class="text-warning">
             <strong>Please be patient.</strong> WattTime is fetching live data, and it may take a moment.
                 <br>
                 WattTime Explorer works best with newer browsers.
+                <br>
+                Forecast only available for California; more regions coming soon.
                 </p>
 			</div>
         
         </div>
-        
+      </div>
+    </div>  
 </div>
 
 {% include "base_snippets/footer_tools.html" %}
@@ -154,6 +178,7 @@
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
+                all_data.push(d);
                 average_data.push(d);
             });
         d3.json("//www.watttime.com/today/?st="+state, function(error, new_data){
@@ -203,8 +228,6 @@
                 .attr("x", (width / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("font-size","14px")
-                .attr("fill", "#999999")
                 .text("local time"); 
         
             svg.append("g")         // Add the Y Axis
@@ -217,9 +240,7 @@
                 .attr("x", -height/2)
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
-                .style("font-size","14px")
-                .attr("fill", "#999999")
-                .text("percent of total energy"); 
+                .text("% clean energy"); 
     
             svg.append("text")
                 .attr("class", "chart title")
@@ -227,8 +248,6 @@
                 .attr("x", (width / 2))
                 .attr("dy", "0em")
                 .style("text-anchor", "middle")
-                .style("font-size","20px")
-                .attr("fill", "#999999")
                 .text("Clean energy in "+state); 
 
             var legend = svg.append("text")
@@ -242,19 +261,16 @@
                 .attr("class", "actual")
                 .attr("dx", "-0em")
                 .attr("fill", "#99DFF9")
-                .style("font-size","14px")
                 .text("today"); 
             legend.append("tspan")
                 .attr("class", "average")
                 .attr("dx", "3em")
                 .attr("fill", "#999999")
-                .style("font-size","14px")
                 .text("average");
             legend.append("tspan")
                 .attr("class", "forecast")
                 .attr("dx", "3em")
                 .attr("fill", "#8DC63F")
-                .style("font-size","14px")
                 .text("forecast");        
         });
         });
@@ -272,6 +288,7 @@
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
+                all_data.push(d);
                 average_data.push(d);
             });
         d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
