@@ -293,6 +293,13 @@ body a:hover{
   margin-top: 20px;
 }
 
+/* nav pills special style */
+
+.blue_pill .active a nav nav-pills,
+.blue_pill .active a:hover nav nav-pills {
+    background-color: #99DFF9;
+}
+
 /* styles for main feature text */
 
 h1 {
@@ -398,84 +405,6 @@ i.share-twitter{
 i.share-facebook{
 	width:26px;
 	background-position:-24px 0px!important;
-}
-.icon-features{
-	background:url(../images/clock.png) no-repeat;
-	height:40px;
-	display:block;
-	margin:0px auto;
-	width:41px;
-}
-.icon-brush{
-}
-.icon-gear{
-	background-position:-41px 0px;
-	width:40px;
-}
-.icon-heart{
-	background-position:-81px 0px;
-	width:40px;
-}
-.icon-features-mini{
-	background:url(../images/sprite-feature-icons.png) no-repeat;
-	display:block;
-	height:38px;
-	margin:0px auto;
-}
-.icon-features-mini.icon-lock{
-	width:23px;
-}
-.icon-features-mini.icon-workflow{
-	width:53px;
-	background-position:-23px 0px;
-}
-.icon-features-mini.icon-demo{
-	width:22px;
-	background-position:-76px 0px;
-}
-.icon-features-mini.icon-income{
-	width:52px;
-	background-position:-98px 0px;
-}
-.icon-features-mini.icon-speed{
-	width:50px;
-	background-position:-150px 0px;
-}
-.icon-features-mini.icon-cache{
-	width:75px;
-	background-position:-200px 0px;
-}
-.icon-features-mini.icon-hack{
-	width:36px;
-	background-position:-275px 0px;
-}
-.icon-features-mini.icon-backup{
-	width:46px;
-	background-position:-311px 0px;
-}
-.icon-features-mini.icon-funky{
-	width:46px;
-	background-position:-357px 0px;
-}
-.icon-features-mini.icon-medal{
-	width:31px;
-	background-position:-403px 0px;
-}
-.icon-features-mini.icon-support{
-	width:40px;
-	background-position:-434px 0px;
-}
-.icon-features-mini.icon-fpo{
-	width:60px;
-	background-position:-474px 0px;
-}
-.icon-features-mini.icon-road{
-	width:53px;
-	background-position:-534px 0px;
-}
-.icon-features-mini.icon-smile{
-	background-position: -587px 0;
-	width: 36px;
 }
 
 

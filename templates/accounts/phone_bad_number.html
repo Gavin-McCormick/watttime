@@ -3,10 +3,17 @@
 
 {% block content %}
 
-<h1></h1>
-</br></br>
-<div class="alert alert-block alert-error">
-<p class="lead text-error">Sorry, we were unable to send a text message to: {{ phone_number }}.</p> 
-<p class="text-error">It might be a formatting problem. You can return to <a href="{% url 'profile_settings' %}" class="btn btn-info">your profile</a> to update your phone number.</p>
+<div>
+<h1>Unable to Verify</h1>
+</br>
 </div>
+
+<div class="panel panel-default">
+   
+    <div class="panel-body">
+    <p>Sorry, we were unable to send a text message to: <span class="badge">{{ phone_number }}</span>. It might be a formatting problem. You can return to <a href="{% url 'profile_settings' %}" class="btn btn-xs btn-info">your profile</a> to update your phone number.</p>
+    </div>
+   
+</div>
+
 {% endblock %}
