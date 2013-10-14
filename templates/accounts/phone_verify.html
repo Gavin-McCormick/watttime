@@ -13,18 +13,20 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            Check your phone, we just said hi.
-        </h3>
-        <p>
-            You should have just received a 6-digit verification code as a text message to
-            {{ phone_number }}. Please enter it below to complete the sign-up process.
-        </p>
-    </div>
+            Check your phone. We just said hi.
+        </h3></div>
+       
+    
     <div class="panel-body">
+     <p>
+            You should have just received a 6-digit verification code as a text message to
+            <span class="badge">{{ phone_number }}</span>. Please enter it below to complete the sign-up process.
+        </p>
+        
         <form action="{% url 'phone_verify_view' %}" class="form-horizontal-inline" method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        <button type="submit" class="btn btn-primary" value="Go">Go</button>
+        <button type="submit" class="btn btn-success" value="Go">Go</button>
         </form>
     </div>
     <div class="panel-footer">
