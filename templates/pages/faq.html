@@ -10,7 +10,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-<ul class="list-inline">
+<ul class="list-inline text-center">
   <li><a href="#general"><h4>General</h4></a></li>&bull;
   <li><a href="#accounts"><h4>Accounts</h4></a></li>&bull;
   <li><a href="#alerts"><h4>Alerts</h4></a></li>&bull;
@@ -29,63 +29,92 @@
 
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseSeven">
-        <p>Are you a private company?</p>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseGenOne">
+        <h4>Are you a private company?</h4>
 	    </a>
     </div>
-    <div id="collapseSeven" class="accordion-body collapse">
+    <div id="collapseGenOne" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            Right now we are just a small group of dedicated individuals trying todo some
-            good in the world on our own time. We may eventually incorporate if we conclude
-            that is the best way to ensure that we can continue to make our service relevant
-            and effective. But our top priority is and will remain to help energy consumers
-            make decisions according to their own values. We believe that when people can
-            freely choose their energy sources it can have a big impact in the fight against
-            climate change.
+            Right now we are just a small group of dedicated individuals trying to do some
+            good in the world on our own time, but we will soon incorporate as a social venture
+            so that we can better expand our capability to help energy consumers
+            make decisions according to their own values. No matter what our legal status is, we will
+            always be devoted to our environmental mission and to our community.
         </p>
 	  </div>
     </div>
   </div>
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEight">
-        <p>Why do you need pilot testing?</p>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseGenTwo">
+        <h4>WattTime is "in beta"—what does that mean?</h4>
 	    </a>
     </div>
-    <div id="collapseEight" class="accordion-body collapse">
+    <div id="collapseGenTwo" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            Every good product and service needs prototyping, iteration, and testing to be
-            the best it can be. As far as we have been able to determine, this is a
-            fundamentally novel approach to fighting climate change. While ours is not the
-            first project to give users information about the cleanliness of electricity,
-            our approach is fundamentally different “under the hood” because it leverages
-            real-time marginal rather than average environmental information, dramatically
-            increasing the impact of your actions. While our novel design works according to
+            As far as we have been able to determine, WattTime is pursuing a
+            fundamentally novel approach to fighting climate change. While our approach works according to
             economic theory, we never fully trust theory until it is backed up by hard data
-            and experience. (And neither should you!) Our pilot testing and research will help
-            validate the concept and provide critical insight for scaling WattTime to improve
-            energy futures for millions of users.
+            and experience. (And neither should you!) By participating in our beta tests, you will help
+            validate the concept and provide critical insight for scaling WattTime to improve the future of
+            energy for yourself and millions of other users. We hope that the excitement of being one of the first to use
+            WattTime's products and services will make up for any occasional glitches that may occur;
+            we'd love to <a href="{% url 'contact'%}">hear your feedback</a> about what's working and what's not.
         </p>
 	  </div>
     </div>
   </div>
   <div class="accordion-group">
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseEleven">
-        <p>I’m having a problem. How do I troubleshoot?</p>
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseGenThree">
+        <h4>My organization is interested in partnering with WattTime. What next?</h4>
 	    </a>
     </div>
-    <div id="collapseEleven" class="accordion-body collapse">
+    <div id="collapseGenThree" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            You can reach us via the <a href="{% url 'contact'%}">contact page</a>. We’re
-            happy to help!
+            Fantastic, we're excited to hear from you! Please <a href="{% url 'contact' %}">get in touch</a>.
         </p>
 	  </div>
     </div>
   </div>  
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseGenFive">
+        <h4>Does WattTime have any new products or services in the works?</h4>
+	    </a>
+    </div>
+    <div id="collapseGenFive" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p>
+            Yes, yes we do. For example:
+            an iPhone app is under active development,
+            there's a long list of regions we plan to expand to,
+            major breakthroughs in energy economics are on the horizon,
+            and we're investigating a variety of ways to use WattTime data to control the
+            smart devices in your connected home or work (aka "Internet of Things").
+        </p>
+	  </div>
+    </div>
+  </div>  
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-gen" href="#collapseGenFour">
+        <h4>I’m having a problem. How do I troubleshoot?</h4>
+	    </a>
+    </div>
+    <div id="collapseGenFour" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p>
+            You can reach us via the <a href="{% url 'contact' %}">contact page</a>. We’re happy to help!
+            Or you can <a href="//github.com/Gavin-McCormick/watttime">read the source</a> and even submit a patch if that's how you roll.
+        </p>
+	  </div>
+    </div>
+  </div>  
+
 
 </div></div><!-- end general -->
 
@@ -96,13 +125,13 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-accounts" href="#collapseAccountsOne">
-        <p>How do I sign up?</p>
+        <h4>How do I sign up?</h4>
 	    </a>
     </div>
     <div id="collapseAccountsOne" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            coming soon
+            You can create a new account <a href="{% url 'authenticate' %}">here</a> (click on the "sign up" tab).
         </p>
 	  </div>
     </div>
@@ -111,13 +140,15 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-accounts" href="#collapseAccountsTwo">
-        <p>I forgot my username or password, what now?</p>
+        <h4>I forgot my username or password, what now?</h4>
 	    </a>
     </div>
     <div id="collapseAccountsTwo" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            coming soon
+            Your username is your email address.
+            You can reset your password <a href="{% url 'password_reset' %}">here</a>.
+            <a href="{% url 'contact'%}">Let us know</a> if you run into trouble.
         </p>
 	  </div>
     </div>
@@ -132,7 +163,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseThree">
-        <p>What does the WattTime Alerts cost?</p>
+        <h4>What does the WattTime Alerts cost?</h4>
 	    </a>
     </div>
     <div id="collapseThree" class="accordion-body collapse">
@@ -140,7 +171,7 @@
         <p>
             WattTime Alerts is free! Please note however that WattTime Alerts can
             send occasional text messages (you control the frequency), so if you pay to
-            receive and send text messages, normal rates may apply. Please check with your
+            receive and send text messages, normal rates may apply. Please check with your mobile
             carrier.
         </p>
 	  </div>
@@ -149,7 +180,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFour">
-        <p>Is WattTime Alerts available in my region?</p>
+        <h4>Is WattTime Alerts available in my region?</h4>
 	    </a>
     </div>
     <div id="collapseFour" class="accordion-body collapse">
@@ -157,12 +188,12 @@
         <p>
             Currently Alerts by SMS are available in California and New England (Massachusetts,
             Conneticut, Rhode Island, Vermont, New Hampshire, and Maine).
-            Forecast Alerts by email are also available in California.
-            If you'd like to be notified when we are available in your state,
-            just sign up on our main page!
-            In the meantime, if you live in California, New England, or the Pacific Northwest,
-            you can still see how clean electricity is in your region at any time by visiting
-            our <a href="{% url 'status' %}">status</a> page.
+            Morning Forecast Alerts by email are also available in California.
+            If you'd like to be notified when WattTime Alerts become available in your area,
+            just <a href="{% url 'authenticate' %}">sign up</a> for an account!
+            In the meantime, if you live in the Pacific Northwest or the Midwest,
+            you can see how clean you electricity is at any time by visiting
+            <a href="{% url 'status' %}">WattTime Explorer</a>.
         </p>
 	  </div>
     </div>
@@ -170,14 +201,14 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseFive">
-        <p>How do I unsubscribe or change my settings?</p>
+        <h4>How do I unsubscribe or change my settings?</h4>
 	    </a>
     </div>
     <div id="collapseFive" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            To change your settings, including unsubscribing from Alerts, just
-            <a href="{% url 'user_login' %}">log in</a> and edit your preferences.
+            To change your settings, including unsubscribing from Alerts, just go to your
+            <a href="{% url 'profile_settings' %}">profile</a> and edit your preferences.
         </p>
 	  </div>
     </div>
@@ -185,7 +216,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTen">
-        <p>Why do you want to know about my appliances?</p>
+        <h4>Why do you want to know about my appliances?</h4>
 	    </a>
     </div>
     <div id="collapseTen" class="accordion-body collapse">
@@ -193,7 +224,7 @@
         <p>
             Our goal is to give you maximum control over the environmental impacts of your
             own energy use in as convenient a fashion as possible. Different kinds of
-            appliances are convenient to control in different ways—for example sometimes
+            appliances are convenient to control in different ways—for example, sometimes
             laundry can wait until tomorrow, but you probably wouldn’t want to turn off your
             thermostat for a whole day! The more we know about your appliances, the more
             convenient our messaging can be, and the more relevant to you. But we’re only
@@ -206,7 +237,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-alerts" href="#collapseTwelve">
-        <p>I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</p>
+        <h4>I signed up for texts about once per (hour/day/week), but I haven’t gotten exactly that number. What gives?</h4>
 	    </a>
     </div>
     <div id="collapseTwelve" class="accordion-body collapse">
@@ -218,8 +249,8 @@
             strategies of different power plants. (Otherwise we could just hand out calendars!)
             We’ll do our best not to text you more than about the amount you signed up for,
             but some days the grid is pretty average all day and there’s just not much to
-            report. You can always see the recent status at our grid
-            <a href="{% url 'status' %}">status page</a>.
+            report. You can always see the recent status of your grid using
+            <a href="{% url 'status' %}">WattTime Explorer</a>.
         </p>
 	  </div>
     </div>
@@ -234,16 +265,16 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-status" href="#collapseStatusOne">
-        <p>Is WattTime Status available in my region?</p>
+        <h4>Is WattTime Explorer available in my region?</h4>
 	    </a>
     </div>
     <div id="collapseStatusOne" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            Currently WattTime Status is available in California, New England, and the Pacific
-            Northwest.
-            If you'd like to be notified when we are available in your state,
-            just sign up on our main page!
+            Currently WattTime Explorer is available in California, New England, the Pacific
+            Northwest, and the Midwest.
+            If you'd like to be notified when WattTime Explorer becomes available in your area, just
+            <a href="{% url 'authenticate' %}">sign up</a> for an account!
         </p>
 	  </div>
     </div>
@@ -258,18 +289,37 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-shift" href="#collapseShiftOne">
-        <p>Is WattTime Shift available in my region?</p>
+        <h4>Is WattTime Shift available in my region?</h4>
 	    </a>
     </div>
     <div id="collapseShiftOne" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
-            Currently WattTime Shift is available in California.
-            If you'd like to be notified when we are available in your state,
-            just sign up on our main page!
+            Currently WattTime Shift is only available in California.
+            If you'd like to be notified when WattTime Shift becomes available in your area, just
+            <a href="{% url 'authenticate' %}">sign up</a> for an account!
+            In the meantime, if you live in New England, the Pacific Northwest, or the Midwest,
+            you can see how clean your electricity is at any time by visiting
+            <a href="{% url 'status' %}">WattTime Explorer</a>.
         </p>
 	  </div>
     </div>
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-shift" href="#collapseShiftTwo">
+        <h4>How do I track the impact of my shifted energy use?</h4>
+	    </a>
+    </div>
+    <div id="collapseShiftTwo" class="accordion-body collapse">
+      <div class="accordion-inner">
+        <p>
+            Check out your <a href="{% url 'profile_settings' %}">profile</a>!
+            Note that these stats include every time you've used WattTime Shift when you were logged in,
+            and only the times when you were logged in; more accurate impact tracking coming soon.
+        </p>
+	  </div>
+    </div>
+
   </div>
   
   
