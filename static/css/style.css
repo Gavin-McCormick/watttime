@@ -12,6 +12,10 @@
     width:14px;
     height:14px;
 }
+
+.btn .nb_icons {
+    margin-top:3px;
+}
 .nbshift {background-position: 0 0}
 .nbalerter {background-position: 0 -14px;}
 .nbexplorer {background-position: 0 -28px;}
@@ -29,7 +33,7 @@
 body{
 	background-color: #FFFFFF;
 	font-family:Helvetica, Arial, sans-serif;
-	color:#7f7f7f;
+	color:#7F7F7F;
 }
 
 body a{
@@ -338,7 +342,7 @@ h5 {
 	text-align:left;
 }
 p {
-	color:#6D6371;
+	color:#7F7F7F;
 	text-align:center;
 }
 
