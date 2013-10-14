@@ -12,6 +12,10 @@
     width:14px;
     height:14px;
 }
+
+.btn .nb_icons {
+    margin-top:3px;
+}
 .nbshift {background-position: 0 0}
 .nbalerter {background-position: 0 -14px;}
 .nbexplorer {background-position: 0 -28px;}
