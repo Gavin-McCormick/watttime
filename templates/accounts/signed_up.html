@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>Thanks for signing up!</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h4>
+            You should receive an email with a link to set up your account in a minute or two. <a href="{% url 'authenticate' %}">Back to Log In</a>.
+        </h4>
+    </div>
+</div>
+{% endblock %}

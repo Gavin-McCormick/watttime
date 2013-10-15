@@ -3,8 +3,10 @@
 
 {% block content %}
 
-
-<h2>Unsubscribed</h2>
+<div>
+<h1>Unsubscribed</h1>
+</br>
+</div>
 <p class="text-warning alert alert-success">User {{ name }} with phone number {{ phone }} has been unsubscribed from SMS notifications from WattTime. You can resubscribe by updating your preferences <a href="{% url 'profile_alpha' userid %}">here</a>.</p>
 
 <p class="text-warning alert alert-warning">We're sorry to see you go! To help us make WattTime work better for you, please <a href="{% url 'contact' %}">send us your

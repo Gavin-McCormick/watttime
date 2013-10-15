@@ -1,0 +1,10 @@
+@charset "UTF-8";
+/* CSS Document */
+
+.navbar-inner {
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0);
+}
+
+.navbar {
+    margin-bottom:0;
+}

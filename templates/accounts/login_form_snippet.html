@@ -1,0 +1,8 @@
+{% load bootstrap3 %}
+
+<form action="{% url 'user_login' %}" method="post" class="form-horizontal-inline">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-success" value="Go">Go</button>
+</form>
+

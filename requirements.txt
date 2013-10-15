@@ -20,3 +20,4 @@ django-picklefield==0.3.0
 django-cors-headers==0.11
 django-tastypie==0.9.15
 mimeparse==0.1.3
+django-bootstrap3==1.0.0

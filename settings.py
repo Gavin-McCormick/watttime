@@ -166,10 +166,6 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-AUTHENTICATION_BACKENDS = (
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
-
 ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -181,12 +177,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
     'windfriendly',
     'accounts',
     'pages',
@@ -197,8 +187,21 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'allauth',
-    'allauth.account',
+    'south',
+#    'invitation',
+#    'registration',
+    'corsheaders',
+    'tastypie',
+    'bootstrap3',
+    # move django apps later 
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+#    'allauth',
+#    'allauth.account',
 #    'allauth.socialaccount',
 #    'allauth.socialaccount.providers.bitly',
 #    'allauth.socialaccount.providers.dropbox',
@@ -214,11 +217,6 @@ INSTALLED_APPS = (
 #    'allauth.socialaccount.providers.twitter',
 #    'allauth.socialaccount.providers.vimeo',
 #    'allauth.socialaccount.providers.weibo',
-    'south',
-#    'invitation',
-#    'registration',
-    'corsheaders',
-    'tastypie',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -261,9 +259,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # for django-allauth
 AUTHENTICATION_BACKENDS = (
-    "allauth.account.auth_backends.AuthenticationBackend",
+#    "allauth.account.auth_backends.AuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
 )
+LOGIN_URL = 'authenticate'
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -273,8 +272,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
-    "allauth.account.context_processors.account",
-    "allauth.socialaccount.context_processors.socialaccount",
+#    "allauth.account.context_processors.account",
+#    "allauth.socialaccount.context_processors.socialaccount",
     #"invitation.context_processors.remaining_invitations",
     'pages.context_processors.google_analytics',
 )
@@ -293,13 +292,13 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # for django-invitation https://github.com/arctelix/django-invitation
-INVITATION_USE_ALLAUTH = True
-INVITE_MODE = True
-ACCOUNT_INVITATION_DAYS = 14
-INVITATIONS_PER_USER = 20
-SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
-ACCOUNT_ADAPTER ="allauth.accountadapter.AccountAdapter"
-ALLOW_NEW_REGISTRATIONS = True
+#INVITATION_USE_ALLAUTH = True
+#INVITE_MODE = True
+#ACCOUNT_INVITATION_DAYS = 14
+#INVITATIONS_PER_USER = 20
+#SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
+#ACCOUNT_ADAPTER ="allauth.accountadapter.AccountAdapter"
+#ALLOW_NEW_REGISTRATIONS = True
 
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'

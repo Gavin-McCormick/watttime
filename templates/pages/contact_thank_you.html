@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Thank You!{% endblock %}
+{% block title %}WattTime: Contacted{% endblock %}
 
 {% block content %}
-<h2>Thank You!</h2>
 
-<p class="lead">We will do our best to get back to you within two business days.</p>
-<br><br>
+<div>
+<h1>Thanks for getting in touch!</h1>
+</br>
+</div>
 
-<p>In the meantime, why not <a href="{% url 'faq' %}">learn how</a> WattTime makes it easier to use cleaner electricity?</p>  
+<div class="panel">
+    <div class="panel-body">
+        <h4>We'll do our best to get back to you as soon as possible.</h4>
+    </div>
+</div>
 
 
 {% endblock %}

@@ -1,7 +1,7 @@
 watttime
 ========
 
-How green is your energy, right now?
+How clean is your energy, right now?
 
 API
 ------

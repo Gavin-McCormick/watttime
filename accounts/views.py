@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from accounts import models, forms, messages, twilio_utils, regions
+from watttime_shift.models import ShiftRequest
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.core.urlresolvers import reverse
-from windfriendly.models import CAISO
-from windfriendly.parsers import CAISOParser
 import random
 from django.utils.timezone import now
 from django.core.mail import send_mail
@@ -50,11 +49,11 @@ class FormView:
 
             return self.render(request, 'accounts/{}.html'.format(self.html_file), vals)
         else:
-            return redirect('user_login')
+            return redirect('authenticate')
 
 class ProfileEdit(FormView):
     def __init__(self):
-        FormView.__init__(self, 'profile_edit', forms.UserProfileForm)
+        FormView.__init__(self, 'profile_settings', forms.UserProfileForm)
 
     def form(self, user):
         return user.get_profile().region().user_prefs_form
@@ -64,14 +63,59 @@ class ProfileEdit(FormView):
 
     def html_params(self, user):
         up = user.get_profile()
+
+        # get shift scores
+        uid = user.id
+        hrs_shifted = 0.0
+        fraction_clean = 0.0
+        fraction_improved = 0.0
+        for r in ShiftRequest.objects.all().filter(requested_by=uid):
+            hrs_shifted += r.usage_hours
+            fraction_clean += r.usage_hours*r.recommended_fraction_green
+            fraction_improved += r.usage_hours*(r.recommended_fraction_green - r.baseline_fraction_green) / r.baseline_fraction_green
+        if hrs_shifted > 0:
+            av_clean = fraction_clean / hrs_shifted * 100
+            av_improved = fraction_improved / hrs_shifted * 100
+        else:
+            av_clean = 0
+            av_improved = 0
+            
         return {'name' : up.name,
                 'email' : up.email,
                 'state' : up.state,
-                'region' : up.region().name}
+                'phone' : up.phone,
+                'region' : up.region().name,
+                'phone_verified' : up.is_verified,
+                'deactivated' : not user.is_active,
+                'has_phone' : len(up.phone) > 0,
+                'supported_location' : up.supported_location(),
+                'forecasted_location' : up.supported_location_forecast(),
+                'hrs_shifted' : round(hrs_shifted, 1),
+                'av_clean': round(av_clean, 1),
+                'av_improved': round(av_improved, 1),
+                }
+
+    def form_submitted(self, request, vals):
+        up = request.user.get_profile()
+        up.save_from_form(vals)
+        if up.phone and not up.is_verified:
+            return redirect('phone_verify_view')
+        else:
+            return redirect('profile_settings')
+
+class ProfileCreate(FormView):
+    def __init__(self):
+        FormView.__init__(self, 'profile_create', forms.AccountCreateForm)
+       # self.require_authentication = False
+
+    def html_params(self, user):
+        up = user.get_profile()
+        return {'name' : up.name, 'region_supported' : up.supported_location()}
 
     def form_submitted(self, request, vals):
         request.user.get_profile().save_from_form(vals)
-        return redirect('profile_view')
+        return redirect('profile_first_edit')
+
 
 class ProfileFirstEdit(FormView):
     def __init__(self):
@@ -83,13 +127,14 @@ class ProfileFirstEdit(FormView):
 
     def html_params(self, user):
         up = user.get_profile()
-        return {'name' : up.name, 'region_supported' : up.supported_location()}
+        return {'name' : up.name, 'region_supported' : up.supported_location(),
+                'region_forecasted': up.supported_location_forecast()}
 
     def form_submitted(self, request, vals):
         request.user.get_profile().save_from_form(vals)
         return redirect('phone_verify_view')
 
-# A bit hackish
+# A bit hackish 
 class PhoneVerifyView(FormView):
     def __init__(self):
         FormView.__init__(self, '', forms.PhoneVerificationForm)
@@ -100,7 +145,7 @@ class PhoneVerifyView(FormView):
         if code == up.verification_code:
             up.is_verified = True
             up.save()
-            return redirect('profile_view')
+            return redirect('profile_settings')
         else:
             return render(request, 'accounts/phone_verification_wrong.html',
                     {'phone_number' : up.phone, 'form' : self.form()})
@@ -133,27 +178,41 @@ class LoginView(FormView):
             return render(request, 'accounts/no_such_user.html', {'email' : email})
         up = ups[0]
 
-        if password:
-            user = authenticate(username = up.user.username, password = password)
-            if user and up.password_is_set:
-                login(request, user)
-                return redirect('profile_view')
-            else:
-                return render(request, 'accounts/wrong_password.html', {'email' : email})
+        user = authenticate(username = up.user.username, password = password)
+        # if username was set wrong, try with email
+        if user is None:
+            user = authenticate(username = email, password = password)
+        if user is None:
+            user = authenticate(username = up.name, password = password)
+        
+        # try to login
+        if user is not None:
+            login(request, user)
+            return redirect('profile_settings')
         else:
-            email_login_user(up.user)
-            return redirect('accounts.views.frontpage')
+            return render(request, 'accounts/wrong_password.html', {'email' : email})
 
     def __call__(self, request):
         if request.user.is_authenticated():
-            return redirect('profile_view')
+            return redirect('profile_settings')
         else:
             return FormView.__call__(self, request)
 
 class CreateUserView(FormView):
     def __init__(self):
         FormView.__init__(self, 'signup', forms.SignupForm)
-        self.require_authentication = False
+
+    def __call__(self, request):
+        if request.method == 'POST':
+            form = self._form(request.POST)
+            if form.is_valid():
+                return self.form_submitted(request, form.cleaned_data)
+
+        else:
+            form = self._form
+            return redirect('authenticate')
+        
+        return redirect('authenticate')
 
     def form_submitted(self, request, vals):
         user = create_and_email_user(vals['email'], state = vals['state'])
@@ -171,9 +230,11 @@ class CreateUserView(FormView):
             return render(request, 'accounts/user_already_exists.html',
                     {'email' : email})
 
-profile_edit = ProfileEdit()
+profile_settings = ProfileEdit()
 
 profile_first_edit = ProfileFirstEdit()
+
+profile_create = ProfileCreate()
 
 phone_verify_view = PhoneVerifyView()
 
@@ -194,16 +255,26 @@ def new_phone_verification_number():
 
 # TODO all this code needs proper logging and error handling, not using 'print'
 
+def authenticate_view(request):
+    # set up forms
+    signup_form = forms.SignupForm(initial = {'state' : u'%s' % 'CA'})
+    login_form = forms.LoginForm()
+    
+    # return
+    return render(request, 'accounts/authenticate.html',
+            {'signup_form' : signup_form,
+             'login_form' : login_form})
+    
+
 def create_new_user(email, name = None, state = None):
     ups = models.UserProfile.objects.filter(email__iexact = email)
     if len(ups) > 0:
-        print (len(ups))
         print ("User(s) with email {} already exists, aborting user creation!".
                 format(email))
         return None
 
     username = new_user_name()
-    user = User.objects.create_user(username, email = None, password = None)
+    user = User.objects.create_user(username, email = email, password = None)
     user.is_active = False
     user.is_staff = False
     user.is_superuser = False
@@ -314,7 +385,7 @@ def magic_login(request, magic_login_code):
 
         login(request, user)
         print ("Logged in user {}".format(up.name))
-        return redirect('profile_first_edit')
+        return redirect('profile_create')
 
 # Returns True if code sent successfully, otherwise False
 def send_verification_code(user):
@@ -331,36 +402,14 @@ def send_verification_code(user):
         print ("Send unsuccessful.")
     return sent
 
-def profile_view(request):
-    user = request.user
-    if user.is_authenticated():
-        vals = {'deactivated' : (not user.is_active)}
-        user.get_profile().display_values(vals)
-        return render(request, 'accounts/profile.html', vals)
-    else:
-        print ("User not authenticated")
-        return redirect('user_login')
-
-def frontpage(request):
-    if CAISO.objects.count() == 0:
-        parser = CAISOParser()
-        parser.update()
-    datum = CAISO.objects.all().filter(forecast_code=0).latest()
-    percent_green = datum.fraction_green * 100.0
-    greenery = str(int(percent_green + 0.5)) + '%'
-
-    form = forms.SignupForm(initial = {'state' : u'CA'})
-    return render(request, 'index.html',
-            {'form' : form, 'current_green' : greenery})
-
 def set_active(request, new_value):
     user = request.user
     if user.is_authenticated():
         user.is_active = new_value
         user.save()
-        return redirect('profile_view')
+        return redirect('profile_settings')
     else:
-        return redirect('user_login')
+        return redirect('authenticate')
 
 def deactivate(request):
     return set_active(request, False)
