@@ -30,7 +30,7 @@ def frontpage(request):
         parser.update()
     datum = ba.objects.all().filter(forecast_code=0).latest()
     percent_green = datum.fraction_green * 100.0
-    greenery = str(int(percent_green + 0.5)) + '%'
+    greenery = str(round(percent_green, 1)) + '%'
 
     # set up signup form
     form = SignupForm(initial = {'state' : u'%s' % state})
