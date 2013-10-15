@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>My Profile</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-body">	
+    <h2>Welcome {{ name }}!</h2>
+	
+	<div class="tabbable"> 
+	
+  	<ul class="nav nav-tabs nav-justified" id="myTab">
+  	
+  	      <li class="active"><a href="#tab1" data-toggle="tab">Home</a></li>
+    
+        	<li><a href="#tab2" data-toggle="tab">User Info</a></li>
+        
+        	<li><a href="#tab3" data-toggle="tab">Alerts Settings</a></li>
+        	
+        	<li><a href="#tab4" data-toggle="tab">Personalize</a></li>
+        	      	
+  	</ul>
+  	
+  	<div class="tab-content">
+  	
+  	<div class="tab-pane active" id="tab1">
+	<br>
+        <div class="well well-primary">
+            <h3>WattTime Shift</h3>
+           {% if forecasted_location %}
+                    {% if hrs_shifted == 0 %}
+                        <a href="{% url 'shift' %}" class="btn btn-primary">Get started with WattTime Shift</a>
+                    {% else %}
+                        <div class="col-md-4">
+                            <h4>time shifted:</h4>
+                            <h1 class="text-score">{{ hrs_shifted }}</h1>   
+                            <h4>hours</h4>
+                        </div>            
+                        <div class="col-md-4">
+                            <h4>energy used:</h4>
+                            <h1 class="text-score">{{ av_clean }}%</h1>   
+                            <h4>clean on average</h4>
+                        </div>            
+                        <div class="col-md-4">
+                            <h4>that's</h4>
+                            <h1 class="text-score">{{ av_improved }}%</h1>   
+                            <h4>cleaner than without Shift</h4>
+                        </div>  
+                        <br>          
+                        <h3><a href="{% url 'shift' %}" class="btn btn-info">Shift again!</a></h3>
+                    {% endif %}
+                {% else %}
+                    <p>Sorry, WattTime Shift is not yet available in {{ state }}. We'll let you know as soon as it is.</p>
+                {% endif %}
+        </div>
+ 
+        <div class="well">
+            <h3>WattTime Alerts</h3>
+        	{% if deactivated %}
+                	<p class="text-warning">Your account is currently deactivated. You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">reactivate</a> your account at any time.</p></div>
+        	{% else %}
+            	{% if phone_verified %}
+                    	<p>You are signed up to receive WattTime Alerts by SMS to phone number {{ phone }}.</p>
+                    	<p>Edit your settings anytime by clicking on the tabs above.</p>
+            	{% else %}
+            		{% if has_phone %}
+            			<p>Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime Alerts by SMS.</p>
+            		{% else %}
+                    	<p>Get started with WattTime Alerts by adding a phone number on the "User Info" tab.</p>
+           		{% endif %}
+                {% endif %}
+                {% if supported_location %}
+                {% else %}
+                    <p>Sorry, WattTime Alerts are not yet available in {{ state }}. We'll let you know as soon as they are.</p>
+                {% endif %}
+        	{% endif %}
+            </div>
+
+	</div>
+    
+    <div class="tab-pane" id="tab2">
+    <br>
+  
+
+	<form action="{% url 'profile_settings' %}" class="form-horizontal" method="post">{% csrf_token %}
+    <h5>Login info</h5>
+    <table class="table">  	
+        <tr class="control-group">
+        <td><label class="control-label blue" for="inputName">Email</label></td>
+        <td>{{ email }}</td>
+        <td>(Your email is your login name.)</td>
+        </tr>
+      	<tr class="control-group">
+        <td><label class="control-label blue" for="inputName">Password</label></td>
+        <td>***</td>
+        <td><a href="{% url 'password_change' %}">Change password?</a></td>
+        </tr>
+    </table>
+    
+    <h5>User settings</h5>
+    <table class="table">  	
+        <tr class="control-group">
+        <td><label class="control-label blue" for="inputName">Name</label></td>
+        <td>{{ name }}</td>
+        <td class="controls">{{ form.name }}</td>
+        <td>(Hello friend!)</td>
+        </tr>
+      	
+        <tr class="control-group">
+        <td><label class="control-label blue" for="inputName">State</label></td>
+        <td>{{ state }}</td>
+        <td class="controls">{{ form.state }}</td>
+        <td>(You have the most impact on your regional grid.)</td>
+        </tr>
+        
+        <tr class="control-group">
+        <td><label class="control-label blue" for="inputName">Phone</label></td>
+        <td>{{ phone }}</td>
+        <td class="controls">{{ form.phone }}</td>
+        <td>(Changing your phone number will trigger a 1-time SMS message for verification.)</td>
+        </tr>
+    </table>
+
+    <h5>Keep in touch</h5>
+    <p class="text-left"><label class="checkbox inline">{{ form.beta_test }}Please add me to the mailing list to receive periodic updates about new features and regions.{{ form.beta_test.errors }}</label></p>
+    <p class="text-left"><label class="checkbox inline">{{ form.ask_feedback }}I would like to help WattTime improve its service by participating in an occasional survey.{{ form.ask_feedback.errors }}</label></p>
+
+
+    <input type="submit" class="btn btn-info pull-right" value="Save changes" />
+    </div>
+    
+    <div class="tab-pane" id="tab3">
+    <br>
+        {% if deactivated %}
+            <p class="text-warning">Your account is currently deactivated. You will not receive any further emails or text messages from us. <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">Reactivate?</a></p>
+        {% else %}
+            {% if region == "California" %}
+                {% if phone_verified %}
+                <h5>WattTime Alerts by SMS to {{ phone }}</h5>
+                {{ form.message_frequency.errors }}
+                <div class="profile-edit">{{ form.message_frequency }}</div>
+                {% else %}
+                <h5>WattTime Alerts by SMS</h5>
+                <p class="text-left">Looks like we don't have a phone number for you! You can add one on the "User Info" tab.
+                {% endif %}
+                <h5>WattTime Alerts by email to {{ email }}</h5>
+                <p class="text-left"><label class="checkbox inline">{{ form.forecast_email }}I want to receive the daily WattTime Morning Forecast email.{{ form.forecast_email.errors }}</label></p>
+            {% endif %}
+            
+            {% if region == "NewEngland" %}
+                <h5>WattTime Alerts by SMS</h5>
+                {{ form.message_frequency.errors }}
+                <div class="profile-edit">{{ form.message_frequency }}</div>            
+            {% endif %}
+            <p class="text-warning text-left">
+                These settings control the types and frequency of notifications that you will receive from WattTime.
+                You can change them as often as you like, or you can
+                <a href="{% url 'deactivate' %}">deactivate</a>
+                your account at any time.
+            </p>
+        {% endif %}
+        <input type="submit" class="btn btn-info pull-right" value="Save changes" />
+    </div>
+    
+<div class="tab-pane" id="tab4">
+<br>
+<h5>
+    WattTime uses information about your appliances and energy-intensive practices to recommend
+    the most impactful actions that you could take.
+</h5>
+{{ form.equipment.errors }}
+<div class="profile-edit">{{ form.equipment }}</div>
+<input type="submit" class="btn btn-info pull-right" value="Save changes" />
+
+</div>
+    
+    <div class="tab-pane" id="tab5">
+<br>
+<br>
+
+<input type="submit" class="btn btn-info pull-right" value="Save changes" />
+
+
+    </div>
+  
+  	</div>
+	</div>
+	
+	
+
+</form>
+    
+  	
+<!--
+<div class="control-group">
+    <label class="control-label text-success" for="inputName">Message Frequency</label>
+    <div class="controls text-info">{{ message_frequency }}</div></div>
+<div class="control-group">
+    <label class="control-label text-success" for="inputName">Morning Forecast</label>
+    <div class="controls text-info">{{ morning_forecast }}</div></div>
+<div class="control-group">
+    <label class="control-label text-success" for="inputName">How I Use Electricity</label>
+    <div class="controls text-success">{{ equipment }}</div></div>
+<div class="control-group">
+    <label class="control-label text-success" for="inputName">Updates about Future WattTime Features</label>
+    <div class="controls text-success">{{ beta_test }}</div></div>
+-->
+
+
+<!-- Wrapping <label></label> around multiple radio buttons breaks the interface in Firefox -->
+
+
+
+
+</div>
+</div>
+
+{% include "base_snippets/footer_tools.html" %}
+
+
+<script>
+    $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    });
+
+    // store the currently selected tab in the hash value
+    $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+        var id = $(e.target).attr("href").substr(1);
+        window.location.hash = id;
+    });
+
+    // on load of the page: switch to the currently selected tab
+    var hash = window.location.hash;
+    $('#myTab a[href="' + hash + '"]').tab('show');
+</script>
+
+{% endblock %}

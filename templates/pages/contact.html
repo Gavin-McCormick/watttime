@@ -1,58 +1,31 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
 
-{% block title %}Contact us!{% endblock %}
+{% block title %}WattTime: Contact us{% endblock %}
 
 {% block content %}
-	<h2>Contact Us</h2>
+	<div>
+<h1>Contact Us</h1>
 </br>
-		<div class="container well" style="padding:0px 0px 0px 0px;">
-		
-		<p class="lead text-info" style="text-align:center">Comments? Questions? Get in Touch!</p>
+</div>
 
+	<div class="panel panel-default">
+	<div class="panel-heading">
+    <h3 class="panel-title">Comments? Questions? Want to partner with us? Get in touch!</h3>
+  </div>
+  <div class="panel-body">
+		
+		
 			<form action="" method="post" class="">
 			{% csrf_token %}
-			{{ form.non_field_errors }}
 
-				<div class="span4 offset2">
-
-					<p class="fieldWrapper">
-       			   	{{ form.name.errors }}
-        			<!--<label for="id_name">Name:</label>
-        			-->
-        			{{ form.name }}
-    				
-        			{{ form.email.errors }}
-        			<!--<label for="id_email">Email:</label>
-        			-->
-        			{{ form.email }}
-    				
-        			{{ form.subject.errors }}
-       			 	<!--<label for="id_subject">Subject:</label>
-       			 	-->
-        			{{ form.subject }}
-        			</p>
-        			
-        			<p><input type="submit" class="btn btn-awesome pull-left" value="Send"></p>
+                    {% bootstrap_form form %}
+    			<button type="submit" class="btn btn-primary" value="Send">Send</button>
 
     				
-				</div>
-
-
-				<div class="span4">
-
-				<p class="fieldWrapper">
-        		{{ form.message.errors }}
-       		 	<!--<label for="id_message">Message:</label>
-       		 	-->
-        		{{ form.message }}
-   				 </p>
-				
-				</div>
-
-
 			</form>
 
-		</div>
+		</div></div></div>
 
 	
 {% endblock %}

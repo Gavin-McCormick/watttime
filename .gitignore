@@ -42,3 +42,7 @@ nosetests.xml
 
 # data directory for the thermostat code
 thermo/data
+
+*.xml
+
+*.iml

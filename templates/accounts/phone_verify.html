@@ -1,21 +1,38 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+
 {% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Verify Your Device</h2>
-<p class="lead alert alert-block alert-success text-success">Let's confirm your phone number. You should have just received a 6-digit verification code as a text message to {{ phone_number }}. Please enter it below to complete the sign-up process.</p>
+<div>
+<h1>Verify Your Phone</h1>
+</br>
+</div>
 
-<form action="{% url 'phone_verify_view' %}" class="form-inline" method="post">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            Check your phone. We just said hi.
+        </h3></div>
+       
+    
+    <div class="panel-body">
+     <p>
+            You should have just received a 6-digit verification code as a text message to
+            <span class="badge">{{ phone_number }}</span>. Please enter it below to complete the sign-up process.
+        </p>
+        
+        <form action="{% url 'phone_verify_view' %}" class="form-horizontal-inline" method="post">
         {% csrf_token %}
-        <p class="fieldWrapper">
-        {{ form.verification_code.errors }}
-        {{ form.verification_code }}
-        <!-- <input type="int" name="code"> -->
-       <input type="submit" class="btn btn-awesome" name="phone_verify" value="Verify" /></p>
-</form>
-
-<p class="alert alert-block alert-warning text-warning">You can always change phone numbers later by adjusting the settings in <a href="{% url 'profile_view' %}">your profile</a>. If you do not receive the text message within a few minutes, you can reload this page to send another message.</p>
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-success" value="Go">Go</button>
+        </form>
+    </div>
+    <div class="panel-footer">
+        Questions about WattTime accounts? Try the <a href="{% url 'faq' %}#accounts" >FAQ</a>.
+    </div>
+</div>
 
 
 {% endblock %}

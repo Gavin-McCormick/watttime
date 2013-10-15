@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime: Join Us{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>Join Us</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title">Get Involved</h3>
+  </div>
+  <div class="panel-body">
+  <p>Jump on in and get involved! <a href="{% url 'authenticate' %}">Sign up for WattTime</a> to receive personalized alerts, track your imapct, and be the first to hear about new ways to participate. And you can always say hello and follow our progress on <a href="//twitter.com/watttime">Twitter</a> and <a href="//www.facebook.com/wattTimeApp">Facebook</a>.</p>  
+  </div>
+
+</div>
+
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title">Work With Us</h3>
+  </div>
+  <div class="panel-body">
+  <p> At WattTime, we spend our days crafting ever more powerful, easy, and fun
+    means for people to have a choice in their own energy supply. Sound great to you? Get involved!
+    We're <a href="https://github.com/Gavin-McCormick/watttime">open source</a>, open data,
+    and open to your contributions—please do <a href="{% url 'contact' %}">get in touch</a>!
+    Now's a particularly exciting time to get involved if you like working on mobile, 
+    social, Internet of Things, satellite imaging (yes really), or energy economics.</p>   </div>
+
+</div>
+    
+{% endblock %}

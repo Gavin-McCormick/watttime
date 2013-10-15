@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}WattTime: Log in{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>Sign In - Sign Up</h1>
+</br>
+</div>
+
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">  
+        <div class="panel panel-default">
+            <div class="panel-body">
+        
+                <div class="tabbable"> 
+        	
+                    <ul class="nav nav-tabs">  	
+                        <li class="active"><a href="#tab1" data-toggle="tab">Sign in</a></li>
+                        <li><a href="#tab2" data-toggle="tab">Sign up</a></li>
+                    </ul>
+        
+                    <div class="tab-content">
+        
+                        <div class="tab-pane active" id="tab1">
+                            <div class="col-md-12">
+                                <h3>
+                                    Log in to your existing WattTime account.
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                {% include "accounts/login_form_snippet.html" with form=login_form %}
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <p>
+                                    Forget your password? <a href="{% url 'password_reset' %}">Reset it here.</a>
+                                </p>
+                            </div>
+                        </div>
+        
+                        <div class="tab-pane" id="tab2">
+                            <div class="col-md-12">
+                                <h3>
+                                    Don't have an account yet? You can sign up right here.
+                                </h3>
+                            </div>
+                            <div class="col-md-12">
+                                {% include "accounts/signup_form_snippet.html" with form=signup_form %}
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <p>
+                                    An account gets you access to WattTime Alerts, tools to track your impact, and
+                                    occasional updates.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>        
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+{% endblock %}
+
+<!-- The following is used for Facebook Connect and was removed by Gavin on Sunday
+{ % load socialaccount % }
+<a href="{ % provider_login_url "facebook" method="oauth2" % }">Facebook OAuth2</a>
+end-->

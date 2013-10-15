@@ -1,0 +1,67 @@
+{% load staticfiles %}
+   <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+   <div class="navbar-header">
+          		
+          		
+          	<a class="navbar-brand" href="{% url 'home' %}">
+			<img src="{% static "images/WattTimeWhiteWordLogo.png" %}" width="200" alt="WattTime">
+			</a>
+			
+			
+          	<!-- .btn-navbar is used as the toggle for collapsed navbar content 
+      		<button type="button" class="btn-navbar navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        	<span class="glyphicon glyphicon-align-justify"></span>
+      		</button> -->
+			 
+		
+	</div>
+			
+          <div class="nav nav-collapse navbar-ex1-collapse pull-right">
+            <ul class="nav nav-pills">
+            
+            <li class="dropdown" >
+                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <i class="glyphicon glyphicon-wrench glyphicon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><span class="nb_icons nbexplorer pull-left"></span>&nbsp; EXPLORER</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><span class="nb_icons nbshift pull-left"></span>&nbsp; SHIFT</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'alerts_home' %}"><span class="nb_icons nbalerter pull-left"></span>&nbsp; ALERTS</a></li>
+				</ul>
+              </li>
+              
+            <li class="dropdown">
+                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TACTICS <i class="glyphicon glyphicon-random glyphicon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><span class="nb_icons nbhiw pull-left"></span>&nbsp; HOW IT WORKS</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'why-it-works' %}"><span class="nb_icons nbwiw pull-left"></span>&nbsp; WHY IT WORKS</a></li>
+				</ul>
+              </li>
+
+              <li class="dropdown">
+                <a class="dropdown-toggle" id="drop1" role="button" data-toggle="dropdown" href="#">TEAM <i class="glyphicon glyphicon-globe glyphicon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><span class="nb_icons nbabout pull-left"></span>&nbsp; ABOUT US</a></li>
+				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><i class="glyphicon glyphicon-envelope"></i>&nbsp; CONTACT</a></li>
+				</ul>
+              </li>
+              
+              <li class="">
+				<a href="{% url 'faq' %}">FAQ <i class="glyphicon glyphicon-question-sign glyphicon-white"></i></a>
+              </li>    
+                     
+              <li class="dropdown">
+              {% if user.is_authenticated %}
+               <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">ACCOUNT <i class="glyphicon glyphicon-user glyphicon-white"></i> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
+      			<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'profile_settings' %}"><i class="glyphicon glyphicon-cog"></i> SETTINGS</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'logout' %}"><i class="glyphicon glyphicon-log-out"></i> LOG OUT</a></li>
+                </ul>
+              {% else %}
+                <li class="" role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'authenticate' %}">LOG IN <i class="glyphicon glyphicon-log-in"></i></a></li>
+              {% endif %}
+              
+                      <!--       </ul></li>  -->
+            </ul>
+            
+          </div>
+        </nav>
+  

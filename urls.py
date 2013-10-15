@@ -27,96 +27,44 @@ admin.autodiscover()
 
 # basic patterns
 urlpatterns = patterns('',
-    url(r'^[/]?$',
-        # 'accounts.views.profile_create', name='home'),
-        'accounts.views.frontpage', name='home'),
-    url(r'^data_text/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
-        'workers.views.data_text_view', name='data_text'),
-    url(r'^data_json/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
-        'workers.views.data_json_view', name='data_json'),
+  #  url(r'^data_text/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+  #      'workers.views.data_text_view', name='data_text'),
+  #  url(r'^data_json/(?P<database>[a-zA-Z0-9_-]+)[/]?$',
+  #      'workers.views.data_json_view', name='data_json'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
 
 #  allauth patterns
-urlpatterns += patterns('',
-    url(r'accounts[/]',  include('allauth.urls')),
+#urlpatterns += patterns('',
+#    url(r'accounts[/]',  include('allauth.urls')),
 #    url(r'^accounts/profile[/]$', TemplateView.as_view(template_name='account/profile.html')),
 #    url(r'^accounts/profile[/]$', 'accounts.views.profile_create', name='user_profile'),
 #    url(r'^login/cancelled[/]$', 'login_cancelled', name='socialaccount_login_cancelled'),
 #    url(r'^login/error[/]$', 'login_error', name='socialaccount_login_error'),
-)
+#)
 
 # invitation patterns
 #urlpatterns += patterns('',
 #    url(r'accounts[/]',  include('invitation.urls')),
 #)
 
-# features patterns
+# tools patterns
 urlpatterns += patterns('',
     url(r'',  include('watttime_shift.urls')),
 )
 
 # pages patterns
-urlpatterns += patterns('pages.views',
-    url(r'^faq[/]?$',
-        'faq', name='faq'),
-    url(r'^signed_up[/]?$',
-        'signed_up', name='signed_up'),
-    url(r'^signed_up_future[/]?$',
-        'signed_up_future', name='signed_up_future'),
-    url(r'^contact[/]?$',
-        'contact', name='contact'),
-    url(r'^contact/thankyou[/]?$',
-        'thankyou', name='contact_thank_you'),
-    url(r'^about-us[/]?$',
-        'about_us', name='about-us'),
-    url(r'^how-it-works[/]?$',
-        'how_it_works', name='how-it-works'),
-    url(r'^terms-of-service[/]?$',
-        'terms_of_service', name='terms-of-service'),
-    url(r'^status[/]?$',
-        'status', name='status'),
-    url(r'^NE_status[/]?$',
-        'NE_status', name='NE_status'),
-    url(r'^CA_status[/]?$',
-        'CA_status', name='CA_status'),
-    url(r'^BPA_status[/]?$',
-        'BPA_status', name='BPA_status'),
-    url(r'^facebook_pilot[/]?$',
-        'facebook_pilot', name='facebook_pilot'),
-    url(r'^sierra_pilot[/]?$',
-        'sierra_pilot', name='sierra_pilot'),
+urlpatterns += patterns('',
+    url(r'',  include('pages.urls')),
 )
+
 handler500 = 'pages.views.server_error'
 handler404 = 'pages.views.notfound_error'
 
 # accounts patterns
-urlpatterns += patterns('accounts.views',
-    # url(r'^signup[/]?$', 
-    #     'accounts.views.profile_create', name='profile_create'),
-    url(r'^magic_invite/(?P<email>[a-zA-Z0-9._+@-]+)[/]?$',
-        'http_invite', name='http_invite'),
-    url(r'^magic_invite/(?P<email>[a-zA-Z0-9._+@-]+)/(?P<name>[a-zA-Z 0-9._+@-]+)[/]?$',
-        'http_invite_with_name', name='http_invite_with_name'),
-    url(r'^profile/(?P<magic_login_code>[0-9]+)[/]?$',
-        'magic_login', name='magic_login'),
-    url(r'^login[/]?$',
-        'user_login', name='user_login'),
-    url(r'^profile[/]?$',
-        'profile_view', name='profile_view'),
-    url(r'^profile/edit[/]?$',
-        'profile_edit', name='profile_edit'),
-    url(r'^profile/first_edit[/]?$',
-        'profile_first_edit', name='profile_first_edit'),
-    url(r'^profile/verify_phone[/]?$',
-        'phone_verify_view', name='phone_verify_view'),
-    url(r'^california_signup[/]?$',
-        'create_user', name='create_user'),
-    url(r'^deactivate[/]?$',
-        'deactivate', name='deactivate'),
-    url(r'^reactivate[/]?$',
-        'reactivate', name='reactivate'),
+urlpatterns += patterns('',
+    url(r'', include('accounts.urls')),
 )
 
 # windfriendly API patterns

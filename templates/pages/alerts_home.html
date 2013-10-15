@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}WattTime Alerts{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>WattTime Alerts</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>
+                    It's your energy and your choice.
+                </h3>
+                <p>
+                    The power sources that supply your town are changing all the time.
+                    Some hours are usually cleaner than others, but there are surprises every day.
+                    WattTime monitors the grid 24/7 to pick out the moments when your energy choices
+                    matter most—and WattTime Alerts is how we share those moments with you.
+                </p>
+                <h3>
+                    Want to take control of how you power your life?
+                </h3>
+                <p>
+                    With WattTime Alerts, you'll get a email or text message when a quick and
+                    easy change to your electricity use can make the biggest impact.
+                </p>
+                    {% if not user.is_authenticated %}
+                        <p><a class="btn btn-info" href="{% url 'authenticate' %}">
+                            Sign in and get started!
+                        </a><p>
+                    {% else %}
+                        <p><a class="btn btn-info" href="{% url 'profile_settings' %}">
+                            View your profile!
+                        </a></p>
+                    {% endif %}
+                </h3>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Make a difference in four easy steps:</h3>
+            </div>
+            <div class="col-md-3">
+                <p class="text-score">1</p>
+                <h4>Sign up is simple</h4>
+                <p>
+                    Your email address or phone number is all we need to get you started.
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <p class="text-score">2</p>
+                <h4>Verify it's you</h4>
+                <p>
+                    We verify your contact info so we can send secure alerts
+                    directly to your device.
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <p class="text-score">3</p>
+                <h4>Personalize</h4>
+                <p>
+                    You are in control of your account. Tailor your alerts to be more meaningful
+                    to you, or stick with the default settings.
+                </p>
+            </div>
+
+            <div class="col-md-3">
+                <p class="text-score">4</p>
+                <h4>Take action</h4>
+                <p>
+                    When you receive a message, join your neighbors
+                    and shift your electricity use to cleaner sources.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "base_snippets/footer_tactics.html" %}
+
+{% endblock %}

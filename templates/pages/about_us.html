@@ -1,57 +1,136 @@
 {% extends "base.html" %}
 
-{% block title %}About Us{% endblock %}
+{% block title %}WattTime: About Us{% endblock %}
 
 {% block content %}
 
-<h2>About WattTime</h2>
-</br></br>
-<div class="row-fluid well" style="padding:0px 0px 0px 0px;">
-    <div class="span5 offset1">
-        <h4 class="text-info lead">About</h4>
-        WattTime was founded in 2013 by UC Berkeley economist Gavin McCormick 
-        with a simple vision: empower people to control their energy choices, based on their own values, 
-        instead of leaving those choices up to energy companies. By combining groundbreaking new 
-        techniques in energy economics with emerging sources of real-time grid data, that vision of energy 
-        choice is becoming a reality. Ordinary people can now have a say in the future of the clean energy economy.
-            <h4 class="text-info lead">Join the movement</h4>
-            You can get involved too!
-            <a href="{% url 'home' %}">Sign up for WattTime</a> to receive personalized alerts,
-            track your imapct, and be the first to hear about new ways to participate. 
-            And you can always say hello and follow our progress on <a href="//twitter.com/watttime">Twitter</a> and <a href="//www.facebook.com/wattTimeApp">Facebook</a>.
-            <h4 class="text-info lead">Join the team</h4>
-            At WattTime, we spend our days crafting new tools that make energy choices 
-            easy, impactful, and fun.
-            We're <a href="https://github.com/Gavin-McCormick/watttime">open source</a>, open data, and open to your contributions—please <a href="{% url 'contact' %}">get in touch</a>!
-            If you're excited about working on mobile, social, Internet of Things, or satellite imaging (yes really!),
-            we'd especially love to hear from you. 
+<div>
+<h1>About Us</h1>
+</br>
 </div>
-<div class="span4 offset1" style="text-align:center"></br></br>
-    <h2 class="text-success lead">Awards</h2><br></br>
-    <img src="static/images/WattTimeShield_sm.png" width="100"><br>
-    <h4 class="text-info lead">
-        Grand Prize Winner<br>
-        <a href="http://cleanandgreenhackathon.com/results/" target="_blank">Clean and Green Hackathon</a>
-    </h4>
-         thanks to <a href="//rally.org/">Rally.org</a>, <a href="//www.barackobama.com/">Organizing for Action</a>, and <a href="//www.nanosatisfi.com/">Nanosatisfi</a>
-    <h4 class="text-info lead">
-        Best Green Button App<br>
-        <a href="//berkeley.cleanweb.co/" target="_blank">Berkeley Cleanweb Hackathon</a>
-    </h4>
-         thanks to <a href="//berc.berkeley.edu/">BERC</a> and <a href="//cleanweb.co/">Cleanweb</a>
-    <h4 class="text-info lead">
-        Top 3 Finalist<br>
-        <a href="//info.cleantech.com/CleantechFacebookContest.html" target="_blank">Cleantech Goes Social Contest</a>
-        <br>
-        (check out our <a href="//essinova.com/video/show/453-wattTime-Load-shifting-via-behavioral-economics" target="_blank">presentation</a>)
-        </h4>
-         thanks to <a href="//www.cleantech.com/">CleanTech Group</a> and <a href="//newsroom.fb.com/sustainability.aspx">Facebook</a>
-        <br>
-    <br>
 
-	</div>
-	</div>
 
-  
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Why We're Here</h3>
+      </div>
+      <div class="panel-body">
+        <p>
+            Our vision is simple: empower people to control their own energy choices,
+            based on their own values, instead of leaving those choices up to power companies. By combining
+            groundbreaking new techniques in energy economics with emerging sources of real-time grid data, that
+            vision of energy choice is becoming a reality. Now everyone can have a say in the emerging clean energy
+            economy.
+        </p>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Team</h3>
+    </div>
+    <div class="panel-body">
+        <div class="tabbable"> 
+
+            <ul class="nav nav-tabs nav-justified">
+              <li class="active"><a href="#founders" data-toggle="tab">Founders</a></li>
+              <li><a href="#builders" data-toggle="tab">Builders</a></li>
+              <li><a href="#researchers" data-toggle="tab">Researchers</a></li>
+              <li><a href="#you" data-toggle="tab">You!</a></li>
+            </ul>
+
+            <div class="tab-content"><br />
+                <div class="tab-pane active" id="founders">
+                    <p>
+                        Founder Gavin McCormick and technical co-founder Anna Schneider met at the 2013 Berkeley Cleanweb
+                        Hackathon and have been having a great time working on WattTime ever since.
+                        We love spending every day combining our skills from graduate research at UC Berkeley
+                        (Gavin in behavioral and energy economics, Anna in computational biophysics),
+                        our professional experience in the energy sector, and our joy in doing
+                        big things with teams of talented, dedicated, and friendly folks.
+                        I would say that you can also find us in the woods working on our treefort,
+                        but you probably couldn't–we'll have to take you there sometime.
+                    </p>
+                </div>
+    
+                <div class="tab-pane" id="builders">
+                    <p>
+                        WattTime's stellar developers, designers, and buildings engineers may be split between
+                        the Bay Area and London, but we're connected by our passion for crafting ever more powerful, easy, and fun ways
+                        to use cleaner energy (and by our love of Indian food).
+                    </p>
+                    <p>—Anna, Caroline, Colin, Gabe, Sean, and Vish</p>
+                </div>
+    
+                <div class="tab-pane" id="researchers">
+                    <p>
+                        Energy markets are complex beasts. WattTime's world-class economists and analysts have the
+                        technical chops to spend our days wading through the data,
+                        and the domain expertise to know when we've discovered a new way to make a real-world difference.
+                        Our motto: we can do better.
+                    <p>—Dilek, Gavin, Giovanni, James, Nate, and Patrick</p>
+                    </p>
+                </div>
+    
+                <div class="tab-pane" id="you">
+                    <p>
+                        The WattTime community is <a href="https://github.com/Gavin-McCormick/watttime">open source</a>, open data,
+                        and open to your contributions—please do <a href="{% url 'contact' %}">get in touch</a>!
+                        Now's a particularly exciting time to get involved if you like working on mobile, 
+                        social, Internet of Things, satellite imaging (yes really), or energy economics.
+                    </p>
+                    <p>
+                        If you're looking for a great project but WattTime isn't quite the right fit for
+                        you, check out our friends at
+                        <a href="http://nerdsfornature.org/">Nerds for Nature</a>,
+                        <a href="http://ecohack.org/">EcoHack</a>, and
+                        <a href="http://www.meetup.com/Data-Science-for-Sustainability/">Data Science for Sustainability</a>.
+                    </p>
+                </div>
+    
+
+            </div>
+        </div> 
+    </div>   
+</div>
+
+
+<div class="panel panel-default">
+<div class="panel-heading">
+    <h3 class="panel-title">Awards</h3>
+  </div>
+  <div class="panel-body">
+
+    <div class="col-md-12">
+  <div class="well well-sm">
+    <h1 class="yellow">Grand Prize Winner<h1>
+    <h2><a href="http://cleanandgreenhackathon.com/results/" target="_blank">Clean and Green Hackathon</a></h2>
+    <p>thanks to <a href="//rally.org/">Rally.org</a>, <a href="//www.barackobama.com/">Organizing for Action</a>, and <a href="//www.nanosatisfi.com/">Nanosatisfi</a></p>
+    </div>
+    </div>
+    
+    <div class="col-md-12">
+    <div class="well well-sm">
+    <h1 class="yellow">Best Green Button App</h1>
+    <h2><a href="//berkeley.cleanweb.co/" target="_blank">Berkeley Cleanweb Hackathon</a>
+    </h2>
+         <p>thanks to <a href="//berc.berkeley.edu/">BERC</a> and <a href="//cleanweb.co/">Cleanweb</a></p>
+            </div>
+    </div>
+ 
+    <div class="col-md-12">
+    <div class="well well-sm">
+    <h1 class="yellow"> Top 3 Finalist</h1>
+    <h2><a href="//info.cleantech.com/CleantechFacebookContest.html" target="_blank">Cleantech Goes Social Contest</a></h2>
+        <p>(check out our <a href="//essinova.com/video/show/453-wattTime-Load-shifting-via-behavioral-economics" target="_blank">presentation</a>)</p>
+         <p>thanks to <a href="//www.cleantech.com/">CleanTech Group</a> and <a href="//newsroom.fb.com/sustainability.aspx">Facebook</a></p>
+        </div>
+     </div>
+
+</div></div>
+
+
+{% include "base_snippets/footer_tactics.html" %}
+
 
 {% endblock %}

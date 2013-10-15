@@ -3,8 +3,11 @@
 
 {% block content %}
 
+<div>
+<h1>Failed Unsubscribe Request</h1>
+</br>
+</div>
 
-<h2>Failed Unsubscribe Request</h2>
 <p class="text-error alert alert-error">Sorry, we couldn't find an account associated with phone number {{ phone }}. Please try again. If it's still not working, please <a href="{% url 'contact' %}">contact us</a> and
 we'll do our best to sort this out.</p>
 

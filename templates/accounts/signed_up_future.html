@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}WattTime{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>Thanks for signing up!</h1>
+</br>
+</div>
+
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="col-md-12">
+            <h3>
+                Welcome to WattTime!
+            </h3>
+            <p>
+                We are working to add new regions as soon as we can, and
+                we'll let you know when WattTime tools become available for your location.
+                <br>In the meantime, poke around and see what we're up to!
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="btn-group btn-group-justified">
+                <a href="{% url 'how-it-works'%}" class="btn btn-info btn-lg">How it Works</a>
+                <a href="{% url 'why-it-works'%}" class="btn btn-info btn-lg">Why it Works</a>
+                <a href="{% url 'faq'%}" class="btn btn-info btn-lg">FAQ</a>
+                <a href="{% url 'about-us'%}" class="btn btn-info btn-lg">About Us</a>
+                <a href="{% url 'join-us'%}" class="btn btn-info btn-lg">Join Us</a>
+                <a href="{% url 'contact'%}" class="btn btn-info btn-lg">Contact</a>
+            </div>
+        </div>
+    </div>
+     <div class="panel-footer">
+        View today's regional clean energy outlook at <a href="{% url 'status' %}">WattTime Explorer</a>.
+    </div>
+</div>
+
+{% endblock %}

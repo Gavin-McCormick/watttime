@@ -46,6 +46,9 @@ class UserProfile(models.Model):
     def supported_location(self):
         return self.region() in [accounts.regions.newengland, accounts.regions.california]
 
+    def supported_location_forecast(self):
+        return self.region() in [accounts.regions.california]
+
     def region(self):
         return regions.by_state(self.state)
 
@@ -69,6 +72,11 @@ class UserProfile(models.Model):
         config.form_to_model(self.region().configs, self.get_region_settings(), vals)
         if 'phone' in vals:
             self.set_phone(vals['phone'])
+
+        if 'name' in vals:
+            self.name = vals['name']
+        if 'email' in vals:
+            self.email = vals['email']
 
         if 'password' in vals:
             password = vals['password']
@@ -133,10 +141,12 @@ class UserProfile(models.Model):
             self.user.set_password(password)
             self.user.save()
             self.password_is_set = True
+            print 'saved password'
         else:
             self.user.set_unusable_password()
             self.user.save()
             self.password_is_set = False
+            print 'did not save password'
 
     def set_phone(self, phone):
         if phone != self.phone:

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block title %}WattTime: Create account{% endblock %}
+
+{% block content %}
+
+<div>
+<h1>Welcome to WattTime!</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+    <h3 class="panel-title">Welcome {{ name }}! Create your account here.</h3>
+    </div>
+
+	<div class="panel-body">
+<form action="{% url 'profile_create' %}" method="post">
+    {% csrf_token %}
+
+    {% bootstrap_form form %}
+    <button type="submit" class="btn btn-primary" value="Go">Go</button>
+    </form>
+    </div>
+    </div>
+{% endblock %}

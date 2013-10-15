@@ -1,20 +1,29 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+
 {% block title %}WattTime{% endblock %}
 
 {% block content %}
 
-<h2>Verification Error</h2>
-</br></br>
-<div class="alert alert-block alert-error"><p class="lead text-alert">The verification code you entered does not seem to match! <p class="text-info">If you made a mistake, you can re-renter the code below. To resend the verification code to {{ phone_number }}, reload this page.</p>
-<p class="text-info">To change your phone number, return to <a href="{% url 'profile_view' %}">your profile</a>.</p>
+<div>
+<h1>Verification Error</h1>
+</br>
+</div>
+
+<div class="panel panel-default">
+   
+    <div class="panel-body">
+<p>The verification code you entered does not seem to match! If you made a mistake, you can re-renter the code below. To resend the verification code to <span class="badge">{{ phone_number }}</badge>, reload this page. To change your phone number, return to <a href="{% url 'profile_settings' %}" class="btn btn-xs btn-info">your profile</a>.</p>
 
 <form action="{% url 'phone_verify_view' %}" method="post">
         {% csrf_token %}
-        <p class="fieldWrapper">
-        {{ form.verification_code.errors }}
-        {{ form.verification_code }}
-        <!-- <input type="int" name="code"> -->
-       <input type="submit" name="phone_verify" class="btn btn-awesome" value="Verify" /></p>
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary" value="Go">Go</button>
 </form>
+    </div>
+   
+</div>
+
+
 
 {% endblock %}

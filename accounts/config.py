@@ -34,6 +34,7 @@ class ConfigType:
     # makes the function 'form_to_model' irrelevant.
     def save_form_to_model(self, model, form):
         if self.name in form:
+            print self.name
             setattr(model, self.name, self.form_to_model(form[self.name]))
     def save_python_to_model(self, model, vals):
         if self.name in form:
@@ -82,7 +83,10 @@ class ConfigChoice(ConfigType):
                 choices = str_xs, widget = forms.RadioSelect(), required = False)
 
     def form_to_model(self, value):
-        return int(value)
+        try:
+            return int(value)
+        except:
+            return 0
 
     def model_to_form(self, value):
         return str(value)
