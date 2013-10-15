@@ -63,12 +63,15 @@
         <div class="well">
             <h3>WattTime Alerts</h3>
         	{% if deactivated %}
-                	<p class="text-warning">Your account is currently deactivated. You will not receive any further emails or text messages from us. However, you may <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">reactivate</a> your account at any time.</p></div>
+                	<p>
+                        Your account is currently deactivated. You will not receive any further emails or text messages from us.
+                        However, you may <a href="{% url 'reactivate' %}" class="btn btn-xs btn-warning">reactivate</a> your account at any time.
+                    </p>
         	{% else %}
-            	{% if phone_verified %}
+                	{% if phone_verified %}
                     	<p>You are signed up to receive WattTime Alerts by SMS to phone number {{ phone }}.</p>
-                    	<p>Edit your settings anytime by clicking on the tabs above.</p>
-            	{% else %}
+                        	<p>Edit your settings anytime by clicking on the tabs above.</p>
+                	{% else %}
             		{% if has_phone %}
             			<p>Did you change your phone number? Please <a href="{% url 'phone_verify_view' %}" class="btn btn-xs btn-success">verify your number</a> to receive WattTime Alerts by SMS.</p>
             		{% else %}

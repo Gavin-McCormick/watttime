@@ -86,6 +86,7 @@ class ProfileEdit(FormView):
                 'phone' : up.phone,
                 'region' : up.region().name,
                 'phone_verified' : up.is_verified,
+                'deactivated' : not user.is_active,
                 'has_phone' : len(up.phone) > 0,
                 'supported_location' : up.supported_location(),
                 'forecasted_location' : up.supported_location_forecast(),
