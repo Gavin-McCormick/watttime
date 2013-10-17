@@ -42,9 +42,12 @@ def frontpage(request):
 def status(request):
     user = request.user
 
-    user_agent = request.META['HTTP_USER_AGENT']
-    print ("User agent: {}".format(user_agent))
-    is_internet_explorer = ('MSIE' in user_agent)
+    try:
+        user_agent = request.META['HTTP_USER_AGENT']
+        print ("User agent: {}".format(user_agent))
+        is_internet_explorer = ('MSIE' in user_agent)
+    except KeyError:
+        is_internet_explorer = False
 
     if user.is_authenticated():
         initial_state = user.get_profile().state
