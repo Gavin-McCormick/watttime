@@ -274,23 +274,37 @@ def send_tweet(ba_name):
         rows_to_average = rows.filter_by_hour(utc_end.hour)
         previous_point = rows.order_by('-date')[1]
     
+    # get values
+    actual_percent = round(max(0.0, actual_point.fraction_green) * 100.0, 1)
+    previous_percent = round(max(0.0, previous_point.fraction_green) * 100.0, 1)
+    average_percent = round(max(0.0, sum([r.fraction_green for r in rows_to_average]) / float(rows_to_average.count())) * 100.0, 1)
+    if forecast_point:
+        forecast_percent = round(max(0.0, forecast_point.fraction_green) * 100.0, 1)
+    else:
+        forecast_percent = None
+
     # assemble tweet
-    clean_string = "%0.1f" % (max(0.0, actual_point.fraction_green) * 100.0) + "%"
-    tweet_text = "Your energy is %s clean right now. " % clean_string
+    tweet_text = "Your energy is %0.1f%s clean right now. " % (actual_percent, '%')
     tweet_text += "Monitor the grid at http://WattTime.com/status/ "
-    if actual_point.fraction_green > sum([r.fraction_green for r in rows_to_average]) / float(rows_to_average.count()):
+    if actual_percent == average_percent:
+        tweet_text += "#SameAsAverage "
+    elif actual_percent > average_percent:
         tweet_text += "#CleanerThanAverage "
     else:
         tweet_text += "#DirtierThanAverage "
-    if actual_point.fraction_green > previous_point.fraction_green:
+    if actual_percent == previous_percent:
+        tweet_text += "#SameAsBefore "
+    elif actual_percent > previous_percent:
         tweet_text += "#CleanerThanBefore "
     else:
         tweet_text += "#DirtierThanBefore "
-    if forecast_point:
-        if actual_point.fraction_green > forecast_point.fraction_green:
-            tweet_text += "#CleanerThanForecast"
+    if forecast_percent is not None:
+        if actual_percent == forecast_percent:
+            tweet_text += "#SameAsForecast "
+        elif actual_percent > forecast_percent:
+            tweet_text += "#CleanerThanForecast "
         else:
-            tweet_text += "#DirtierThanForecast"
+            tweet_text += "#DirtierThanForecast "
 
     # send tweet
     api = twitter.Api(consumer_key=TWITTER_CA_CONSUMER_KEY,
