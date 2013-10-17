@@ -27,12 +27,13 @@ from workers.utils import debug, send_daily_report, perform_scheduled_tasks, sch
 from workers.models import latest_by_category, LastMessageSent
 import datetime
 import pytz
+import twitter
 
 # XXX
 # Why does this not work? !!!!
 # import settings
 
-from settings import EMAIL_HOST_USER
+from settings import EMAIL_HOST_USER, TWITTER_CA_CONSUMER_KEY, TWITTER_CA_CONSUMER_SECRET, TWITTER_CA_ACCESS_KEY, TWITTER_CA_ACCESS_SECRET
 
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
@@ -254,6 +255,50 @@ def send_ne_texts_if_necessary():
                             msg = "FAILED: " + msg
                         debug(msg)
                         add_to_report(msg)
+                        
+def send_tweet(ba_name):
+    # set up dates for average
+    utc_end = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
+    utc_start = utc_end - datetime.timedelta(weeks=2)
+    rows = BA_MODELS[ba_name].objects.all().filter(date__range=(utc_start, utc_end))
+    
+    # get data
+    try:
+        actual_point = rows.filter(forecast_code=0).latest()
+        forecast_point = rows.filter(forecast_code=1, date=actual_point.date).latest()
+        rows_to_average = rows.filter(forecast_code=0).filter_by_hour(utc_end.hour)
+        previous_point = rows.filter(forecast_code=0).order_by('-date')[1]
+    except:
+        actual_point = rows.latest()
+        forecast_point = None
+        rows_to_average = rows.filter_by_hour(utc_end.hour)
+        previous_point = rows.order_by('-date')[1]
+    
+    # assemble tweet
+    clean_string = "%0.1f" % (max(0.0, actual_point.fraction_green) * 100.0) + "%"
+    tweet_text = "Your energy is %s clean right now. " % clean_string
+    tweet_text += "Monitor the grid at http://WattTime.com/status/ "
+    if actual_point.fraction_green > sum([r.fraction_green for r in rows_to_average]) / float(rows_to_average.count()):
+        tweet_text += "#CleanerThanAverage "
+    else:
+        tweet_text += "#DirtierThanAverage "
+    if actual_point.fraction_green > previous_point.fraction_green:
+        tweet_text += "#CleanerThanBefore "
+    else:
+        tweet_text += "#DirtierThanBefore "
+    if forecast_point:
+        if actual_point.fraction_green > forecast_point.fraction_green:
+            tweet_text += "#CleanerThanForecast"
+        else:
+            tweet_text += "#DirtierThanForecast"
+
+    # send tweet
+    api = twitter.Api(consumer_key=TWITTER_CA_CONSUMER_KEY,
+                      consumer_secret=TWITTER_CA_CONSUMER_SECRET,
+                      access_token_key=TWITTER_CA_ACCESS_KEY,
+                      access_token_secret=TWITTER_CA_ACCESS_SECRET)
+    status = api.PostUpdate(tweet_text)
+    return status
 
 def update_bas(bas):
     # update and query BAs
