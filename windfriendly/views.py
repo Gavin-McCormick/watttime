@@ -22,7 +22,6 @@ import json
 import logging
 
 from django.contrib.syndication.views import Feed
-from django.core.exceptions import FieldError
 from django.http import HttpResponse
 
 from windfriendly.models import User, MeterReading
@@ -135,60 +134,7 @@ def averageday(request):
     # get requested date range
     utc_start, utc_end = utctimes_from_request(request)
 
-    # get rows
-    try:
-        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end), forecast_code=0)
-    except FieldError:
-        ba_rows = ba_qset.filter(date__range=(utc_start, utc_end))
-        
-    if ba_rows.count() == 0:
-        print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
-        return []
-
-    # collect data
-    data = []
-    for hour in range(24):
-        group = ba_rows.filter_by_hour(hour)
-        if group.count() > 0:
-            # get average data
-            total_green = 0
-            total_dirty = 0
-            total_gen = 0
-            count = 0.0
-            for r in group:
-                if r.total_gen > 0: # don't try to handle bad data
-                    total_green += r.fraction_green
-                    total_dirty += r.fraction_high_carbon
-                    total_gen += r.total_gen
-                    count += 1.0
-            average_green = round(total_green*100/count, 3)
-            average_dirty = round(total_dirty*100/count, 3)
-            average_gen = total_gen/count
-            representative_date = group.latest().local_date.replace(minute=0)
-        else:
-            # get null data
-            average_green = None
-            average_dirty = None
-            average_gen = None
-            representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
-
-        # complicated date wrangling to get all local_time values in local today
-        utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
-        latest_day = utcnow.astimezone(BA_MODELS[ba_name].TIMEZONE).day
-        local_time = representative_date.replace(day=latest_day)
-        utc_time = local_time.astimezone(pytz.utc)
-
-        # add to list
-        data.append({"percent_green": average_green,
-                     "percent_dirty": average_dirty,
-                     "gen_MW": average_gen,
-                     "utc_time": utc_time.strftime('%Y-%m-%d %H:%M'),
-                     "local_time": local_time.strftime('%Y-%m-%d %H:%M'),
-                     "hour": local_time.hour,
-                    })
-
-    # return
-    return sorted(data, key=lambda r: r['local_time'])
+    return BA_MODELS[ba_name].objects.average_day(utc_start, utc_end, BA_MODELS[ba_name].TIMEZONE)
     
 @json_response
 def greenest_subrange(request):
