@@ -10,7 +10,11 @@ environ_settings = [
         'FACEBOOK_APP_ID',
         'FACEBOOK_API_SECRET',
         'GOOGLE_OAUTH2_CLIENT_ID',
-        'GOOGLE_OAUTH2_CLIENT_SECRET'
+        'GOOGLE_OAUTH2_CLIENT_SECRET',
+        'TWITTER_CA_CONSUMER_KEY',
+        'TWITTER_CA_CONSUMER_SECRET',
+        'TWITTER_CA_ACCESS_KEY',
+        'TWITTER_CA_ACCESS_SECRET',
     ]
 
 def copy_from_environ(keys):
