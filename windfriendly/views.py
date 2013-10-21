@@ -170,7 +170,7 @@ def greenest_subrange(request):
                 "error_code": 1}
 
     # calculate result
-    date_created = pytz.utc.localize(datetime.utcnow())
+    date_created = datetime.now(BA_MODELS[ba_name].TIMEZONE).astimezone(pytz.utc)
     requested_end = date_created + timedelta(hours=time_range_hours)
     requested_timedelta = timedelta(hours=usage_hours)
     result = BA_MODELS[ba_name].objects.greenest_subrange(date_created, requested_end,
@@ -183,6 +183,8 @@ def greenest_subrange(request):
             "recommended_fraction_green": best_green,
             "baseline_fraction_green": baseline_green,
             "date_created": date_created.strftime('%Y-%m-%d %H:%M'),
+            "recommended_local_start": best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+            "recommended_local_end": best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
             }
 
 @json_response
