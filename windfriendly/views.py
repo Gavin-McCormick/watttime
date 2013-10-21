@@ -178,15 +178,19 @@ def greenest_subrange(request):
     best_rows, best_timepair, best_green, baseline_green = result
 
     # return
-    return {"recommended_start": best_timepair[0].strftime('%Y-%m-%d %H:%M'),
-            "recommended_end": best_timepair[1].strftime('%Y-%m-%d %H:%M'),
-            "recommended_fraction_green": best_green,
-            "baseline_fraction_green": baseline_green,
-            "date_created": date_created.strftime('%Y-%m-%d %H:%M'),
-            "recommended_local_start": best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
-            "recommended_local_end": best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
-            }
-
+    if best_timepair:
+        return {"recommended_start": best_timepair[0].strftime('%Y-%m-%d %H:%M'),
+                "recommended_end": best_timepair[1].strftime('%Y-%m-%d %H:%M'),
+                "recommended_fraction_green": best_green,
+                "baseline_fraction_green": baseline_green,
+                "date_created": date_created.strftime('%Y-%m-%d %H:%M'),
+                "recommended_local_start": best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                "recommended_local_end": best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                }
+    else:
+        return {"error_message": "Something went wrong with start %s, end %s, delta %s" % (date_created, requested_end, requested_timedelta),
+                "error_code": 3}
+        
 @json_response
 def today(request):
     """Get best data from today (actual until now, best forecast for future)"""
