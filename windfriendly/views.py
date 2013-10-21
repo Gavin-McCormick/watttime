@@ -58,22 +58,24 @@ def ba_from_request(request):
     Future support for lat+lng, zipcode, country code, etc.
     Returns tuple of (string, QuerySet)
     """
-    # try BA
-    ba = request.GET.get('ba', None)
-    if ba:
-      ba = ba.upper()
-      return ba, BA_MODELS[ba].objects.all()
-
     # try state
     state = request.GET.get('st', None)
     if state:
       state = state.upper()
-      ba = BALANCING_AUTHORITIES[state]
-      return ba, BA_MODELS[ba].objects.all()
+      ba = BALANCING_AUTHORITIES.get(state, None)
 
+    # try BA
+    else:
+        ba = request.GET.get('ba', None)
+        if ba:
+          ba = ba.upper()
+      
     # got nothing
-    logging.debug('returning null BA')
-    return None, None
+    try:
+        return ba, BA_MODELS[ba].objects.all()
+    except:
+        logging.debug('returning null BA')
+        return ba, None
 
 def utctimes_from_request(request):
     # get requested date range, if any
@@ -109,7 +111,7 @@ def update(request, utility):
         uid = None
         name = None
 
-    # update utility
+    # get thing to update
     ba = utility.upper()
     if ba in BA_PARSERS:
         parser = BA_PARSERS[ba]()
@@ -118,18 +120,26 @@ def update(request, utility):
             uid = User.objects.create(name=name).pk
         parser = GreenButtonParser(file, uid)
     else:
-        raise ValueError("No update instructions found for %s" % utility)
+        return {"error_message": "No update instructions found for %s" % utility,
+                "error_code": 2}
 
-    # return
-    return parser.update()
+    # update
+    try:
+        result = parser.update()
+        return result
+    except Exception as e:
+        return {"error_message": "Update failed with error: %s" % e,
+                "error_code": 3}
+        
 
 @json_response
 def averageday(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
 
     # get requested date range
     utc_start, utc_end = utctimes_from_request(request)
@@ -142,19 +152,25 @@ def greenest_subrange(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
         
     # get other args from request
     time_range_hours = float(request.GET.get('time_range_hours', 0))
     if not time_range_hours > 0:
-        raise ValueError('Must provide time_range_hours arg')
+        return {"error_message": "Missing or bad argument: time_range_hours (got %s)" % time_range_hours,
+                "error_code": 1}
     usage_hours = float(request.GET.get('usage_hours', 0))
     if not usage_hours > 0:
-        raise ValueError('Must provide usage_hours arg')
+        return {"error_message": "Missing or bad argument: usage_hours (got %s)" % usage_hours,
+                "error_code": 1}
+    elif usage_hours > time_range_hours:
+        return {"error_message": "Bad arguments: usage_hours %s should be < time_range_hours %s" % (usage_hours, time_range_hours),
+                "error_code": 1}
 
     # calculate result
-    date_created = pytz.utc.localize(datetime.utcnow())
+    date_created = datetime.now(BA_MODELS[ba_name].TIMEZONE).astimezone(pytz.utc)
     requested_end = date_created + timedelta(hours=time_range_hours)
     requested_timedelta = timedelta(hours=usage_hours)
     result = BA_MODELS[ba_name].objects.greenest_subrange(date_created, requested_end,
@@ -162,21 +178,28 @@ def greenest_subrange(request):
     best_rows, best_timepair, best_green, baseline_green = result
 
     # return
-    return {"recommended_start": best_timepair[0].strftime('%Y-%m-%d %H:%M'),
-            "recommended_end": best_timepair[1].strftime('%Y-%m-%d %H:%M'),
-            "recommended_fraction_green": best_green,
-            "baseline_fraction_green": baseline_green,
-            "date_created": date_created.strftime('%Y-%m-%d %H:%M'),
-            }
-
+    if best_timepair:
+        return {"recommended_start": best_timepair[0].strftime('%Y-%m-%d %H:%M'),
+                "recommended_end": best_timepair[1].strftime('%Y-%m-%d %H:%M'),
+                "recommended_fraction_green": best_green,
+                "baseline_fraction_green": baseline_green,
+                "date_created": date_created.strftime('%Y-%m-%d %H:%M'),
+                "recommended_local_start": best_timepair[0].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                "recommended_local_end": best_timepair[1].astimezone(BA_MODELS[ba_name].TIMEZONE).strftime('%Y-%m-%d %H:%M'),
+                }
+    else:
+        return {"error_message": "Something went wrong with start %s, end %s, delta %s" % (date_created, requested_end, requested_timedelta),
+                "error_code": 3}
+        
 @json_response
 def today(request):
     """Get best data from today (actual until now, best forecast for future)"""
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
 
     # get date range
     ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
@@ -202,8 +225,9 @@ def alerts(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
 
     # set up actual start and end times (default is today in BA local time)
     utc_start, utc_end = utctimes_from_request(request)
@@ -247,8 +271,9 @@ def average_usage_for_period(request, userid):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        raise ValueError("No balancing authority found, check location arguments.")
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
 
     # get grouping to return
     grouping = request.GET.get('grouping')
@@ -271,7 +296,7 @@ def average_usage_for_period(request, userid):
                                             start__lt=endtime,
                                             userid__exact=userid)
     if user_rows.count() == 0:
-      raise ValueError('no data')
+      return []
 
     # set up grouping functions
     hour_bucket = lambda row : row.start.astimezone(tz.tzlocal()).hour
