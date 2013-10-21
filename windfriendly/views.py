@@ -137,8 +137,8 @@ def averageday(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        return {"error_message": "Missing or bad argument: ba or st",
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
                 "error_code": 1}
 
     # get requested date range
@@ -152,18 +152,21 @@ def greenest_subrange(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        return {"error_message": "Missing or bad argument: ba or st",
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
                 "error_code": 1}
         
     # get other args from request
     time_range_hours = float(request.GET.get('time_range_hours', 0))
     if not time_range_hours > 0:
-        return {"error_message": "Missing or bad argument: time_range_hours",
+        return {"error_message": "Missing or bad argument: time_range_hours (got %s)" % time_range_hours,
                 "error_code": 1}
     usage_hours = float(request.GET.get('usage_hours', 0))
     if not usage_hours > 0:
-        return {"error_message": "Missing or bad argument: usage_hours",
+        return {"error_message": "Missing or bad argument: usage_hours (got %s)" % usage_hours,
+                "error_code": 1}
+    elif usage_hours > time_range_hours:
+        return {"error_message": "Bad arguments: usage_hours %s should be < time_range_hours %s" % (usage_hours, time_range_hours),
                 "error_code": 1}
 
     # calculate result
@@ -188,8 +191,8 @@ def today(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        return {"error_message": "Missing or bad argument: ba or st",
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
                 "error_code": 1}
 
     # get date range
@@ -216,8 +219,8 @@ def alerts(request):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        return {"error_message": "Missing or bad argument: ba or st",
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
                 "error_code": 1}
 
     # set up actual start and end times (default is today in BA local time)
@@ -262,8 +265,8 @@ def average_usage_for_period(request, userid):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error
-    if ba_name is None:
-        return {"error_message": "Missing or bad argument: ba or st",
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
                 "error_code": 1}
 
     # get grouping to return
