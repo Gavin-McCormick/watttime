@@ -311,6 +311,58 @@ class MISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
+class PJM(BaseForecastedBalancingAuthority):
+    """Raw PJM data"""
+    # use non-forecasted manager
+    objects = BaseBalancingAuthorityManager()
+
+    # timezone
+    TIMEZONE = pytz.timezone('US/Eastern')
+
+    # forecast type is the index in FORECAST_CODES
+    forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
+
+    # load, etc in MW
+    load = models.IntegerField()
+    wind = models.IntegerField()
+
+    # date is utc
+    date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from MISO
+    date_extracted = models.DateTimeField(db_index=True)
+
+    @property
+    def marginal_fuel(self):
+        """Integer code for marginal fuel"""
+        # implement this as an actual field for BAs with data
+        return MARGINAL_FUELS.index('None')
+
+    @property
+    def total_gen(self):
+        return float(self.load)
+
+    @property
+    def total_load(self):
+        return float(self.load)
+
+    @property
+    def fraction_green(self):
+        try:
+            return self.wind / self.total_gen
+        except ZeroDivisionError:
+            return 0
+
+    @property
+    def fraction_wind(self):
+        try:
+            return self.wind / self.total_gen
+        except ZeroDivisionError:
+            return 0
+
+    @property
+    def fraction_high_carbon(self):
+        return 1 - self.fraction_wind
+
 
 class User(models.Model):
     # name
@@ -338,3 +390,4 @@ class MeterReading(models.Model):
 
   def total_cost(self):
     return self.cost * self.duration / 3600.0 / 10000.0
+
