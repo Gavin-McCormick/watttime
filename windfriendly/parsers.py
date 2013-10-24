@@ -23,8 +23,9 @@ import zipfile
 import datetime
 import pytz
 import pandas
+from bs4 import BeautifulSoup
 
-from .models import BPA, NE, CAISO, MISO, MeterReading, User
+from .models import BPA, NE, CAISO, MISO, MeterReading, User, PJM
 from .settings import MARGINAL_FUELS, FORECAST_CODES
 
 import xml.etree.ElementTree as ET
@@ -648,7 +649,116 @@ class MISOParser(UtilityParser):
             return False
         else:
             return True
-                                
+
+
+class PJMParser(UtilityParser):
+    def __init__(self):
+        self.MODEL = PJM
+        self.WIND_URL = "http://www.pjm.com/wind-statistics.html"
+        self.LOAD_URL = "http://www.pjm.com/pub/account/lmpgen/lmppost.html"
+        self.TZ = self.MODEL.TIMEZONE
+
+    def _get_soup(self, url):
+        """Make BeautifulSoup object from a url."""
+        html = urllib2.urlopen(url).read()
+        bs = BeautifulSoup(html, 'lxml')
+        return bs
+
+    def _parse_wind(self, url):
+        # scrape url
+        bs = self._get_soup(url)
+        
+        # get wind generation
+        wind_prev = bs.find(text="Current Wind Generation")
+        wind = int(wind_prev.next_element.text.replace(",", ""))
+        
+        # TODO: use this timestamp too
+     #   ts_text = bs.find('span').text.split(": ")[-1]
+     #   try:
+     #       ts = datetime.datetime.strptime(ts_text, "%I:%M %p EDT")
+     #   except ValueError:
+     #       ts = datetime.datetime.strptime(ts_text, "%I:%M %p EST")
+        
+        # return
+        return {'wind': wind}
+
+    def _parse_load(self, url):
+        # scrape url
+        bs = self._get_soup(url)
+        
+        # get total load
+        load_prev = bs.find(text="PJM RTO")
+        load = int(load_prev.next_element.next_element.text)
+        
+        # get timestamp
+        ts_prev = bs.find(text="Data Last Updated")
+        ts_text = ts_prev.next_element.next_element.find('td').text
+        try:
+            ts = datetime.datetime.strptime(ts_text, "%a %b %d %H:%M:%S EDT %Y")
+        except ValueError:
+            ts = datetime.datetime.strptime(ts_text, "%a %b %d %H:%M:%S EST %Y")
+        if ts.tzinfo == None:
+            ts = self.TZ.localize(ts)
+        ts = ts.astimezone(pytz.UTC)
+
+        # return
+        return {'load': load, 'timestamp': ts}
+        
+    def _is_datapoint_to_store(self, dp):
+        # reject if invalid data
+        if not ('load' in dp.keys() and 'wind' in dp.keys()):
+            return False
+            
+        # store actual data only if it's not there already
+        qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                         forecast_code=FORECAST_CODES['actual'])
+        if qset.count() > 0:
+            return False
+        else:
+            return True
+
+    def datapoint_to_db(self, dp):
+        if self._is_datapoint_to_store(dp):
+            row = self.MODEL()
+            row.load = dp['load']
+            row.wind = dp['wind']
+            row.date = dp['timestamp']
+            row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.save()
+            return True
+        else:
+            return False
+
+    def update(self):
+        # scrape
+        dp = {}
+        dp.update(self._parse_wind(self.WIND_URL))
+        dp.update(self._parse_load(self.LOAD_URL))
+        
+        # save to db
+        try:
+            old_latest_date = self.MODEL.objects.latest().date
+        except AttributeError: # if no preexisting data
+            old_latest_date = None
+        n_stored_points = 0
+        success = self.datapoint_to_db(dp)
+        if success:
+            n_stored_points += 1
+        try:
+            new_latest_date = self.MODEL.objects.latest().date
+        except AttributeError: # if no preexisting data
+            new_latest_date = None
+
+        # log
+        to_return = {'prior_latest_date' : str(old_latest_date),
+                     'update_rows' : n_stored_points,
+                     'latest_date' : str(new_latest_date),
+                     'ba': 'PJM',
+                    }
+        
+        # return
+        return to_return
+
 
 class UserDataParser:
     pass
@@ -699,3 +809,4 @@ class GreenButtonParser(UserDataParser):
             r.save()
             counter += 1
         return  {'added_count': counter, 'uid':self.uid}
+

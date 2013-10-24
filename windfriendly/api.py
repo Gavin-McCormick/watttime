@@ -125,6 +125,14 @@ class MISOResource(BalancingAuthorityResource):
         model = BA_MODELS[resource_name.upper()]
         queryset = model.objects.all()
         limit = 12*24 # 24 hours of 5-minute data
+        
+class PJMResource(BalancingAuthorityResource):
+    """ Resource for MISO model """
+    class Meta(BalancingAuthorityResource.Meta):
+        resource_name = 'pjm'
+        model = BA_MODELS[resource_name.upper()]
+        queryset = model.objects.all()
+        limit = 6*24 # 24 hours of 5-minute data
       
 # list of all resource classes
-BA_RESOURCES = [BPAResource, ISONEResource, CAISOResource, MISOResource]
+BA_RESOURCES = [BPAResource, ISONEResource, CAISOResource, MISOResource, PJMResource]
