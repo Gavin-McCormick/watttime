@@ -24,11 +24,15 @@ class BAInfoTestCase(TestCase):
     """Test contents of balancing_authorities.py"""
 
     def test_supported_states(self):
-        for st in ['CA', 'CT', 'ID', 'MA', 'ME', 'NH', 'OR', 'RI', 'VT', 'WA']:
+        for st in ['CA',
+                   'CT', 'MA', 'ME', 'NH', 'RI', 'VT', 
+                   'ID', 'OR', 'WA',
+                   'MN', 'MI', 'IA', 'IL', 'IN', 'ND', 'SD', 'WI',
+                   'PA', 'NJ', 'MD', 'DE', 'DC', 'VA', 'WV', 'KY']:
             self.assertIn(st, BALANCING_AUTHORITIES.keys())
 
     def test_supported_bas(self):
-        for ba in ['BPA', 'ISONE', 'CAISO']:
+        for ba in ['BPA', 'ISONE', 'CAISO', 'MISO', 'PJM']:
             self.assertIn(ba, BA_MODELS.keys())
             self.assertIn(ba, BA_PARSERS.keys())
 

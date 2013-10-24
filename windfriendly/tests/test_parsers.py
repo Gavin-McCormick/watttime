@@ -24,3 +24,4 @@ class ParserTestCase(TestCase):
         self.assertIsNotNone(BA_PARSERS['BPA']().update())
         self.assertIsNotNone(BA_PARSERS['NE']().update())
         self.assertIsNotNone(BA_PARSERS['CAISO']().update())
+        self.assertIsNotNone(BA_PARSERS['PJM']().update())

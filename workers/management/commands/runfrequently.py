@@ -3,7 +3,7 @@ from workers import tasks, utils
 
 class Command(base.BaseCommand):
     def handle(self, *args, **kwargs):
-        updated_bas = tasks.update_bas(['BPA', 'ISONE', 'MISO'])
+        updated_bas = tasks.update_bas(['BPA', 'ISONE', 'MISO', 'PJM'])
         utils.perform_scheduled_tasks()
         tasks.send_ne_texts_if_necessary()
         print (updated_bas)
