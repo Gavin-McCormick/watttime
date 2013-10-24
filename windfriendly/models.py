@@ -311,41 +311,16 @@ class MISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-
-class User(models.Model):
-    # name
-    name = models.CharField(max_length=100)
-
-
-class MeterReading(models.Model):
-  # user id
-  userid = models.ForeignKey(User)
-
-  # energy in kwh
-  energy = models.FloatField()
-
-  # duration in seconds
-  duration = models.IntegerField()
-
-  # start time in date-time
-  start = models.DateTimeField(db_index=True)
-
-  # cost in dollars
-  cost = models.FloatField()
-
-  def total_kwh(self):
-    return self.energy/3600.0 * self.duration
-
-  def total_cost(self):
-    return self.cost * self.duration / 3600.0 / 10000.0
-
-class PJM(BaseBalancingAuthority):
+class PJM(BaseForecastedBalancingAuthority):
     """Raw PJM data"""
     # use non-forecasted manager
     objects = BaseBalancingAuthorityManager()
 
     # timezone
-    TIMEZONE = pytz.timezone('America/New York')
+    TIMEZONE = pytz.timezone('US/Eastern')
+
+    # forecast type is the index in FORECAST_CODES
+    forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
 
     # load, etc in MW
     load = models.IntegerField()
@@ -353,6 +328,8 @@ class PJM(BaseBalancingAuthority):
 
     # date is utc
     date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from MISO
+    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def marginal_fuel(self):
@@ -385,3 +362,32 @@ class PJM(BaseBalancingAuthority):
     @property
     def fraction_high_carbon(self):
         return 1 - self.fraction_wind
+
+
+class User(models.Model):
+    # name
+    name = models.CharField(max_length=100)
+
+
+class MeterReading(models.Model):
+  # user id
+  userid = models.ForeignKey(User)
+
+  # energy in kwh
+  energy = models.FloatField()
+
+  # duration in seconds
+  duration = models.IntegerField()
+
+  # start time in date-time
+  start = models.DateTimeField(db_index=True)
+
+  # cost in dollars
+  cost = models.FloatField()
+
+  def total_kwh(self):
+    return self.energy/3600.0 * self.duration
+
+  def total_cost(self):
+    return self.cost * self.duration / 3600.0 / 10000.0
+
