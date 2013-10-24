@@ -23,8 +23,9 @@ import zipfile
 import datetime
 import pytz
 import pandas
+from bs4 import BeautifulSoup
 
-from .models import BPA, NE, CAISO, MISO, MeterReading, User
+from .models import BPA, NE, CAISO, MISO, MeterReading, User, PJM
 from .settings import MARGINAL_FUELS, FORECAST_CODES
 
 import xml.etree.ElementTree as ET
@@ -648,7 +649,52 @@ class MISOParser(UtilityParser):
             return False
         else:
             return True
-                                
+
+
+class PJMParser(UtilityParser):
+    def __init_(self):
+        self.MODEL = PJM
+        self.WIND_URL = "http://www.pjm.com/wind-statistics.html"
+        self.LOAD_URL = "http://www.pjm.com/pub/account/lmpgen/lmppost.html"
+
+    def get_soup(self, url):
+        """Make BeautifulSoup object from a url."""
+        html = urllib2.urlopen(url).read()
+        bs = BeautifulSoup(html, 'lxml')
+        return bs
+
+    def get_wind(self, url):
+        bs = self.get_soup(url)
+        wind = bs.find(text="Current Wind Generation")
+        return int(wind.next_element.text.replace(",", ""))
+
+    def get_load_timestamp(self, bs):
+        ts = bs.find(text="Data Last Updated").next_element.next_element.find('td').text
+        # parse into datetime
+        return
+
+    def get_wind_timestamp(self, bs):
+        bs.find('span').text.split(": ")[-1]
+        # parse into datetime
+        return
+
+    def get_load(self, url):
+        bs = self.get_soup(url)
+        load = bs.find(text="PJM RTO")
+        return int(load.next_element.next_element.text)
+
+    def datapoint_to_db(self, dp):
+        row = self.MODEL()
+        row.load = dp['load']
+        row.wind = dp['wind']
+        row.date = pytz.utc.localize(datetime.datetime.now())
+        row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+        row.save()
+
+    def update(self):
+        dp = dict(wind=self.get_wind(self.WIND_URL), load=self.get_load(self.LOAD_URL))
+        self.datapoint_to_db(dp)
+
 
 class UserDataParser:
     pass
@@ -699,3 +745,4 @@ class GreenButtonParser(UserDataParser):
             r.save()
             counter += 1
         return  {'added_count': counter, 'uid':self.uid}
+
