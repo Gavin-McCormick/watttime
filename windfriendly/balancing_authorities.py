@@ -15,8 +15,8 @@
 # Authors: Anna Schneider
 
 
-from windfriendly.models import BPA, NE, CAISO, MISO
-from windfriendly.parsers import BPAParser, NEParser, CAISOParser, MISOParser
+from windfriendly.models import BPA, NE, CAISO, MISO, PJM
+from windfriendly.parsers import BPAParser, NEParser, CAISOParser, MISOParser, PJMParser
 
 # BALANCING_AUTHORTIES is a dict that maps state 2-letter abbrevs to balancing authority abbrevs
 # BA_MODELS is a dict that maps balancing authoriy abbrevs to models in models.py
@@ -29,8 +29,8 @@ BALANCING_AUTHORITIES = {
     'CA': 'CAISO',
    # 'CO': 'Colorado',
     'CT': 'ISONE',
-   # 'DE': 'Delaware',
-   # 'DC': 'District of Columbia',
+    'DE': 'PJM',
+    'DC': 'PJM',
    # 'FL': 'Florida',
    # 'GA': 'Georgia',
    # 'HI': 'Hawaii',
@@ -39,10 +39,10 @@ BALANCING_AUTHORITIES = {
     'IN': 'MISO',
     'IA': 'MISO',
    # 'KS': 'Kansas',
-   # 'KY': 'Kentucky',
+    'KY': 'PJM',
    # 'LA': 'Louisiana',
     'ME': 'ISONE',
-   # 'MD': 'Maryland',
+    'MD': 'PJM',
     'MA': 'ISONE',
     'MI': 'MISO',
     'MN': 'MISO',
@@ -53,15 +53,15 @@ BALANCING_AUTHORITIES = {
    # 'NE': 'Nebraska',
    # 'NV': 'Nevada',
     'NH': 'ISONE',
-   # 'NJ': 'New Jersey',
+    'NJ': 'PJM',
    # 'NM': 'New Mexico',
    # 'NY': 'NYISO',
    # 'NC': 'North Carolina',
     'ND': 'MISO',
-   # 'OH': 'Ohio',
+    'OH': 'PJM',
    # 'OK': 'Oklahoma',
     'OR': 'BPA',
-   # 'PA': 'Pennsylvania',
+    'PA': 'PJM',
     'RI': 'ISONE',
    # 'SC': 'South Carolina',
     'SD': 'MISO',
@@ -69,9 +69,9 @@ BALANCING_AUTHORITIES = {
    # 'TX': 'Texas',
    # 'UT': 'Utah',
     'VT': 'ISONE',
-   # 'VA': 'Virginia',
+    'VA': 'PJM',
     'WA': 'BPA',
-   # 'WV': 'West Virginia',
+    'WV': 'PJM',
     'WI': 'MISO',
    # 'WY': 'Wyoming',
 }
@@ -82,6 +82,7 @@ BA_MODELS = {
     'ISONE': NE,
     'CAISO': CAISO,
     'MISO': MISO,
+    'PJM': PJM,
 }
 
 BA_PARSERS = {
@@ -90,4 +91,5 @@ BA_PARSERS = {
     'ISONE': NEParser,
     'CAISO': CAISOParser,
     'MISO': MISOParser,
+    'PJM': PJMParser,
 }
