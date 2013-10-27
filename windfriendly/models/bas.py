@@ -12,7 +12,7 @@ class BaseBalancingAuthority(models.Model):
     DIRTY_THRESHOLD = 0.95
     # must set timezone for every derived class
     TIMEZONE = pytz.utc
-
+    
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_green*100, 3),
@@ -27,6 +27,7 @@ class BaseBalancingAuthority(models.Model):
     class Meta:
         abstract = True
         get_latest_by = 'date'
+        app_label = 'windfriendly'
 
     def get_title(self):
         return str(self.fraction_green)
@@ -80,6 +81,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     class Meta:
         abstract = True
         get_latest_by = 'date'
+        app_label = 'windfriendly'
 
     # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
     def to_dict(self):
