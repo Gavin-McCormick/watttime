@@ -1,7 +1,7 @@
-from django.db import models
+from django.db import models, IntegrityError
 import pytz
-from .managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorityManager
-from .settings import MARGINAL_FUELS, FORECAST_CODES
+from windfriendly.managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorityManager
+from windfriendly.settings import MARGINAL_FUELS, FORECAST_CODES
 #from accounts.models import User
 
 class BaseBalancingAuthority(models.Model):
@@ -13,6 +13,11 @@ class BaseBalancingAuthority(models.Model):
     # must set timezone for every derived class
     TIMEZONE = pytz.utc
     
+    class Meta:
+        abstract = True
+        get_latest_by = 'date'
+        app_label = 'windfriendly'
+
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_green*100, 3),
@@ -23,11 +28,23 @@ class BaseBalancingAuthority(models.Model):
                 'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
                 }
+                
+    def summary_payload(self):
+        return self.to_dict()
 
-    class Meta:
-        abstract = True
-        get_latest_by = 'date'
-        app_label = 'windfriendly'
+    def save_to_summary(self, summary_model):
+        """Save this row to a summary table, eg Today. Returns True if old data was dropped."""
+        payload = self.summary_payload()
+        row = summary_model(**payload)
+        try:
+            row.save()
+            return False
+        except IntegrityError:
+            # drop conflicting timestamps
+            summary_model.objects.filter(utc_time=self.date, ba_name=payload['ba_name']).delete()
+            # try saving again
+            row.save()
+            return True
 
     def get_title(self):
         return str(self.fraction_green)
@@ -149,6 +166,17 @@ class CAISO(BaseForecastedBalancingAuthority):
     @property
     def fraction_high_carbon(self):
         return 1.0 - self.fraction_green
+        
+    def summary_payload(self):
+        return dict(ba_name='CAISO',
+                    total_load=self.load,
+                    wind=self.wind, solar=self.solar,
+                    other_unknown=(self.load - self.wind - self.solar),
+                    marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
+                    percent_green=(self.fraction_green * 100),
+                    percent_dirty=(self.fraction_high_carbon * 100),
+                    utc_time=self.date, local_time=self.local_date
+                    )
 
 
 class BPA(BaseBalancingAuthority):
@@ -203,6 +231,17 @@ class BPA(BaseBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
+    def summary_payload(self):
+        return dict(ba_name='BPA',
+                    total_load=self.load, total_gen=self.total_gen,
+                    wind=self.wind, hydro=self.hydro,
+                    other_fossil=self.thermal,
+                    marginal_fuel=self.marginal_fuel,
+                    percent_green=(self.fraction_green * 100),
+                    percent_dirty=(self.fraction_high_carbon * 100),
+                    utc_time=self.date, local_time=self.local_date
+                    )
+
 
 # All units are megawatts
 class NE(BaseBalancingAuthority):
@@ -254,6 +293,18 @@ class NE(BaseBalancingAuthority):
         except ZeroDivisionError:
             return 0
         
+    def summary_payload(self):
+        return dict(ba_name='ISONE',
+                    total_gen=self.total_gen,
+                    other_clean=self.other_renewable, hydro=self.hydro,
+                    coal=self.coal, natgas=self.gas, other_fossil=self.other_fossil,
+                    nuclear=self.nuclear,
+                    marginal_fuel=self.marginal_fuel,
+                    percent_green=(self.fraction_green * 100),
+                    percent_dirty=(self.fraction_high_carbon * 100),
+                    utc_time=self.date, local_time=self.local_date
+                    )
+
 
 class MISO(BaseForecastedBalancingAuthority):
     # use non-forecasted manager
@@ -313,6 +364,18 @@ class MISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
+    def summary_payload(self):
+        return dict(ba_name='MISO',
+                    total_gen=self.total_gen, total_load=self.load,
+                    wind=self.wind, other_unknown=self.other_gen,
+                    coal=self.coal, natgas=self.gas, nuclear=self.nuclear,
+                    marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
+                    percent_green=(self.fraction_green * 100),
+                    percent_dirty=(self.fraction_high_carbon * 100),
+                    utc_time=self.date, local_time=self.local_date
+                    )
+
+
 class PJM(BaseForecastedBalancingAuthority):
     """Raw PJM data"""
     # use non-forecasted manager
@@ -365,3 +428,12 @@ class PJM(BaseForecastedBalancingAuthority):
     def fraction_high_carbon(self):
         return 1 - self.fraction_wind
 
+    def summary_payload(self):
+        return dict(ba_name='PJM',
+                    total_load=self.load,
+                    wind=self.wind, other_unknown=(self.load - self.wind),
+                    marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
+                    percent_green=(self.fraction_green * 100),
+                    percent_dirty=(self.fraction_high_carbon * 100),
+                    utc_time=self.date, local_time=self.local_date
+                    )
