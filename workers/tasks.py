@@ -25,7 +25,7 @@ from accounts.models import UserProfile
 from accounts.messages import morning_forecast_email, morning_forecast_email_first, ne_message_dirty_daytime, ne_message_dirty_evening, ne_message_clean
 from workers.utils import debug, send_daily_report, perform_scheduled_tasks, schedule_task, send_ca_texts, add_to_report
 from workers.models import latest_by_category, LastMessageSent
-import datetime
+from datetime import datetime, timedelta
 import pytz
 import twitter
 
@@ -59,7 +59,7 @@ def run_hourly_tasks():
 
 utc = pytz.utc
 def _now(tz = None):
-    now = datetime.datetime.now(utc)
+    now = datetime.now(utc)
     if tz is None:
         return now
     else:
@@ -76,7 +76,7 @@ def this_hour(tz = None):
     if now.minute < 30:
         return dt_
     else:
-        return dt_ + datetime.timedelta(hours = 1)
+        return dt_ + timedelta(hours = 1)
 
 def display_hour(dt, tz = None):
     if tz is not None:
@@ -106,7 +106,7 @@ def send_ca_forecast_emails():
     tz = 'America/Los_Angeles'
     now_ca = this_hour(tz)
     start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
-    end = start + datetime.timedelta(hours = 14) # 10pm PST
+    end = start + timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(start, end)).best_guess_points()
     best_time = max(rows, key = (lambda r : r.fraction_green)).date
@@ -133,7 +133,7 @@ def prepare_to_send_ca_texts():
 
     # Dirty texts
     dirty_start = convert_tz(now_ca.replace(hour = 8), utc) # 8am PST
-    dirty_end = dirty_start + datetime.timedelta(hours = 14) # 10pm PST
+    dirty_end = dirty_start + timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
     worst_time = min(rows, key = (lambda r : r.fraction_green)).date
@@ -144,7 +144,7 @@ def prepare_to_send_ca_texts():
 
     # Clean texts
     clean_start = convert_tz(now_ca.replace(hour = 17), utc) # 5pm PST
-    clean_end = clean_start + datetime.timedelta(hours = 5) # 10pm PST
+    clean_end = clean_start + timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
     best_time = max(rows, key = (lambda r : r.fraction_green)).date
@@ -180,7 +180,7 @@ def send_ne_texts_if_necessary():
     is_clean = fuel in clean_fuel
 
     # No more than one message in each 20 hour period
-    last_okay_time = now - datetime.timedelta(hours = 20)
+    last_okay_time = now - timedelta(hours = 20)
 
     ups = UserProfile.objects.all()
 
@@ -258,8 +258,8 @@ def send_ne_texts_if_necessary():
                         
 def send_tweet(ba_name):
     # set up dates for average
-    utc_end = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
-    utc_start = utc_end - datetime.timedelta(weeks=2)
+    utc_end = datetime.utcnow().replace(tzinfo=pytz.UTC)
+    utc_start = utc_end - timedelta(weeks=2)
     rows = BA_MODELS[ba_name].objects.all().filter(date__range=(utc_start, utc_end))
     
     # get data
@@ -325,6 +325,14 @@ def update_bas(bas):
 
     # return
     return updates
+
+def update_summaries(ba_name):
+    ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
+    ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
+    utc_start = ba_local_start.astimezone(pytz.utc)
+    utc_end = ba_local_end.astimezone(pytz.utc)
+    
 
 def send_text_notifications(bas):
     """ Should be run every 5-10 min, after updating BAs """
