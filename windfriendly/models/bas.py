@@ -119,7 +119,8 @@ class CAISO(BaseForecastedBalancingAuthority):
     objects = ForecastedBalancingAuthorityManager()
 
     # timezone
-    TIMEZONE = pytz.timezone('America/Los_Angeles')
+    TZ_STR = 'America/Los_Angeles'
+    TIMEZONE = pytz.timezone(TZ_STR)
 
     # load, wind, solar in MW
     load = models.FloatField()
@@ -175,7 +176,7 @@ class CAISO(BaseForecastedBalancingAuthority):
                     marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
                     percent_green=(self.fraction_green * 100),
                     percent_dirty=(self.fraction_high_carbon * 100),
-                    utc_time=self.date, local_time=self.local_date
+                    utc_time=self.date, tz_str=self.TZ_STR
                     )
 
 
@@ -185,7 +186,8 @@ class BPA(BaseBalancingAuthority):
     objects = BaseBalancingAuthorityManager()
 
     # timezone
-    TIMEZONE = pytz.timezone('America/Los_Angeles')
+    TZ_STR = 'America/Los_Angeles'
+    TIMEZONE = pytz.timezone(TZ_STR)
 
     # load, etc in MW
     load = models.IntegerField()
@@ -239,7 +241,7 @@ class BPA(BaseBalancingAuthority):
                     marginal_fuel=self.marginal_fuel,
                     percent_green=(self.fraction_green * 100),
                     percent_dirty=(self.fraction_high_carbon * 100),
-                    utc_time=self.date, local_time=self.local_date
+                    utc_time=self.date, tz_str=self.TZ_STR
                     )
 
 
@@ -249,7 +251,8 @@ class NE(BaseBalancingAuthority):
     objects = BaseBalancingAuthorityManager()
 
     # timezone        
-    TIMEZONE = pytz.timezone('America/New_York')
+    TZ_STR = 'America/New_York'
+    TIMEZONE = pytz.timezone(TZ_STR)
 
     # load, etc in MW
     gas = models.FloatField()
@@ -302,7 +305,7 @@ class NE(BaseBalancingAuthority):
                     marginal_fuel=self.marginal_fuel,
                     percent_green=(self.fraction_green * 100),
                     percent_dirty=(self.fraction_high_carbon * 100),
-                    utc_time=self.date, local_time=self.local_date
+                    utc_time=self.date, tz_str=self.TZ_STR
                     )
 
 
@@ -311,7 +314,8 @@ class MISO(BaseForecastedBalancingAuthority):
     objects = BaseBalancingAuthorityManager()
 
     # timezone        
-    TIMEZONE = pytz.timezone('America/Chicago')
+    TZ_STR = 'America/Chicago'
+    TIMEZONE = pytz.timezone(TZ_STR)
 
     # forecast type is the index in FORECAST_CODES
     forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
@@ -372,7 +376,7 @@ class MISO(BaseForecastedBalancingAuthority):
                     marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
                     percent_green=(self.fraction_green * 100),
                     percent_dirty=(self.fraction_high_carbon * 100),
-                    utc_time=self.date, local_time=self.local_date
+                    utc_time=self.date, tz_str=self.TZ_STR
                     )
 
 
@@ -382,7 +386,8 @@ class PJM(BaseForecastedBalancingAuthority):
     objects = BaseBalancingAuthorityManager()
 
     # timezone
-    TIMEZONE = pytz.timezone('US/Eastern')
+    TZ_STR = 'America/New_York'
+    TIMEZONE = pytz.timezone(TZ_STR)
 
     # forecast type is the index in FORECAST_CODES
     forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
@@ -435,5 +440,5 @@ class PJM(BaseForecastedBalancingAuthority):
                     marginal_fuel=self.marginal_fuel, forecast_code=self.forecast_code,
                     percent_green=(self.fraction_green * 100),
                     percent_dirty=(self.fraction_high_carbon * 100),
-                    utc_time=self.date, local_time=self.local_date
+                    utc_time=self.date, tz_str=self.TZ_STR
                     )
