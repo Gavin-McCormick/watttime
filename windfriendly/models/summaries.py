@@ -1,4 +1,5 @@
 from django.db import models
+import pytz
 
 class BaseSummary(models.Model):
     """Abstract base class for summary statistics"""
@@ -39,7 +40,7 @@ class BaseSummary(models.Model):
 
     # time is UTC time at which these values will be true (can be in the future)
     utc_time = models.DateTimeField()
-    local_time = models.DateTimeField()   
+    tz_str = models.CharField(max_length=100)   
 
     def fuel_mix(self):
         return {
@@ -57,7 +58,7 @@ class BaseSummary(models.Model):
                 'marginal_fuel': self.marginal_fuel,
                 'forecast_code': self.forecast_code,
                 'utc_time': self.utc_time.strftime('%Y-%m-%d %H:%M'),
-                'local_time': self.local_time.strftime('%Y-%m-%d %H:%M'),
+                'local_time': self.utc_time.astimezone(pytz.timezone(self.tz_str)).strftime('%Y-%m-%d %H:%M'),
                 'fuel_mix': self.fuel_mix(),
                 'ba_name': self.ba_name,
                 }
