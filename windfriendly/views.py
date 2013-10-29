@@ -24,7 +24,7 @@ import logging
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponse
 
-from windfriendly.models import User, MeterReading
+from windfriendly.models import User, MeterReading, Today
 from windfriendly.parsers import GreenButtonParser
 from windfriendly.balancing_authorities import BALANCING_AUTHORITIES, BA_MODELS, BA_PARSERS
 import windfriendly.utils as windutils
@@ -202,19 +202,20 @@ def today(request):
                 "error_code": 1}
 
     # get date range
-    ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
-    ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
-    ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
-    utc_start = ba_local_start.astimezone(pytz.utc)
-    utc_end = ba_local_end.astimezone(pytz.utc)
-
-    # get rows
-    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
-    if len(ba_rows) == 0:
-        print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
-        return []
+#    ba_local_now = datetime.now(BA_MODELS[ba_name].TIMEZONE)
+#    ba_local_start = ba_local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+#    ba_local_end = ba_local_start + timedelta(1) - timedelta(0, 1)
+#    utc_start = ba_local_start.astimezone(pytz.utc)
+#    utc_end = ba_local_end.astimezone(pytz.utc)
+#
+#    # get rows
+#    ba_rows = ba_qset.filter(date__range=(utc_start, utc_end)).best_guess_points()
+#    if len(ba_rows) == 0:
+#        print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
+#        return []
 
     # collect data
+    ba_rows = Today.objects.filter(ba_name=ba_name)
     data = [r.to_dict() for r in ba_rows]
 
     # return
