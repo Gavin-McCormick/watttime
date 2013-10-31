@@ -69,7 +69,7 @@
 <h1>WattTime Explorer</h1>
 </br>
 </div>
-            
+
 <div class="panel panel-default">
 	<div class="panel-body">
         <div class="row">
@@ -90,6 +90,9 @@
                 </div>   
             
                 <div class="col-md-6">
+                    <div id="loading">
+                        <h1 class="gray" style="font-size:600%; margin-top:60px">loading...</h1>
+                    </div>
                     <div id="green-chart" align="center" class=""></div>
                 </div>
             </div>
@@ -271,12 +274,16 @@
                 .attr("class", "forecast")
                 .attr("dx", "3em")
                 .attr("fill", "#8DC63F")
-                .text("forecast");        
+                .text("forecast");  
+      
+            $("#loading").fadeOut(0);
         });
         });
     }
 
     var update_chart_for_state = function(state) {
+        $("#green-chart").fadeOut(0);
+        $("#loading").fadeIn(0);
         all_data = [];
         actual_data = [];   
         average_data = [];
@@ -284,14 +291,14 @@
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-        d3.json("//watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//www.watttime.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 all_data.push(d);
                 average_data.push(d);
             });
-        d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+        d3.json("//www.watttime.com/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -341,7 +348,8 @@
                 .duration(500)
                 .text("Clean Energy in "+state); 
 
-       
+            $("#loading").fadeOut(0);
+            $("#green-chart").fadeIn(0);
         });
         });
     }
@@ -366,8 +374,8 @@
             ['California', 1, 'CA'],
             ['Colorado', 0, 'CO'],
             ['Connecticut', 3, 'CT'],
-            ['Delaware', 0, 'DE'],
-            ['District of Columbia', 0, 'DC'],
+            ['Delaware', 5, 'DE'],
+            ['District of Columbia', 5, 'DC'],
             ['Florida', 0, 'FL'],
             ['Georgia', 0, 'GA'],
             ['Guam', 0, 'GM'],
@@ -377,10 +385,10 @@
             ['Indiana', 4, 'IN'],
             ['Iowa', 4, 'IA'],
             ['Kansas', 0, 'KS'],
-            ['Kentucky', 0, 'KY'],
+            ['Kentucky', 5, 'KY'],
             ['Louisiana', 0, 'LA'],
             ['Maine', 3, 'ME'],
-            ['Maryland', 0, 'MD'],
+            ['Maryland', 5, 'MD'],
             ['Massachusetts', 3, 'MA'],
             ['Michigan', 4, 'MI'],
             ['Minnesota', 4, 'MN'],
@@ -390,16 +398,16 @@
             ['Nebraska', 0, 'NE'],
             ['Nevada', 0, 'NV'],
             ['New Hampshire', 3, 'NH'],
-            ['New Jersey', 0, 'NJ'],
+            ['New Jersey', 5, 'NJ'],
             ['New Mexico', 0, 'NM'],
             ['New York', 0, 'NY'],
             ['North Carolina', 0, 'NC'],
             ['North Dakota', 4, 'ND'],
             ['Northern Marianas Islands', 0, ''],
-            ['Ohio', 0, 'OH'],
+            ['Ohio', 5, 'OH'],
             ['Oklahoma', 0, 'OK'],
             ['Oregon', 2, 'OR'],
-            ['Pennsylvania', 0, 'PA'],
+            ['Pennsylvania', 5, 'PA'],
             ['Puerto Rico', 0, 'PR'],
             ['Rhode Island', 3, 'RI'],
             ['South Carolina', 0, 'SC'],
@@ -408,10 +416,10 @@
             ['Texas', 0, 'TX'],
             ['Utah', 0, 'UT'],
             ['Vermont', 3, 'VT'],
-            ['Virginia', 0, 'VA'],
+            ['Virginia', 5, 'VA'],
             ['Virgin Islands', 0, 'VI'],
             ['Washington', 2, 'WA'],
-            ['West Virginia', 0, 'WV'],
+            ['West Virginia', 5, 'WV'],
             ['Wisconsin', 4, 'WI'],
             ['Wyoming', 0, 'WY']
         ]);
@@ -431,7 +439,7 @@
         options['resolution'] = 'provinces';
         options['width'] = 420;
         //options['height'] = 200;
-        options['colors'] = ['#DDDDDD', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F'];
+        options['colors'] = ['#DDDDDD', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F', '#8DC63F'];
         options['legend'] = 'none';
         options['backgroundColor'] = 'none';
     
