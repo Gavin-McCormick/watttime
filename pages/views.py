@@ -49,10 +49,16 @@ def status(request):
     except KeyError:
         is_internet_explorer = False
 
-    if user.is_authenticated():
-        initial_state = user.get_profile().state
-    else:
-        initial_state = 'CA'
+    initial_state = request.GET.get('loc', None)
+    if initial_state:
+        if initial_state.upper() in BALANCING_AUTHORITIES.keys():
+            initial_state = initial_state.upper()
+
+    if not initial_state:            
+        if user.is_authenticated():
+            initial_state = user.get_profile().state
+        else:
+            initial_state = 'CA'
 
     return render(request, 'pages/status.html',
             {'internet_explorer' : is_internet_explorer,
