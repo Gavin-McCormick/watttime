@@ -332,9 +332,20 @@ class BPAParser(UtilityParser):
 
     def parseDate(self, datestring):
         """Take datestring in local time, convert to date object in UTC"""
-        dt = datetime.datetime.strptime(datestring, self.DATE_FRMT)
-        if dt.tzinfo == None:
+        try:
+            dt = datetime.datetime.strptime(datestring, self.DATE_FRMT)
             dt = self.TZ.localize(dt)
+        except ValueError:
+            if 'PDT' in datestring:
+                dt = datetime.datetime.strptime(datestring, '%m/%d/%Y %H:%M PDT')
+                dt -= self.TZ.utcoffset(dt, is_dst=True)
+                dt = pytz.UTC.localize(dt)
+            elif 'PST' in datestring:
+                dt = datetime.datetime.strptime(datestring, '%m/%d/%Y %H:%M PST')
+                dt -= self.TZ.utcoffset(dt, is_dst=False)
+                dt = pytz.UTC.localize(dt)
+            else:
+                raise ValueError("couldn't process timezone for %s" % datestring)            
         dt = dt.astimezone(pytz.UTC)
         return dt
 
@@ -494,17 +505,17 @@ class NEParser(UtilityParser):
 
             ne.save()
 
-        except requests.exceptions.RequestException: # failed to get data
-            pass
-        except KeyError: # malformed json format
-            pass
+            return {'ba': 'ISONE', 'latest_date': str(self.MODEL.objects.latest().date)}
+            
+        except requests.exceptions.RequestException as e: # failed to get data
+            return {'ba': 'ISONE', 'error': 'RequestException: %s' % e}
+        except KeyError as e: # malformed json format
+            return {'ba': 'ISONE', 'error': 'KeyError: %s' % e}
         except IndexError: # malformed json format
-            pass
+            return {'ba': 'ISONE', 'error': 'IndexError: %s' % e}
         except ValueError: # failed to parse time
-            pass
+            return {'ba': 'ISONE', 'error': 'ValueError: %s' % e}
 
-        return {'ba': 'ISONE'}
-        
 
 class MISOParser(UtilityParser):
     def __init__(self):
