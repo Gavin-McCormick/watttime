@@ -33,7 +33,7 @@ import twitter
 # Why does this not work? !!!!
 # import settings
 
-from settings import EMAIL_HOST_USER, TWITTER_CA_CONSUMER_KEY, TWITTER_CA_CONSUMER_SECRET, TWITTER_CA_ACCESS_KEY, TWITTER_CA_ACCESS_SECRET
+from settings import EMAIL_HOST_USER #, TWITTER_CA_CONSUMER_KEY, TWITTER_CA_CONSUMER_SECRET, TWITTER_CA_ACCESS_KEY, TWITTER_CA_ACCESS_SECRET
 
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
@@ -316,13 +316,14 @@ def send_tweet(ba_name):
 
 def update_bas(bas):
     # update and query BAs
-    updates = [BA_PARSERS[ba]().update() for ba in bas]
-
-    # log
-    newest_timepoints = [BA_MODELS[ba].objects.all().latest() for ba in bas]
-    marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
-    debug("ping called (marginal fuel {})".format(marginal_fuels[0]))
-
+    updates = []
+    for ba in bas:
+        try:
+            result = BA_PARSERS[ba]().update()
+        except Exception as e:
+            result = "Update failed with error: %s" % e
+        updates.append(result)
+        
     # return
     return updates
 
