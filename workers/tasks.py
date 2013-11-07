@@ -33,7 +33,7 @@ import twitter
 # Why does this not work? !!!!
 # import settings
 
-from settings import EMAIL_HOST_USER #, TWITTER_CA_CONSUMER_KEY, TWITTER_CA_CONSUMER_SECRET, TWITTER_CA_ACCESS_KEY, TWITTER_CA_ACCESS_SECRET
+from settings import EMAIL_HOST_USER, TWITTER_CA_CONSUMER_KEY, TWITTER_CA_CONSUMER_SECRET, TWITTER_CA_ACCESS_KEY, TWITTER_CA_ACCESS_SECRET
 
 def run_frequent_tasks():
     """ Should be run every 5-10 min by a clock process or scheduler """
