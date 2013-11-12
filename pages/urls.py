@@ -30,6 +30,8 @@ urlpatterns += patterns('',
         views.status, name='status'),
     url(r'^alerts/home[/]$',
         TemplateView.as_view(template_name='pages/alerts_home.html'), name='alerts_home'),
+    url(r'^windshed[/]$',
+        TemplateView.as_view(template_name='pages/windshed.html'), name='windshed'),
 )
 
 # tactics
