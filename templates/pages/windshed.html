@@ -14,7 +14,9 @@
 
     <title>WattTime: Windshed</title>
     {% include "base_snippets/head_scripts.html" %}
-
+    {% if GOOGLE_ANALYTICS_PROPERTY_ID %}
+      {% include "base_snippets/google_analytics.html" %}
+    {% endif %}
     <!-- Bootstrap core CSS -->
       <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
