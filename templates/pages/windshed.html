@@ -52,7 +52,6 @@
      <div class="page-header">
         <h1>
             WINDSHED <small>by <a href="//watttime.com/">WattTime</a></small>
-            <a class="btn btn-default" href="//watttime.com/about-us/" role="button">?</a>
         </h1>
                <h3 style="color:#666">
                    <span style="color:#99DFF9">smart energy</span> +
@@ -61,22 +60,22 @@
                    = smart communities and a cleaner world
                </h3>
             </div>
-        </div>
+        
 
 
-        <div class="container">
-         <ul class="nav nav-pills nav-justified" id="windTab">
-          <li class="active"><a href="#video" data-toggle="pill"><h3>Watch</h3></a></li>
-          <li><a href="#slides" data-toggle="pill"><h3>Explore</h3></a></li>
+        <div class="panel">
+         <ul class="nav nav-tabs nav-justified" id="windTab">
+          <li class="active"><a href="#video" data-toggle="tab"><h3>Watch</h3></a></li>
+          <li><a href="#slides" data-toggle="tab"><h3>Explore</h3></a></li>
         </ul>
 
         <div class="tab-content">
 
         <div class="tab-pane active" id="video">
-            <iframe src="//player.vimeo.com/video/79112867" width="750" height="410" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-        </div>
+<iframe width="1140" height="641" src="//www.youtube.com/embed/_KiijrcJcT8?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
 
-        <div class="tab-pane" id="slides">
+		 <div class="tab-pane" id="slides">
         <div class="carousel slide" data-ride="carousel" id="windshed-carousel">
 
               <!-- Indicators -->
@@ -90,9 +89,9 @@
             <div class="carousel-inner">
 
                 <div class="item active">
-                   <div class="carousel-caption">
+           <div class="carousel-caption">
                       <h2>Congested Grids</h2>
-                      <h4>
+                      <h4 style="line-height:150%">
                           America's aging energy infrastructure makes it difficult for wind farms to compete.
                           One problem is "traffic jams" on the grid, when energy can't get to where it's needed.
                       </h4>
@@ -103,7 +102,7 @@
                 <div class="item">
                   <div class="carousel-caption">
                       <h2>Wasted Wind</h2>
-                      <h4>
+                      <h4 style="line-height:150%">
                           When wind farms are stuck behind those traffic jams,
                           lots of free clean energy gets wasted.
                           That's bad for wind farms and bad for the atmosphere.
@@ -115,7 +114,7 @@
                 <div class="item">
                   <div class="carousel-caption">
                       <h2>Human Potential</h2>
-                      <h4>
+                      <h4 style="line-height:150%">
                           People in living in key windsheds could help by using energy at just the right time
                           with smart thermostats and other smart grid technology. 
                           Climate-conscious communities make great first adopters for projects like this.
@@ -126,8 +125,8 @@
 
                 <div class="item">
                   <div class="carousel-caption">
-                      <h2>Future Windsheds?</h2>
-                      <h4>
+                      <h2>Future Windsheds</h2>
+                      <h4 style="line-height:150%">
                           Community wind integration can make clean energy more financially sustainable,
                           leading to future wind investments and a cleaner world.
                       </h4>
@@ -146,9 +145,10 @@
             </a>
 
         </div> <!-- end carousel -->
+        </div>
         </div> <!-- end panel -->
         </div> <!-- end tabs -->
-        <br><br><br>
+        <br><br>
 
       <!-- Example row of columns -->
       <div class="row">
@@ -165,23 +165,26 @@
           <p>To accomplish this feat, Windshed creates the network analytics necessary for leveraging electricity consumers as a "network bridge" between the legacy electricity grid and emerging wind power generation stations. As part of a Renewable Integration Response program, Windshed helps consumers make a difference while helping wind farm and electricity grid operators fight costly and wasteful network congestion with excess wind farm production.</p>
         </div>
       </div>
-
-    </div> <!-- /container -->
-
-   <div class="container">
-       <hr>
+      
+        <hr>
                     <a href="http://www.watttime.com">
                         <img src="{% static "images/WattTimeWordLogoBlueOnWhite.png" %} "/>
-                    </a>
+                    </a><br>
+               <a href="//watttime.com/" class="btn btn-default">Home</a>
+               <a href="//watttime.com/about-us/" class="btn btn-default">About</a>
+               <a href="//watttime.com/contact/" class="btn btn-default">Contact</a><br>
                <i><p style="color:#666">
                Built for the <a href="//2013-sf.bsr.org/en/hackathon">BSR Hackathon 2013</a>
-               by the team at <a href="//watttime.com">WattTime</a>:
+               by <!-- the team at <a href="//watttime.com">WattTime</a>: -->
                <a href="//twitter.com/WattTime">Gavin</a>,
                <a href="//twitter.com/robinkraft">Robin</a>,
                <a href="//twitter.com/gharp">Gabe</a>, and
                <a href="//twitter.com/windupanna">Anna</a>
                </p></i>
-            </div>
+
+    </div> <!-- /container -->
+
+   
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -189,7 +192,9 @@
   <script text="text/javascript">
       $(document).ready(function(){
           $('.carousel').carousel({
-              interval: 7000,
+              interval: 7000
+              pause: "hover"
+              
           });
       });
   </script>
