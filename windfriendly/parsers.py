@@ -672,7 +672,7 @@ class PJMParser(UtilityParser):
     def _get_soup(self, url):
         """Make BeautifulSoup object from a url."""
         html = urllib2.urlopen(url).read()
-        bs = BeautifulSoup(html, 'lxml')
+        bs = BeautifulSoup(html)
         return bs
 
     def _parse_wind(self, url):
