@@ -1,0 +1,26 @@
+{% extends "zinnia:zinnia/entry_search.html" %}
+{% load i18n zinnia_tags %}
+
+{% block content-title %}
+<h1>{% trans "Search results for" %} '{{ pattern }}'</h1>
+
+{% if error %}
+<p class="alert alert-error">{{ error }}</p>
+{% endif %}
+
+{% if object_list %}
+<p class="alert alert-success">
+  {% blocktrans count entry_count=paginator.count %}{{ entry_count }} entry found{% plural %}{{ entry_count }} entries found{% endblocktrans %}
+</p>
+{% endif %}
+{% endblock content-title %}
+
+{% block content-loop %}
+{% if not error %}
+{% for object in object_list %}
+  {% include object.content_template with object_content=object.html_preview continue_reading=1 %}
+{% empty %}
+<p class="alert alert-info">{% trans "Nothing found." %}</p>
+{% endfor %}
+{% endif %}
+{% endblock content-loop %}

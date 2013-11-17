@@ -1,0 +1,17 @@
+{% load i18n %}
+<ul class="list-group">
+  {% for linkback in linkbacks %}
+  <li class="list-group-item">
+    {% with entry=linkback.content_object %}
+    <a href="{{ entry.get_absolute_url }}#c{{ linkback.pk }}"
+       title="{% trans "Linkback on" %} {{ entry.title }}">
+      {{ linkback.user_name }} {% trans "in" %} {{ entry.title }}
+    </a>
+    {% endwith %}
+  </li>
+  {% empty %}
+  <li class="list-group-item">
+    <a href="#">{% trans "No linkbacks yet." %}</a>
+  </li>
+  {% endfor %}
+</ul>

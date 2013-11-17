@@ -156,6 +156,7 @@ SECRET_KEY = 'u-83ak4v53rjt$43*+)*k4hvo9@gknks6mztx133omm879t!d)'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+    'app_namespace.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
 
@@ -197,13 +198,17 @@ INSTALLED_APPS = (
     'corsheaders',
     'tastypie',
     'bootstrap3',
-    # move django apps later 
+    'tagging',
+    'mptt',
+    'zinnia',
+    # move django apps later
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.comments',
 #    'allauth',
 #    'allauth.account',
 #    'allauth.socialaccount',
@@ -280,6 +285,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    "allauth.socialaccount.context_processors.socialaccount",
     #"invitation.context_processors.remaining_invitations",
     'pages.context_processors.google_analytics',
+    'zinnia.context_processors.version',
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
