@@ -14,8 +14,6 @@
 #
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
-import allauth
-import registration
 from django.views.generic.base import TemplateView
 
 from django.conf.urls import patterns, url, include
