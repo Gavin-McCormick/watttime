@@ -13,7 +13,7 @@ Install
 * Clone this repo.
 * Install dependencies: Install pip from http://www.pip-installer.org/en/latest/installing.html (bottom of page under "Installing from source"), then
     ````
-    sudo pip install -r requirements.txt
+    sudo pip install -r requirements/dev_requirements.txt
     ````    
 
 * Set up models (follow instructions for syncdb):
@@ -30,7 +30,7 @@ Install
 Upgrade
 ---------
 ````
-sudo pip install -r requirements.txt
+sudo pip install -r requirements/dev_requirements.txt
 python manage.py syncdb
 python manage.py migrate
 ````
