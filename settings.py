@@ -192,8 +192,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'south',
-#    'invitation',
-#    'registration',
     'corsheaders',
     'tastypie',
     'bootstrap3',
@@ -204,23 +202,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-#    'allauth',
-#    'allauth.account',
-#    'allauth.socialaccount',
-#    'allauth.socialaccount.providers.bitly',
-#    'allauth.socialaccount.providers.dropbox',
-#    'allauth.socialaccount.providers.facebook',
-#    'allauth.socialaccount.providers.github',
-#    'allauth.socialaccount.providers.google',
-#    'allauth.socialaccount.providers.linkedin',
-#    'allauth.socialaccount.providers.openid',
-#    'allauth.socialaccount.providers.persona',
-#    'allauth.socialaccount.providers.soundcloud',
-#    'allauth.socialaccount.providers.stackexchange',
-#    'allauth.socialaccount.providers.twitch',
-#    'allauth.socialaccount.providers.twitter',
-#    'allauth.socialaccount.providers.vimeo',
-#    'allauth.socialaccount.providers.weibo',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -261,9 +242,7 @@ LOGGING = {
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# for django-allauth
 AUTHENTICATION_BACKENDS = (
-#    "allauth.account.auth_backends.AuthenticationBackend",
     'django.contrib.auth.backends.ModelBackend',
 )
 LOGIN_URL = 'authenticate'
@@ -276,33 +255,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
-#    "allauth.account.context_processors.account",
-#    "allauth.socialaccount.context_processors.socialaccount",
-    #"invitation.context_processors.remaining_invitations",
-    'pages.context_processors.google_analytics',
+    "pages.context_processors.google_analytics",
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
-SOCIALACCOUNT_PROVIDERS = {
-    'facebook': {
-        'SCOPE': ['email', 'publish_stream'],
-          'AUTH_PARAMS': { 'auth_type': 'reauthenticate' },
-          'METHOD': 'js_sdk' #'oauth2' 
-    },
-    'google': {
-        'SCOPE': ['https://www.googleapis.com/auth/userinfo.profile'],
-         'AUTH_PARAMS': { 'access_type': 'online' }
-    }
-}
 
-# for django-invitation https://github.com/arctelix/django-invitation
-#INVITATION_USE_ALLAUTH = True
-#INVITE_MODE = True
-#ACCOUNT_INVITATION_DAYS = 14
-#INVITATIONS_PER_USER = 20
-#SOCIALACCOUNT_ADAPTER ="allauth.accountadapter.SocialAccountAdapter"
-#ACCOUNT_ADAPTER ="allauth.accountadapter.AccountAdapter"
-#ALLOW_NEW_REGISTRATIONS = True
 
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
