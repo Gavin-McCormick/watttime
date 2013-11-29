@@ -266,12 +266,12 @@ def send_tweet(ba_name):
     try:
         actual_point = rows.filter(forecast_code=0).latest()
         forecast_point = rows.filter(forecast_code=1, date=actual_point.date).latest()
-        rows_to_average = rows.filter(forecast_code=0).filter_by_hour(utc_end.hour)
+        rows_to_average = rows.filter(forecast_code=0).filter(date__hour=utc_end.hour)
         previous_point = rows.filter(forecast_code=0).order_by('-date')[1]
     except:
         actual_point = rows.latest()
         forecast_point = None
-        rows_to_average = rows.filter_by_hour(utc_end.hour)
+        rows_to_average = rows.filter(date__hour=utc_end.hour)
         previous_point = rows.order_by('-date')[1]
     
     # get values

@@ -1,6 +1,4 @@
 from django.test import TestCase
-from django.core import mail
-import settings
 
 class ContactTest(TestCase):
     def test_contact(self):
@@ -12,7 +10,3 @@ class ContactTest(TestCase):
                     'message' : 'Test message body',
                     'name' : 'Test name'})
 
-        self.assertEqual(len(mail.outbox), 1)
-        m = mail.outbox[0]
-        self.assertEqual(m.to, [settings.EMAIL_HOST_USER])
-        self.assertEqual(m.from_email, settings.EMAIL_HOST_USER)

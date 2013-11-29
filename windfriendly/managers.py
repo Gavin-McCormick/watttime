@@ -7,10 +7,6 @@ import numpy as np
 from .settings import FORECAST_CODES
 
 class TimeseriesQuerySet(QuerySet):
-    def filter_by_hour(self, hour):
-        """Returns a queryset grouped by date.hour"""
-        return self.filter(date__contains=' %02d:' % hour).order_by('date')
-
     def max_by_attribute(self, attr):
         """Return point with the highest value of the named attribute in queryset"""
         if self.count() > 0:
@@ -90,7 +86,7 @@ class ForecastedTimeseriesQuerySet(TimeseriesQuerySet):
 
 class BaseBalancingAuthorityManager(models.Manager):
     """Model Manager for Balancing Authority models without forecasting"""
-    def get_query_set(self):
+    def get_queryset(self):
         return TimeseriesQuerySet(self.model, using=self._db)
                     
     def greenest_subrange(self, starttime, endtime, timedelta, forecast_type=None):
@@ -99,9 +95,9 @@ class BaseBalancingAuthorityManager(models.Manager):
         """
         # get full range
         if forecast_type is None:
-            rows = self.get_query_set().filter(date__range=(starttime, endtime)).best_guess_points()
+            rows = self.get_queryset().filter(date__range=(starttime, endtime)).best_guess_points()
         else:
-            rows = self.get_query_set().filter(date__range=(starttime, endtime),
+            rows = self.get_queryset().filter(date__range=(starttime, endtime),
                                                forecast_code=FORECAST_CODES[forecast_type])
                
         # find best subrange
@@ -137,9 +133,9 @@ class BaseBalancingAuthorityManager(models.Manager):
     def average_day(self, utc_start, utc_end, tz):
         # get rows
         try:
-            ba_rows = self.get_query_set().filter(date__range=(utc_start, utc_end), forecast_code=0)
+            ba_rows = self.get_queryset().filter(date__range=(utc_start, utc_end), forecast_code=0)
         except FieldError:
-            ba_rows = self.get_query_set().filter(date__range=(utc_start, utc_end))
+            ba_rows = self.get_queryset().filter(date__range=(utc_start, utc_end))
             
         if ba_rows.count() == 0:
             print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
@@ -148,7 +144,7 @@ class BaseBalancingAuthorityManager(models.Manager):
         # collect data
         data = []
         for hour in range(24):
-            group = ba_rows.filter_by_hour(hour)
+            group = ba_rows.filter(date__hour=hour)
             if group.count() > 0:
                 # get average data
                 total_green = 0
@@ -192,7 +188,7 @@ class BaseBalancingAuthorityManager(models.Manager):
 
 
 class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):
-    def get_query_set(self, forecast_type='any'):
+    def get_queryset(self, forecast_type='any'):
         """ forecast_type options:
                 None defaults to 'actual',
                 'any' uses data from all forecast types,
