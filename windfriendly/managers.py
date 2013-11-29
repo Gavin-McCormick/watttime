@@ -7,10 +7,6 @@ import numpy as np
 from .settings import FORECAST_CODES
 
 class TimeseriesQuerySet(QuerySet):
-    def filter_by_hour(self, hour):
-        """Returns a queryset grouped by date.hour"""
-        return self.filter(date__contains=' %02d:' % hour).order_by('date')
-
     def max_by_attribute(self, attr):
         """Return point with the highest value of the named attribute in queryset"""
         if self.count() > 0:
@@ -148,7 +144,7 @@ class BaseBalancingAuthorityManager(models.Manager):
         # collect data
         data = []
         for hour in range(24):
-            group = ba_rows.filter_by_hour(hour)
+            group = ba_rows.filter(date__hour=hour)
             if group.count() > 0:
                 # get average data
                 total_green = 0
