@@ -289,19 +289,14 @@ class CAISOParser(UtilityParser):
         if not dp['load'] > 0:
             return False
            
-        if dp['forecast_type'] == self.ACTUAL_CODE:
-            # store actual data only if it's not there already
-            qset = self.MODEL.objects.filter(date=dp['timestamp'],
-                                             forecast_code=FORECAST_CODES[dp['forecast_type']])
-            if qset.count() > 0:
-                return False
-            else:
-                return True
-                                
+        # don't store duplicates
+        qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                         forecast_code=FORECAST_CODES[dp['forecast_type']])
+        if qset.count() > 0:
+            return False
         else:
-            # any time is ok for forecasts
             return True
-            
+                                            
 
 class BPAParser(UtilityParser):
     def __init__(self, url = None):
