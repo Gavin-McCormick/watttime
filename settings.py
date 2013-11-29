@@ -73,8 +73,7 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Gavin "typo" McCormick', 'gavin.mccormick+watttimeadmin@gmail.com'),
-    ('Anna Schneider', 'annarschneider+watttimeadmin@gmail.com'),
+    ('WattTime Dev Team', 'dev@watttime.org'),
 )
 SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS
@@ -92,6 +91,8 @@ ALLOWED_HOSTS = [ 'watttime.herokuapp.com',
                   '.watttime.com',
                   '.watttime.org',
                   '.watttime.net',
+                  'wattime.org',
+                  '.wattime.org',
                   'localhost' ]
 
 # Local time zone for this installation. Choices can be found here:

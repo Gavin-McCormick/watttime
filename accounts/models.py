@@ -24,14 +24,14 @@ null_model = accounts.regions.null_region.user_prefs_model
 class UserProfile(models.Model):
     user                = models.OneToOneField(User)
 
-    password_is_set     = models.BooleanField()
+    password_is_set     = models.BooleanField(default=False)
 
     magic_login_code    = models.IntegerField(db_index = True)
     name                = config.config_name.model_field
     email               = models.EmailField(help_text='Email')
     phone               = PhoneNumberField()
     verification_code   = models.IntegerField()
-    is_verified         = models.BooleanField()
+    is_verified         = models.BooleanField(default=False)
     state               = config.config_state.model_field
 
     ask_feedback        = config.config_ask_feedback.model_field
