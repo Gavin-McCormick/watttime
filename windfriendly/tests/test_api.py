@@ -22,6 +22,7 @@ from windfriendly.balancing_authorities import BA_MODELS
          
 class BaseBAResourceTestCase(object):
     """Test generic model"""
+    maxDiff = None
         
     def test_get_list_json(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
@@ -29,10 +30,10 @@ class BaseBAResourceTestCase(object):
         self.assertValidJSONResponse(resp)
 
         # check pagination
-        self.assertEqual(len(self.deserialize(resp)['objects']), self.limit)
+        self.assertLessEqual(len(self.deserialize(resp)['objects']), self.limit)
         self.assertKeys(self.deserialize(resp)['objects'][0],
-                        ['date', 'local_date', 'forecast_code', 'marginal_fuel',
-                         'gen_MW', 'percent_green', 'percent_dirty', 'resource_uri'])
+                        ['date', 'local_date', 'date_extracted', 'forecast_code', 'marginal_fuel',
+                         'gen_MW', 'fraction_clean', 'resource_uri'])
         
     def test_get_latest(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
@@ -40,7 +41,7 @@ class BaseBAResourceTestCase(object):
         resp_datum = self.deserialize(resp)['objects'][0]
         model_datum = self.model.objects.all().latest()
         self.assertEqual(resp_datum['date'], model_datum.date.isoformat())
-        self.assertEqual(resp_datum['percent_green'], model_datum.fraction_green*100)
+        self.assertEqual(resp_datum['fraction_clean'], model_datum.fraction_clean)
         self.assertEqual(resp_datum['marginal_fuel'], model_datum.marginal_fuel)
         
        
@@ -59,9 +60,10 @@ class BPAResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
-            'date': '2013-06-23T08:00:00+00:00', 'forecast_code': 0, 'gen_MW': 13094.0,
-            'local_date': u'2013-06-23T01:00:00-07:00', 'marginal_fuel': 9,
-            'percent_dirty': 5.368871238735299, 'percent_green': 0.9088131968840691,
+            'date': '2013-11-19T08:00:00+00:00', 'date_extracted': '2013-11-19T08:00:00+00:00', 
+            'forecast_code': 0, 'gen_MW': 10917.0,
+            'local_date': u'2013-11-19T00:00:00-08:00', 'marginal_fuel': 9,
+            'fraction_clean': 0.24906109737107263,
             'resource_uri': u'/api/v1/bpa/1/'})
 
 
@@ -80,9 +82,10 @@ class CAISOResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
-            'date': '2013-06-29T07:00:00+00:00', 'forecast_code': 0, 'gen_MW': 30374.0,
-            'local_date': u'2013-06-29T00:00:00-07:00', 'marginal_fuel': 9,
-            'percent_dirty': 91.70319753736749, 'percent_green': 8.296802462632513,
+            'date': '2013-11-24T09:00:00+00:00', 'date_extracted': '2013-11-25T19:04:45+00:00',
+            'forecast_code': 0, 'gen_MW': 21871.0,
+            'local_date': u'2013-11-24T01:00:00-08:00', 'marginal_fuel': 9,
+            'fraction_clean': 1.6873942663801407e-05,
             'resource_uri': u'/api/v1/caiso/1/'})
             
     def test_forecast_filter(self):
@@ -106,8 +109,9 @@ class NEResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
-            'date': u'2013-06-30T14:58:17+00:00', 'forecast_code': 0, 'gen_MW': 14644.099999999997,
-            'local_date': u'2013-06-30T10:58:17-04:00', 'marginal_fuel': 2,
-            'percent_dirty': 0.0, 'percent_green': 11.292602481545472,
+            'date': u'2013-11-30T00:21:38+00:00', 'date_extracted': u'2013-11-30T00:27:29+00:00', 
+            'forecast_code': 0, 'gen_MW': 13235.2,
+            'local_date': u'2013-11-29T19:21:38-05:00', 'marginal_fuel': 2,
+            'fraction_clean': 0.16137270309477758,
             'resource_uri': u'/api/v1/isone/1/'})
            

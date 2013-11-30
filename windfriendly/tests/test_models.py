@@ -39,13 +39,12 @@ class BAInfoTestCase(TestCase):
 
 class BaseBATestCase(object):
     """Test generic model"""
+    maxDiff = None
 
     def test_fractions(self):
         row = self.model.objects.get(pk=1)
-        self.assertLess(row.fraction_green, 1)
-        self.assertGreaterEqual(row.fraction_green, 0)
-        self.assertLess(row.fraction_high_carbon, 1)
-        self.assertGreaterEqual(row.fraction_high_carbon, 0)
+        self.assertLess(row.fraction_clean, 1)
+        self.assertGreaterEqual(row.fraction_clean, 0)
 
     def test_latest(self):
         self.assertEqual(self.model.objects.all().latest().date,
@@ -107,8 +106,8 @@ class BPATestCase(BaseBATestCase, TestCase):
 
     fixtures = ['bpa.json']
     model = BA_MODELS['BPA']
-    start = datetime(2013, 06, 25, tzinfo=pytz.utc)
-    end = datetime(2013, 06, 26, tzinfo=pytz.utc)
+    start = datetime(2013, 11, 28, tzinfo=pytz.utc)
+    end = datetime(2013, 11, 29, tzinfo=pytz.utc)
     bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
     bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
 
@@ -117,15 +116,13 @@ class BPATestCase(BaseBATestCase, TestCase):
 
     def test_attributes(self):
         self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/Los_Angeles'))
-        self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
-        self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'marginal_fuel': 9, 'percent_dirty': 5.369, 'load_MW': 5076.0, 'gen_MW': 13094.0,
-                              'percent_green': 0.909, 'local_time': '2013-06-23 01:00',
-                              'utc_time': '2013-06-23 08:00'})
+                             {'marginal_fuel': 9, 'percent_dirty': 28.607, 'load_MW': 5244.0, 'gen_MW': 10917.0,
+                              'percent_green': 24.906, 'local_time': '2013-11-19 00:00',
+                              'utc_time': '2013-11-19 08:00'})
 
 
 class CAISOTestCase(BaseBATestCase, TestCase):
@@ -134,8 +131,8 @@ class CAISOTestCase(BaseBATestCase, TestCase):
 
     fixtures = ['caiso.json']
     model = BA_MODELS['CAISO']
-    start = datetime(2013, 06, 30, tzinfo=pytz.utc)
-    end = datetime(2013, 07, 01, tzinfo=pytz.utc)
+    start = datetime(2013, 11, 28, tzinfo=pytz.utc)
+    end = datetime(2013, 11, 29, tzinfo=pytz.utc)
     bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
     bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
 
@@ -144,16 +141,14 @@ class CAISOTestCase(BaseBATestCase, TestCase):
 
     def test_attributes(self):
         self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/Los_Angeles'))
-        self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
-        self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'percent_green': 8.297, 'marginal_fuel': 9,
-                             'date_extracted': '2013-06-29 23:48', 'forecast_code': 0,
-                             'percent_dirty': 91.703, 'load_MW': 30374.0, 'gen_MW': 30374.0,
-                             'utc_time': '2013-06-29 07:00', 'local_time': '2013-06-29 00:00'})
+                             {'percent_green': 0.002, 'marginal_fuel': 9,
+                             'date_extracted': '2013-11-25 19:04', 'forecast_code': 0,
+                             'percent_dirty': 99.998, 'load_MW': 21871.0, 'gen_MW': 21871.0,
+                             'utc_time': '2013-11-24 09:00', 'local_time': '2013-11-24 01:00'})
 
 
 class NETestCase(BaseBATestCase, TestCase):
@@ -162,8 +157,8 @@ class NETestCase(BaseBATestCase, TestCase):
 
     fixtures = ['ne.json']
     model = BA_MODELS['NE']
-    start = datetime(2013, 07, 13, tzinfo=pytz.utc)
-    end = datetime(2013, 07, 14, tzinfo=pytz.utc)
+    start = datetime(2013, 11, 29, tzinfo=pytz.utc)
+    end = datetime(2013, 12, 1, tzinfo=pytz.utc)
     bad_start = datetime(2013, 05, 01, tzinfo=pytz.utc)
     bad_end = datetime(2013, 05, 30, tzinfo=pytz.utc)
 
@@ -172,12 +167,10 @@ class NETestCase(BaseBATestCase, TestCase):
 
     def test_attributes(self):
         self.assertEqual(self.model.TIMEZONE, pytz.timezone('America/New_York'))
-        self.assertEqual(self.model.GREEN_THRESHOLD, 0.15)
-        self.assertEqual(self.model.DIRTY_THRESHOLD, 0.95)
 
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'load_MW': 14644.099999999997, 'gen_MW': 14644.099999999997, 'local_time': '2013-06-30 10:58',
-                             'marginal_fuel': 2, 'percent_dirty': 0.0, 'percent_green': 11.293,
-                             'utc_time': '2013-06-30 14:58'})
+                             {'load_MW': 13235.2, 'gen_MW': 13235.2, 'local_time': '2013-11-29 19:21',
+                             'marginal_fuel': 2, 'percent_dirty': 13.433, 'percent_green': 16.137,
+                             'utc_time': '2013-11-30 00:21'})

@@ -15,7 +15,7 @@ class Migration(DataMigration):
             row.fraction_clean = (row.wind + row.solar) / float(row.load)
             row.save()
         for row in orm.BPA.objects.all():
-            row.fraction_clean = row.wind / float(row.load)
+            row.fraction_clean = row.wind / float(row.wind + row.hydro + row.thermal)
             row.save()
         for row in orm.MISO.objects.all():
             row.fraction_clean = row.wind / float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)

@@ -40,7 +40,7 @@ class BalancingAuthorityResource(ModelResource):
             'forecast_code': ['exact'],
             'marginal_fuel': ['exact'],
         }
-        fields = ['date', 'percent_green', 'percent_dirty', 'gen_MW',
+        fields = ['date', 'fraction_clean', 'gen_MW',
                   'marginal_fuel', 'forecast_code', 'local_date', 'date_extracted']
         serializer = MySerializer(formats=['json'])
 
@@ -48,18 +48,6 @@ class BalancingAuthorityResource(ModelResource):
     # derived fields
     ####################
 
-    # percent green
-    percent_green = fields.FloatField(readonly=True,
-                                      help_text="Percent of total electricity that is 'green'")
-    def dehydrate_percent_green(self, bundle):
-        return bundle.obj.fraction_green * 100
-        
-    # percent dirty
-    percent_dirty = fields.FloatField(readonly=True,
-                                      help_text="Percent of total electricity that is 'dirty'")
-    def dehydrate_percent_dirty(self, bundle):
-        return bundle.obj.fraction_high_carbon * 100
-        
     # generation in megawatts
     gen_MW = fields.FloatField(readonly=True,
                                help_text="Total MW of electricty generation")

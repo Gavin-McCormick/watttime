@@ -7,10 +7,6 @@ from datetime import datetime
 
 class BaseBalancingAuthority(models.Model):
     """Abstract base class for balancing authority timepoints"""
-    # timepoints are 'extra green' if fraction_green is above this fraction
-    GREEN_THRESHOLD = 0.15
-    # timepoints are 'extra green' if fraction_high_carbon is above this fraction
-    DIRTY_THRESHOLD = 0.95
     # must set timezone for every derived class
     TIMEZONE = pytz.utc
 

@@ -275,6 +275,7 @@ class CAISOParser(UtilityParser):
             row.forecast_code = FORECAST_CODES[dp['forecast_type']]
             row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
             row.save()
             return True
         else:
@@ -296,7 +297,9 @@ class CAISOParser(UtilityParser):
             return False
         else:
             return True
-                                            
+            
+    def _fraction_clean(self, row):
+        return (row.wind + row.solar) / float(row.load)
 
 class BPAParser(UtilityParser):
     def __init__(self, url = None):
@@ -419,7 +422,11 @@ class BPAParser(UtilityParser):
         b.hydro = row['hydro']
         b.thermal = row['thermal']
         b.date_extracted = pytz.utc.localize(datetime.datetime.now())
+        b.fraction_clean = self._fraction_clean(b)
         b.save()
+        
+    def _fraction_clean(self, row):
+        return row.wind / float(row.load)
 
     def update(self):
         try:
@@ -449,6 +456,9 @@ class NEParser(UtilityParser):
             self.request_method = wrapper
         else:
             self.request_method = request_method
+            
+    def _fraction_clean(self, row):
+        return (row.hydro + row.other_renewable) / float(row.gas + row.nuclear + row.hydro + row.coal + row.other_renewable + row.other_fossil)
 
     def update(self):
         try:
@@ -494,6 +504,7 @@ class NEParser(UtilityParser):
 
             ne.marginal_fuel = marginal_fuel
             ne.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            ne.fraction_clean = self._fraction_clean(ne)
             
             if timestamp is None:
                 ne.date = None # Is this okay? Don't know.
@@ -639,6 +650,7 @@ class MISOParser(UtilityParser):
             row.other_gen = dp['other']
             row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
             row.save()
             return True
         else:
@@ -658,6 +670,8 @@ class MISOParser(UtilityParser):
         else:
             return True
 
+    def _fraction_clean(self, row):
+        return row.wind / float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)
 
 class PJMParser(UtilityParser):
     def __init__(self):
@@ -669,7 +683,7 @@ class PJMParser(UtilityParser):
     def _get_soup(self, url):
         """Make BeautifulSoup object from a url."""
         html = urllib2.urlopen(url).read()
-        bs = BeautifulSoup(html, 'lxml')
+        bs = BeautifulSoup(html)
         return bs
 
     def _parse_wind(self, url):
@@ -725,6 +739,9 @@ class PJMParser(UtilityParser):
         else:
             return True
 
+    def _fraction_clean(self, row):
+        return row.wind / float(row.load)
+
     def datapoint_to_db(self, dp):
         if self._is_datapoint_to_store(dp):
             row = self.MODEL()
@@ -732,6 +749,7 @@ class PJMParser(UtilityParser):
             row.wind = dp['wind']
             row.date = dp['timestamp']
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
             row.save()
             return True
         else:
