@@ -21,6 +21,8 @@ class BaseBalancingAuthority(models.Model):
     date = models.DateTimeField(db_index=True)
     # date_extracted is the UTC time at which these values were pulled from ISO
     date_extracted = models.DateTimeField(db_index=True)
+    # fraction_clean is fraction of generation from clean sources (eg wind)
+    fraction_clean = models.FloatField(default=0)
 
 
     # must define 'date' and 'marginal_fuel' attributes
