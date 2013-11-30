@@ -432,10 +432,10 @@ class BPAParser(UtilityParser):
         b.save()
         
     def _fraction_clean(self, row):
-        return row.wind / float(row.load)
+        return row.wind / float(row.wind + row.hydro + row.thermal)
         
     def _total_MW(self, row):
-        return float(row.load)
+        return float(row.wind + row.hydro + row.thermal)
         
     def update(self):
         try:
