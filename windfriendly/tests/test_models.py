@@ -120,7 +120,7 @@ class BPATestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'marginal_fuel': 9, 'load_MW': 5244.0, 'gen_MW': 10917.0,
+                             {'marginal_fuel': 9, 'total_MW': 10917.0,
                               'percent_green': 24.906, 'local_time': '2013-11-19 00:00',
                               'utc_time': '2013-11-19 08:00'})
 
@@ -147,7 +147,7 @@ class CAISOTestCase(BaseBATestCase, TestCase):
         self.assertDictEqual(row.to_dict(),
                              {'percent_green': 0.002, 'marginal_fuel': 9,
                              'date_extracted': '2013-11-25 19:04', 'forecast_code': 0,
-                             'load_MW': 21871.0, 'gen_MW': 21871.0,
+                             'total_MW': 21871.0,
                              'utc_time': '2013-11-24 09:00', 'local_time': '2013-11-24 01:00'})
 
 
@@ -171,6 +171,6 @@ class NETestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'load_MW': 13235.2, 'gen_MW': 13235.2, 'local_time': '2013-11-29 19:21',
+                             {'total_MW': 13235.2, 'local_time': '2013-11-29 19:21',
                              'marginal_fuel': 2, 'percent_green': 16.137,
                              'utc_time': '2013-11-30 00:21'})

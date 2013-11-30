@@ -33,7 +33,7 @@ class BaseBAResourceTestCase(object):
         self.assertLessEqual(len(self.deserialize(resp)['objects']), self.limit)
         self.assertKeys(self.deserialize(resp)['objects'][0],
                         ['date', 'local_date', 'date_extracted', 'forecast_code', 'marginal_fuel',
-                         'gen_MW', 'fraction_clean', 'resource_uri'])
+                         'total_MW', 'fraction_clean', 'resource_uri'])
         
     def test_get_latest(self):
         resp = self.api_client.get('/api/v1/%s/' % self.resource_name,
@@ -61,7 +61,7 @@ class BPAResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
             'date': '2013-11-19T08:00:00+00:00', 'date_extracted': '2013-11-19T08:00:00+00:00', 
-            'forecast_code': 0, 'gen_MW': 10917.0,
+            'forecast_code': 0, 'total_MW': 10917.0,
             'local_date': u'2013-11-19T00:00:00-08:00', 'marginal_fuel': 9,
             'fraction_clean': 0.24906109737107263,
             'resource_uri': u'/api/v1/bpa/1/'})
@@ -83,7 +83,7 @@ class CAISOResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
             'date': '2013-11-24T09:00:00+00:00', 'date_extracted': '2013-11-25T19:04:45+00:00',
-            'forecast_code': 0, 'gen_MW': 21871.0,
+            'forecast_code': 0, 'total_MW': 21871.0,
             'local_date': u'2013-11-24T01:00:00-08:00', 'marginal_fuel': 9,
             'fraction_clean': 1.6873942663801407e-05,
             'resource_uri': u'/api/v1/caiso/1/'})
@@ -110,7 +110,7 @@ class NEResourceTestCase(BaseBAResourceTestCase, ResourceTestCase):
         # Here, we're checking an entire structure for the expected data.
         self.assertEqual(self.deserialize(resp)['objects'][0], {
             'date': u'2013-11-30T00:21:38+00:00', 'date_extracted': u'2013-11-30T00:27:29+00:00', 
-            'forecast_code': 0, 'gen_MW': 13235.2,
+            'forecast_code': 0, 'total_MW': 13235.2,
             'local_date': u'2013-11-29T19:21:38-05:00', 'marginal_fuel': 2,
             'fraction_clean': 0.16137270309477758,
             'resource_uri': u'/api/v1/isone/1/'})

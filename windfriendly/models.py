@@ -19,13 +19,13 @@ class BaseBalancingAuthority(models.Model):
     date_extracted = models.DateTimeField(db_index=True)
     # fraction_clean is fraction of generation from clean sources (eg wind)
     fraction_clean = models.FloatField(default=0)
-
+    # total_MW is the total amount of generation, if available, or load, if not
+    total_MW = models.FloatField(default=0)
 
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_clean*100, 3),
-                'load_MW': self.total_load,
-                'gen_MW': self.total_gen,
+                'total_MW': self.total_MW,
                 'marginal_fuel': self.marginal_fuel,
                 'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
                 'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
@@ -43,18 +43,6 @@ class BaseBalancingAuthority(models.Model):
         """ Time in local timezone """
         return self.date.astimezone(self.TIMEZONE)
 
-    @property
-    def total_load(self):
-        """Total load on the grid, in MW"""
-        # implement this in daughter classes
-        return 0.0
-
-    @property
-    def total_gen(self):
-        """Total generation on the grid, in MW"""
-        # implement this in daughter classes
-        return 0.0
-
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""
@@ -65,8 +53,7 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_clean*100, 3),
-                'load_MW': self.total_load,
-                'gen_MW': self.total_gen,
+                'total_MW': self.total_MW,
                 'marginal_fuel': self.marginal_fuel,
                 'forecast_code': self.forecast_code,
                 'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
@@ -93,15 +80,6 @@ class CAISO(BaseForecastedBalancingAuthority):
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
 
-    @property
-    def total_load(self):
-        return float(self.load)
-
-    @property
-    def total_gen(self):
-        """TODO: just a wrapper for load"""
-        return float(self.load)
-
 
 class BPA(BaseBalancingAuthority):
     """Raw BPA data"""
@@ -123,14 +101,6 @@ class BPA(BaseBalancingAuthority):
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
 
-    @property
-    def total_gen(self):
-        return float(self.wind + self.hydro + self.thermal)
-
-    @property
-    def total_load(self):
-        return float(self.load)
-
 
 # All units are megawatts
 class NE(BaseBalancingAuthority):
@@ -148,15 +118,6 @@ class NE(BaseBalancingAuthority):
     other_renewable = models.FloatField()
     other_fossil = models.FloatField()
     marginal_fuel = models.IntegerField()
-
-    @property
-    def total_gen(self):
-        return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
-
-    @property
-    def total_load(self):
-        """TODO: Just a wrapper around total generation for now"""
-        return self.total_gen
 
 
 class MISO(BaseForecastedBalancingAuthority):
@@ -180,14 +141,6 @@ class MISO(BaseForecastedBalancingAuthority):
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
 
-    @property
-    def total_load(self):
-        return self.load
-        
-    @property
-    def total_gen(self):
-        return self.gas + self.coal + self.nuclear + self.wind + self.other_gen
-
 
 class PJM(BaseForecastedBalancingAuthority):
     """Raw PJM data"""
@@ -206,14 +159,6 @@ class PJM(BaseForecastedBalancingAuthority):
         """Integer code for marginal fuel"""
         # implement this as an actual field for BAs with data
         return MARGINAL_FUELS.index('None')
-
-    @property
-    def total_gen(self):
-        return float(self.load)
-
-    @property
-    def total_load(self):
-        return float(self.load)
 
 
 class User(models.Model):

@@ -148,15 +148,15 @@ class BaseBalancingAuthorityManager(models.Manager):
             if group.count() > 0:
                 # get average data
                 total_green = 0
-                total_gen = 0
+                total_MW = 0
                 count = 0.0
                 for r in group:
-                    if r.total_gen > 0: # don't try to handle bad data
+                    if r.total_MW > 0: # don't try to handle bad data
                         total_green += r.fraction_clean
-                        total_gen += r.total_gen
+                        total_MW += r.total_MW
                         count += 1.0
                 average_green = round(total_green*100/count, 3)
-                average_gen = total_gen/count
+                average_gen = total_MW/count
                 representative_date = group.latest().local_date.replace(minute=0)
             else:
                 # get null data

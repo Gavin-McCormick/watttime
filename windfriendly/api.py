@@ -40,19 +40,13 @@ class BalancingAuthorityResource(ModelResource):
             'forecast_code': ['exact'],
             'marginal_fuel': ['exact'],
         }
-        fields = ['date', 'fraction_clean', 'gen_MW',
+        fields = ['date', 'fraction_clean', 'total_MW',
                   'marginal_fuel', 'forecast_code', 'local_date', 'date_extracted']
         serializer = MySerializer(formats=['json'])
 
     ####################
     # derived fields
     ####################
-
-    # generation in megawatts
-    gen_MW = fields.FloatField(readonly=True,
-                               help_text="Total MW of electricty generation")
-    def dehydrate_gen_MW(self, bundle):
-        return bundle.obj.total_gen
 
     # marginal fuel code
     marginal_fuel = fields.IntegerField(readonly=True,

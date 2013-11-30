@@ -252,7 +252,7 @@ def alerts(request):
     # get notable times
     sorted_green = sorted(ba_rows, key=lambda r : r.fraction_clean, reverse=True)
     data['highest_green'] = sorted_green[0].to_dict()
-    sorted_gen = sorted(ba_rows, key=lambda r : r.total_gen, reverse=True)
+    sorted_gen = sorted(ba_rows, key=lambda r : r.total_MW, reverse=True)
     data['highest_gen'] = sorted_gen[0].to_dict()
     data['lowest_gen'] = sorted_gen[-1].to_dict()
     sorted_marginal = sorted(ba_rows, key=lambda r : r.marginal_fuel)
