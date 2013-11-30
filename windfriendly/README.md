@@ -3,11 +3,12 @@ Overview
 <code>windfriendly</code> is a reusable (i.e., standalone) app that handles scraping, processing, and retrieving functionality
 for renewable energy generation data from Independent System Operators (ISOs) and other balancing authorities (BAs).
 
-Currently, four BAs are supported:
+Currently, several BAs are supported:
 * CAISO: California
 * BPA: Washington, Oregon, Idaho
 * ISONE: Massachusetts, Maine, Vermont, New Hampshire, Connecticut, Rhode Island
 * MISO: much of the Midwest and Great Lakes
+* PJM: mid-Atlantic states from Pennsylvania to Virgina, including DC
 
 In this app, each BA is associated with:
 * a parser that scrapes the data (in <code>parsers.py</code>)
@@ -23,13 +24,13 @@ The standard JSON API is built with [Tastypie](http://django-tastypie.readthedoc
 
     /api/v1/[BA_NAME]/?format=json
 
-where <code>[BA_NAME]</code> is one of 'caiso', 'bpa', 'isone', or 'miso'.
+where <code>[BA_NAME]</code> is one of 'caiso', 'bpa', 'isone', 'miso', or 'pjm'.
 
 The following filters are available:
 * limit: default is one day's worth of data
 * date: in ISO format (YYYY-mm-DDT%H:%M:%S.%LZ)
 * order_by: 'date' for earliest-first ordering, '-date' for latest-first ordering
-* forecast_code: 0 for actual data, 1 for forecast (CAISO only)
+* forecast_code: 0 for actual data, 1 for forecast
 * marginal_fuel: see <code>settings.py</code> for definitions
 
 For example, to get the most recent data point in BPA:
@@ -146,7 +147,6 @@ Some of these attributes are implemented as database fields and some as properti
 In addition to Django's Manager and QuerySet methods, the following additional methods are available:
 * qs.latest() and qs.earliest() return the row with the latest or earliest value of the date field, as usual, but use the date_extracted field to resolve conflicts
 * qs.best_guess_points() returns a list (not a QuerySet, sorry!) of the "best guess" data: unique on date field, using most recently extracted actual data, then most recently extracted forecast data (this logic is in qs.best_guess())
-* qs.filter_by_hour(i) filters by the integer hour i on the date field (Django filtering on hour will come in version 1.6)
 * objects.greenest_subrange(starttime, endtime, timedelta, forecast_type) identifies the contiguous time period of length timedelta within the date range (starttime, endtime) with the highest average fraction_green attribute
 
 

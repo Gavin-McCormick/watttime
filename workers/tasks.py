@@ -109,8 +109,8 @@ def send_ca_forecast_emails():
     end = start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(start, end)).best_guess_points()
-    best_time = max(rows, key = (lambda r : r.fraction_green)).date
-    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
+    best_time = max(rows, key = (lambda r : r.fraction_clean)).date
+    worst_time = min(rows, key = (lambda r : r.fraction_clean)).date
 
     best_hour = display_hour(best_time, tz)
     worst_hour = display_hour(worst_time, tz)
@@ -136,7 +136,7 @@ def prepare_to_send_ca_texts():
     dirty_end = dirty_start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
-    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
+    worst_time = min(rows, key = (lambda r : r.fraction_clean)).date
 
     schedule_task(worst_time, "workers.utils.send_ca_texts(0)")
 
@@ -147,7 +147,7 @@ def prepare_to_send_ca_texts():
     clean_end = clean_start + datetime.timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
-    best_time = max(rows, key = (lambda r : r.fraction_green)).date
+    best_time = max(rows, key = (lambda r : r.fraction_clean)).date
 
     schedule_task(best_time, "workers.utils.send_ca_texts(1)")
 
@@ -275,11 +275,11 @@ def send_tweet(ba_name):
         previous_point = rows.order_by('-date')[1]
     
     # get values
-    actual_percent = round(max(0.0, actual_point.fraction_green) * 100.0, 1)
-    previous_percent = round(max(0.0, previous_point.fraction_green) * 100.0, 1)
-    average_percent = round(max(0.0, sum([r.fraction_green for r in rows_to_average]) / float(rows_to_average.count())) * 100.0, 1)
+    actual_percent = round(max(0.0, actual_point.fraction_clean) * 100.0, 1)
+    previous_percent = round(max(0.0, previous_point.fraction_clean) * 100.0, 1)
+    average_percent = round(max(0.0, sum([r.fraction_clean for r in rows_to_average]) / float(rows_to_average.count())) * 100.0, 1)
     if forecast_point:
-        forecast_percent = round(max(0.0, forecast_point.fraction_green) * 100.0, 1)
+        forecast_percent = round(max(0.0, forecast_point.fraction_clean) * 100.0, 1)
     else:
         forecast_percent = None
 
@@ -326,58 +326,3 @@ def update_bas(bas):
         
     # return
     return updates
-
-def send_text_notifications(bas):
-    """ Should be run every 5-10 min, after updating BAs """
-    # get newest info
-    newest_timepoints = [BA_MODELS[ba].objects.all().latest() for ba in bas]
-    percent_greens = [point.fraction_green * 100.0 for point in newest_timepoints]
-    percent_coals = [point.fraction_high_carbon * 100.0 for point in newest_timepoints]
-    marginal_fuels = [MARGINAL_FUELS[point.marginal_fuel] for point in newest_timepoints]
-    print [tp.date for tp in newest_timepoints]
-
-    # loop over users
-    notified_users = []
-    for up in UserProfile.objects.all():
-        # get matching user
-        debug("  looking at user {} ({}): verified? {} active? {}".format(up.name,
-                str(up.phone), str(up.is_verified), str(up.user.is_active)))
-
-        # check if user in region to be notified
-        user_ba = BALANCING_AUTHORITIES[up.state]
-        if user_ba in bas:
-            ba_ind = bas.index(user_ba)
-        else:
-            continue
-
-        # check if it's a good time
-        localtime = up.local_now()
-        if (up.is_verified and up.user.is_active and
-                is_good_time_to_message(localtime, up.user_id, up)):
-            debug("    is verified, is active, and is good time to message")
-        else:
-            debug('    either not verified, not active, or not good time to message')
-            continue
-
-        # get message
-        # TODO: method does not exist!
-        msg = up.get_personalized_message(percent_greens[ba_ind],
-                                          percent_coals[ba_ind],
-                                          marginal_fuels[ba_ind])
-
-        # send notification
-        print msg
-        if msg:
-            if len(msg) <= 140:
-                debug('      sending message!')
-                # send text
-                send_text(msg, to=up.user)
-
-                notified_users.append(up.user_id)
-            else:
-                debug('      Failed to send message "{}" as it is too long.'.format(msg))
-        else:
-            debug('      active, verified user, but not right fuel now')
-
-    # return
-    return notified_users

@@ -53,7 +53,7 @@ def used_green_kwh(meter_row, ba_qset):
     return 0.0
 
   try:
-    fraction_load = sum([row.fraction_green() for row in ba_rows]) / n_rows
+    fraction_load = sum([row.fraction_clean for row in ba_rows]) / n_rows
   except ZeroDivisionError:
     return 0.0
 
