@@ -41,7 +41,7 @@ class BalancingAuthorityResource(ModelResource):
             'marginal_fuel': ['exact'],
         }
         fields = ['date', 'percent_green', 'percent_dirty', 'gen_MW',
-                  'marginal_fuel', 'forecast_code', 'local_date']
+                  'marginal_fuel', 'forecast_code', 'local_date', 'date_extracted']
         serializer = MySerializer(formats=['json'])
 
     ####################

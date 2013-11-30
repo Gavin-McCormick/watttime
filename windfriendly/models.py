@@ -2,6 +2,7 @@ from django.db import models
 import pytz
 from .managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorityManager
 from .settings import MARGINAL_FUELS, FORECAST_CODES
+from datetime import datetime
 #from accounts.models import User
 
 class BaseBalancingAuthority(models.Model):
@@ -165,6 +166,8 @@ class BPA(BaseBalancingAuthority):
 
     # date is utc
     date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from BPA
+    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def marginal_fuel(self):
@@ -221,6 +224,8 @@ class NE(BaseBalancingAuthority):
 
     # date is utc
     date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from ISONE
+    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def total_gen(self):

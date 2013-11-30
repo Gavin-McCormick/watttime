@@ -418,6 +418,7 @@ class BPAParser(UtilityParser):
         b.wind = row['wind']
         b.hydro = row['hydro']
         b.thermal = row['thermal']
+        b.date_extracted = pytz.utc.localize(datetime.datetime.now())
         b.save()
 
     def update(self):
@@ -492,7 +493,8 @@ class NEParser(UtilityParser):
                         marginal_fuel = min(marginal_fuel, MARGINAL_FUELS.index(fuel))
 
             ne.marginal_fuel = marginal_fuel
-
+            ne.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            
             if timestamp is None:
                 ne.date = None # Is this okay? Don't know.
             else:
