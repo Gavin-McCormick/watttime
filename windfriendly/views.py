@@ -250,7 +250,7 @@ def alerts(request):
         return {}
 
     # get notable times
-    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_green, reverse=True)
+    sorted_green = sorted(ba_rows, key=lambda r : r.fraction_clean, reverse=True)
     data['highest_green'] = sorted_green[0].to_dict()
     sorted_gen = sorted(ba_rows, key=lambda r : r.total_gen, reverse=True)
     data['highest_gen'] = sorted_gen[0].to_dict()

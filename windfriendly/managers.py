@@ -101,7 +101,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                                                forecast_code=FORECAST_CODES[forecast_type])
                
         # find best subrange
-        green_points = {r.date: r.fraction_green for r in rows}
+        green_points = {r.date: r.fraction_clean for r in rows}
         times = sorted(green_points.keys())
         greens = [green_points[d] for d in times]
         time_pairs = [(d, d + timedelta) for d in times
@@ -152,7 +152,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                 count = 0.0
                 for r in group:
                     if r.total_gen > 0: # don't try to handle bad data
-                        total_green += r.fraction_green
+                        total_green += r.fraction_clean
                         total_gen += r.total_gen
                         count += 1.0
                 average_green = round(total_green*100/count, 3)
@@ -161,7 +161,6 @@ class BaseBalancingAuthorityManager(models.Manager):
             else:
                 # get null data
                 average_green = None
-                average_dirty = None
                 average_gen = None
                 representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
     

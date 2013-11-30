@@ -109,8 +109,8 @@ def send_ca_forecast_emails():
     end = start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(start, end)).best_guess_points()
-    best_time = max(rows, key = (lambda r : r.fraction_green)).date
-    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
+    best_time = max(rows, key = (lambda r : r.fraction_clean)).date
+    worst_time = min(rows, key = (lambda r : r.fraction_clean)).date
 
     best_hour = display_hour(best_time, tz)
     worst_hour = display_hour(worst_time, tz)
@@ -136,7 +136,7 @@ def prepare_to_send_ca_texts():
     dirty_end = dirty_start + datetime.timedelta(hours = 14) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(dirty_start, dirty_end)).best_guess_points()
-    worst_time = min(rows, key = (lambda r : r.fraction_green)).date
+    worst_time = min(rows, key = (lambda r : r.fraction_clean)).date
 
     schedule_task(worst_time, "workers.utils.send_ca_texts(0)")
 
@@ -147,7 +147,7 @@ def prepare_to_send_ca_texts():
     clean_end = clean_start + datetime.timedelta(hours = 5) # 10pm PST
 
     rows = CAISO.objects.all().filter(date__range=(clean_start, clean_end)).best_guess_points()
-    best_time = max(rows, key = (lambda r : r.fraction_green)).date
+    best_time = max(rows, key = (lambda r : r.fraction_clean)).date
 
     schedule_task(best_time, "workers.utils.send_ca_texts(1)")
 
@@ -275,11 +275,11 @@ def send_tweet(ba_name):
         previous_point = rows.order_by('-date')[1]
     
     # get values
-    actual_percent = round(max(0.0, actual_point.fraction_green) * 100.0, 1)
-    previous_percent = round(max(0.0, previous_point.fraction_green) * 100.0, 1)
-    average_percent = round(max(0.0, sum([r.fraction_green for r in rows_to_average]) / float(rows_to_average.count())) * 100.0, 1)
+    actual_percent = round(max(0.0, actual_point.fraction_clean) * 100.0, 1)
+    previous_percent = round(max(0.0, previous_point.fraction_clean) * 100.0, 1)
+    average_percent = round(max(0.0, sum([r.fraction_clean for r in rows_to_average]) / float(rows_to_average.count())) * 100.0, 1)
     if forecast_point:
-        forecast_percent = round(max(0.0, forecast_point.fraction_green) * 100.0, 1)
+        forecast_percent = round(max(0.0, forecast_point.fraction_clean) * 100.0, 1)
     else:
         forecast_percent = None
 
