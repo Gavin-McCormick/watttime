@@ -24,7 +24,6 @@ class BaseBalancingAuthority(models.Model):
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_green*100, 3),
-                'percent_dirty': round(self.fraction_high_carbon*100, 3),
                 'load_MW': self.total_load,
                 'gen_MW': self.total_gen,
                 'marginal_fuel': self.marginal_fuel,
@@ -68,20 +67,6 @@ class BaseBalancingAuthority(models.Model):
         # implement this in daughter classes
         return 0
 
-    @property
-    def fraction_high_carbon(self):
-        """Fraction of load that is 'dirty', whatever that means"""
-        # implement this in daughter classes
-        return 0
-
-    def is_unusually_green(self):
-        """Boolean for whether or not this timepoint is above a 'clean' threshold"""
-        return self.fraction_green > self.GREEN_THRESHOLD
-
-    def is_unusually_dirty(self):
-        """Boolean for whether or not this timepoint is above a 'dirty' threshold"""
-        return self.fraction_high_carbon > self.DIRTY_THRESHOLD
-
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""
@@ -92,7 +77,6 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_green*100, 3),
-                'percent_dirty': round(self.fraction_high_carbon*100, 3),
                 'load_MW': self.total_load,
                 'gen_MW': self.total_gen,
                 'marginal_fuel': self.marginal_fuel,
@@ -144,10 +128,6 @@ class CAISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-    @property
-    def fraction_high_carbon(self):
-        return 1.0 - self.fraction_green
-
 
 class BPA(BaseBalancingAuthority):
     """Raw BPA data"""
@@ -188,13 +168,6 @@ class BPA(BaseBalancingAuthority):
     def fraction_wind(self):
         try:
             return self.wind / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
-    @property
-    def fraction_high_carbon(self):
-        try:
-            return self.thermal / self.total_gen
         except ZeroDivisionError:
             return 0
 
@@ -239,13 +212,6 @@ class NE(BaseBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-    @property
-    def fraction_high_carbon(self):
-        try:
-            return (self.coal) / self.total_gen
-        except ZeroDivisionError:
-            return 0
-        
 
 class MISO(BaseForecastedBalancingAuthority):
     # use non-forecasted manager
@@ -290,12 +256,6 @@ class MISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-    @property
-    def fraction_high_carbon(self):
-        try:
-            return (self.coal) / self.total_gen       
-        except ZeroDivisionError:
-            return 0
 
 class PJM(BaseForecastedBalancingAuthority):
     """Raw PJM data"""
@@ -336,10 +296,6 @@ class PJM(BaseForecastedBalancingAuthority):
             return self.wind / self.total_gen
         except ZeroDivisionError:
             return 0
-
-    @property
-    def fraction_high_carbon(self):
-        return 1 - self.fraction_wind
 
 
 class User(models.Model):

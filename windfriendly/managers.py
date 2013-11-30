@@ -148,17 +148,14 @@ class BaseBalancingAuthorityManager(models.Manager):
             if group.count() > 0:
                 # get average data
                 total_green = 0
-                total_dirty = 0
                 total_gen = 0
                 count = 0.0
                 for r in group:
                     if r.total_gen > 0: # don't try to handle bad data
                         total_green += r.fraction_green
-                        total_dirty += r.fraction_high_carbon
                         total_gen += r.total_gen
                         count += 1.0
                 average_green = round(total_green*100/count, 3)
-                average_dirty = round(total_dirty*100/count, 3)
                 average_gen = total_gen/count
                 representative_date = group.latest().local_date.replace(minute=0)
             else:
@@ -176,7 +173,6 @@ class BaseBalancingAuthorityManager(models.Manager):
     
             # add to list
             data.append({"percent_green": average_green,
-                         "percent_dirty": average_dirty,
                          "gen_MW": average_gen,
                          "utc_time": utc_time.strftime('%Y-%m-%d %H:%M'),
                          "local_time": local_time.strftime('%Y-%m-%d %H:%M'),
