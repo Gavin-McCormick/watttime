@@ -275,6 +275,8 @@ class CAISOParser(UtilityParser):
             row.forecast_code = FORECAST_CODES[dp['forecast_type']]
             row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
+            row.total_MW = self._total_MW(row)
             row.save()
             return True
         else:
@@ -289,19 +291,20 @@ class CAISOParser(UtilityParser):
         if not dp['load'] > 0:
             return False
            
-        if dp['forecast_type'] == self.ACTUAL_CODE:
-            # store actual data only if it's not there already
-            qset = self.MODEL.objects.filter(date=dp['timestamp'],
-                                             forecast_code=FORECAST_CODES[dp['forecast_type']])
-            if qset.count() > 0:
-                return False
-            else:
-                return True
-                                
+        # don't store duplicates
+        qset = self.MODEL.objects.filter(date=dp['timestamp'],
+                                         forecast_code=FORECAST_CODES[dp['forecast_type']])
+        if qset.count() > 0:
+            return False
         else:
-            # any time is ok for forecasts
             return True
             
+    def _fraction_clean(self, row):
+        return (row.wind + row.solar) / float(row.load)
+        
+    def _total_MW(self, row):
+        return row.load
+        
 
 class BPAParser(UtilityParser):
     def __init__(self, url = None):
@@ -423,8 +426,17 @@ class BPAParser(UtilityParser):
         b.wind = row['wind']
         b.hydro = row['hydro']
         b.thermal = row['thermal']
+        b.date_extracted = pytz.utc.localize(datetime.datetime.now())
+        b.fraction_clean = self._fraction_clean(b)
+        b.total_MW = self._total_MW(b)
         b.save()
-
+        
+    def _fraction_clean(self, row):
+        return row.wind / float(row.load)
+        
+    def _total_MW(self, row):
+        return float(row.load)
+        
     def update(self):
         try:
             latest_date = self.MODEL.objects.all().latest().date
@@ -453,7 +465,13 @@ class NEParser(UtilityParser):
             self.request_method = wrapper
         else:
             self.request_method = request_method
+            
+    def _fraction_clean(self, row):
+        return (row.hydro + row.other_renewable) / float(row.gas + row.nuclear + row.hydro + row.coal + row.other_renewable + row.other_fossil)
 
+    def _total_MW(self, row):
+        return float(row.gas + row.nuclear + row.hydro + row.coal + row.other_renewable + row.other_fossil)
+        
     def update(self):
         try:
             json = self.request_method()[0]['data']['GenFuelMixes']['GenFuelMix']
@@ -497,7 +515,10 @@ class NEParser(UtilityParser):
                         marginal_fuel = min(marginal_fuel, MARGINAL_FUELS.index(fuel))
 
             ne.marginal_fuel = marginal_fuel
-
+            ne.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            ne.fraction_clean = self._fraction_clean(ne)
+            ne.total_MW = self._total_MW(ne)
+            
             if timestamp is None:
                 ne.date = None # Is this okay? Don't know.
             else:
@@ -642,6 +663,8 @@ class MISOParser(UtilityParser):
             row.other_gen = dp['other']
             row.date = dp['timestamp'].astimezone(pytz.utc)
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
+            row.total_MW = self._total_MW(row)
             row.save()
             return True
         else:
@@ -661,6 +684,11 @@ class MISOParser(UtilityParser):
         else:
             return True
 
+    def _fraction_clean(self, row):
+        return row.wind / float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)
+        
+    def _total_MW(self, row):
+        return float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)
 
 class PJMParser(UtilityParser):
     def __init__(self):
@@ -728,6 +756,12 @@ class PJMParser(UtilityParser):
         else:
             return True
 
+    def _fraction_clean(self, row):
+        return row.wind / float(row.load)
+        
+    def _total_MW(self, row):
+        return row.load
+
     def datapoint_to_db(self, dp):
         if self._is_datapoint_to_store(dp):
             row = self.MODEL()
@@ -735,6 +769,8 @@ class PJMParser(UtilityParser):
             row.wind = dp['wind']
             row.date = dp['timestamp']
             row.date_extracted = pytz.utc.localize(datetime.datetime.now())
+            row.fraction_clean = self._fraction_clean(row)
+            row.total_MW = self._total_MW(row)
             row.save()
             return True
         else:

@@ -10,7 +10,7 @@ wsgiref==0.1.2
 django-localflavor-us==1.1
 numpy==1.7.1
 pandas==0.11.0
-South==0.8.1
+South==0.8.4
 django-cors-headers==0.11
 django-tastypie==0.9.15
 mimeparse==0.1.3

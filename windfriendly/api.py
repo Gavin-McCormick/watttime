@@ -40,31 +40,13 @@ class BalancingAuthorityResource(ModelResource):
             'forecast_code': ['exact'],
             'marginal_fuel': ['exact'],
         }
-        fields = ['date', 'percent_green', 'percent_dirty', 'gen_MW',
-                  'marginal_fuel', 'forecast_code', 'local_date']
+        fields = ['date', 'fraction_clean', 'total_MW',
+                  'marginal_fuel', 'forecast_code', 'local_date', 'date_extracted']
         serializer = MySerializer(formats=['json'])
 
     ####################
     # derived fields
     ####################
-
-    # percent green
-    percent_green = fields.FloatField(readonly=True,
-                                      help_text="Percent of total electricity that is 'green'")
-    def dehydrate_percent_green(self, bundle):
-        return bundle.obj.fraction_green * 100
-        
-    # percent dirty
-    percent_dirty = fields.FloatField(readonly=True,
-                                      help_text="Percent of total electricity that is 'dirty'")
-    def dehydrate_percent_dirty(self, bundle):
-        return bundle.obj.fraction_high_carbon * 100
-        
-    # generation in megawatts
-    gen_MW = fields.FloatField(readonly=True,
-                               help_text="Total MW of electricty generation")
-    def dehydrate_gen_MW(self, bundle):
-        return bundle.obj.total_gen
 
     # marginal fuel code
     marginal_fuel = fields.IntegerField(readonly=True,
@@ -73,17 +55,6 @@ class BalancingAuthorityResource(ModelResource):
     def dehydrate_marginal_fuel(self, bundle):
         return bundle.obj.marginal_fuel
         
-    # forecast code
-    forecast_code = fields.IntegerField(readonly=True,
-                                        default=0,
-                                        attribute='forecast_code',
-                                        help_text="Integer code for forecast type (0=actual)")
-    def dehydrate_forecast_code(self, bundle):
-        try:
-            return bundle.obj.forecast_code
-        except AttributeError:
-            return 0
-            
     # timestamp in BA's local timezone
     local_date = fields.DateTimeField(readonly=True,
                                       help_text="Timestamp in balancing authority's local time")
