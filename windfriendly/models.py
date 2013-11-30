@@ -61,12 +61,6 @@ class BaseBalancingAuthority(models.Model):
         # implement this in daughter classes
         return 0
 
-    @property
-    def fraction_wind(self):
-        """Fraction of generation that is from wind"""
-        # implement this in daughter classes
-        return 0
-
 
 class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     """Abstract base class for balancing authority timepoints with forecasting"""
@@ -121,13 +115,6 @@ class CAISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-    @property
-    def fraction_wind(self):
-        try:
-            return self.wind / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
 
 class BPA(BaseBalancingAuthority):
     """Raw BPA data"""
@@ -164,13 +151,6 @@ class BPA(BaseBalancingAuthority):
         except ZeroDivisionError:
             return 0
 
-    @property
-    def fraction_wind(self):
-        try:
-            return self.wind / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
 
 # All units are megawatts
 class NE(BaseBalancingAuthority):
@@ -202,13 +182,6 @@ class NE(BaseBalancingAuthority):
     def fraction_green(self):
         try:
             return (self.hydro + self.other_renewable) / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
-    @property
-    def fraction_wind(self):
-        try:
-            return self.other_renewable / self.total_gen
         except ZeroDivisionError:
             return 0
 
@@ -249,13 +222,6 @@ class MISO(BaseForecastedBalancingAuthority):
         except ZeroDivisionError:
             return 0
         
-    @property
-    def fraction_wind(self):
-        try:
-            return (self.wind) / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
 
 class PJM(BaseForecastedBalancingAuthority):
     """Raw PJM data"""
@@ -285,13 +251,6 @@ class PJM(BaseForecastedBalancingAuthority):
 
     @property
     def fraction_green(self):
-        try:
-            return self.wind / self.total_gen
-        except ZeroDivisionError:
-            return 0
-
-    @property
-    def fraction_wind(self):
         try:
             return self.wind / self.total_gen
         except ZeroDivisionError:
