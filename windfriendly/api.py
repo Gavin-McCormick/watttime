@@ -73,17 +73,6 @@ class BalancingAuthorityResource(ModelResource):
     def dehydrate_marginal_fuel(self, bundle):
         return bundle.obj.marginal_fuel
         
-    # forecast code
-    forecast_code = fields.IntegerField(readonly=True,
-                                        default=0,
-                                        attribute='forecast_code',
-                                        help_text="Integer code for forecast type (0=actual)")
-    def dehydrate_forecast_code(self, bundle):
-        try:
-            return bundle.obj.forecast_code
-        except AttributeError:
-            return 0
-            
     # timestamp in BA's local timezone
     local_date = fields.DateTimeField(readonly=True,
                                       help_text="Timestamp in balancing authority's local time")

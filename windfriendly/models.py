@@ -14,6 +14,15 @@ class BaseBalancingAuthority(models.Model):
     # must set timezone for every derived class
     TIMEZONE = pytz.utc
 
+    #### COMMON FIELDS ####
+    # forecast type is the index in FORECAST_CODES
+    forecast_code = models.IntegerField(default=0)
+    # date is utc
+    date = models.DateTimeField(db_index=True)
+    # date_extracted is the UTC time at which these values were pulled from ISO
+    date_extracted = models.DateTimeField(db_index=True)
+
+
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
         return {'percent_green': round(self.fraction_green*100, 3),
@@ -108,14 +117,6 @@ class CAISO(BaseForecastedBalancingAuthority):
     wind = models.FloatField()
     solar = models.FloatField()
 
-    # forecast type is the index in FORECAST_CODES
-    forecast_code = models.IntegerField()
-
-    # date is UTC time at which these values will be true (can be in the future)
-    date = models.DateTimeField(db_index=True)
-    # date_extracted is the UTC time at which these values were pulled from CAISO
-    date_extracted = models.DateTimeField(db_index=True)
-
     @property
     def marginal_fuel(self):
         """Integer code for marginal fuel"""
@@ -163,11 +164,6 @@ class BPA(BaseBalancingAuthority):
     wind = models.IntegerField()
     thermal = models.IntegerField()
     hydro = models.IntegerField()
-
-    # date is utc
-    date = models.DateTimeField(db_index=True)
-    # date_extracted is the UTC time at which these values were pulled from BPA
-    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def marginal_fuel(self):
@@ -222,11 +218,6 @@ class NE(BaseBalancingAuthority):
     other_fossil = models.FloatField()
     marginal_fuel = models.IntegerField()
 
-    # date is utc
-    date = models.DateTimeField(db_index=True)
-    # date_extracted is the UTC time at which these values were pulled from ISONE
-    date_extracted = models.DateTimeField(db_index=True)
-
     @property
     def total_gen(self):
         return float(self.gas + self.nuclear + self.hydro + self.coal + self.other_renewable + self.other_fossil)
@@ -265,9 +256,6 @@ class MISO(BaseForecastedBalancingAuthority):
     # timezone        
     TIMEZONE = pytz.timezone('America/Chicago')
 
-    # forecast type is the index in FORECAST_CODES
-    forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
-
     # generation and load in MW
     gas = models.FloatField()
     nuclear = models.FloatField()
@@ -275,11 +263,6 @@ class MISO(BaseForecastedBalancingAuthority):
     coal = models.FloatField()
     wind = models.FloatField()
     load = models.FloatField()
-
-    # date is utc
-    date = models.DateTimeField(db_index=True)
-    # date_extracted is the UTC time at which these values were pulled from MISO
-    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def marginal_fuel(self):
@@ -324,17 +307,9 @@ class PJM(BaseForecastedBalancingAuthority):
     # timezone
     TIMEZONE = pytz.timezone('US/Eastern')
 
-    # forecast type is the index in FORECAST_CODES
-    forecast_code = models.IntegerField(default=FORECAST_CODES['actual'])
-
     # load, etc in MW
     load = models.IntegerField()
     wind = models.IntegerField()
-
-    # date is utc
-    date = models.DateTimeField(db_index=True)
-    # date_extracted is the UTC time at which these values were pulled from MISO
-    date_extracted = models.DateTimeField(db_index=True)
 
     @property
     def marginal_fuel(self):
