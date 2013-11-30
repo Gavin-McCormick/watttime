@@ -9,19 +9,34 @@ class Migration(DataMigration):
     def forwards(self, orm):
         "Write your forwards methods here."
         for row in orm.NE.objects.all():
-            row.fraction_clean = (row.hydro + row.other_renewable) / float(row.gas + row.nuclear + row.hydro + row.coal + row.other_renewable + row.other_fossil)
+            try:
+                row.fraction_clean = (row.hydro + row.other_renewable) / float(row.gas + row.nuclear + row.hydro + row.coal + row.other_renewable + row.other_fossil)
+            except ZeroDivisionError:
+                row.fraction_clean = 0.0
             row.save()
         for row in orm.CAISO.objects.all():
-            row.fraction_clean = (row.wind + row.solar) / float(row.load)
+            try:
+                row.fraction_clean = (row.wind + row.solar) / float(row.load)
+            except ZeroDivisionError:
+                row.fraction_clean = 0.0
             row.save()
         for row in orm.BPA.objects.all():
-            row.fraction_clean = row.wind / float(row.wind + row.hydro + row.thermal)
+            try:
+                row.fraction_clean = row.wind / float(row.wind + row.hydro + row.thermal)
+            except ZeroDivisionError:
+                row.fraction_clean = 0.0
             row.save()
         for row in orm.MISO.objects.all():
-            row.fraction_clean = row.wind / float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)
+            try:
+                row.fraction_clean = row.wind / float(row.gas + row.coal + row.nuclear + row.wind + row.other_gen)
+            except ZeroDivisionError:
+                row.fraction_clean = 0.0
             row.save()
         for row in orm.PJM.objects.all():
-            row.fraction_clean = row.wind / float(row.load)
+            try:
+                row.fraction_clean = row.wind / float(row.load)
+            except ZeroDivisionError:
+                row.fraction_clean = 0.0
             row.save()
             
     def backwards(self, orm):
