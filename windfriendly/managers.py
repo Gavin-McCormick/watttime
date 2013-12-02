@@ -165,9 +165,10 @@ class BaseBalancingAuthorityManager(models.Manager):
                 representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
     
             # complicated date wrangling to get all local_time values in local today
-            utcnow = datetime.utcnow().replace(tzinfo=pytz.utc)
-            latest_day = utcnow.astimezone(tz).day
-            local_time = representative_date.replace(day=latest_day)
+            latest_dt = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(tz)
+            local_time = representative_date.replace(year=latest_dt.year,
+                                                     month=latest_dt.month,
+                                                     day=latest_dt.day)
             utc_time = local_time.astimezone(pytz.utc)
     
             # add to list

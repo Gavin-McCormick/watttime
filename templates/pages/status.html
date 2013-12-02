@@ -174,14 +174,14 @@
 
     // Get the data
     var initial_chart_for_state = function(state) {
-        d3.json("//www.watttime.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//www.watttime.org/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 all_data.push(d);
                 average_data.push(d);
             });
-        d3.json("//www.watttime.com/today/?st="+state, function(error, new_data){
+        d3.json("//www.watttime.org/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
@@ -195,6 +195,7 @@
         
             // Scale the range of the data
             min_time = new Date(d3.min(all_data, function(d) { return d.date; }));
+            console.log(min_time);
             start_time = new Date(min_time.setHours(0,0,0));
             end_time = new Date(min_time.setHours(24,0,0));
             x.domain([start_time, end_time]);
@@ -284,14 +285,14 @@
       //      d3.selectAll("circle")
       //          .data(data).exit()
       //          .remove();
-        d3.json("//watttime.herokuapp.com/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
+        d3.json("//www.watttime.org/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
                 all_data.push(d);
                 average_data.push(d);
             });
-        d3.json("//watttime.herokuapp.com/today/?st="+state, function(error, new_data){
+        d3.json("//www.watttime.org/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
                 d.date = parseDate(d.local_time);
                 d.value = +d.percent_green;
