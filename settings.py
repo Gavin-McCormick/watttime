@@ -44,7 +44,7 @@ if os.environ.has_key('DATABASE_URL'):
 
     # celery with CloudAMPQ backend
     BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost//')
-    CELERY_RESULT_BACKEND = 'database'
+    #CELERY_RESULT_BACKEND = 'amqp'
 
 ###############################
 # local development settings 
