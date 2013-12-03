@@ -524,9 +524,14 @@ class NEParser(UtilityParser):
             else:
                 ne.date = dateutil.parser.parse(timestamp)
 
-            ne.save()
+            if self.MODEL.objects.filter(date=ne.date,
+                                         forecast_code=FORECAST_CODES['actual']).count() > 0:
+                n_points = 0
+            else:
+                ne.save()
+                n_points = 1
 
-            return {'ba': 'ISONE', 'latest_date': str(self.MODEL.objects.latest().date)}
+            return {'ba': 'ISONE', 'latest_date': str(self.MODEL.objects.latest().date), 'update_rows': n_points}
             
         except requests.exceptions.RequestException as e: # failed to get data
             return {'ba': 'ISONE', 'error': 'RequestException: %s' % e}

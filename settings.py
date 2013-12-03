@@ -1,6 +1,8 @@
 import os.path
 import os
 import sys
+from datetime import timedelta
+from djcelery import setup_loader
 
 environ_settings = [
         'EMAIL_HOST_PASSWORD',
@@ -39,6 +41,10 @@ if os.environ.has_key('DATABASE_URL'):
         'default':  dj_database_url.config(default='postgres://watttime@localhost/windfriendly')
         }
 
+    # celery with CloudAMPQ backend
+    BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost//')
+    CELERY_RESULT_BACKEND = 'amqp'
+
 ###############################
 # local development settings 
 ###############################
@@ -55,7 +61,11 @@ else:
             'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
             }
         }
-
+        
+    # celery with Django backend
+    BROKER_URL = 'django://'
+    CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+    
 ###############################
 # common settings 
 ###############################
@@ -196,6 +206,8 @@ INSTALLED_APPS = (
     'corsheaders',
     'tastypie',
     'bootstrap3',
+    'kombu.transport.django',
+    'djcelery',
     # move django apps later 
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -271,3 +283,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # tastypie settings
 TASTYPIE_DATETIME_FORMATTING = 'iso-8601-strict'
+
+# celery settings
+BROKER_POOL_LIMIT = 1
+CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
+CELERY_CHORD_PROPAGATES = True
+setup_loader()
