@@ -8,8 +8,8 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
-# set up celery app and collect tasl
-app = Celery('workers')
+# set up celery app and collect tasks
+app = Celery('windfriendly')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 

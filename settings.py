@@ -45,6 +45,7 @@ if os.environ.has_key('DATABASE_URL'):
     # celery with CloudAMPQ backend
     BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost//')
     #CELERY_RESULT_BACKEND = 'amqp'
+    BROKER_TRANSPORT = 'amqplib'
 
 ###############################
 # local development settings 
@@ -289,5 +290,3 @@ TASTYPIE_DATETIME_FORMATTING = 'iso-8601-strict'
 BROKER_POOL_LIMIT = 1
 BROKER_CONNECTION_MAX_RETRIES = 0
 CELERY_MESSAGE_COMPRESSION = 'gzip'
-CELERY_TASK_RESULT_EXPIRES = timedelta(minutes=30)
-CELERY_CHORD_PROPAGATES = True
