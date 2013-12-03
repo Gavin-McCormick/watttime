@@ -2,6 +2,7 @@
 *.db
 *.dbbk
 *~
+celerybeat-schedule
 
 # C extensions
 *.so
