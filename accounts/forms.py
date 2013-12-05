@@ -16,7 +16,7 @@ class UserProfileForm(forms.Form):
     ask_feedback    = config.config_ask_feedback.form_field
 
 class SignupForm(forms.Form):
-    email = forms.CharField() #help_text='Email')
+    email = forms.EmailField() #help_text='Email')
     state = forms.ChoiceField(choices = STATE_CHOICES) #, help_text='State')
 
     def __init__(self, *args, **kwargs):
@@ -24,7 +24,7 @@ class SignupForm(forms.Form):
         self.fields['email'].widget.attrs['placeholder'] = u'Email'
 
 class LoginForm(forms.Form):
-    email = forms.CharField() #help_text='Email')
+    email = forms.EmailField() #help_text='Email')
     password = forms.CharField( #help_text='Password',
             widget=forms.PasswordInput())
 
