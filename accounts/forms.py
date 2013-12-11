@@ -78,8 +78,8 @@ class PasswordResetWarningsForm(PasswordResetForm):
                                         code='missing_email')
         else:
             if not active_users[0].has_usable_password():
-                raise forms.ValidationError(self.error_messages['missing_email'],
-                                            code='missing_email')
+                raise forms.ValidationError(self.error_messages['unusable_password'],
+                                            code='unusable_password')
 
         # run regular clean
         return super(PasswordResetWarningsForm, self).clean(*args, **kwargs)
