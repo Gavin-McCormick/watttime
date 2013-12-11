@@ -17,6 +17,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 from django.contrib.auth import views as django_views
+from .forms import PasswordResetWarningsForm
 from . import views
 
 # custom urls
@@ -63,9 +64,11 @@ urlpatterns += patterns('',
         name='password_change_done'),
     url(r'^accounts/password/reset[/]$',
         django_views.password_reset,
-        {'template_name': 'accounts/password_reset_form.html', 'email_template_name': 'accounts/password_reset_email.html'},
+        {'template_name': 'accounts/password_reset_form.html',
+        'email_template_name': 'accounts/password_reset_email.html',
+        'password_reset_form': PasswordResetWarningsForm},
         name='password_reset'),
-    url(r'^accounts/password/reset/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)[/]$',
+    url(r'^accounts/password/reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$',
         django_views.password_reset_confirm,
         {'template_name': 'accounts/password_reset_confirm.html'},
         name='password_reset_confirm'),
