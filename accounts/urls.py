@@ -17,7 +17,7 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 from django.contrib.auth import views as django_views
-from .forms import PasswordResetWarningsForm
+from .forms import PasswordResetWarningsForm, LoginForm
 from . import views
 
 # custom urls
@@ -30,8 +30,6 @@ urlpatterns = patterns('',
         views.magic_login, name='magic_login'),
     url(r'^authenticate[/]?$',
         views.authenticate_view, name='authenticate'),
-    url(r'^login[/]?$',
-        views.user_login, name='user_login'),
     url(r'^profile/settings[/]?$',
         views.profile_settings, name='profile_settings'),
     url(r'^profile/create[/]?$',
@@ -83,4 +81,8 @@ urlpatterns += patterns('',
     url(r'^accounts/logout[/]$',
         django_views.logout, {'next_page':'/'},
         name='logout'),
+    url(r'^accounts/login[/]$',
+        django_views.login,
+        {'template_name': 'accounts/login.html', 'authentication_form': LoginForm},
+        name='login'),
 )

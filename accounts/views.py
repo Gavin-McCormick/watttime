@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from accounts import models, forms, messages, twilio_utils, regions
 from watttime_shift.models import ShiftRequest
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse
 import random
 from django.utils.timezone import now
@@ -172,23 +172,25 @@ class LoginView(FormView):
     def form_submitted(self, request, vals):
         email       = vals['email']
         password    = vals['password']
-        ups = list(models.UserProfile.objects.filter(email__iexact = email))
+        users = list(User.objects.filter(email__iexact = email))
 
-        if len(ups) == 0:
+        if len(users) == 0:
             return render(request, 'accounts/no_such_user.html', {'email' : email})
-        up = ups[0]
+        user = users[0]
 
-        user = authenticate(username = up.user.username, password = password)
+        user = authenticate(username = user.username, password = password)
         # if username was set wrong, try with email
         if user is None:
             user = authenticate(username = email, password = password)
-        if user is None:
-            user = authenticate(username = up.name, password = password)
         
         # try to login
         if user is not None:
             login(request, user)
-            return redirect('profile_settings')
+            redirect_to = request.GET.get(REDIRECT_FIELD_NAME, '')
+            if redirect_to:
+                HttpResponseRedirect(redirect_to)
+            else:
+                return redirect('profile_settings')
         else:
             return render(request, 'accounts/wrong_password.html', {'email' : email})
 
@@ -238,7 +240,7 @@ profile_create = ProfileCreate()
 
 phone_verify_view = PhoneVerifyView()
 
-user_login = LoginView()
+#user_login = LoginView()
 
 create_user = CreateUserView()
 
@@ -267,13 +269,13 @@ def authenticate_view(request):
     
 
 def create_new_user(email, name = None, state = None):
-    ups = models.UserProfile.objects.filter(email__iexact = email)
-    if len(ups) > 0:
+    users = User.objects.filter(email__iexact = email)
+    if len(users) > 0:
         print ("User(s) with email {} already exists, aborting user creation!".
                 format(email))
         return None
 
-    username = new_user_name()
+    username = email #new_user_name()
     user = User.objects.create_user(username, email = email, password = None)
     user.is_active = False
     user.is_staff = False

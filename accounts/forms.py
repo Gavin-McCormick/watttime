@@ -1,6 +1,6 @@
 from django import forms
 from django_localflavor_us.us_states import STATE_CHOICES
-from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext, ugettext_lazy as _
 
@@ -11,54 +11,34 @@ from accounts import config
 
 class UserProfileForm(forms.Form):
     name            = config.config_name.form_field
-    password        = forms.CharField(help_text='Password', required = False)
+    password        = forms.CharField(label='Password', required = False)
     state           = config.config_state.form_field
-    phone           = forms.CharField(help_text='Phone', required = False)
+    phone           = forms.CharField(label='Phone', required = False)
     equipment       = config.config_equipment.form_field
     beta_test       = config.config_beta_test.form_field
     ask_feedback    = config.config_ask_feedback.form_field
 
 class SignupForm(forms.Form):
-    email = forms.EmailField() #help_text='Email')
-    state = forms.ChoiceField(choices = STATE_CHOICES) #, help_text='State')
+    email = forms.EmailField(label='Email')
+    state = forms.ChoiceField(choices = STATE_CHOICES, label='State')
 
-    def __init__(self, *args, **kwargs):
-        super(SignupForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['placeholder'] = u'Email'
-
-class LoginForm(forms.Form):
-    email = forms.EmailField() #help_text='Email')
-    password = forms.CharField( #help_text='Password',
-            widget=forms.PasswordInput())
-
-    def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs['placeholder'] = u'Email'
-        self.fields['password'].widget.attrs['placeholder'] = u'Password'
+class LoginForm(AuthenticationForm):
+    # built-in form has everything except username as email
+    username = forms.EmailField(label='Email')
 
 class PhoneVerificationForm(forms.Form):
     verification_code = forms.IntegerField(label='Verification code')
 
 class AccountCreateForm(forms.Form):
-    name = forms.CharField() #help_text='Name')
-    password = forms.CharField(#help_text='Password',
+    name = forms.CharField(label='Name')
+    password = forms.CharField(label='Password',
                                widget=forms.PasswordInput())
-   # state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
-
-    def __init__(self, *args, **kwargs):
-        super(AccountCreateForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['placeholder'] = u'Name'
-        self.fields['password'].widget.attrs['placeholder'] = u'Password'
 
 class UserProfileFirstForm(forms.Form):
-    phone = forms.CharField() #help_text='Phone')
-   # state = forms.ChoiceField(choices = STATE_CHOICES, help_text='State')
+    phone = forms.CharField(label='Phone')
 
-    def __init__(self, *args, **kwargs):
-        super(UserProfileFirstForm, self).__init__(*args, **kwargs)
-        self.fields['phone'].widget.attrs['placeholder'] = u'Phone'
-        
 class PasswordResetWarningsForm(PasswordResetForm):
+    # built-in form doesn't check for errors
     error_messages = {
         'duplicate_email': _("Oops, there seems to be more than one user with that email! Please contact us to sort this out."),
         'missing_email': _("Hmm, couldn't find any users with that email. Try again?"),
