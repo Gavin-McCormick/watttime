@@ -8,3 +8,4 @@ def update(ba_name='bpa'):
     except Exception as e:
         result = "Update failed with error: %s" % e
     return result
+    
