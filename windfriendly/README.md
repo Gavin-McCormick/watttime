@@ -31,89 +31,89 @@ The following filters are available:
 * date: in ISO format (YYYY-mm-DDT%H:%M:%S.%LZ)
 * order_by: 'date' for earliest-first ordering, '-date' for latest-first ordering
 * forecast_code: 0 for actual data, 1 for forecast
-* marginal_fuel: see <code>settings.py</code> for definitions
+* marginal_fuel: index of the fuel name in this list: ['Coal', 'Oil', 'Natural Gas', 'Refuse', 'Hydro', 'Wood', 'Nuclear', 'Solar', 'Wind', 'None']. For example, oil is 1 and wind is 8. This data is only available for ISONE, so marginal_fuel is None for all other regions.
 
 For example, to get the most recent data point in BPA:
 
     /api/v1/bpa/?format=json&order_by=-date&limit=1
 
     {
-      "meta": {
-      "limit": 1, 
-      "next": "/api/v1/bpa/?order_by=-date&offset=1&limit=1&format=json", 
-      "offset": 0, 
-      "previous": null, 
-      "total_count": 10239
-      }, 
-      "objects": [
-		 {
-		     "date": "2013-08-05T23:05:00+00:00", 
-      		     "forecast_code": 0, 
-      		     "gen_MW": 14858.0, 
-      		     "local_date": "2013-08-05T16:05:00-07:00", 
-      		     "marginal_fuel": 9, 
-      		     "percent_dirty": 34.87683402880603, 
-      		     "percent_green": 2.0527661865661595, 
-      		     "resource_uri": "/api/v1/bpa/10239/"
-    	      }
-  	 ]
-    }
+	  "meta": {
+	    "limit": 1, 
+	    "next": "/api/v1/bpa/?offset=1&order_by=-date&format=json&limit=1", 
+	    "offset": 0, 
+	    "previous": null, 
+	    "total_count": 64721
+	  }, 
+	  "objects": [
+	    {
+	      "date": "2014-02-04T18:25:00+00:00", 
+	      "date_extracted": "2014-02-04T18:33:18+00:00", 
+	      "forecast_code": 0, 
+	      "fraction_clean": 0.084051724137931, 
+	      "local_date": "2014-02-04T10:25:00-08:00", 
+	      "marginal_fuel": 9, 
+	      "resource_uri": "/api/v1/bpa/64721/", 
+	      "total_MW": 12992.0
+	    }
+	  ]
+	}
 
-Or to get 4 hours of day-ahead-forecast data from CAISO on July 1 (note that the date range is inclusive and times are in UTC):
+Or to get 4 hours of day-ahead-forecast data from CAISO on October 1 (note that the date range is inclusive and times are in UTC):
 
-    /api/v1/caiso/?format=json&order_by=date&date__range=2013-07-01T00:00,2013-07-01T03:00&forecast_code=1
+    /api/v1/caiso/?format=json&order_by=date&date__range=2013-10-01T00:00,2013-10-01T03:00&forecast_code=1
 
     {
-	"meta": {
-    	"limit": 24, 
-    	"next": null, 
-    	"offset": 0, 
-    	"previous": null, 
-    	"total_count": 4
-  	}, 
-  	"objects": [
-    	   {
-	      "date": "2013-07-01T00:00:00+00:00", 
+	  "meta": {
+	    "limit": 24, 
+	    "next": null, 
+	    "offset": 0, 
+	    "previous": null, 
+	    "total_count": 4
+	  }, 
+	  "objects": [
+	    {
+	      "date": "2013-10-01T00:00:00+00:00", 
+	      "date_extracted": "2013-09-30T23:10:19+00:00", 
 	      "forecast_code": 1, 
-      	      "gen_MW": 43830.22, 
-      	      "local_date": "2013-06-30T17:00:00-07:00", 
-      	      "marginal_fuel": 9, 
-      	      "percent_dirty": 95.07871509657035, 
-      	      "percent_green": 4.921284903429643, 
-      	      "resource_uri": "/api/v1/caiso/41/"
-    	      }, 
-    	   {
-      	      "date": "2013-07-01T01:00:00+00:00", 
-      	      "forecast_code": 1, 
-      	      "gen_MW": 42819.13, 
-      	      "local_date": "2013-06-30T18:00:00-07:00", 
-      	      "marginal_fuel": 9, 
-      	      "percent_dirty": 95.2433877101193, 
-      	      "percent_green": 4.756612289880715, 
-      	      "resource_uri": "/api/v1/caiso/42/"
-    	      }, 
-    	   {
-      	      "date": "2013-07-01T02:00:00+00:00", 
-      	      "forecast_code": 1, 
-      	      "gen_MW": 40913.05, 
-      	      "local_date": "2013-06-30T19:00:00-07:00", 
-      	      "marginal_fuel": 9, 
-      	      "percent_dirty": 95.1582685720082, 
-      	      "percent_green": 4.841731427991802, 
-      	      "resource_uri": "/api/v1/caiso/43/"
-    	      }, 
-    	   {
-	      "date": "2013-07-01T03:00:00+00:00", 
-      	      "forecast_code": 1, 
-      	      "gen_MW": 39852.36, 
-      	      "local_date": "2013-06-30T20:00:00-07:00", 
-      	      "marginal_fuel": 9, 
-      	      "percent_dirty": 94.90913461586716, 
-     	      "percent_green": 5.090865384132834, 
-      	      "resource_uri": "/api/v1/caiso/44/"
-    	      }
-	 ]
-    }
+	      "fraction_clean": 0.0862876245793019, 
+	      "local_date": "2013-09-30T17:00:00-07:00", 
+	      "marginal_fuel": 9, 
+	      "resource_uri": "/api/v1/caiso/54148/", 
+	      "total_MW": 31899.36
+	    }, 
+	    {
+	      "date": "2013-10-01T01:00:00+00:00", 
+	      "date_extracted": "2013-09-30T23:10:19+00:00", 
+	      "forecast_code": 1, 
+	      "fraction_clean": 0.0737352245189512, 
+	      "local_date": "2013-09-30T18:00:00-07:00", 
+	      "marginal_fuel": 9, 
+	      "resource_uri": "/api/v1/caiso/54149/", 
+	      "total_MW": 31597.11
+	    }, 
+	    {
+	      "date": "2013-10-01T02:00:00+00:00", 
+	      "date_extracted": "2013-09-30T23:10:19+00:00", 
+	      "forecast_code": 1, 
+	      "fraction_clean": 0.0608385181897262, 
+	      "local_date": "2013-09-30T19:00:00-07:00", 
+	      "marginal_fuel": 9, 
+	      "resource_uri": "/api/v1/caiso/54150/", 
+	      "total_MW": 31360.56
+	    }, 
+	    {
+	      "date": "2013-10-01T03:00:00+00:00", 
+	      "date_extracted": "2013-09-30T23:10:19+00:00", 
+	      "forecast_code": 1, 
+	      "fraction_clean": 0.0602227973514438, 
+	      "local_date": "2013-09-30T20:00:00-07:00", 
+	      "marginal_fuel": 9, 
+	      "resource_uri": "/api/v1/caiso/54151/", 
+	      "total_MW": 32112.59
+	    }
+	  ]
+	}
 
 
 Usage: API calls in views
@@ -155,6 +155,5 @@ TODOs
 An unordered list.
 * Build equivalents to "today" and "averageday" views into standard API
 * Refactor BPAParser to make its interface more like other parsers
-* Add <code>date_extracted</code> field to CAISO and NE models
 * Change "update" view and parsers to take date arguments to allow easier backfilling of data (maybe using POST requests)
 * Make qs.best_guess_points() return QuerySet not list
