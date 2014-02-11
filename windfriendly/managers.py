@@ -155,7 +155,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                         total_green += r.fraction_clean
                         total_MW += r.total_MW
                         count += 1.0
-                average_green = round(total_green*100/count, 3)
+                average_green = total_green/count
                 average_gen = total_MW/count
                 representative_date = group.latest().local_date.replace(minute=0)
             else:
@@ -171,10 +171,10 @@ class BaseBalancingAuthorityManager(models.Manager):
             utc_time = local_time.astimezone(pytz.utc)
     
             # add to list
-            data.append({"percent_green": average_green,
-                         "gen_MW": average_gen,
-                         "utc_time": utc_time.strftime('%Y-%m-%d %H:%M'),
-                         "local_time": local_time.strftime('%Y-%m-%d %H:%M'),
+            data.append({"fraction_clean": average_green,
+                         "total_MW": average_gen,
+                         "date": utc_time.strftime('%Y-%m-%d %H:%M'),
+                         "local_date": local_time.strftime('%Y-%m-%d %H:%M'),
                          "hour": local_time.hour,
                         })
 
@@ -210,7 +210,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                         total_green += r.fraction_clean
                         total_MW += r.total_MW
                         count += 1.0
-                average_green = round(total_green*100/count, 3)
+                average_green = total_green/count
                 average_gen = total_MW/count
             else:
                 # get null data
@@ -218,14 +218,14 @@ class BaseBalancingAuthorityManager(models.Manager):
                 average_gen = None
     
             # add to list
-            data.append({"percent_green": average_green,
-                         "gen_MW": average_gen,
-                         "utc_time": date.strftime('%Y-%m-%d %H:%M'),
-                         "local_time": date.astimezone(tz).strftime('%Y-%m-%d %H:%M'),
+            data.append({"fraction_clean": average_green,
+                         "total_MW": average_gen,
+                         "date": date.strftime('%Y-%m-%d %H:%M'),
+                         "local_date": date.astimezone(tz).strftime('%Y-%m-%d %H:%M'),
                         })
 
         # return
-        return sorted(data, key=lambda r: r['local_time'])
+        return sorted(data, key=lambda r: r['local_date'])
 
 
 class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):

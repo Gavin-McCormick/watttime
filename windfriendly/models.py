@@ -1,8 +1,7 @@
 from django.db import models
 import pytz
 from .managers import BaseBalancingAuthorityManager, ForecastedBalancingAuthorityManager
-from .settings import MARGINAL_FUELS, FORECAST_CODES
-from datetime import datetime
+from .settings import MARGINAL_FUELS
 #from accounts.models import User
 
 class BaseBalancingAuthority(models.Model):
@@ -24,11 +23,13 @@ class BaseBalancingAuthority(models.Model):
 
     # must define 'date' and 'marginal_fuel' attributes
     def to_dict(self):
-        return {'percent_green': round(self.fraction_clean*100, 3),
+        return {'fraction_clean': self.fraction_clean,
                 'total_MW': self.total_MW,
                 'marginal_fuel': self.marginal_fuel,
-                'utc_time': self.date.strftime('%Y-%m-%d %H:%M'),
-                'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
+                'forecast_code': self.forecast_code,
+                'date': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
+                'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
+                'local_date': self.local_date.strftime('%Y-%m-%d %H:%M'),
                 }
 
     class Meta:
@@ -49,17 +50,6 @@ class BaseForecastedBalancingAuthority(BaseBalancingAuthority):
     class Meta:
         abstract = True
         get_latest_by = 'date'
-
-    # must define 'date', 'date_extracted', 'forecast_code', and 'marginal_fuel' attributes
-    def to_dict(self):
-        return {'percent_green': round(self.fraction_clean*100, 3),
-                'total_MW': self.total_MW,
-                'marginal_fuel': self.marginal_fuel,
-                'forecast_code': self.forecast_code,
-                'utc_time': self.date.astimezone(pytz.utc).strftime('%Y-%m-%d %H:%M'),
-                'date_extracted': self.date_extracted.strftime('%Y-%m-%d %H:%M'),
-                'local_time': self.local_date.strftime('%Y-%m-%d %H:%M'),
-                }
 
 
 class CAISO(BaseForecastedBalancingAuthority):
