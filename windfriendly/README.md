@@ -122,6 +122,7 @@ In addition, there are a few other URIs that return JSON data in response to a G
 
 Here are the cheat sheet versions:
 * scrape new data and a get a summary of what changed: <code>/update/[BA_NAME]</code>
+* get data for the historical period, rolling up by hour: <code>/history/?st=[ST]&start=[YYYYmmDDHHSS]&end=[YYYYmmDDHHSS]</code>
 * get "best guess" data (actual data or most recent forecast data) between 12AM today and 12AM tomorrow in the BA's local time: <code>/today/?st=[ST]</code>
 * get an average day of data by aggregating the historical period by hour (e.g., the hour 14 data is the average of the data on each day at 2PM): <code>/averageday/?st=[ST]&start=[YYYYmmDDHHSS]&end=[YYYYmmDDHHSS]</code>
 * get max and min alerts for the historical period: <code>/alerts/?st=[ST]&start=[YYYYmmDDHHSS]&end=[YYYYmmDDHHSS]</code>
