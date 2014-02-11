@@ -20,6 +20,7 @@ from dateutil import tz
 import pytz
 import json
 import logging
+import pandas as pd
 
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponse
@@ -50,7 +51,7 @@ def json_response(func):
     return HttpResponse(data, "application/json")
   return decorator
 
-def ba_from_request(request):
+def ba_from_request(request, ba=None):
     """
     Given a GET request with location info, return balancing authority
        name and model queryset.
@@ -58,17 +59,22 @@ def ba_from_request(request):
     Future support for lat+lng, zipcode, country code, etc.
     Returns tuple of (string, QuerySet)
     """
-    # try state
-    state = request.GET.get('st', None)
-    if state:
-      state = state.upper()
-      ba = BALANCING_AUTHORITIES.get(state, None)
-
-    # try BA
+    if ba:
+        # use supplied ba
+        ba = ba.upper()
+        
     else:
-        ba = request.GET.get('ba', None)
-        if ba:
-          ba = ba.upper()
+        # try state
+        state = request.GET.get('st', None)
+        if state:
+          state = state.upper()
+          ba = BALANCING_AUTHORITIES.get(state, None)
+    
+        # try BA
+        else:
+            ba = request.GET.get('ba', None)
+            if ba:
+              ba = ba.upper()
       
     # got nothing
     try:
@@ -133,9 +139,9 @@ def update(request, utility):
         
 
 @json_response
-def averageday(request):
+def averageday(request, ba=None):
     # get name and queryset for BA
-    ba_name, ba_qset = ba_from_request(request)
+    ba_name, ba_qset = ba_from_request(request, ba)
     # if no BA, error
     if ba_qset is None:
         return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
@@ -147,7 +153,7 @@ def averageday(request):
     return BA_MODELS[ba_name].objects.average_day(utc_start, utc_end, BA_MODELS[ba_name].TIMEZONE)
     
 @json_response
-def greenest_subrange(request):
+def greenest_subrange(request, ba=None):
     """Get cleanest subrange using objects.greenest_subrange"""
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
@@ -192,7 +198,7 @@ def greenest_subrange(request):
                 "error_code": 3}
         
 @json_response
-def today(request):
+def today(request, ba=None):
     """Get best data from today (actual until now, best forecast for future)"""
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
@@ -221,7 +227,23 @@ def today(request):
     return data
 
 @json_response
-def alerts(request):
+def history_hourly(request, ba=None):
+    """Get hourly average history data"""
+    # get name and queryset for BA
+    ba_name, ba_qset = ba_from_request(request)
+    # if no BA, error
+    if ba_qset is None:
+        return {"error_message": "Missing or bad argument: ba or st (got %s)" % ba_name,
+                "error_code": 1}
+
+    # get requested date range
+    utc_start, utc_end = utctimes_from_request(request)
+
+    # return
+    return BA_MODELS[ba_name].objects.rollup(utc_start, utc_end, BA_MODELS[ba_name].TIMEZONE, how='hourly')
+
+@json_response
+def alerts(request, ba=None):
     # get name and queryset for BA
     ba_name, ba_qset = ba_from_request(request)
     # if no BA, error

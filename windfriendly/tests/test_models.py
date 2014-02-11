@@ -121,8 +121,8 @@ class BPATestCase(BaseBATestCase, TestCase):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
                              {'marginal_fuel': 9, 'total_MW': 10917.0,
-                              'percent_green': 24.906, 'local_time': '2013-11-19 00:00',
-                              'utc_time': '2013-11-19 08:00'})
+                              'fraction_clean': 0.24906109737107263, 'local_date': '2013-11-19 00:00',
+                              'date': '2013-11-19 08:00', 'date_extracted': '2013-11-19 08:00', 'forecast_code': 0,})
 
 
 class CAISOTestCase(BaseBATestCase, TestCase):
@@ -145,10 +145,10 @@ class CAISOTestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'percent_green': 0.002, 'marginal_fuel': 9,
+                             {'fraction_clean': 1.6873942663801407e-05, 'marginal_fuel': 9,
                              'date_extracted': '2013-11-25 19:04', 'forecast_code': 0,
                              'total_MW': 21871.0,
-                             'utc_time': '2013-11-24 09:00', 'local_time': '2013-11-24 01:00'})
+                             'date': '2013-11-24 09:00', 'local_date': '2013-11-24 01:00'})
 
 
 class NETestCase(BaseBATestCase, TestCase):
@@ -171,6 +171,6 @@ class NETestCase(BaseBATestCase, TestCase):
     def test_to_dict(self):
         row = self.model.objects.get(pk=1)
         self.assertDictEqual(row.to_dict(),
-                             {'total_MW': 13235.2, 'local_time': '2013-11-29 19:21',
-                             'marginal_fuel': 2, 'percent_green': 16.137,
-                             'utc_time': '2013-11-30 00:21'})
+                             {'total_MW': 13235.2, 'local_date': '2013-11-29 19:21',
+                             'marginal_fuel': 2, 'fraction_clean': 0.16137270309477758,
+                             'date': '2013-11-30 00:21', 'date_extracted': '2013-11-30 00:27', 'forecast_code': 0})

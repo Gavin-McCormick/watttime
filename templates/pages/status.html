@@ -176,15 +176,15 @@
     var initial_chart_for_state = function(state) {
         d3.json("//www.watttime.org/averageday/?st="+state+"&start="+avstart_str, function(error, av_data){
             av_data.forEach(function(d) {
-                d.date = parseDate(d.local_time);
-                d.value = +d.percent_green;
+                d.date = parseDate(d.local_date);
+                d.value = +d.fraction_green*100;
                 all_data.push(d);
                 average_data.push(d);
             });
         d3.json("//www.watttime.org/today/?st="+state, function(error, new_data){
             new_data.forEach(function(d) {
-                d.date = parseDate(d.local_time);
-                d.value = +d.percent_green;
+                d.date = parseDate(d.local_date);
+                d.value = +d.fraction_green*100;
                 all_data.push(d);
                 if (d.forecast_code > 0) {
                     forecast_data.push(d);
