@@ -65,8 +65,10 @@ else:
         }
         
     # celery with Django backend
-    BROKER_URL = 'django://'
+#    BROKER_URL = 'django://'
+    BROKER_URL = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost//')
     CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+ #   BROKER_TRANSPORT = 'amqplib'
     
 ###############################
 # common settings 
