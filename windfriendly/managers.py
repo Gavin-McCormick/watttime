@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.query import QuerySet
 from django.core.exceptions import FieldError
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import numpy as np
 from .settings import FORECAST_CODES
@@ -155,7 +155,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                         total_green += r.fraction_clean
                         total_MW += r.total_MW
                         count += 1.0
-                average_green = round(total_green*100/count, 3)
+                average_green = total_green/count
                 average_gen = total_MW/count
                 representative_date = group.latest().local_date.replace(minute=0)
             else:
@@ -171,15 +171,61 @@ class BaseBalancingAuthorityManager(models.Manager):
             utc_time = local_time.astimezone(pytz.utc)
     
             # add to list
-            data.append({"percent_green": average_green,
-                         "gen_MW": average_gen,
-                         "utc_time": utc_time.strftime('%Y-%m-%d %H:%M'),
-                         "local_time": local_time.strftime('%Y-%m-%d %H:%M'),
+            data.append({"fraction_clean": average_green,
+                         "total_MW": average_gen,
+                         "date": utc_time.strftime('%Y-%m-%d %H:%M'),
+                         "local_date": local_time.strftime('%Y-%m-%d %H:%M'),
                          "hour": local_time.hour,
                         })
 
         # return
         return sorted(data, key=lambda r: r['local_time'])
+        
+    def rollup(self, utc_start, utc_end, tz, how='hourly'):
+        """hourly rollup"""
+        if not how == 'hourly':
+            raise ValueError('Only hourly rollups are currently supported.')
+            
+        # get rows
+        try:
+            ba_rows = self.get_queryset().filter(date__range=(utc_start, utc_end), forecast_code=0)
+        except FieldError:
+            ba_rows = self.get_queryset().filter(date__range=(utc_start, utc_end))
+            
+        if ba_rows.count() == 0:
+            print 'no data for UTC start %s, end %s' % (repr(utc_start), repr(utc_end))
+            return []
+
+        # collect data
+        data = []
+        for date in ba_rows.datetimes('date', 'hour'):
+            group = ba_rows.filter(date__gte=date, date__lt=date+timedelta(hours=1))
+            if group.count() > 0:
+                # get average data
+                total_green = 0
+                total_MW = 0
+                count = 0.0
+                for r in group:
+                    if r.total_MW > 0: # don't try to handle bad data
+                        total_green += r.fraction_clean
+                        total_MW += r.total_MW
+                        count += 1.0
+                average_green = total_green/count
+                average_gen = total_MW/count
+            else:
+                # get null data
+                average_green = None
+                average_gen = None
+    
+            # add to list
+            data.append({"fraction_clean": average_green,
+                         "total_MW": average_gen,
+                         "date": date.strftime('%Y-%m-%d %H:%M'),
+                         "local_date": date.astimezone(tz).strftime('%Y-%m-%d %H:%M'),
+                        })
+
+        # return
+        return sorted(data, key=lambda r: r['local_date'])
 
 
 class ForecastedBalancingAuthorityManager(BaseBalancingAuthorityManager):
