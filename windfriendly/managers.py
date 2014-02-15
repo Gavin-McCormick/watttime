@@ -180,7 +180,7 @@ class BaseBalancingAuthorityManager(models.Manager):
                         })
 
         # return
-        return sorted(data, key=lambda r: r['local_time'])
+        return sorted(data, key=lambda r: r['local_date'])
         
     def rollup(self, utc_start, utc_end, tz, how='hourly'):
         """hourly rollup"""
