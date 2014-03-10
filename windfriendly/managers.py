@@ -158,18 +158,14 @@ class BaseBalancingAuthorityManager(models.Manager):
                         count += 1.0
                 average_green = total_green/count
                 average_gen = total_MW/count
-          #      if not representative_date:
-          #          representative_date = group.latest().local_date.replace(minute=0)
             else:
                 # get null data
                 average_green = None
                 average_gen = None
-           #     if not representative_date:
-           #         representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
     
             # complicated date wrangling to get all local_time values in local today
-         #   latest_dt = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(tz)
-            local_time = representative_date.replace(hour=hour)
+            local_hour = (hour + representative_date.utcoffset().seconds / 3600) % 24
+            local_time = representative_date.replace(hour=local_hour)
             utc_time = local_time.astimezone(pytz.utc)
     
             # add to list
