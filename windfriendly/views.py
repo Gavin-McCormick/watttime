@@ -219,9 +219,13 @@ def today(request, ba=None):
     if len(ba_rows) == 0:
         print 'no data for local start %s, end %s' % (repr(ba_local_start), repr(ba_local_end))
         return []
+    rows_on_day = []
+    for row in ba_rows:
+        if row.local_date.day == ba_local_now.day:
+            rows_on_day.append(row)
 
     # collect data
-    data = [r.to_dict() for r in ba_rows]
+    data = [r.to_dict() for r in rows_on_day]
 
     # return
     return data
