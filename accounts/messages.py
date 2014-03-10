@@ -48,27 +48,30 @@ criterion_dirtiest = [
 action_dirtiest_home_generic = [
     # "Postpone any major appliance and equipment use until after 4 p.m.",
     # "Unplug vampire electronics like phone chargers and monitors.",
-    "Adjust your air conditioning thermostat to 78F or higher.",
+  #  "Adjust your air conditioning thermostat to 78F or higher.",
     "Look around. Can you find one thing on that doesn't need to be?",
     "Think you could turn off one thing? What do you need least?",
     "What practices could you put off to a cleaner time?"]
 
 action_dirtiest_home_ac = [
     "Turn off all unnecessary lights, electronics, and appliances.",
-    "If your A/C is on right now, switch it off and get some fresh air.",
-    "Adjust your air conditioning thermostat to 78F or higher."]
+#    "If your A/C is on right now, switch it off and get some fresh air.",
+#    "Adjust your air conditioning thermostat to 78F or higher."
+    ]
 
 action_dirtiest_work_generic = [
     "Making copies? Save it for later when our electricity is cleaner.",
     # "Set A/C to 78F. Adjust clothing and activity for comfort.",
     "What practices can you shift to later in the day?",
-    "Adjust your clothing and modulate your activity for warmer temps."]
+#    "Adjust your clothing and modulate your activity for warmer temps."
+    ]
 
 action_dirtiest_work_ac = [
     "Can some of your electricity consumption be rescheduled?",
     "Take a break from using electricity.",
     "What energy-intensive tasks could you schedule to run overnight?",
-    "Dialing your A/C to 78F or higher makes an immediate impact."]
+  #  "Dialing your A/C to 78F or higher makes an immediate impact."
+    ]
 
 def ca_message_dirty(up):
     # TODO choose between home vs. work appropriately.
@@ -82,7 +85,8 @@ criterion_cleanest = [
 action_cleanest_dishwasher = [
     "Some of the biggest reductions in energy consumption come from more efficient techology.",
     "This is generally a great time to run the dishwasher.",
-    "Running a dishwasher late at night is the best time for cleaner electricity."]
+   # "Running a dishwasher late at night is the best time for cleaner electricity."
+    ]
 
 action_cleanest_home_ac = [
     "This is the best time of day for electricity-intensive tasks.",
@@ -116,7 +120,8 @@ criterion_dirty_emergency = [
 action_unusually_dirty_work_ac = [
     "Can you rearrange your electricity consumption to a later time?",
     "Take a break from electricity. Go chat with someone.",
-    "Dial back your A/C to 78F or higher and lower the shades."]
+   # "Dial back your A/C to 78F or higher and lower the shades."
+    ]
 
 action_unusually_dirty_work_generic = [
     "Which energy-intensive jobs could you schedule to run overnight?",
@@ -127,7 +132,8 @@ action_unusually_dirty_work_generic = [
 action_unusually_dirty_home_ac = [
     # "Postpone any major appliance and equipment use until after 4 p.m.",
     "Turn off all unnecessary lights, electronics, and appliances.",
-    "Dialing back your A/C to 78F or higher will save you money."]
+  #  "Dialing back your A/C to 78F or higher will save you money."
+    ]
 
 action_unusually_dirty_home_generic = [
     "Turn off all unnecessary lights, electronics, and appliances.",
@@ -135,8 +141,8 @@ action_unusually_dirty_home_generic = [
     "Take a break from electricity. Go chat with someone."]
 
 action_dirty_emergency_work_ac = [
-    "If your A/C is on right now, switch it off.",
-    "Dial back your A/C to 78F or higher. ",
+   # "If your A/C is on right now, switch it off.",
+   # "Dial back your A/C to 78F or higher. ",
     "Reschedule your electricity use until later in the day."]
 
 action_dirty_emergency_work_generic = [
@@ -152,8 +158,9 @@ action_dirty_emergency_pool = [
 
 action_dirty_emergency_home_ac = [
     "It's a good time to turn off unneeded lights and appliances.",
-    "If your A/C is on, switch it off and get some fresh air.",
-    "If it's summer, adjust your A/C to 78F or higher."]
+   # "If your A/C is on, switch it off and get some fresh air.",
+   # "If it's summer, adjust your A/C to 78F or higher."
+    ]
 
 action_dirty_emergency_waterheater = [
     "Try showering before bed or very early in the morning.",
@@ -171,12 +178,14 @@ action_unusually_clean_work_generic = [
 
 action_unusually_clean_home_ac = [
     "Major appliances and equipment run on a cleaner power grid right now.",
-    "This is the best time of day for electricity-intensive tasks like A/C.",
-    "If it's hot out, this would be a better time to run the A/C or a fan."]
+   # "This is the best time of day for electricity-intensive tasks like A/C.",
+   # "If it's hot out, this would be a better time to run the A/C or a fan."
+    ]
 
 action_unusually_clean_precool = [
     "What appliances or equipment should run now instead of later?",
-    "If it's hot out, this would be a better time to run the A/C or a fan."]
+  #  "If it's hot out, this would be a better time to run the A/C or a fan."
+    ]
 
 action_unusually_clean_dishwasher = [
     "This is a great time to run the dishwasher.",
