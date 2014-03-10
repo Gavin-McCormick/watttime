@@ -143,7 +143,7 @@ class BaseBalancingAuthorityManager(models.Manager):
 
         # collect data
         data = []
-        representative_date = None
+        representative_date = ba_rows.latest().local_date.replace(minute=0)
         for hour in range(24):
             group = ba_rows.filter(date__hour=hour)
             if group.count() > 0:
@@ -158,14 +158,14 @@ class BaseBalancingAuthorityManager(models.Manager):
                         count += 1.0
                 average_green = total_green/count
                 average_gen = total_MW/count
-                if not representative_date:
-                    representative_date = group.latest().local_date.replace(minute=0)
+          #      if not representative_date:
+          #          representative_date = group.latest().local_date.replace(minute=0)
             else:
                 # get null data
                 average_green = None
                 average_gen = None
-                if not representative_date:
-                    representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
+           #     if not representative_date:
+           #         representative_date = ba_rows.latest().local_date.replace(hour=hour, minute=0)
     
             # complicated date wrangling to get all local_time values in local today
          #   latest_dt = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(tz)
