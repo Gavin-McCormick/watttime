@@ -74,10 +74,12 @@ else:
 # common settings 
 ###############################
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'watttime.app@gmail.com'
+EMAIL_HOST = 'mail.watttime.org'
+EMAIL_HOST_USER = 'contact@watttime.org'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+SERVER_EMAIL = DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
 # This allows one to call .get_profile() on a User object to retrieve the
 # corresponding UserProfile object, if it exists.
