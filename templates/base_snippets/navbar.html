@@ -20,8 +20,8 @@
             <ul class="nav nav-pills">
             
             <li class="dropdown" >
-                <a class="dropdown-toggle" id="drop3" role="button" data-toggle="dropdown" href="#">TOOLS <span class="glyphicon glyphicon-wrench glyphicon-white"></span> <b class="caret"></b></a>
-      			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
+                <a class="dropdown-toggle" id="drop2" role="button" data-toggle="dropdown" href="#">TOOLS <span class="glyphicon glyphicon-wrench glyphicon-white"></span> <b class="caret"></b></a>
+      			<ul class="dropdown-menu" id="menu2" role="menu" aria-labelledby="drop2">	
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="//api.watttime.org/"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp; API</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'status' %}"><span class="nb_icons nbexplorer pull-left"></span>&nbsp; EXPLORER</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'shift' %}"><span class="nb_icons nbshift pull-left"></span>&nbsp; SHIFT</a></li>
@@ -34,7 +34,8 @@
       			<ul class="dropdown-menu" id="menu3" role="menu" aria-labelledby="drop3">	
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'how-it-works' %}"><span class="nb_icons nbhiw pull-left"></span>&nbsp; HOW IT WORKS</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'why-it-works' %}"><span class="nb_icons nbwiw pull-left"></span>&nbsp; WHY IT WORKS</a></li>
-				</ul>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'zinnia_entry_archive_index' %}"><span class="glyphicon glyphicon-th-list"></span>&nbsp; BLOG</a></li>
+  				</ul>
               </li>
 
               <li class="dropdown">
@@ -42,12 +43,12 @@
       			<ul class="dropdown-menu" id="menu1" role="menu" aria-labelledby="drop1">	
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'about-us' %}"><span class="nb_icons nbabout pull-left"></span>&nbsp; ABOUT US</a></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'contact' %}"><span class="glyphicon glyphicon-envelope"></span>&nbsp; CONTACT</a></li>
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'faq' %}"><span class="glyphicon glyphicon-question-sign glyphicon-white"></span>&nbsp; FAQ</a></li>  
 				</ul>
+
               </li>
               
-              <li class="">
-				<a href="{% url 'faq' %}">FAQ <span class="glyphicon glyphicon-question-sign glyphicon-white"></span></a>
-              </li>    
+                
                      
               <li class="dropdown">
               {% if user.is_authenticated %}

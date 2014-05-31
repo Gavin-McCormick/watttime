@@ -77,7 +77,7 @@ urlpatterns += patterns('sms_tools.views',
 
 # blog
 urlpatterns += patterns('',
-    url(r'^blog[/]', include('zinnia.urls')),
+    url(r'blog/', include('zinnia.urls')),
     url(r'comments[/]', include('django.contrib.comments.urls')),
 )
 
