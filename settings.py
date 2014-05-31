@@ -173,6 +173,7 @@ SECRET_KEY = 'u-83ak4v53rjt$43*+)*k4hvo9@gknks6mztx133omm879t!d)'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+    'app_namespace.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
 
@@ -215,12 +216,34 @@ INSTALLED_APPS = (
     'kombu.transport.django',
     'djcelery',
     # move django apps later 
+    'tagging',
+    'mptt',
+    'zinnia',
+    # move django apps later
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.comments',
+#    'allauth',
+#    'allauth.account',
+#    'allauth.socialaccount',
+#    'allauth.socialaccount.providers.bitly',
+#    'allauth.socialaccount.providers.dropbox',
+#    'allauth.socialaccount.providers.facebook',
+#    'allauth.socialaccount.providers.github',
+#    'allauth.socialaccount.providers.google',
+#    'allauth.socialaccount.providers.linkedin',
+#    'allauth.socialaccount.providers.openid',
+#    'allauth.socialaccount.providers.persona',
+#    'allauth.socialaccount.providers.soundcloud',
+#    'allauth.socialaccount.providers.stackexchange',
+#    'allauth.socialaccount.providers.twitch',
+#    'allauth.socialaccount.providers.twitter',
+#    'allauth.socialaccount.providers.vimeo',
+#    'allauth.socialaccount.providers.weibo',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -277,6 +300,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.contrib.messages.context_processors.messages",
     "pages.context_processors.google_analytics",
+#    "allauth.account.context_processors.account",
+#    "allauth.socialaccount.context_processors.socialaccount",
+    #"invitation.context_processors.remaining_invitations",
+    'pages.context_processors.google_analytics',
+    'zinnia.context_processors.version',
 )
 
 ACCOUNT_AUTHENTICATION_METHOD = ("username_email")

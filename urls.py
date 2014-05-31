@@ -75,6 +75,12 @@ urlpatterns += patterns('sms_tools.views',
     url(r'twilio_endpoint', 'twilio_endpoint', name='twilio_endpoint'),
 )
 
+# blog
+urlpatterns += patterns('',
+    url(r'^blog[/]', include('zinnia.urls')),
+    url(r'comments[/]', include('django.contrib.comments.urls')),
+)
+
 # static
 urlpatterns += patterns('',
                         url(r'^static/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': settings.STATIC_ROOT }),

@@ -1,0 +1,18 @@
+{% load i18n %}
+<ul class="list-group">
+  {% for comment in comments %}
+  <li class="list-group-item">
+    {% with entry=comment.content_object %}
+    <a href="{{ entry.get_absolute_url }}#comment-{{ comment.pk }}-by-{{ comment.user_name|slugify }}"
+       title="{% trans "Comment on" %} {{ entry.title }}">
+      {{ comment.user_name }} {% trans "in" %}
+      {{ entry.title }}
+    </a>
+    {% endwith %}
+  </li>
+  {% empty %}
+  <li class="list-group-item">
+    <a href="#">{% trans "No comments yet." %}</a>
+  </li>
+  {% endfor %}
+</ul>
