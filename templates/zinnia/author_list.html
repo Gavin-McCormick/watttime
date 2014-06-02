@@ -1,5 +1,5 @@
 {% extends "zinnia/base.html" %}
-{% load i18n %}
+{% load i18n zinnia_tags %}
 
 {% block meta-description %}{% trans "Author list" %}{% endblock meta-description %}
 
@@ -17,13 +17,19 @@
   <ul class="list-group">
     {% for object in object_list %}
     <a class="list-group-item" href="{{object.get_absolute_url}}"
-         title="{% blocktrans with author=object %}Show all {{ author }}'s entries{% endblocktrans %}">{{ object }}
-      <span class="badge">
-        {% blocktrans count entry_count=object.count_entries_published %}{{ entry_count }} entry{% plural %}{{ entry_count }} entries{% endblocktrans %}
-      </span>
+         title="{% blocktrans with author=object %}Show all {{ author }}'s entries{% endblocktrans %}">
+        <div class="media">
+            <img src="{% get_gravatar object.email 64 %}" class="pull-left media-object">
+            <div class="media-body">
+              <h3 class="media-heading">{{ object }}</h3>
+              <span class="badge">
+                {% blocktrans count entry_count=object.count_entries_published %}{{ entry_count }} entry{% plural %}{{ entry_count }} entries{% endblocktrans %}
+              </span>
+            </div>
+        </div>
     </a>
     {% empty %}
-    <li>
+    <li class="list-group-item">
       {% trans "No authors yet." %}
     </li>
     {% endfor %}

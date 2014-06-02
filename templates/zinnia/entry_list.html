@@ -38,16 +38,17 @@
   </div>
   {% endif %}
 
-  {% if author and author.bio %}
-  <div class="media">
-    <!-- <a class="pull-left" href="#">
-      <img class="media-object" src="..." alt="...">
-    </a> -->
-    <div class="media-body">
-      <h3 class="media-heading">{{ author }}</h3>
-      <p>{{ author.bio }}</p>
+  {% if author %}
+  <div class="panel panel-default">
+    <div class="panel-body">
+        <div class="media">
+            <img src="{% get_gravatar author.email 64 %}" class="pull-left media-object">
+            <div class="media-body">
+              <h3 class="media-heading">{{ author }}</h3>
+            </div>
+        </div>
+      </div>
     </div>
-  </div>
   {% endif %}
 {% endblock content-title %}
 
