@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% for tag in tags %}
+  <a class="vcard tag btn btn-default"
+   href="{% url 'zinnia_tag_detail' tag %}"
+   title="{% blocktrans %}Show all entries tagged by {{ tag }}{% endblocktrans %}">
+     {{ tag }} <span class="badge">{{tag.count}}</span>
+  </a>
+{% empty %}
+  <p>{% trans "No tags yet." %}</p>
+{% endfor %}

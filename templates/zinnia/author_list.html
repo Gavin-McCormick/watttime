@@ -1,23 +1,33 @@
-{% extends "zinnia:zinnia/author_list.html" %}
+{% extends "zinnia/base.html" %}
 {% load i18n %}
 
-{% block content %}
-<h2>{% trans "Author list" %}</h2>
+{% block meta-description %}{% trans "Author list" %}{% endblock meta-description %}
 
-<ul class="list-group">
-  {% for object in object_list %}
-  <li class="vcard list-group-item">
-    <a href="{{ object.get_absolute_url }}"
-       title="{% blocktrans with author=object %}Show all {{ author }}'s entries{% endblocktrans %}"
-       class="fn url{% if not author.get_full_name %} nickname{% endif %}">{{ object }}</a>
-    <span class="badge">
-      {% blocktrans count entry_count=object.count_entries_published %}{{ entry_count }} entry{% plural %}{{ entry_count }} entries{% endblocktrans %}
-    </span>
-  </li>
-  {% empty %}
-  <li>
-    {% trans "No authors yet." %}
-  </li>
-  {% endfor %}
-</ul>
+{% block title %}{% trans "Authors" %}{% endblock title %}
+
+{% block body-class %}author-list{% endblock body-class %}
+
+{% block content %}
+<div class="panel panel-default">
+
+  <div class="panel-heading">
+    <h4>{% trans "Authors" %}</h4>
+  </div>
+
+  <ul class="list-group">
+    {% for object in object_list %}
+    <a class="list-group-item" href="{{object.get_absolute_url}}"
+         title="{% blocktrans with author=object %}Show all {{ author }}'s entries{% endblocktrans %}">{{ object }}
+      <span class="badge">
+        {% blocktrans count entry_count=object.count_entries_published %}{{ entry_count }} entry{% plural %}{{ entry_count }} entries{% endblocktrans %}
+      </span>
+    </a>
+    {% empty %}
+    <li>
+      {% trans "No authors yet." %}
+    </li>
+    {% endfor %}
+  </ul>
+
+</div>
 {% endblock content %}

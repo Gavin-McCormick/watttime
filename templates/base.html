@@ -1,7 +1,7 @@
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
-<html>
+<html xmlns:fb="http://ogp.me/ns/fb#">
 
 {% load staticfiles %}
 {% load url from future %}
@@ -24,8 +24,8 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <!-- links to stylesheets and scripts for making things pretty and functional-->
-{% include "base_snippets/head_links.html" %}
-{% include "base_snippets/head_scripts.html" %}
+{% block headlinks %}{% include "base_snippets/head_links.html" %}{% endblock %}
+{% block headscripts %}{% include "base_snippets/head_scripts.html" %}{% endblock %}
 
 <!-- non-splash-page background color -->
 <style> body {
@@ -37,17 +37,19 @@ background: #99DFF9;
 
 </head>
 
+{% block body %}
 <body>
-<div class="container">      
+  <div class="container">      
     {% include "base_snippets/navbar.html" %}
 						
     
 	{% block content %}
 	{% endblock %}
-    </div>
+  </div>
 		  
     {% include "base_snippets/footer.html" %}				
 		
 </body>
+{% endblock %}
 
 </html>

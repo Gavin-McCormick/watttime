@@ -1,7 +1,11 @@
 /* Zinnia styles */
-.zinnia h1,h2,h3,h4,h5,p {
+.zinnia h2,h3,h4,h5,p {
     text-align: left;
 }
 .zinnia h1 {
     color: #FFDE17;
+}
+
+.zinnia .tag {
+	margin: 2px;
 }
