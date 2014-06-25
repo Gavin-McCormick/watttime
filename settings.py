@@ -312,7 +312,7 @@ ACCOUNT_AUTHENTICATION_METHOD = ("username_email")
 
 # google analytics 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-42171038-1'
-GOOGLE_ANALYTICS_DOMAIN = 'watttime.com'
+GOOGLE_ANALYTICS_DOMAIN = 'watttime.org'
 
 # Cross-Origin Resource Sharing
 CORS_ORIGIN_ALLOW_ALL = True
