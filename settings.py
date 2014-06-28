@@ -18,6 +18,8 @@ environ_settings = [
         'TWITTER_CA_CONSUMER_SECRET',
         'TWITTER_CA_ACCESS_KEY',
         'TWITTER_CA_ACCESS_SECRET',
+        'MAILCHIMP_API_KEY',
+        'MAILCHIMP_LIST_ID',
     ]
 
 def copy_from_environ(keys):
@@ -219,6 +221,7 @@ INSTALLED_APPS = (
     'tagging',
     'mptt',
     'zinnia',
+    'mailchimp',
     # move django apps later
     'django.contrib.auth',
     'django.contrib.contenttypes',

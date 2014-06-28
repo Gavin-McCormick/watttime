@@ -4,7 +4,8 @@ from django_localflavor_us.us_states import STATE_CHOICES
 import pytz
 from django.utils.timezone import now, localtime
 from django.contrib.auth.models import User
-
+import mailchimp
+from django.conf import settings
 from accounts import config
 
 # Several models are defined dynamically in regions.py, so this import is
@@ -173,3 +174,8 @@ class UserProfile(models.Model):
         res = res.format(self = self, pv = pv, e1 = e1, e2 = e2)
 
         return res
+
+    def subscribe_to_mailchimp(self):
+        """Add to the mailchimp mailing list. This WILL send the user a confirmation email."""
+        mc_list = mailchimp.utils.get_connection().get_list_by_id(settings.MAILCHIMP_LIST_ID)
+        mc_list.subscribe(self.email, {'EMAIL': self.email})
