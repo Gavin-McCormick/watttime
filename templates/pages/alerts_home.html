@@ -31,9 +31,13 @@
                     easy change to your electricity use can make the biggest impact.
                 </p>
                     {% if not user.is_authenticated %}
-                        <p><a class="btn btn-info" href="{% url 'authenticate' %}">
-                            Sign in and get started!
-                        </a><p>
+                        <p>
+                            WattTime Alerts is in closed beta.
+                            If you want to a sneak preview of this service,
+                            <a class="btn btn-info" href="{% url 'contact' %}">
+                            let us know
+                            </a>!
+                        <p>
                     {% else %}
                         <p><a class="btn btn-info" href="{% url 'profile_settings' %}">
                             View your profile!
@@ -44,41 +48,18 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-md-12">
-                <h3>Make a difference in four easy steps:</h3>
-            </div>
-            <div class="col-md-3">
-                <p class="text-score">1</p>
-                <h4>Sign up is simple</h4>
+            <div class="col-md-6">
+                <p class="text-score"><span class="glyphicon glyphicon-phone"></span></p>
+                <h4>SMS Alerts</h4>
                 <p>
-                    Your email address or phone number is all we need to get you started.
+                    Text messages at the best and worst times to flip the switch.
                 </p>
             </div>
-
-            <div class="col-md-3">
-                <p class="text-score">2</p>
-                <h4>Verify it's you</h4>
+            <div class="col-md-6">
+                <p class="text-score"><span class="glyphicon glyphicon-envelope"></span></p>
+                <h4>Morning Forecast Email</h4>
                 <p>
-                    We verify your contact info so we can send secure alerts
-                    directly to your device.
-                </p>
-            </div>
-
-            <div class="col-md-3">
-                <p class="text-score">3</p>
-                <h4>Personalize</h4>
-                <p>
-                    You are in control of your account. Tailor your alerts to be more meaningful
-                    to you, or stick with the default settings.
-                </p>
-            </div>
-
-            <div class="col-md-3">
-                <p class="text-score">4</p>
-                <h4>Take action</h4>
-                <p>
-                    When you receive a message, join your neighbors
-                    and shift your electricity use to cleaner sources.
+                    Wake up to fresh information about today's clean energy forecast.
                 </p>
             </div>
         </div>
