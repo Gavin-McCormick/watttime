@@ -1,14 +1,57 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}WattTime: Partner{% endblock %}
 
 {% block content %}
 
-<h1>Partner</h1>
-
-<br>
-<div class="well">
-how can you partner with us?
+<div>
+<h1>Partner with WattTime</h1>
+</br>
 </div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+			<h3>Cut Carbon, Smarter</h3>
+	     	<p>
+	     		Is your business looking for new ways to reduce carbon emissions?
+                Our solutions can give you unprecedented insight—and control—over your carbon footprint.
+	        </p>
+	        <div class="col-md-4">
+	        	<h4>Research</h4>
+                <ul>
+                    <li>Time-resolved carbon footprint analysis</li>
+                    <li>Retrofit and new project consultation</li>
+                    <li>Novel environmental impact measures</li>
+                </ul>
+	        </div>
+	        <div class="col-md-4">
+	        	<h4>Develop</h4>
+                <ul>
+                    <li>Automated demand response using our unique real-time data</li>
+                    <li>User-friendly dashboards and apps</li>
+                    <li>Control algorithms that optimize carbon, comfort, and cost</li>
+                </ul>
+	        </div>
+	        <div class="col-md-4">
+	        	<h4>Deploy</h4>
+                <ul>
+                    <li>Commercial HVAC</li>
+                    <li>Electric vehicles</li>
+                    <li>Internet of Things</li>
+                    <li>Control and monitoring systems</li>
+                    <li>Measurement and verification</li>
+                </ul>
+	        </div>
+		</div>
+		<div class="row">
+			<h3>Interested? <a href="{% url 'contact' %}">Contact us.</a></h3>
+			<h3>Want to learn more? <a href="{% static "pdf/WattTime_A_New_Technique_In_Sustainability.pdf" %}">Read our white paper.</a></h3>
+		</div>
+	</div>
+</div>
+
+{% include "base_snippets/footer_tactics.html" %}
 
 {% endblock %}

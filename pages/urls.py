@@ -50,8 +50,8 @@ urlpatterns += patterns('',
         TemplateView.as_view(template_name='pages/join_us.html'), name='join-us'),
     url(r'^press[/]$',
         TemplateView.as_view(template_name='pages/press.html'), name='press'),
-  #  url(r'^partner[/]$',
-  #      TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
+    url(r'^partner[/]$',
+        TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
 )
 
 # other
