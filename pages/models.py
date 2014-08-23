@@ -1,3 +1,4 @@
+from django.db import models
 from django import forms
 from django.forms.widgets import *
 from django.core.mail import send_mail, BadHeaderError
@@ -12,3 +13,19 @@ class ContactForm(forms.Form):
                            widget=forms.TextInput(attrs={'placeholder': 'Subject'}))
     message = forms.CharField(widget=Textarea(attrs={'placeholder': 'Message'}))
 
+
+class Article(models.Model):
+	# article title
+	title = models.CharField(max_length=500)
+
+	# date article was published
+	published_on = models.DateField()
+
+	# link to article
+	link = models.URLField()
+
+	# name of newspaper, blog, etc
+	outlet = models.CharField(max_length=100)
+
+	class Meta:
+		get_latest_by = 'published_on'
