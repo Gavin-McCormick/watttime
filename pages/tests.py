@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse_lazy
-from pages.models import Article
+from pages.models import Article, Award, Supporter
 from datetime import date
 
 
@@ -43,6 +43,27 @@ class TestArticle(TestCase):
         Article.objects.create(**self.data2)
         self.assertEqual(Article.objects.first(), Article.objects.latest())
         self.assertEqual(Article.objects.last(), Article.objects.earliest())
+
+
+class TestAward(TestCase):
+    def setUp(self):
+        self.data1 = {
+            'award_name': 'first place',
+            'contest_name': 'a thing we won',
+            'link': 'http://example.com',
+        }
+
+    def test_create(self):
+        a = Award.objects.create(**self.data1)
+        self.assertIsNotNone(a.award_name)
+        self.assertIsNotNone(a.contest_name)
+        self.assertIsNotNone(a.link)
+
+    def test_supporters(self):
+        a = Award.objects.create(**self.data1)
+        self.assertEqual(a.supporters.count(), 0)
+        a.supporters.create(name='someone who likes us', link='http://example.com')
+        self.assertEqual(a.supporters.count(), 1)        
 
 
 class TestArticleListView(TestCase):

@@ -222,6 +222,7 @@ INSTALLED_APPS = (
     'mptt',
     'zinnia',
     'mailchimp',
+    'ordered_model',
     # move django apps later
     'django.contrib.auth',
     'django.contrib.contenttypes',
