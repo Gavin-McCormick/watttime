@@ -18,15 +18,15 @@ class ContactTest(TestCase):
 class TestArticle(TestCase):
     def setUp(self):
         self.data1 = {
-            'published_on': date(2014,1,1),
+            'published_on': date(2013,1,1),
             'title': 'someone said a thing',
             'outlet': 'fancy newspaper',
             'link': 'http://example.com/a/',  
         }
 
         self.data2 = {
-            'published_on': date(2013,1,1),
-            'title': 'a thing someone said before',
+            'published_on': date(2014,1,1),
+            'title': 'a thing someone said later',
             'outlet': 'less fancy newspaper',
             'link': 'http://example.com/b/',  
         }
@@ -39,7 +39,37 @@ class TestArticle(TestCase):
         self.assertIsNotNone(a.link)
 
     def test_order_by_date(self):
-        a1 = Article.objects.create(**self.data1)
-        a2 = Article.objects.create(**self.data2)
-        self.assertEqual(Article.objects.earliest(), a2)
-        self.assertEqual(Article.objects.latest(), a1)
+        Article.objects.create(**self.data1)
+        Article.objects.create(**self.data2)
+        self.assertEqual(Article.objects.first(), Article.objects.latest())
+        self.assertEqual(Article.objects.last(), Article.objects.earliest())
+
+
+class TestArticleListView(TestCase):
+    def setUp(self):
+        Article.objects.create(**{
+            'published_on': date(2014,1,1),
+            'title': 'someone said a thing',
+            'outlet': 'fancy newspaper',
+            'link': 'http://example.com/a/',  
+        })
+
+        Article.objects.create(**{
+            'published_on': date(2013,1,1),
+            'title': 'a thing someone said before',
+            'outlet': 'less fancy newspaper',
+            'link': 'http://example.com/b/',  
+        })
+
+    def test_get_has_context(self):
+        response = self.client.get(reverse_lazy('press'))
+        for a in Article.objects.all():
+            self.assertIn(a, response.context['object_list'])
+
+    def test_get_has_content(self):
+        response = self.client.get(reverse_lazy('press'))
+        for a in Article.objects.all():
+            self.assertContains(response, a.link)
+            self.assertContains(response, a.outlet)
+            self.assertContains(response, a.published_on.strftime('%-d %B %Y'))
+            self.assertContains(response, a.title)

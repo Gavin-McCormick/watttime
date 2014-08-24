@@ -15,7 +15,8 @@
 # Authors: Sam Marcellus, Anna Schneider, Kevin Yang
 
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, ListView
+from .models import Article
 from . import views
 
 # home
@@ -49,7 +50,7 @@ urlpatterns += patterns('',
     url(r'^join-us[/]$',
         TemplateView.as_view(template_name='pages/join_us.html'), name='join-us'),
     url(r'^press[/]$',
-        TemplateView.as_view(template_name='pages/press.html'), name='press'),
+        ListView.as_view(template_name='pages/press.html', model=Article), name='press'),
     url(r'^partner[/]$',
         TemplateView.as_view(template_name='pages/partner.html'), name='partner'),
 )

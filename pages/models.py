@@ -28,4 +28,5 @@ class Article(models.Model):
 	outlet = models.CharField(max_length=100)
 
 	class Meta:
+		ordering = ['-published_on']
 		get_latest_by = 'published_on'
