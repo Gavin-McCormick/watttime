@@ -94,3 +94,30 @@ class TestArticleListView(TestCase):
             self.assertContains(response, a.outlet)
             self.assertContains(response, a.published_on.strftime('%-d %B %Y'))
             self.assertContains(response, a.title)
+
+
+class TestAwardsListView(TestCase):
+    def setUp(self):
+        Award.objects.create(**{
+            'award_name': 'first place',
+            'contest_name': 'a thing we won',
+            'link': 'http://example.com/a/',
+        })
+
+        Award.objects.create(**{
+            'award_name': 'second place place',
+            'contest_name': 'another thing we won',
+            'link': 'http://example.com/b/',
+        })
+
+    def test_get_has_context(self):
+        response = self.client.get(reverse_lazy('about-us'))
+        for a in Award.objects.all():
+            self.assertIn(a, response.context['object_list'])
+
+    def test_get_has_content(self):
+        response = self.client.get(reverse_lazy('about-us'))
+        for a in Award.objects.all():
+            self.assertContains(response, a.link)
+            self.assertContains(response, a.award_name)
+            self.assertContains(response, a.contest_name)

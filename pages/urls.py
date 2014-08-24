@@ -16,7 +16,7 @@
 
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView, RedirectView, ListView
-from .models import Article
+from .models import Article, Award
 from . import views
 
 # home
@@ -46,7 +46,7 @@ urlpatterns += patterns('',
 # team
 urlpatterns += patterns('',
     url(r'^about-us[/]$',
-        TemplateView.as_view(template_name='pages/about_us.html'), name='about-us'),
+        ListView.as_view(template_name='pages/about_us.html', model=Award), name='about-us'),
     url(r'^join-us[/]$',
         TemplateView.as_view(template_name='pages/join_us.html'), name='join-us'),
     url(r'^press[/]$',

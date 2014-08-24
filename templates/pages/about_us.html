@@ -82,66 +82,19 @@
     <h3 class="panel-title">Awards</h3>
   </div>
   <div class="panel-body">
-    <div class="row">
+    {% for award in object_list %}
        <div class="col-md-6">
           <div class="well well-sm">
-            <h1 class="yellow">Fellows</h1>
-            <h2><a href="//echoinggreen.org/fellowship/climate" target="_blank">Echoing Green Fellowship</a></h2>
-            <p>thanks to <a href="//echoinggreen.org">Echoing Green</a></p>
+            <h1 class="yellow">{{award.award_name}}</h1>
+            <h2><a href="{{award.link}}" target="_blank">{{award.contest_name}}</a></h2>
+            <p>thanks to
+              {% for s in award.supporters.all %}
+              {% if forloop.last %}<a href="{{s.link}}">{{s.name}}</a>{% else %}<a href="{{s.link}}">{{s.name}}</a>, {% endif %}
+              {% endfor %}
+            </p>
           </div>
         </div>
-
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">Judges' Award</h1>
-            <h2><a href="//mobileappchallenge.org" target="_blank">Mobile App Challenge</a></h2>
-            <p>thanks to <a href="#">UC Berkeley CITRIS</a></p>
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">First Place</h1>
-            <h2><a href="//2013-sf.bsr.org/en/hackathon" target="_blank">BSR Sustainability Hackathon</a></h2>
-            <p>thanks to <a href="//www.bsr.org/">Business for Social Responsibility</a> and <a href="//www.qualcomm.com/">Qualcomm</a></p>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">Grand Prize Winner</h1>
-            <h2><a href="//cleanandgreenhackathon.com/results/" target="_blank">Clean and Green Hackathon</a></h2>
-            <p>thanks to <a href="//rally.org/">Rally.org</a>, <a href="//www.barackobama.com/">Organizing for Action</a>, and <a href="//www.nanosatisfi.com/">Nanosatisfi</a></p>
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">Top 3 Finalist</h1>
-            <h2><a href="//info.cleantech.com/CleantechFacebookContest.html" target="_blank">Cleantech Goes Social Contest</a></h2>
-                 <p>thanks to <a href="//www.cleantech.com/">CleanTech Group</a> and <a href="//newsroom.fb.com/sustainability.aspx">Facebook</a></p>
-           </div>
-         </div>
-
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">Best Green Button App</h1>
-            <h2><a href="//berkeley.cleanweb.co/" target="_blank">Berkeley Cleanweb Hackathon</a>
-            </h2>
-            <p>thanks to <a href="//berc.berkeley.edu/">BERC</a> and <a href="//cleanweb.co/">Cleanweb</a></p>
-          </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-          <div class="well well-sm">
-            <h1 class="yellow">Second Place</h1>
-            <h2><a href="//www.dow.com/sustainability/studentchallenge/" target="_blank">Dow Sustainability Innovation Student Challenge Award</a></h2>
-            <p>thanks to <a href="//www.dow.com">Dow</a> and <a href="//responsiblebusiness.haas.berkeley.edu/">Haas Center for Responsible Business</a></p>
-          </div>
-        </div>
-    </div>
+    {% endfor %}
 
 </div>
 </div></div>

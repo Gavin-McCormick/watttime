@@ -41,6 +41,9 @@ class Supporter(models.Model):
     # link to supporter
     link = models.URLField()
 
+    def __str__(self):
+        return self.name
+
 
 class Award(OrderedModel):
     # name of award
