@@ -115,18 +115,6 @@ html, body {
     margin-left:25px;
 }
 
-.awards {
-    background: url(../images/awards.png);
-    width:303px;
-    height:128px;
-}
-.cleantech {background-position: 0 0}
-.cleantech:hover {background-position: 0 -121px;}
-.cleanandgreen {background-position: -303px 0;}
-.cleanandgreen:hover {background-position: -303px -121px;}
-.cleanweb {background-position: -606px 0;}
-.cleanweb:hover {background-position: -606px -121px;}
-
 .lp_icons {
     background: url(../images/LP_icons.png);
     width:50px;
